@@ -23,7 +23,7 @@ LATERALITY = {
     'L.E.': Laterality.OS,
     'LEFT': Laterality.OS,
     'BOTH': Laterality.OU,
-    'BE': Laterality.OU,
+    # 'BE': Laterality.OU,  # ambiguous
     'OU': Laterality.OU,
     'O.U.': Laterality.OU,
     'BILATERAL': Laterality.OU
@@ -33,3 +33,8 @@ LATERALITY_PATTERN = re.compile(
     r'\b(' + '|'.join(LATERALITY.keys()).replace('.', r'\.') + r')\b',
     re.IGNORECASE
 )
+
+
+def laterality_finder(text):
+    for m in LATERALITY_PATTERN.finditer(text):
+        yield LATERALITY[m.group().upper()]
