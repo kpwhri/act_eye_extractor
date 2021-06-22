@@ -2,28 +2,52 @@
 import re
 
 IOP_PATTERN_RE = re.compile(
-    r'\b(?:tonometry|tappl|tapp|ta|iops?|intraocular pressures?|t?nct):?\W*'
+    r'\b(?:tonometry|tappl|tapp|ta|iops?|intraocular pressures?|t?nct|pressure):?\W*'
     r'(?:(?:Method|with|by):?\W+(?P<METHOD>\w+)\W*)?'
     r'(?:(?P<METHOD2>applanation|tappl|flouress|tnct)\W*)?'
     r'(?:(?:@|at)\s*\d+:\d+\s*(?:AM|PM)\W*)?'
     r'(?:(?:O\.?D\.?|R\.?E\.?)\W*(?P<OD>\d+(?:\.\d+)?|nt)\W*(mm?hg)?\W*)'
+    r'(?:(?:and)\W*)?'
     r'(?:(?:O\.?S\.?|L\.?E\.?)\W*(?P<OS>\d+(?:\.\d+)?|nt)\W*(mm?hg)?)?',
     re.I
 )
 
 IOP_PATTERN_LE = re.compile(
-    r'\b(?:tonometry|tappl|tapp|ta|iops?|intraocular pressures?|t?nct):?\W*'
+    r'\b(?:tonometry|tappl|tapp|ta|iops?|intraocular pressures?|t?nct|pressure):?\W*'
     r'(?:(?:Method|with|by):?\W+(?P<METHOD>\w+)\W*)?'
     r'(?:(?P<METHOD2>applanation|tappl|flouress|tnct)\W*)?'
     r'(?:(?:@|at)\s*\d+:\d+\s*(?:AM|PM)\W*)?'
     r'(?:(?:O\.?D\.?|R\.?E\.?)\W*(?P<OD>\d+(?:\.\d+)?|nt)\W*(mm?hg)?\W*)?'
+    r'(?:(?:and)\W*)?'
     r'(?:(?:O\.?S\.?|L\.?E\.?)\W*(?P<OS>\d+(?:\.\d+)?|nt)\W*(mm?hg)?)',
     re.I
 )
 
+IOP_PATTERN_RE_POST = re.compile(
+    r'\b(?:tonometry|tappl|tapp|ta|iops?|intraocular pressures?|t?nct|pressure):?\W*'
+    r'(?:(?:Method|with|by):?\W+(?P<METHOD>\w+)\W*)?'
+    r'(?:(?P<METHOD2>applanation|tappl|flouress|tnct)\W*)?'
+    r'(?:(?:@|at)\s*\d+:\d+\s*(?:AM|PM)\W*)?'
+    r'(?:(?P<OD>\d+(?:\.\d+)?|nt)\W*(mm?hg)?\W*(?:O\.?D\.?|R\.?E\.?)\W*)'
+    r'(?:(?:and)\W*)?'
+    r'(?:(?P<OS>\d+(?:\.\d+)?|nt)\W*(mm?hg)?\W*(?:O\.?S\.?|L\.?E\.?))?',
+    re.I
+)
+
+IOP_PATTERN_LE_POST = re.compile(
+    r'\b(?:tonometry|tappl|tapp|ta|iops?|intraocular pressures?|t?nct|pressure):?\W*'
+    r'(?:(?:Method|with|by):?\W+(?P<METHOD>\w+)\W*)?'
+    r'(?:(?P<METHOD2>applanation|tappl|flouress|tnct)\W*)?'
+    r'(?:(?:@|at)\s*\d+:\d+\s*(?:AM|PM)\W*)?'
+    r'(?:(?P<OD>\d+(?:\.\d+)?|nt)\W*(mm?hg)?\W*(?:O\.?D\.?|R\.?E\.?)\W*)?'
+    r'(?:(?:and)\W*)?'
+    r'(?:(?P<OS>\d+(?:\.\d+)?|nt)\W*(mm?hg)?\W*(?:O\.?S\.?|L\.?E\.?))',
+    re.I
+)
+
 IOP_PATTERN2 = re.compile(
-    r'\bta:\s*(?P<OD>\d+(?:\.\d+)?)'
-    r'(?:\s*/\s*(?P<OS>\d+(?:\.\d+)?))?',
+    r'\b(?:ta|iops?):?\s*(?P<OD>\d+(?:\.\d+)?)'
+    r'(?:\s*[,/]\s*(?P<OS>\d+(?:\.\d+)?))?',
     re.I
 )
 
@@ -36,7 +60,7 @@ def convert_iop_value(value):
 
 
 def get_iop(text):
-    for iop_pattern in (IOP_PATTERN_LE, IOP_PATTERN_RE):
+    for iop_pattern in (IOP_PATTERN_LE, IOP_PATTERN_RE, IOP_PATTERN_LE_POST, IOP_PATTERN_RE_POST):
         for m in iop_pattern.finditer(text):
             curr = {}
             d = m.groupdict()
