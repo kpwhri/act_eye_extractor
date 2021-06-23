@@ -8,6 +8,7 @@ import re
 import enum
 
 from eye_extractor.laterality import Laterality, LATERALITY, LATERALITY_PATTERN
+from eye_extractor.va.pattern import VA_LINE_CC, VA_LINE_SC, VA_LINE_GROUPED
 
 
 class VisualAcuity(enum.Enum):
@@ -201,7 +202,18 @@ def get_number_correct(sign, diopter):
     return ''
 
 
+def extract_va_precise(text):
+    rows = []
+    for va_pat in (VA_LINE_GROUPED, VA_LINE_CC, VA_LINE_SC):
+        for m in va_pat.pattern.finditer(text):
+            rows += get_elements_from_line(m, va_pat.metadata)
+        text = va_pat.pattern.sub(' ', text)
+    return rows, text
+
+
 def extract_va(text):
+    rows, text = extract_va_precise(text)
+    yield from rows
     # find other terms
     keywords = get_keywords_stopwords(text)
     lateralities = [(m.group(), m.start(), LATERALITY[m.group().upper()]) for m in LATERALITY_PATTERN.finditer(text)]
@@ -220,6 +232,12 @@ def extract_va(text):
                     if text[m.end() + next_sc:m.end() + next_sc + j].upper() == 'PH':
                         # if the next section is PH, then I cannot be in PH section right now
                         not_list.add(VisualAcuity.PINHOLE)
+                    if text[m.end() + next_sc:m.end() + next_sc + j].upper() == 'SC':
+                        # if the next section is SC, then I cannot be in SC section right now
+                        not_list.add(VisualAcuity.UNCORRECTED)
+                    if text[m.end() + next_sc:m.end() + next_sc + j].upper() == 'CC':
+                        # if the next section is CC, then I cannot be in CC section right now
+                        not_list.add(VisualAcuity.CORRECTED)
                     break
         except ValueError as e:
             next_sc = 1000
@@ -251,3 +269,17 @@ def extract_va(text):
             continue
 
         yield values
+
+
+def vacc_numbercorrect(text, laterality):
+    for result in extract_va(text):
+        if result['laterality'] == laterality and result['exam'] == 'vacc':
+            yield int(result.get('denominator', -1) or -1)  # handle None/''
+
+
+def vacc_numbercorrect_le(text):
+    return max(vacc_numbercorrect(text, Laterality.OS), default=None)
+
+
+def vacc_numbercorrect_re(text):
+    return max(vacc_numbercorrect(text, Laterality.OD), default=None)

@@ -106,8 +106,8 @@ def iop_measurement_le(text):
 
 def iop_measurement_re(text):
     measure = [x.get('iop_measurement_re', {}).get('value', 0) for x in get_iop(text)]
-    if 'refer to above notation' in text:
-        print(text)
+    # if 'refer to above notation' in text:
+    #     print(text)
     if not measure or max(measure) == 0:
         return '0'
     return str(max(measure))
