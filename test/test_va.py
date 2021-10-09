@@ -25,6 +25,13 @@ def test_vacc_le(text, exp):
           OS:+1.00-1.00x080 ADD: SV ''',
          -1.75, -1.25, 68, 0, 0, 0,
          -1.5, -1, 80, 0, 0, 0),
+        (''' REFRACTION
+             Manifest Refraction:
+             OD +3.50-1.00x097 add: +2.50 BVA 20/20-2
+             OS +2.75-0.75x092 add: +2.50 BVA 20/25-3
+          ''',
+         3.5, -1, 97, 2.5, 20, -2,
+         2.75, -0.75, 92, 2.5, 25, -3),
     ])
 def test_get_manifest_rx(
         text, sphere_re, cylinder_re, axis_re, add_re, denom_re, correct_re,
