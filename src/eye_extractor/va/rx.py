@@ -1,7 +1,7 @@
 import re
 
 MANIFEST_PAT = re.compile(
-    r'(?:MANIFEST REFRACTION)\W*'
+    r'(?:(MANIFEST )?REFRACTION)\W*(manifest\W*)?'
     r'(?:O\.?D\.?|R\.E?\.?):?\W*(?P<od_sphere>[+-]\d+\.\d+|pl)\W*(?P<od_cylinder>[+-]\d+\.\d+)\W*x\W*(?P<od_axis>\d+)\W*'
     r'(?:20/\s*(?P<od_denominator>\d+)\s*(?P<od_correct>[+-]\d+(?:\.\d+)?)?\s*)?'
     r'(?:add(?:\W*power)?\W*(?P<od_add>\d+(?:\.\d+)?))?'
