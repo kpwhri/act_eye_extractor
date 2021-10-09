@@ -21,11 +21,17 @@ def test_vacc_le(text, exp):
         ('''REFRACTION : Manifest OD: +0.75-2.50x105 20/25-2 OS: +1.00-2.50x075 20/30-2 Add:+2.50''',
          0.75, -2.5, 105, 0, 25, -2,
          1, -2.5, 75, 2.5, 30, -2),
+        ('''REFRACTION : Manifest:  OD: -1.75-1.25x068  Reading: OD:+0.75-1.25x068 OS: -1.50-1.00x080   
+          OS:+1.00-1.00x080 ADD: SV ''',
+         -1.75, -1.25, 68, 0, 0, 0,
+         -1.5, -1, 80, 0, 0, 0),
     ])
 def test_get_manifest_rx(
         text, sphere_re, cylinder_re, axis_re, add_re, denom_re, correct_re,
         sphere_le, cylinder_le, axis_le, add_le, denom_le, correct_le):
     res = get_manifest_rx(text)
+    if not res:
+        raise ValueError('Pattern not found.')
     assert res['manifestrx_sphere_re'] == sphere_re
     assert res['manifestrx_cylinder_re'] == cylinder_re
     assert res['manifestrx_axis_re'] == axis_re

@@ -1,11 +1,13 @@
 import re
 
 MANIFEST_PAT = re.compile(
-    r'(?:(MANIFEST )?REFRACTION)\W*(manifest\W*)?'
+    r'(?:(MANIFEST\W*)?REFRACTION)\W*(manifest\W*)?'
     r'(?:O\.?D\.?|R\.E?\.?):?\W*(?P<od_sphere>[+-]\d+\.\d+|pl)\W*(?P<od_cylinder>[+-]\d+\.\d+)\W*x\W*(?P<od_axis>\d+)\W*'
+    r'(?:(reading|nv)\W*(?:O\.?D\.?|R\.E?\.?):?\W*(?P<od_sphere_nv>[+-]\d+\.\d+|pl)\W*(?P<od_cylinder_nv>[+-]\d+\.\d+)\W*x\W*(?P<od_axis_nv>\d+)\W*)?'
     r'(?:20/\s*(?P<od_denominator>\d+)\s*(?P<od_correct>[+-]\d+(?:\.\d+)?)?\s*)?'
     r'(?:add(?:\W*power)?\W*(?P<od_add>\d+(?:\.\d+)?))?'
     r'(?:O\.?S\.?|L\.?E?\.?):?\W*(?P<os_sphere>[+-]\d+\.\d+|pl)\W*(?P<os_cylinder>[+-]\d+\.\d+)\W*x\W*(?P<os_axis>\d+)\W*'
+    r'(?:(reading|nv)\W*(?:O\.?S\.?|L\.E?\.?):?\W*(?P<os_sphere_nv>[+-]\d+\.\d+|pl)\W*(?P<os_cylinder_nv>[+-]\d+\.\d+)\W*x\W*(?P<os_axis_nv>\d+)\W*)?'
     r'(?:20/\s*(?P<os_denominator>\d+)\s*(?P<os_correct>[+-]\d+(?:\.\d+)?)\W*)?'
     r'(?:add(?:\W*power)?\W*(?P<os_add>[+-]?\d+(?:\.\d+)?))?',
     re.I
