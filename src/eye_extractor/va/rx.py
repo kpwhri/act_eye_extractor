@@ -24,8 +24,12 @@ def get_manifest_rx(text):
         data['manifestrx_cylinder_re'] = float(d['od_cylinder'])
         data['manifestrx_axis_re'] = float(d['od_axis'])
         data['manifestrx_add_re'] = float(d.get('od_add', 0.0) or 0.0)
+        data['manifestrx_denom_re'] = float(d.get('od_denominator', 0.0) or 0.0)
+        data['manifestrx_ncorr_re'] = float(d.get('od_correct', 0.0) or 0.0)
         data['manifestrx_sphere_le'] = 0.0 if d['os_sphere'] == 'pl' else float(d['os_sphere'])
         data['manifestrx_cylinder_le'] = float(d['os_cylinder'])
         data['manifestrx_axis_le'] = float(d['os_axis'])
         data['manifestrx_add_le'] = float(d.get('os_add', 0.0) or 0.0)
+        data['manifestrx_denom_le'] = float(d.get('os_denominator', 0.0) or 0.0)
+        data['manifestrx_ncorr_le'] = float(d.get('os_correct', 0.0) or 0.0)
     return data

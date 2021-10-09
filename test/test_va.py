@@ -30,7 +30,11 @@ def test_get_manifest_rx(
     assert res['manifestrx_cylinder_re'] == cylinder_re
     assert res['manifestrx_axis_re'] == axis_re
     assert res['manifestrx_add_re'] == add_re
+    assert res['manifestrx_denom_re'] == denom_re
+    assert res['manifestrx_ncorr_re'] == correct_re
     assert res['manifestrx_sphere_le'] == sphere_le
     assert res['manifestrx_cylinder_le'] == cylinder_le
     assert res['manifestrx_axis_le'] == axis_le
     assert res['manifestrx_add_le'] == add_le
+    assert res['manifestrx_denom_le'] == denom_le
+    assert res['manifestrx_ncorr_le'] == correct_le
