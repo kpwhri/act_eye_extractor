@@ -4,7 +4,7 @@ import re
 
 tonometry = r'(?:tonometry|tappl|tapp|ta|iops?|intraocular pressures?|t?nct|pressure)'
 method = r'(?:(?:Method|with|by):?\W+(?P<METHOD>.*?))'
-method2 = r'(?:(?P<METHOD2>applanation|tappl|flouress|tnct)\W*)'
+method2 = r'(?:(?P<METHOD2>applanation|tappl|flouress|t?nct)\W*)'
 
 
 IOP_PATTERN_FRACTION = re.compile(
