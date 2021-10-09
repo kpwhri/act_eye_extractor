@@ -1,10 +1,25 @@
 """Intraocular Pressure (IOP)"""
 import re
 
+
+tonometry = r'(?:tonometry|tappl|tapp|ta|iops?|intraocular pressures?|t?nct|pressure)'
+method = r'(?:(?:Method|with|by):?\W+(?P<METHOD>.*?))'
+method2 = r'(?:(?P<METHOD2>applanation|tappl|flouress|tnct)\W*)'
+
+
+IOP_PATTERN_FRACTION = re.compile(
+    rf'\b{tonometry}\W*'
+    rf'{method}?'
+    rf'{method2}?'
+    r'(?P<OD>\d+(?:\.\d+)?|nt)\W+(?P<OS>\d+(?:\.\d+)?|nt)',
+    re.I
+)
+
+
 IOP_PATTERN_RE = re.compile(
-    r'\b(?:tonometry|tappl|tapp|ta|iops?|intraocular pressures?|t?nct|pressure):?\W*'
-    r'(?:(?:Method|with|by):?\W+(?P<METHOD>\w+)\W*)?'
-    r'(?:(?P<METHOD2>applanation|tappl|flouress|tnct)\W*)?'
+    rf'\b{tonometry}\W*'
+    rf'{method}?'
+    rf'{method2}?'
     r'(?:(?:@|at)\s*\d+:\d+\s*(?:AM|PM)\W*)?'
     r'(?:(?:O\.?D\.?|R\.?E\.?)\W*(?P<OD>\d+(?:\.\d+)?|nt)\W*(mm?hg)?\W*)'
     r'(?:(?:and)\W*)?'
@@ -13,9 +28,9 @@ IOP_PATTERN_RE = re.compile(
 )
 
 IOP_PATTERN_LE = re.compile(
-    r'\b(?:tonometry|tappl|tapp|ta|iops?|intraocular pressures?|t?nct|pressure):?\W*'
-    r'(?:(?:Method|with|by):?\W+(?P<METHOD>\w+)\W*)?'
-    r'(?:(?P<METHOD2>applanation|tappl|flouress|tnct)\W*)?'
+    rf'\b{tonometry}\W*'
+    rf'{method}?'
+    rf'{method2}?'
     r'(?:(?:@|at)\s*\d+:\d+\s*(?:AM|PM)\W*)?'
     r'(?:(?:O\.?D\.?|R\.?E\.?)\W*(?P<OD>\d+(?:\.\d+)?|nt)\W*(mm?hg)?\W*)?'
     r'(?:(?:and)\W*)?'
@@ -24,9 +39,9 @@ IOP_PATTERN_LE = re.compile(
 )
 
 IOP_PATTERN_RE_POST = re.compile(
-    r'\b(?:tonometry|tappl|tapp|ta|iops?|intraocular pressures?|t?nct|pressure):?\W*'
-    r'(?:(?:Method|with|by):?\W+(?P<METHOD>\w+)\W*)?'
-    r'(?:(?P<METHOD2>applanation|tappl|flouress|tnct)\W*)?'
+    rf'\b{tonometry}\W*'
+    rf'{method}?'
+    rf'{method2}?'
     r'(?:(?:@|at)\s*\d+:\d+\s*(?:AM|PM)\W*)?'
     r'(?:(?P<OD>\d+(?:\.\d+)?|nt)\W*(mm?hg)?\W*(?:O\.?D\.?|R\.?E\.?)\W*)'
     r'(?:(?:and)\W*)?'
@@ -35,9 +50,9 @@ IOP_PATTERN_RE_POST = re.compile(
 )
 
 IOP_PATTERN_LE_POST = re.compile(
-    r'\b(?:tonometry|tappl|tapp|ta|iops?|intraocular pressures?|t?nct|pressure):?\W*'
-    r'(?:(?:Method|with|by):?\W+(?P<METHOD>\w+)\W*)?'
-    r'(?:(?P<METHOD2>applanation|tappl|flouress|tnct)\W*)?'
+    rf'\b{tonometry}\W*'
+    rf'{method}?'
+    rf'{method2}?'
     r'(?:(?:@|at)\s*\d+:\d+\s*(?:AM|PM)\W*)?'
     r'(?:(?P<OD>\d+(?:\.\d+)?|nt)\W*(mm?hg)?\W*(?:O\.?D\.?|R\.?E\.?)\W*)?'
     r'(?:(?:and)\W*)?'
@@ -60,7 +75,8 @@ def convert_iop_value(value):
 
 
 def get_iop(text):
-    for iop_pattern in (IOP_PATTERN_LE, IOP_PATTERN_RE, IOP_PATTERN_LE_POST, IOP_PATTERN_RE_POST):
+    for iop_pattern in (IOP_PATTERN_LE, IOP_PATTERN_RE, IOP_PATTERN_LE_POST,
+                        IOP_PATTERN_RE_POST, IOP_PATTERN_FRACTION):
         for m in iop_pattern.finditer(text):
             curr = {}
             d = m.groupdict()

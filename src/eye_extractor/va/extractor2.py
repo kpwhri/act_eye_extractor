@@ -177,7 +177,7 @@ def handle_test_from_groups(groupdict):
             'distance_metric': groupdict['distance_metric'],
             'test': test,
         }
-    print(f'Not handled exam: {test}')
+    # print(f'Not handled exam: {test}')
 
 
 def get_elements_from_line(m, metadata):
@@ -265,7 +265,7 @@ def extract_va(text):
         elif VisualAcuity.UNCORRECTED in results:
             values['exam'] = 'vasc'
         else:
-            print(f'Unrecognized exam: {results} {values}')
+            # print(f'Unrecognized exam: {results} {values}')
             continue
 
         yield values
