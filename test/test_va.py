@@ -1,7 +1,7 @@
 import pytest
 
 from eye_extractor.va.extractor2 import vacc_numbercorrect_le
-from eye_extractor.va.rx import get_manifest_rx
+from eye_extractor.va.rx import get_manifest_rx, BCV_PAT
 
 
 @pytest.mark.parametrize('text, exp', [
@@ -44,3 +44,13 @@ def test_get_manifest_rx(
     assert res['manifestrx_add_le'] == add_le
     assert res['manifestrx_denom_le'] == denom_le
     assert res['manifestrx_ncorr_le'] == correct_le
+
+
+def test_bcv_pat():
+    text = 'Best Correct Vision: OD: 20/25-2 OS: 20/40'
+    m = BCV_PAT.search(text)
+    assert m is not None
+    assert m.group('od_denominator') == '25'
+    assert m.group('od_correct') == '-2'
+    assert m.group('os_denominator') == '40'
+    assert m.group('os_correct') is None
