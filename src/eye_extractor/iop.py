@@ -7,6 +7,7 @@ method = r'(?:(?:Method|with|by)\W+(?P<METHOD>.*?)\W*)'
 method2 = r'(?:(?P<METHOD2>applanation|tappl|flouress|t?nct|non contact method' \
           r'|goldman)\W*)'
 nt = r'(n[at]|not assessed)'
+at_time = r'(?:(performed\W*)?(?:@|at)\s*\d+:\d+\s*(?:AM|PM)\W*)'
 
 
 IOP_PATTERN_FRACTION = re.compile(
@@ -22,7 +23,7 @@ IOP_PATTERN_RE = re.compile(
     rf'\b{tonometry}\W*'
     rf'{method}?'
     rf'{method2}?'
-    r'(?:(?:@|at)\s*\d+:\d+\s*(?:AM|PM)\W*)?'
+    rf'{at_time}?'
     rf'(?:(?:O\.?D\.?|R\.?E?\.?)\W*(?P<OD>\d+(?:\.\d+)?|{nt})\W*(mm?(hg)?)?\W*)'
     r'(?:(?:and)\W*)?'
     rf'(?:(?:O\.?S\.?|L\.?E?\.?)\W*(?P<OS>\d+(?:\.\d+)?|{nt})\W*(mm?(hg)?)?)?',
@@ -33,7 +34,7 @@ IOP_PATTERN_LE = re.compile(
     rf'\b{tonometry}\W*'
     rf'{method}?'
     rf'{method2}?'
-    r'(?:(?:@|at)\s*\d+:\d+\s*(?:AM|PM)\W*)?'
+    rf'{at_time}?'
     rf'(?:(?:O\.?D\.?|R\.?E?\.?)\W*(?P<OD>\d+(?:\.\d+)?|{nt})\W*(mm?(hg)?)?\W*)?'
     r'(?:(?:and)\W*)?'
     rf'(?:(?:O\.?S\.?|L\.?E?\.?)\W*(?P<OS>\d+(?:\.\d+)?|{nt})\W*(mm?(hg)?)?)',
@@ -44,7 +45,7 @@ IOP_PATTERN_RE_POST = re.compile(
     rf'\b{tonometry}\W*'
     rf'{method}?'
     rf'{method2}?'
-    r'(?:(?:@|at)\s*\d+:\d+\s*(?:AM|PM)\W*)?'
+    rf'{at_time}?'
     rf'(?:(?P<OD>\d+(?:\.\d+)?|{nt})\W*(mm?(hg)?)?\W*(?:O\.?D\.?|R\.?E?\.?)\W*)'
     r'(?:(?:and)\W*)?'
     rf'(?:(?P<OS>\d+(?:\.\d+)?|{nt})\W*(mm?(hg)?)?\W*(?:O\.?S\.?|L\.?E?\.?))?',
@@ -55,7 +56,7 @@ IOP_PATTERN_LE_POST = re.compile(
     rf'\b{tonometry}\W*'
     rf'{method}?'
     rf'{method2}?'
-    r'(?:(?:@|at)\s*\d+:\d+\s*(?:AM|PM)\W*)?'
+    rf'{at_time}?'
     rf'(?:(?P<OD>\d+(?:\.\d+)?|{nt})\W*(mm?(hg)?)?\W*(?:O\.?D\.?|R\.?E?\.?)\W*)?'
     r'(?:(?:and)\W*)?'
     rf'(?:(?P<OS>\d+(?:\.\d+)?|{nt})\W*(mm?(hg)?)?\W*(?:O\.?S\.?|L\.?E?\.?))',
