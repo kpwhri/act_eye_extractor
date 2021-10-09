@@ -2,12 +2,12 @@ import re
 
 MANIFEST_PAT = re.compile(
     r'(?:MANIFEST REFRACTION)\W*'
-    r'(?:O\.?D\.?|R\.?E\.?):?\W*(?P<od_sphere>[+-]\d+\.\d+|pl)\W*(?P<od_cylinder>[+-]\d+\.\d+)\W*x\W*(?P<od_axis>\d+)\W*'
-    r'(?:20/\s*(?P<od_denominator>\d+)\s*(?P<od_correct>[+-]\d+(?:\.\d+)?)\s*)?'
+    r'(?:O\.?D\.?|R\.E?\.?):?\W*(?P<od_sphere>[+-]\d+\.\d+|pl)\W*(?P<od_cylinder>[+-]\d+\.\d+)\W*x\W*(?P<od_axis>\d+)\W*'
+    r'(?:20/\s*(?P<od_denominator>\d+)\s*(?P<od_correct>[+-]\d+(?:\.\d+)?)?\s*)?'
     r'(?:add(?:\W*power)?\W*(?P<od_add>\d+(?:\.\d+)?))?'
-    r'(?:O\.?S\.?|L\.?E\.?):?\W*(?P<os_sphere>[+-]\d+\.\d+|pl)\W*(?P<os_cylinder>[+-]\d+\.\d+)\W*x\W*(?P<os_axis>\d+)\W*'
-    r'(?:20/\s*(?P<os_denominator>\d+)\s*(?P<os_correct>[+-]\d+(?:\.\d+)?))?'
-    r'(?:add(?:\W*power)?\W*(?P<os_add>\d+(?:\.\d+)?))?',
+    r'(?:O\.?S\.?|L\.?E?\.?):?\W*(?P<os_sphere>[+-]\d+\.\d+|pl)\W*(?P<os_cylinder>[+-]\d+\.\d+)\W*x\W*(?P<os_axis>\d+)\W*'
+    r'(?:20/\s*(?P<os_denominator>\d+)\s*(?P<os_correct>[+-]\d+(?:\.\d+)?)\W*)?'
+    r'(?:add(?:\W*power)?\W*(?P<os_add>[+-]?\d+(?:\.\d+)?))?',
     re.I
 )
 
@@ -16,16 +16,16 @@ RX_PAT = re.compile(
 )
 
 
-def get_spectacle_prescription(text):
+def get_manifest_rx(text):
     data = {}
     for m in MANIFEST_PAT.finditer(text):
         d = m.groupdict()
         data['manifestrx_sphere_re'] = 0.0 if d['od_sphere'] == 'pl' else float(d['od_sphere'])
         data['manifestrx_cylinder_re'] = float(d['od_cylinder'])
         data['manifestrx_axis_re'] = float(d['od_axis'])
-        data['manifestrx_add_re'] = float(d['od_axis'])
+        data['manifestrx_add_re'] = float(d.get('od_add', 0.0) or 0.0)
         data['manifestrx_sphere_le'] = 0.0 if d['os_sphere'] == 'pl' else float(d['os_sphere'])
         data['manifestrx_cylinder_le'] = float(d['os_cylinder'])
         data['manifestrx_axis_le'] = float(d['os_axis'])
-        data['manifestrx_add_le'] = float(d['os_axis'])
+        data['manifestrx_add_le'] = float(d.get('os_add', 0.0) or 0.0)
     return data
