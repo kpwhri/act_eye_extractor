@@ -7,7 +7,7 @@ method = r'(?:(?:Method|with|by)\W+(?P<METHOD>.*?)\W*)'
 method2 = r'(?:(?P<METHOD2>applanation|tappl|flouress|t?nct|non contact method' \
           r'|goldman)\W*)'
 nt = r'(n[at]|not assessed)'
-at_time = r'(?:(performed\W*)?(?:@|at)\s*\d+:\d+\s*(?:AM|PM)\W*)'
+at_time = r'(?:((performed|done)\W*)?(?:@|at)\s*\d+:\d+\s*(?:AM|PM)?\W*)'
 
 
 IOP_PATTERN_FRACTION = re.compile(
