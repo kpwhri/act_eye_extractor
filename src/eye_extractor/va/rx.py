@@ -45,10 +45,10 @@ RX_PAT = re.compile(
 
 BCV_PAT = re.compile(
     r'(?:best correct vision)\W*'
-    r'(?:O\.?D\.?|R\.?E?\.?):?\W*'
-    r'(?:20/\s*(?P<od_denominator>\d+)\s*(?P<od_correct>[+-]\d+(?:\.\d+)?)?\W*)'
-    r'(?:O\.?S\.?|L\.?E?\.?):?\W*'
-    r'(?:20/\s*(?P<os_denominator>\d+)\s*(?P<os_correct>[+-]\d+(?:\.\d+)?)?\W*)',
+    rf'{right_eye}\W*'
+    rf'{vision_20("od_denominator", "od_correct")}'
+    rf'{left_eye}\W*'
+    rf'{vision_20("os_denominator", "os_correct")}',
     re.I
 )
 
