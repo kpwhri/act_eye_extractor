@@ -1,5 +1,8 @@
 import re
 
+
+sphere = r'([+-]\d+\.\d+|pla?n?o?)'
+
 MANIFEST_PAT = re.compile(
     r'(?:(MANIFEST\W*)?REFRACTION)\W*(manifest\W*)?'
     r'(?:O\.?D\.?|R\.E?\.?):?\W*(?P<od_sphere>[+-]\d+\.\d+|pl)\W*(?P<od_cylinder>[+-]\d+\.\d+)\W*x\W*(?P<od_axis>\d+)\W*'
@@ -33,7 +36,7 @@ def get_manifest_rx(text):
     data = {}
     for m in MANIFEST_PAT.finditer(text):
         d = m.groupdict()
-        data['manifestrx_sphere_re'] = 0.0 if d['od_sphere'] == 'pl' else float(d['od_sphere'])
+        data['manifestrx_sphere_re'] = 0.0 if d['od_sphere'].startswith('pl') else float(d['od_sphere'])
         data['manifestrx_cylinder_re'] = float(d['od_cylinder'])
         data['manifestrx_axis_re'] = float(d['od_axis'])
         data['manifestrx_add_re'] = float(d.get('od_add', 0.0) or 0.0)
@@ -47,7 +50,7 @@ def get_manifest_rx(text):
             or d.get('od_correct_2', 0.0)
             or 0.0
         )
-        data['manifestrx_sphere_le'] = 0.0 if d['os_sphere'] == 'pl' else float(d['os_sphere'])
+        data['manifestrx_sphere_le'] = 0.0 if d['os_sphere'].startswith('pl') else float(d['os_sphere'])
         data['manifestrx_cylinder_le'] = float(d['os_cylinder'])
         data['manifestrx_axis_le'] = float(d['os_axis'])
         data['manifestrx_add_le'] = float(d.get('os_add', 0.0) or 0.0)

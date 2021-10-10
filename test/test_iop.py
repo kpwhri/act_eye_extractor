@@ -19,6 +19,7 @@ from eye_extractor import iop
     ('NCT performed at 10:25 PM  OD: 15  OS: 16', '15.0', '16.0'),
     ('NCT done at 10:25  OD: 11  OS: 12', '11.0', '12.0'),
     ('INTRAOCULAR PRESSURE (IOP) by NCT:  OD 13  OS 12', '13.0', '12.0'),  # FIX
+    (' TONOMETRY: O.D. 12 mm; OS 13 mm', '12.0', '13.0'),
 ])
 def test_iop_measurements(text, re, le):
     assert re == iop.iop_measurement_re(text)
