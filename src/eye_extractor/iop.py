@@ -1,5 +1,6 @@
 """Intraocular Pressure (IOP)"""
 import re
+from eye_extractor.common import right_eye, left_eye
 
 
 tonometry = r'(?:tonometry|tappl|tapp|ta|iops?|intraocular pressures?|t?nct|pressure)'
@@ -25,9 +26,9 @@ IOP_PATTERN_RE = re.compile(
     rf'{method}?'
     rf'{method2}?'
     rf'{at_time}?'
-    rf'(?:(?:O\.?D\.?|R\.?E?\.?)\W*(?P<OD>\d+(?:\.\d+)?|{nt})\W*(mm?(hg)?)?\W*)'
+    rf'(?:{right_eye}\W*(?P<OD>\d+(?:\.\d+)?|{nt})\W*(mm?(hg)?)?\W*)'
     r'(?:(?:and)\W*)?'
-    rf'(?:(?:O\.?S\.?|L\.?E?\.?)\W*(?P<OS>\d+(?:\.\d+)?|{nt})\W*(mm?(hg)?)?)?',
+    rf'(?:{left_eye}\W*(?P<OS>\d+(?:\.\d+)?|{nt})\W*(mm?(hg)?)?)?',
     re.I
 )
 
@@ -36,9 +37,9 @@ IOP_PATTERN_LE = re.compile(
     rf'{method}?'
     rf'{method2}?'
     rf'{at_time}?'
-    rf'(?:(?:O\.?D\.?|R\.?E?\.?)\W*(?P<OD>\d+(?:\.\d+)?|{nt})\W*(mm?(hg)?)?\W*)?'
+    rf'(?:{right_eye}\W*(?P<OD>\d+(?:\.\d+)?|{nt})\W*(mm?(hg)?)?\W*)?'
     r'(?:(?:and)\W*)?'
-    rf'(?:(?:O\.?S\.?|L\.?E?\.?)\W*(?P<OS>\d+(?:\.\d+)?|{nt})\W*(mm?(hg)?)?)',
+    rf'(?:{left_eye}\W*(?P<OS>\d+(?:\.\d+)?|{nt})\W*(mm?(hg)?)?)',
     re.I
 )
 
@@ -48,9 +49,9 @@ IOP_PATTERN_RE_POST = re.compile(
     rf'{method2}?'
     rf'{at_time}?'
     rf'{fill_terms}?'
-    rf'(?:(?P<OD>\d+(?:\.\d+)?|{nt})\W*(mm?(hg)?)?\W*(?:O\.?D\.?|R\.?E?\.?)\W*)'
+    rf'(?:(?P<OD>\d+(?:\.\d+)?|{nt})\W*(mm?(hg)?)?\W*{right_eye}\W*)'
     r'(?:(?:and)\W*)?'
-    rf'(?:(?P<OS>\d+(?:\.\d+)?|{nt})\W*(mm?(hg)?)?\W*(?:O\.?S\.?|L\.?E?\.?))?',
+    rf'(?:(?P<OS>\d+(?:\.\d+)?|{nt})\W*(mm?(hg)?)?\W*{left_eye})?',
     re.I
 )
 
@@ -60,9 +61,9 @@ IOP_PATTERN_LE_POST = re.compile(
     rf'{method2}?'
     rf'{at_time}?'
     rf'{fill_terms}?'
-    rf'(?:(?P<OD>\d+(?:\.\d+)?|{nt})\W*(mm?(hg)?)?\W*(?:O\.?D\.?|R\.?E?\.?)\W*)?'
+    rf'(?:(?P<OD>\d+(?:\.\d+)?|{nt})\W*(mm?(hg)?)?\W*{right_eye}\W*)?'
     r'(?:(?:and)\W*)?'
-    rf'(?:(?P<OS>\d+(?:\.\d+)?|{nt})\W*(mm?(hg)?)?\W*(?:O\.?S\.?|L\.?E?\.?))',
+    rf'(?:(?P<OS>\d+(?:\.\d+)?|{nt})\W*(mm?(hg)?)?\W*{left_eye})',
     re.I
 )
 
