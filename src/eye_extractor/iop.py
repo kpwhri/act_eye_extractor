@@ -8,6 +8,7 @@ method2 = r'(?:(?P<METHOD2>applanation|tappl|flouress|t?nct|non contact method' 
           r'|goldman)\W*)'
 nt = r'(n[at]|not assessed)'
 at_time = r'(?:((performed|done)\W*)?(?:@|at)\s*\d+:\d+\s*(?:AM|PM)?\W*)'
+fill_terms = r'(?:(?:if measured)\W*)'
 
 
 IOP_PATTERN_FRACTION = re.compile(
@@ -46,6 +47,7 @@ IOP_PATTERN_RE_POST = re.compile(
     rf'{method}?'
     rf'{method2}?'
     rf'{at_time}?'
+    rf'{fill_terms}?'
     rf'(?:(?P<OD>\d+(?:\.\d+)?|{nt})\W*(mm?(hg)?)?\W*(?:O\.?D\.?|R\.?E?\.?)\W*)'
     r'(?:(?:and)\W*)?'
     rf'(?:(?P<OS>\d+(?:\.\d+)?|{nt})\W*(mm?(hg)?)?\W*(?:O\.?S\.?|L\.?E?\.?))?',
@@ -57,6 +59,7 @@ IOP_PATTERN_LE_POST = re.compile(
     rf'{method}?'
     rf'{method2}?'
     rf'{at_time}?'
+    rf'{fill_terms}?'
     rf'(?:(?P<OD>\d+(?:\.\d+)?|{nt})\W*(mm?(hg)?)?\W*(?:O\.?D\.?|R\.?E?\.?)\W*)?'
     r'(?:(?:and)\W*)?'
     rf'(?:(?P<OS>\d+(?:\.\d+)?|{nt})\W*(mm?(hg)?)?\W*(?:O\.?S\.?|L\.?E?\.?))',
