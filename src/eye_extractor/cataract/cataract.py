@@ -2,7 +2,8 @@ import re
 
 from dateutil.parser import parse
 
-from eye_extractor.laterality import build_laterality_table, get_previous_laterality_from_table, LATERALITY
+from eye_extractor.laterality import build_laterality_table, LATERALITY, \
+    get_immediate_next_or_prev_laterality_from_table
 
 iol_models = '|'.join([
     'sn60wf', 'ma60ac', r'sn6at\d', r'mta\W*400\W*ac',
@@ -10,7 +11,7 @@ iol_models = '|'.join([
     'ma0ac', 'ma06ac', 'ma06c', 'ma60c', 'mc505bm',
     'mc50bm', 'mc60bm', 'mn60ac', 'mn60ma', r'mn6ad\d',
     'mta4uo', 'n60ac', 'sa60at', 'sa60wf', 'sn60at', r'sn60ad\d',
-    'sn60t5', 'sn6wf', 'sv25t3',
+    'sn60t5', 'sn6wf', 'sv25t3', 'mta', 'zcb00'
 ])
 
 iol_kind = '|'.join([
@@ -29,7 +30,7 @@ IOL_KIND_PAT = re.compile(
 )
 
 IOL_TYPE_PAT = re.compile(
-    rf'(?P<model>{iol_models})\W*'
+    rf'(?P<model>\b{iol_models})\W*'
     rf'(?:'
     rf'(?P<power>{power})\W*{diopter}'
     rf'|{diopter} with (?P<power2>{power})'
@@ -81,13 +82,13 @@ def get_iol_type(text, get_kind=True):
         data = {
             'model': m.group('model'),
             'power': float(m.group('power') or m.group('power2')),
-            'laterality': get_previous_laterality_from_table(lat_table, m.start())
+            'laterality': get_immediate_next_or_prev_laterality_from_table(lat_table, m.start())[0]
         }
         prev = text[max(0, m.start() - 25): m.start()].lower()
         if 'primary iol' in prev:
-            yield {**data, 'text': 'primary iol'}
+            yield {**data, 'text': 'primary'}
         elif 'secondary iol' in prev:
-            yield {**data, 'text': 'secondary iol'}
+            yield {**data, 'text': 'secondary'}
         else:
             yield {**data, 'text': prev}
     if not get_kind:
@@ -104,3 +105,22 @@ def get_iol_type(text, get_kind=True):
             'end': m2.end(),
             'context': context,
         }
+
+
+def cataractsurg_ioltype(text):
+    """
+    First iol is primary
+
+    :return list of (model, power, laterality)
+    """
+    results = get_iol_type(text, get_kind=False)
+    lat = get_cataract_laterality(text)
+    iols = []
+    for res in results:
+        if res['text'] == 'primary':
+            iols.insert(0, (res['model'], res['power'], res['laterality'] or lat))
+        elif res['text'] == 'secondary':
+            iols.append((res['model'], res['power'], res['laterality'] or lat))
+        else:
+            iols.append((res['model'], res['power'], res['laterality'] or lat))
+    return iols
