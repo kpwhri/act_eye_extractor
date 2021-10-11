@@ -1,7 +1,9 @@
 import re
 
+from eye_extractor.laterality import build_laterality_table, get_previous_laterality_from_table
+
 iol_models = '|'.join([
-    'sn60wf', 'ma60ac', 'sn6at5',
+    'sn60wf', 'ma60ac', 'sn6at5', r'mta\W*400\W*ac'
 ])
 
 power = r'[+-]?\d{1,2}\.?[05]*'
@@ -18,10 +20,12 @@ IOL_TYPE_PAT = re.compile(
 
 
 def get_iol_type(text):
+    lat_table = build_laterality_table(text)
     for m in IOL_TYPE_PAT.finditer(text):
         data = {
             'model': m.group('model'),
-            'power': float(m.group('power') or m.group('power2'))
+            'power': float(m.group('power') or m.group('power2')),
+            'laterality': get_previous_laterality_from_table(lat_table, m.start())
         }
         prev = text[max(0, m.start() - 25): m.start()].lower()
         if 'primary iol' in prev:

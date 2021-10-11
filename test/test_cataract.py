@@ -7,6 +7,9 @@ from eye_extractor.cataract.cataract import IOL_TYPE_PAT, get_iol_type
     ('Primary IOL:  SN6AT5 17.5 diopter   TORIC LENS  Secondary IOL: SN60WF17.5 D, MA60AC 16.5 D',
      [('SN6AT5', 17.5), ('SN60WF', 17.5), ('MA60AC', 16.5)]
      ),
+    (' Primary IOL: SN60WF: diopter with 23 Secondary IOL: MTA 400-AC: diopter with 20',
+     [('SN60WF', 23), ('MTA 400-AC', 20)]
+     )
 ])
 def test_iol_primary_type(text, kinds):
     results = list(get_iol_type(text))

@@ -38,3 +38,19 @@ LATERALITY_PATTERN = re.compile(
 def laterality_finder(text):
     for m in LATERALITY_PATTERN.finditer(text):
         yield LATERALITY[m.group().upper()]
+
+
+def build_laterality_table(text):
+    lats = []
+    for m in LATERALITY_PATTERN.finditer(text):
+        lats.append(
+            (LATERALITY[m.group().upper()], m.start(), m.end())
+        )
+    return lats
+
+
+def get_previous_laterality_from_table(table, index):
+    for name, start, end in reversed(table):
+        if end < index:
+            return name, start, end
+    return Laterality.UNKNOWN
