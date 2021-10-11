@@ -2,7 +2,8 @@ import datetime
 
 import pytest
 
-from eye_extractor.cataract.cataract import IOL_TYPE_PAT, get_iol_type, get_cataract_laterality, get_surgery_date
+from eye_extractor.cataract.cataract import IOL_TYPE_PAT, get_iol_type, get_cataract_laterality, get_surgery_date, \
+    cataractsurg_ioltype
 from eye_extractor.laterality import Laterality
 
 
@@ -19,6 +20,22 @@ def test_iol_primary_type(text, kinds):
     for res, (model, diopter) in zip(results, kinds):
         assert res['model'] == model
         assert res['power'] == diopter
+
+
+@pytest.mark.parametrize('text, kinds', [
+    ('Primary IOL:  SN6AT5 17.5 diopter   TORIC LENS  Secondary IOL: SN60WF17.5 D, MA60AC 16.5 D',
+     [('SN6AT5', 17.5, Laterality.UNKNOWN), ('SN60WF', 17.5, Laterality.UNKNOWN), ('MA60AC', 16.5, Laterality.UNKNOWN)]
+     ),
+    (' Which eye?: LEFT Primary IOL: SN60WF: diopter with 23 Secondary IOL: MTA 400-AC: diopter with 20',
+     [('SN60WF', 23, Laterality.OS), ('MTA 400-AC', 20, Laterality.OS)]
+     )
+])
+def test_cataractsurg_ioltype(text, kinds):
+    results = list(cataractsurg_ioltype(text))
+    for (model, power, lat), (exp_model, exp_power, exp_lat) in zip(results, kinds):
+        assert exp_model == model
+        assert exp_power == power
+        assert exp_lat == lat
 
 
 @pytest.mark.parametrize('text, model, power', [
