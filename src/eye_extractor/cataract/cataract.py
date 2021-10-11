@@ -55,7 +55,7 @@ def get_surgery_date(text):
         m = DATE_PAT.search(text)
         if not m:
             return None
-    date_str = re.sub(r'\W', ' ', m.group('date'))
+    date_str = re.sub(r',', ' ', m.group('date'))
     return parse(date_str, fuzzy=True)
 
 
