@@ -1,6 +1,7 @@
 import pytest
 
-from eye_extractor.cataract.cataract import IOL_TYPE_PAT, get_iol_type
+from eye_extractor.cataract.cataract import IOL_TYPE_PAT, get_iol_type, get_cataract_laterality
+from eye_extractor.laterality import Laterality
 
 
 @pytest.mark.parametrize('text, kinds', [
@@ -28,3 +29,12 @@ def test_iol_type_pat(text, model, power):
     assert m is not None
     assert m.group('model') == model
     assert m.group('power') or m.group('power2') == power
+
+
+@pytest.mark.parametrize('text, lat', [
+    ('Which Side?: Left', Laterality.OS),
+    ('Which Side?: Right', Laterality.OD),
+])
+def test_cataract_laterality(text, lat):
+    res = list(get_cataract_laterality(text))[0]
+    assert res['laterality'] == lat

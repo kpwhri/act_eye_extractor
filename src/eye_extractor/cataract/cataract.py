@@ -1,6 +1,6 @@
 import re
 
-from eye_extractor.laterality import build_laterality_table, get_previous_laterality_from_table
+from eye_extractor.laterality import build_laterality_table, get_previous_laterality_from_table, LATERALITY
 
 iol_models = '|'.join([
     'sn60wf', 'ma60ac', 'sn6at5', r'mta\W*400\W*ac'
@@ -17,6 +17,21 @@ IOL_TYPE_PAT = re.compile(
     rf')',
     re.I
 )
+
+LATERALITY_PAT = re.compile(
+    rf'('
+    rf'which side\W*(?P<lat>left|right)'
+    rf')',
+    re.I
+)
+
+
+def get_cataract_laterality(text):
+    for m in LATERALITY_PAT.finditer(text):
+        yield {
+            'laterality': LATERALITY[m.group('lat').upper()],
+            'start': m.start(),
+        }
 
 
 def get_iol_type(text):
