@@ -7,7 +7,6 @@ iol_models = '|'.join([
 power = r'[+-]?\d{1,2}\.?[05]*'
 diopter = r'd(iopter)?'
 
-
 IOL_TYPE_PAT = re.compile(
     rf'(?P<model>{iol_models})\W*'
     rf'(?:'
@@ -19,4 +18,15 @@ IOL_TYPE_PAT = re.compile(
 
 
 def get_iol_type(text):
-    return None
+    for m in IOL_TYPE_PAT.finditer(text):
+        data = {
+            'model': m.group('model'),
+            'power': float(m.group('power') or m.group('power2'))
+        }
+        prev = text[max(0, m.start() - 25): m.start()].lower()
+        if 'primary iol' in prev:
+            yield {**data, 'text': 'primary iol'}
+        elif 'secondary iol' in prev:
+            yield {**data, 'text': 'secondary iol'}
+        else:
+            yield {**data, 'text': prev}

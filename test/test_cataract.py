@@ -1,14 +1,18 @@
 import pytest
 
-from eye_extractor.cataract.cataract import IOL_TYPE_PAT
+from eye_extractor.cataract.cataract import IOL_TYPE_PAT, get_iol_type
 
 
-@pytest.mark.parametrize('text, kind', [
-    # ('Primary IOL:  SN6AT5 17.5 diopter   TORIC LENS  Secondary IOL: SN60WF17.5 D, MA60AC 16.5 D',
-    #  ),
+@pytest.mark.parametrize('text, kinds', [
+    ('Primary IOL:  SN6AT5 17.5 diopter   TORIC LENS  Secondary IOL: SN60WF17.5 D, MA60AC 16.5 D',
+     [('SN6AT5', 17.5), ('SN60WF', 17.5), ('MA60AC', 16.5)]
+     ),
 ])
-def test_iol_primary_type(text, kind):
-    pass
+def test_iol_primary_type(text, kinds):
+    results = list(get_iol_type(text))
+    for res, (model, diopter) in zip(results, kinds):
+        assert res['model'] == model
+        assert res['power'] == diopter
 
 
 @pytest.mark.parametrize('text, model, power', [
