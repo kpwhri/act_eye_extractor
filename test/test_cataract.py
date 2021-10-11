@@ -15,7 +15,7 @@ from eye_extractor.laterality import Laterality
      )
 ])
 def test_iol_primary_type(text, kinds):
-    results = list(get_iol_type(text))
+    results = list(get_iol_type(text, get_kind=False))
     for res, (model, diopter) in zip(results, kinds):
         assert res['model'] == model
         assert res['power'] == diopter
