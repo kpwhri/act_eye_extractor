@@ -1,5 +1,7 @@
 import re
 
+from dateutil.parser import parse
+
 from eye_extractor.laterality import build_laterality_table, get_previous_laterality_from_table, LATERALITY
 
 iol_models = '|'.join([
@@ -26,12 +28,35 @@ LATERALITY_PAT = re.compile(
 )
 
 
+SURGERY_DATE_PAT = re.compile(
+    r'(?:'
+    r'surgery date: (?P<date>.*?\d{4})'
+    r')',
+    re.I
+)
+
+DATE_PAT = re.compile(
+    r'(?:date: (?P<date>.*?\d{4}))',
+    re.I
+)
+
+
 def get_cataract_laterality(text):
     for m in LATERALITY_PAT.finditer(text):
         yield {
             'laterality': LATERALITY[m.group('lat').upper()],
             'start': m.start(),
         }
+
+
+def get_surgery_date(text):
+    m = SURGERY_DATE_PAT.search(text)
+    if not m:
+        m = DATE_PAT.search(text)
+        if not m:
+            return None
+    date_str = re.sub(r'\W', ' ', m.group('date'))
+    return parse(date_str, fuzzy=True)
 
 
 def get_iol_type(text):

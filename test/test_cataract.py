@@ -1,6 +1,8 @@
+import datetime
+
 import pytest
 
-from eye_extractor.cataract.cataract import IOL_TYPE_PAT, get_iol_type, get_cataract_laterality
+from eye_extractor.cataract.cataract import IOL_TYPE_PAT, get_iol_type, get_cataract_laterality, get_surgery_date
 from eye_extractor.laterality import Laterality
 
 
@@ -38,3 +40,14 @@ def test_iol_type_pat(text, model, power):
 def test_cataract_laterality(text, lat):
     res = list(get_cataract_laterality(text))[0]
     assert res['laterality'] == lat
+
+
+@pytest.mark.parametrize('text, exp', [
+    ('Surgery Date:   September 14,2012    H&P:  Schedule',
+     datetime.datetime(2012, 9, 14)),
+    ('Surgery Date:   12/6/2014   MORE TITLES H&P',
+     datetime.datetime(2014, 12, 6))
+])
+def test_surgery_date(text, exp):
+    date = get_surgery_date(text)
+    assert exp == date
