@@ -9,10 +9,13 @@ from eye_extractor.laterality import Laterality
 
 @pytest.mark.parametrize('text, kinds', [
     ('Primary IOL:  SN6AT5 17.5 diopter   TORIC LENS  Secondary IOL: SN60WF17.5 D, MA60AC 16.5 D',
-     [('SN6AT5', 17.5), ('SN60WF', 17.5), ('MA60AC', 16.5)]
+     [('SN6AT5', 17.5),
+      ('SN60WF', 17.5),
+      ('MA60AC', 16.5)]
      ),
     (' Primary IOL: SN60WF: diopter with 23 Secondary IOL: MTA 400-AC: diopter with 20',
-     [('SN60WF', 23), ('MTA 400-AC', 20)]
+     [('SN60WF', 23),
+      ('MTA 400-AC', 20)]
      )
 ])
 def test_iol_primary_type(text, kinds):
@@ -24,18 +27,22 @@ def test_iol_primary_type(text, kinds):
 
 @pytest.mark.parametrize('text, kinds', [
     ('Primary IOL:  SN6AT5 17.5 diopter   TORIC LENS  Secondary IOL: SN60WF17.5 D, MA60AC 16.5 D',
-     [('SN6AT5', 17.5, Laterality.UNKNOWN), ('SN60WF', 17.5, Laterality.UNKNOWN), ('MA60AC', 16.5, Laterality.UNKNOWN)]
+     {Laterality.UNKNOWN: [{'model': 'SN6AT5', 'power': 17.5, 'primary': True},
+                           {'model': 'SN60WF', 'power': 17.5, 'primary': False},
+                           {'model': 'MA60AC', 'power': 16.5, 'primary': False}]}
      ),
     (' Which eye?: LEFT Primary IOL: SN60WF: diopter with 23 Secondary IOL: MTA 400-AC: diopter with 20',
-     [('SN60WF', 23, Laterality.OS), ('MTA 400-AC', 20, Laterality.OS)]
+     {Laterality.OS: [{'model': 'SN60WF', 'power': 23, 'primary': True},
+                      {'model': 'MTA 400-AC', 'power': 20, 'primary': False}]}
      )
 ])
 def test_cataractsurg_ioltype(text, kinds):
-    results = list(cataractsurg_ioltype(text))
-    for (model, power, lat), (exp_model, exp_power, exp_lat) in zip(results, kinds):
-        assert exp_model == model
-        assert exp_power == power
-        assert exp_lat == lat
+    results = dict(cataractsurg_ioltype(text))
+    for lat in results:
+        for result, kind in zip(results[lat], kinds[lat]):
+            assert result['model'] == kind['model']
+            assert result['power'] == kind['power']
+            assert result['primary'] == kind['primary']
 
 
 @pytest.mark.parametrize('text, model, power', [

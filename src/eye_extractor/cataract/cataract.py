@@ -1,9 +1,10 @@
 import re
+from collections import defaultdict
 
 from dateutil.parser import parse
 
 from eye_extractor.laterality import build_laterality_table, LATERALITY, \
-    get_immediate_next_or_prev_laterality_from_table
+    get_immediate_next_or_prev_laterality_from_table, Laterality
 
 iol_models = '|'.join([
     'sn60wf', 'ma60ac', r'sn6at\d', r'mta\W*400\W*ac',
@@ -114,13 +115,32 @@ def cataractsurg_ioltype(text):
     :return list of (model, power, laterality)
     """
     results = get_iol_type(text, get_kind=False)
-    lat = get_cataract_laterality(text)
-    iols = []
+    lat = list(get_cataract_laterality(text))
+    lat = lat[0] if lat else None
+
+    iols = defaultdict(list)
     for res in results:
+        curr_lat = res['laterality'] or lat
         if res['text'] == 'primary':
-            iols.insert(0, (res['model'], res['power'], res['laterality'] or lat))
+            iols[curr_lat].insert(0, {
+                'model': res['model'],
+                'power': res['power'],
+                'primary': True,
+            })
         elif res['text'] == 'secondary':
-            iols.append((res['model'], res['power'], res['laterality'] or lat))
+            iols[curr_lat].append({
+                'model': res['model'],
+                'power': res['power'],
+                'primary': False,
+            })
         else:
-            iols.append((res['model'], res['power'], res['laterality'] or lat))
+            iols[curr_lat].append({
+                'model': res['model'],
+                'power': res['power'],
+                'primary': False,
+            })
     return iols
+
+
+def unpack_ioltype(iols):
+    iol = iols[0]
