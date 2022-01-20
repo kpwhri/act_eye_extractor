@@ -143,4 +143,15 @@ def cataractsurg_ioltype(text):
 
 
 def unpack_ioltype(iols):
-    iol = iols[0]
+    od = iols.get(Laterality.OD, None)
+    os = iols.get(Laterality.OS, None)
+    d = {}
+    if od:
+        d['cataractsurg_ioltype_re'] = od[0]['model']
+        d['cataractsurg_iolpower_re'] = od[0]['power']
+        d['cataractsurg_otherlens_re'] = ','.join(x['model'] for x in od[1:])
+    elif os:
+        d['cataractsurg_ioltype_le'] = os[0]['model']
+        d['cataractsurg_iolpower_le'] = os[0]['power']
+        d['cataractsurg_otherlens_le'] = ','.join(x['model'] for x in os[1:])
+    return d
