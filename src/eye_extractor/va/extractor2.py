@@ -7,6 +7,8 @@ Approach:
 import re
 import enum
 
+from loguru import logger
+
 from eye_extractor.laterality import Laterality, LATERALITY, LATERALITY_PATTERN
 from eye_extractor.va.pattern import VA_LINE_CC, VA_LINE_SC, VA_LINE_GROUPED
 
@@ -171,13 +173,15 @@ def handle_test_from_groups(groupdict):
             'denominator': groupdict['score'],
             'correct': sum_diopter(groupdict['diopter'])
         }
-    elif test.upper() in {'CF', 'HM', 'LF', 'NLP'}:
+    elif test.upper() in {'CF', 'HM', 'LF', 'NLP',
+                          'LP',  # a typo?
+                          }:
         return {
             'distance': groupdict['distance'],
             'distance_metric': groupdict['distance_metric'],
             'test': test,
         }
-    # print(f'Not handled exam: {test}')
+    logger.info(f'Not handled exam: {test}')
 
 
 def get_elements_from_line(m, metadata):
@@ -247,6 +251,8 @@ def extract_va(text):
             continue
         results = list(set(results) - not_list)
         values = handle_test_from_groups(m.groupdict())
+        if not values:
+            continue
         values['laterality'] = get_laterality(lateralities, m.start(), m.end())
 
         if VisualAcuity.HISTORICAL in results:

@@ -124,7 +124,9 @@ def cataractsurg_ioltype(text):
 
     iols = defaultdict(list)
     for res in results:
-        curr_lat = res['laterality'] or lat
+        curr_lat = res.get('laterality', None)
+        if not curr_lat and lat:
+            curr_lat = lat.get('laterality', None)
         if res['text'] == 'primary':
             iols[curr_lat].insert(0, {
                 'model': res['model'],
