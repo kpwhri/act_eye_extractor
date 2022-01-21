@@ -3,6 +3,7 @@ import json
 import pathlib
 
 import click
+from loguru import logger
 
 from eye_extractor.amd.amd import get_amd
 from eye_extractor.cataract.cataract import get_cataract
@@ -40,7 +41,8 @@ def extract_variables(directories: tuple[pathlib.Path], outdir: pathlib.Path = N
 
 def extract_variables_from_directories(*directories: pathlib.Path):
     for directory in directories:
-        for file in directory.glob('*.txt'):
+        logger.info(f'Reading Directory: {directory}')
+        for i, file in enumerate(directory.glob('*.txt'), start=1):
             with open(file, encoding='utf8') as fh:
                 text = fh.read()
             metadata = directory / f'{file.stem}.meta'
@@ -51,6 +53,8 @@ def extract_variables_from_directories(*directories: pathlib.Path):
                 data = {'filename': str(file)}
             data = extract_all(text, data)
             yield data
+            if i % 10000 == 0:
+                logger.info(f'Processed {i} records.')
 
 
 if __name__ == '__main__':

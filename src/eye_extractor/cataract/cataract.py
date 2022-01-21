@@ -1,7 +1,8 @@
 import re
 from collections import defaultdict
 
-from dateutil.parser import parse
+from dateutil.parser import parse, ParserError
+from loguru import logger
 
 from eye_extractor.laterality import build_laterality_table, LATERALITY, \
     get_immediate_next_or_prev_laterality_from_table, Laterality
@@ -48,13 +49,13 @@ LATERALITY_PAT = re.compile(
 
 SURGERY_DATE_PAT = re.compile(
     r'(?:'
-    r'surgery date: (?P<date>.*?\d{4})'
+    r'surgery date: (?P<date>.{,20}\d{4})'
     r')',
     re.I
 )
 
 DATE_PAT = re.compile(
-    r'(?:date: (?P<date>.*?\d{4}))',
+    r'(?:date: (?P<date>.{,20}\d{4}))',
     re.I
 )
 
@@ -74,7 +75,10 @@ def get_surgery_date(text):
         if not m:
             return None
     date_str = re.sub(r',', ' ', m.group('date'))
-    return parse(date_str, fuzzy=True)
+    try:
+        return parse(date_str, fuzzy=True)
+    except ParserError as e:
+        logger.warning(f'Failed to parse date for surgery date: {date_str}')
 
 
 def get_iol_type(text, get_kind=True):
