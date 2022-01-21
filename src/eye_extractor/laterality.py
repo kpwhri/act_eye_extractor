@@ -2,7 +2,7 @@ import enum
 import re
 
 
-class Laterality(enum.Enum):
+class Laterality(enum.IntEnum):
     OD = 0  # right
     OS = 1  # left
     OU = 2  # both/bilateral

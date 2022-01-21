@@ -155,3 +155,10 @@ def unpack_ioltype(iols):
         d['cataractsurg_iolpower_le'] = os[0]['power']
         d['cataractsurg_otherlens_le'] = ','.join(x['model'] for x in os[1:])
     return d
+
+
+def get_cataract(text):
+    return {
+        'cataractsurg_ioltype': list(cataractsurg_ioltype(text)),
+        'surgery_date': get_surgery_date(text),
+    }
