@@ -173,9 +173,7 @@ def handle_test_from_groups(groupdict):
             'denominator': groupdict['score'],
             'correct': sum_diopter(groupdict['diopter'])
         }
-    elif test.upper() in {'CF', 'HM', 'LF', 'NLP',
-                          'LP',  # a typo?
-                          }:
+    elif test.upper() in {'CF', 'HM', 'LP', 'NLP'}:
         return {
             'distance': groupdict['distance'],
             'distance_metric': groupdict['distance_metric'],

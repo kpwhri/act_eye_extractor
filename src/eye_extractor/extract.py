@@ -17,7 +17,7 @@ def extract_all(text: str, data: dict = None):
     data['va'] = list(extract_va(text))
     data['iop'] = list(get_iop(text))
     data['amd'] = list(get_amd(text))
-    data['cataract'] = list(get_cataract(text))
+    data['cataract'] = get_cataract(text)
     return data
 
 
@@ -36,7 +36,7 @@ def extract_variables(directories: tuple[pathlib.Path], outdir: pathlib.Path = N
     now = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
     with open(outdir / f'eye_extractor_{now}.jsonl', 'w', encoding='utf8') as out:
         for line in extract_variables_from_directories(*directories):
-            out.write(json.dumps(line) + '\n')
+            out.write(json.dumps(line, default=str) + '\n')
 
 
 def extract_variables_from_directories(*directories: pathlib.Path):
