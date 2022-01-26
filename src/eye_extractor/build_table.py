@@ -110,7 +110,7 @@ def get_va(data):
     results = {}
     prev_denom = {}
     for row in data:
-        if row.get('denominator', '').upper() in {'NI', 'NO IMPROVEMENT'}:
+        if row.get('denominator', None) and row['denominator'].upper() in {'NI', 'NO IMPROVEMENT'}:
             lat = laterality_iter(laterality_from_int(row['laterality']))[0]
             if prev_denom[lat][-1] is True:
                 parse_va_exam(row, prev_denom, results)

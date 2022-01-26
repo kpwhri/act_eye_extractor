@@ -4,7 +4,9 @@ from collections import namedtuple
 from eye_extractor.laterality import Laterality
 
 VA = (r'('
-      r'(?P<numerator##>20|3E|E|\d+(\'|ft))/\s*(?P<score##>\d+|ni|no improvement|)\s*(?P<diopter##>[+-]\d?)*'
+      r'(?P<numerator##>20|3E|E|\d+(\'|ft))/\s*(?P<score##>\d+|ni|no improvement)\s*(?P<diopter##>[+-]\d?)*'
+      r'|'
+      r'20/\s*(?P<test3##>HM|CF|LP|NLP)'
       r'|'
       r'(20/\D*|ni|na|nt|no improvement|)'
       r'|'
@@ -79,7 +81,7 @@ VA_LINE_GROUPED = VaPattern(
         rf'{SC}\W+({OD}\W+)?{VA.replace("##", "_2")}\W+'
         rf'({SC}\W+)?({OS}\W+)?{VA.replace("##", "_3")}\W+'
         rf'{PH}\W+({OD}\W+)?{VA.replace("##", "_4")}\W+'
-        rf'({PH}\W+)?({OS}\W+)?{VA.replace("##", "_5")}\W+'
+        rf'({PH}\W+)?({OS}\W+)?{VA.replace("##", "_5")}'
         , re.I
     ),
     [MD_OD_CC, MD_OS_CC, MD_OD_SC, MD_OS_SC, MD_OD_PH, MD_OS_PH]

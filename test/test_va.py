@@ -1,9 +1,11 @@
 import json
+import re
 
 import pytest
 
 from eye_extractor.build_table import get_va
 from eye_extractor.va.extractor2 import vacc_numbercorrect_le, extract_va
+from eye_extractor.va.pattern import VA
 from eye_extractor.va.rx import get_manifest_rx, BCV_PAT
 
 
@@ -12,6 +14,16 @@ from eye_extractor.va.rx import get_manifest_rx, BCV_PAT
 ])
 def test_vacc_le(text, exp):
     assert vacc_numbercorrect_le(text) == exp
+
+
+@pytest.mark.parametrize('text', [
+    '20/70', '20/', '20/hm', '20/NI',
+])
+def test_va_pattern_matches(text):
+    pat = re.compile(VA.replace("##", "_0"), re.I)
+    m = pat.match(text)
+    assert m is not None
+    assert m.group() == text
 
 
 @pytest.mark.parametrize(
@@ -82,12 +94,19 @@ def test_bcv_pat():
          (0, 'vacc_numbercorrect_re', 'vaph_numbercorrect_re'),
      ]
      ),
+    ('VISUAL ACUITY        CC OD: 20/70 OS: 20/hm    SC OD: 20/ OS: 20/        PH OD: 20/50-1 OS: 20/NI',
+     6, [
+         ('HM', 'vacc_letters_le', 'vaph_letters_le'),
+     ])
 ])
 def test_va_ni(text, exp_length, exps):
     result = list(extract_va(text))
     assert len(result) == exp_length
     post_json = json.loads(json.dumps(result))
     assert len(post_json) == exp_length
+    print(post_json)
     va_dict = get_va(post_json)
+    print(va_dict)
     for val, field1, field2 in exps:
-        assert val == va_dict.get(field1, None) == va_dict.get(field2, None)
+        assert val == va_dict.get(field1, None)
+        assert val == va_dict.get(field2, None)
