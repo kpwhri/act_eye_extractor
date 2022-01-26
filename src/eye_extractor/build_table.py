@@ -136,7 +136,6 @@ def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path):
     if jsonl_file.is_dir():
         list_of_paths = jsonl_file.glob('*.jsonl')
         jsonl_file = max(list_of_paths, key=lambda p: p.stat().st_ctime)
-        print(jsonl_file)
     with (
             open(jsonl_file, encoding='utf8') as fh,
             open(outpath, 'w', encoding='utf8') as out,

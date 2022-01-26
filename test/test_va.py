@@ -75,7 +75,6 @@ def test_va_ni():
     assert len(result) == 4
     post_json = json.loads(json.dumps(result))
     assert len(post_json) == 4
-    print(post_json)
     va_dict = get_va(post_json)
     assert 40 == va_dict.get('vacc_denominator_re', None) == va_dict.get('vaph_denominator_re', None)
     assert 0 == va_dict.get('vacc_numbercorrect_re', None) == va_dict.get('vaph_numbercorrect_re', None)
