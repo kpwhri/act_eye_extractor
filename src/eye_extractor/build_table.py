@@ -62,6 +62,8 @@ def parse_va_exam(row, prev_denom, results):
         # get the max result
         denom = int(denom)
         if denom > results.get(variable, -1):
+            if denom > 401:
+                x = 1
             results[variable] = denom
         else:
             continue
@@ -69,11 +71,16 @@ def parse_va_exam(row, prev_denom, results):
         # number correct
         variable = f'{exam}_numbercorrect_{lat}'
         num_correct = int(num_correct)
-        prev_denom[lat] = (denom, num_correct)
+        prev_denom[lat] = (denom, num_correct, True)
         results[variable] = num_correct
+        if -6 <= num_correct <= 6:
+            pass
+        else:
+            # logger.info(f'Invalid number correct "{num_correct}" in {text}.')
+            x = 1
+            pass
 
-
-def parse_va_test(row, prev_denom, results):
+def parse_va_test(row, prev_denom, results, *, no_improvement=False):
     """
     Parse visual acuity exam.
     :param row:
@@ -82,28 +89,37 @@ def parse_va_test(row, prev_denom, results):
     :return:
     """
     exam = row['exam']
-    test = row['test']
-    distance = row['distance']
+    test = row.get('test', None)  # None if no improvement
+    distance = row.get('distance', None)  # None if no improvement
     try:
         distance = int(distance)
     except Exception as e:
         logger.info(f'Distance {distance} cannot be converted to int in {row.get("text", "")}.')
     laterality = laterality_from_int(row['laterality'])
     for lat in laterality_iter(laterality_from_int(laterality)):
+        if no_improvement:
+            test, distance, *_ = prev_denom[lat]
         variable = f'{exam}_letters_{lat}'
         results[variable] = test.upper()
         variable = f'{exam}_distance_{lat}'
         results[variable] = distance
+        prev_denom[lat] = (test.upper(), distance, False)
 
 
 def get_va(data):
     results = {}
     prev_denom = {}
     for row in data:
-        if 'denominator' in row:
-            parse_va_exam(row, prev_denom, results)
+        if row.get('denominator', '').upper() in {'NI', 'NO IMPROVEMENT'}:
+            lat = laterality_iter(laterality_from_int(row['laterality']))[0]
+            if prev_denom[lat][-1] is True:
+                parse_va_exam(row, prev_denom, results)
+            else:
+                parse_va_test(row, prev_denom, results)
         elif 'test' in row:
             parse_va_test(row, prev_denom, results)
+        elif 'denominator' in row:
+            parse_va_exam(row, prev_denom, results)
         else:
             logger.warning(f'Unrecognized visual acuity: {row}')
     return results
