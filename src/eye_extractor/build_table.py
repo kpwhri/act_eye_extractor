@@ -54,8 +54,9 @@ def parse_va_exam(row, prev_denom, results):
             if lat in prev_denom:
                 denom = prev_denom[lat][0]
                 num_correct = prev_denom[lat][1]
+            else:
                 logger.warning(f'Did not find previous score for "ni" in "{text}".')
-            continue
+                continue
         elif denom.upper() in {'NT', 'NA'}:  # not taken
             continue
         # get the max result

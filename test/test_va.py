@@ -1,6 +1,9 @@
+import json
+
 import pytest
 
-from eye_extractor.va.extractor2 import vacc_numbercorrect_le
+from eye_extractor.build_table import get_va
+from eye_extractor.va.extractor2 import vacc_numbercorrect_le, extract_va
 from eye_extractor.va.rx import get_manifest_rx, BCV_PAT
 
 
@@ -64,3 +67,15 @@ def test_bcv_pat():
     assert m.group('od_correct') == '-2'
     assert m.group('os_denominator') == '40'
     assert m.group('os_correct') is None
+
+
+def test_va_ni():
+    text = r'VISUAL ACUITY:    Snellen CC:   OD: 20/40   PH: OD: 20/NI   OS: 20/20   PH: OS: 20/'
+    result = list(extract_va(text))
+    assert len(result) == 4
+    post_json = json.loads(json.dumps(result))
+    assert len(post_json) == 4
+    print(post_json)
+    va_dict = get_va(post_json)
+    assert 40 == va_dict.get('vacc_denominator_re', None) == va_dict.get('vaph_denominator_re', None)
+    assert 0 == va_dict.get('vacc_numbercorrect_re', None) == va_dict.get('vaph_numbercorrect_re', None)
