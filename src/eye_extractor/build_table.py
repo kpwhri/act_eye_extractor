@@ -63,7 +63,7 @@ def parse_va_exam(row, prev_denom, results):
         denom = int(denom)
         if denom > results.get(variable, -1):
             if denom > 401:
-                x = 1
+                logger.info(f'Denominator too high: "{denom}" in {text}.')
             results[variable] = denom
         else:
             continue
@@ -76,13 +76,13 @@ def parse_va_exam(row, prev_denom, results):
         if -6 <= num_correct <= 6:
             pass
         else:
-            # logger.info(f'Invalid number correct "{num_correct}" in {text}.')
-            x = 1
-            pass
+            logger.info(f'Invalid number correct "{num_correct}" in {text}.')
+
 
 def parse_va_test(row, prev_denom, results, *, no_improvement=False):
     """
     Parse visual acuity exam.
+    :param no_improvement: specify that no improvement so won't look for test/distanace in 'row'
     :param row:
     :param prev_denom:
     :param results:
@@ -115,7 +115,7 @@ def get_va(data):
             if prev_denom[lat][-1] is True:
                 parse_va_exam(row, prev_denom, results)
             else:
-                parse_va_test(row, prev_denom, results)
+                parse_va_test(row, prev_denom, results, no_improvement=True)
         elif 'test' in row:
             parse_va_test(row, prev_denom, results)
         elif 'denominator' in row:
@@ -154,7 +154,7 @@ def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path):
         jsonl_file = max(list_of_paths, key=lambda p: p.stat().st_ctime)
     with (
             open(jsonl_file, encoding='utf8') as fh,
-            open(outpath, 'w', encoding='utf8') as out,
+    open(outpath, 'w', encoding='utf8') as out,
     ):
         writer = csv.DictWriter(out, fieldnames=OUTPUT_COLUMNS.keys())
         for line in fh:
