@@ -41,4 +41,17 @@ OUTPUT_COLUMNS = {
     'varx_distance_le': [is_int],
     'varx_type_re': [],
     'varx_type_le': [],
+    'manifestrx_sphere_re': [],
+    'manifestrx_cylinder_re': [],
+    'manifestrx_axis_re': [],
+    'manifestrx_add_re': [],
+    'manifestrx_denom_re': [],
+    'manifestrx_ncorr_re': [],
+    'manifestrx_sphere_le': [],
+    'manifestrx_cylinder_le': [],
+    'manifestrx_axis_le': [],
+    'manifestrx_add_le': [],
+    'manifestrx_denom_le': [],
+    'manifestrx_ncorr_le': [],
+
 }

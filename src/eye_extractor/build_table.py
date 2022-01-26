@@ -112,7 +112,9 @@ def get_va(data):
     for row in data:
         if row.get('denominator', None) and row['denominator'].upper() in {'NI', 'NO IMPROVEMENT'}:
             lat = laterality_iter(laterality_from_int(row['laterality']))[0]
-            if prev_denom[lat][-1] is True:
+            if lat not in prev_denom:
+                logger.warning(f'Missing laterality {lat} in {row["text"]}.')
+            elif prev_denom[lat][-1] is True:
                 parse_va_exam(row, prev_denom, results)
             else:
                 parse_va_test(row, prev_denom, results, no_improvement=True)
@@ -125,6 +127,12 @@ def get_va(data):
     return results
 
 
+def get_manifest(data):
+    if data:
+        return data[0]
+    return {}
+
+
 def process_data(data):
     result = {
         'docid': data['ft_id'],
@@ -133,6 +141,7 @@ def process_data(data):
         'encid': data['enc_id']
     }
     result.update(get_va(data['va']))
+    result.update(get_manifest(data['manifestrx']))
     return result
 
 

@@ -54,9 +54,10 @@ def test_va_pattern_matches(text):
 def test_get_manifest_rx(
         text, sphere_re, cylinder_re, axis_re, add_re, denom_re, correct_re,
         sphere_le, cylinder_le, axis_le, add_le, denom_le, correct_le):
-    res = get_manifest_rx(text)
-    if not res:
+    results = list(get_manifest_rx(text))
+    if not results:
         raise ValueError('Pattern not found.')
+    res = results[0]
     assert res['manifestrx_sphere_re'] == sphere_re
     assert res['manifestrx_cylinder_re'] == cylinder_re
     assert res['manifestrx_axis_re'] == axis_re

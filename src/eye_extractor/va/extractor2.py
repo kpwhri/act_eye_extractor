@@ -166,7 +166,7 @@ def handle_test_from_groups(groupdict):
     :type groupdict: match.groupdict for basic visual acuity pattern
     :return: 
     """
-    test = groupdict['test'] or groupdict['test2'] or groupdict['test3']
+    test = groupdict['test'] or groupdict.get('test2', None) or groupdict.get('test3', None)
     if not test:
         return {
             'numerator': groupdict['numerator'],

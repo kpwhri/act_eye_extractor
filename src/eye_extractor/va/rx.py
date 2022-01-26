@@ -32,9 +32,9 @@ BCV_PAT = re.compile(
 
 
 def get_manifest_rx(text):
-    data = {}
     for m in MANIFEST_PAT.finditer(text):
-        d = m.groupdict()
+        d = {k: v.lower() if isinstance(v, str) else v for k, v in m.groupdict().items()}
+        data = {}
         data['manifestrx_sphere_re'] = 0.0 if d['od_sphere'].startswith('pl') else float(d['od_sphere'])
         data['manifestrx_cylinder_re'] = float(d['od_cylinder'])
         data['manifestrx_axis_re'] = float(d['od_axis'])
@@ -63,4 +63,4 @@ def get_manifest_rx(text):
             or d.get('os_correct_2', 0.0)
             or 0.0
         )
-    return data
+        yield data
