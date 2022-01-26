@@ -171,7 +171,7 @@ def handle_test_from_groups(groupdict):
         return {
             'numerator': groupdict['numerator'],
             'denominator': groupdict['score'],
-            'correct': sum_diopter(groupdict['diopter'])
+            'correct': sum_diopter(groupdict['diopter']),
         }
     elif test.upper() in {'CF', 'HM', 'LP', 'NLP'}:
         return {
@@ -189,6 +189,7 @@ def get_elements_from_line(m, metadata):
     for i in range(len(metadata)):
         src = {k.rsplit('_', 1)[0]: v for k, v in d.items() if k.endswith(f'_{i}')}
         dest = metadata[i] | shared
+        dest['text'] = m.group()
         dest |= handle_test_from_groups(src)
         lst.append(dest)
     return lst

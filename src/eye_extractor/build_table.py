@@ -33,25 +33,30 @@ def laterality_iter(lat: Laterality):
             return 'le',
         case Laterality.OU:
             return 'le', 're'
+    # TODO: how to incorporate 'unknown'?
+    return []
 
 
 def parse_va_exam(row, prev_denom, results):
     exam = row['exam']
     denom = row['denominator']
     num_correct = row['correct']
+    text = row.get('text', '')
     laterality = laterality_from_int(row['laterality'])
     if not denom:
         return
     for lat in laterality_iter(laterality):
         # denominator
         variable = f'{exam}_denominator_{lat}'
-        if denom.upper() == 'NI':
+        if isinstance(denom, int):
+            pass
+        elif denom.upper() in {'NI', 'NO IMPROVEMENT'}:
             if lat in prev_denom:
                 denom = prev_denom[lat][0]
                 num_correct = prev_denom[lat][1]
-                logger.warning(f'Did not find previous score for "ni".')
+                logger.warning(f'Did not find previous score for "ni" in "{text}".')
             continue
-        elif denom.upper() == 'NT':  # not taken
+        elif denom.upper() in {'NT', 'NA'}:  # not taken
             continue
         # get the max result
         denom = int(denom)
@@ -78,10 +83,14 @@ def parse_va_test(row, prev_denom, results):
     exam = row['exam']
     test = row['test']
     distance = row['distance']
+    try:
+        distance = int(distance)
+    except Exception as e:
+        logger.info(f'Distance {distance} cannot be converted to int in {row.get("text", "")}.')
     laterality = laterality_from_int(row['laterality'])
     for lat in laterality_iter(laterality_from_int(laterality)):
         variable = f'{exam}_letters_{lat}'
-        results[variable] = test
+        results[variable] = test.upper()
         variable = f'{exam}_distance_{lat}'
         results[variable] = distance
 
@@ -135,7 +144,7 @@ def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path):
         for line in fh:
             data = json.loads(line.strip())
             result = process_data(data)
-            validate_columns_in_row(OUTPUT_COLUMNS, result)
+            validate_columns_in_row(OUTPUT_COLUMNS, result, id_col='studyid')
             writer.writerow(result)
 
 

@@ -39,6 +39,8 @@ def contains(*choices):
 def validate_columns_in_row(column_dict, data, *, strict=False, id_col=None):
     if id_col:
         id_col = str(data[id_col])
+    else:
+        id_col = ''
     for col, val in data.items():
         for validator in column_dict[col]:
             try:
