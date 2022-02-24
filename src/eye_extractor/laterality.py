@@ -1,5 +1,6 @@
 import enum
 import re
+from typing import Match
 
 
 class Laterality(enum.IntEnum):
@@ -89,3 +90,28 @@ def get_immediate_next_or_prev_laterality_from_table(table, index, *, max_skips=
     if lat == Laterality.UNKNOWN:
         lat, start, end = get_previous_laterality_from_table(table, index)
     return lat, start, end
+
+
+def create_variable(data, text, match, lateralities, variable, value):
+    lat = get_laterality_for_term(lateralities, match, text)
+    add_laterality_to_variable(data, lat, variable, value)
+
+
+def get_laterality_for_term(lateralities, match: Match, text):
+    for lat, start, end, is_lat in lateralities:
+        if not is_lat:
+            continue
+        if start > match.start():  # after
+            return lat
+        elif len(text[end:match.start()]) < 10 and 'with' in text[end:match.start()]:
+            return lat
+    if lateralities:
+        return lateralities[-1][1]
+    return Laterality.OU  # default to both
+
+
+def add_laterality_to_variable(data, laterality, variable, value):
+    if laterality in {Laterality.OU, Laterality.OS}:
+        data[f'{variable}_le'] = value
+    if laterality in {Laterality.OU, Laterality.OD}:
+        data[f'{variable}_re'] = value

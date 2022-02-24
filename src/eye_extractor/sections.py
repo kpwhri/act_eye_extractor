@@ -4,8 +4,7 @@ Find and Use Past Ocular History
 import re
 from collections import namedtuple
 
-from eye_extractor.headers import add_laterality_to_variable
-from eye_extractor.laterality import LATERALITY_PATTERN, LATERALITY, Laterality
+from eye_extractor.laterality import LATERALITY_PATTERN, LATERALITY, Laterality, add_laterality_to_variable
 from eye_extractor.patterns import PATTERN_BATTERY, PATTERN_RESPONSE
 
 SECTION_PATTERN = re.compile(
