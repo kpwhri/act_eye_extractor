@@ -133,6 +133,31 @@ def get_manifest(data):
     return {}
 
 
+def get_amd(data):
+    results = {
+        'amd_re': 8,
+        'amd_le': 8,
+    }
+    for item in data:
+        laterality = laterality_from_int(item['laterality'])
+        if {Laterality.OS, Laterality.OU} & {laterality}:
+            results['amd_le'] = min(1, results['amd_le'])
+        elif laterality:  # any mention
+            results['amd_le'] = min(0, results['amd_le'])
+        if {Laterality.OD, Laterality.OU} & {laterality}:
+            results['amd_re'] = min(1, results['amd_re'])
+        elif laterality:  # any mention
+            results['amd_re'] = min(0, results['amd_re'])
+    return results
+
+
+def get_drusen(data):
+    results = {}
+    for k, v in data.items():
+        results[k] = v['label'].upper()
+    return results
+
+
 def process_data(data):
     result = {
         'docid': data['ft_id'],
@@ -142,6 +167,8 @@ def process_data(data):
     }
     result.update(get_va(data['va']))
     result.update(get_manifest(data['manifestrx']))
+    result.update(get_amd(data['amd']))
+    result.update(get_drusen(data['drusen']))
     return result
 
 

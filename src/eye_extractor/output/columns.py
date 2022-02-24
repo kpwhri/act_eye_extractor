@@ -53,5 +53,6 @@ OUTPUT_COLUMNS = {
     'manifestrx_add_le': [],
     'manifestrx_denom_le': [],
     'manifestrx_ncorr_le': [],
-
+    'amd_re': [is_int],
+    'amd_le': [is_int],
 }

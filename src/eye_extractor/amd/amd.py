@@ -39,6 +39,17 @@ def get_laterality(match, text):
 
 
 def get_amd(text):
+    data = []
+    for m in AMD_RX.finditer(text):
+        data.append({
+            'label': 'amd',
+            'term': m.group(),
+            'laterality': get_laterality(m, text),
+        })
+    return data
+
+
+def get_amd_old(text):
     """
     Dx code: AMD (age related macular degeneration)     362.50, H35.30
     :return:
@@ -51,7 +62,7 @@ def get_amd(text):
 
 
 def amd_le(text):
-    lats = get_amd(text)
+    lats = get_amd_old(text)
     print(f'Found lats: {lats}')
     if {Laterality.OS, Laterality.OU} & lats:
         return '1.0'  # yes
@@ -61,7 +72,7 @@ def amd_le(text):
 
 
 def amd_re(text):
-    lats = get_amd(text)
+    lats = get_amd_old(text)
     print(f'Found lats: {lats}')
     if {Laterality.OD, Laterality.OU} & lats:
         return '1.0'  # yes
