@@ -3,8 +3,8 @@ import re
 from eye_extractor.common import right_eye, left_eye
 
 
-tonometry = r'(?:tonometry|tappl|tapp|ta|iops?|intraocular pressures?|t?nct|pressure)'
-method = r'(?:(?:Method|with|by)\W+(?P<METHOD>.*?)\W*)'
+tonometry = r'(?P<INSTRUMENT>tonometry|tappl|tapp|ta|iops?|intraocular pressures?|t?nct|pressure)'
+method = r'(?:(?:Method|with|by)\W+(?P<METHOD1>.*?)\W*)'
 method2 = r'(?:(?P<METHOD2>applanation|tappl|flouress|t?nct|non contact method' \
           r'|goldman)\W*)'
 nt = r'(n[at]|not assessed)'
@@ -68,7 +68,7 @@ IOP_PATTERN_LE_POST = re.compile(
 )
 
 IOP_PATTERN2 = re.compile(
-    r'\b(?:ta|iops?):?\s*(?P<OD>\d+(?:\.\d+)?)'
+    r'\b(?P<INSTRUMENT>ta|iops?):?\s*(?P<OD>\d+(?:\.\d+)?)'
     r'(?:\s*[,/]\s*(?P<OS>\d+(?:\.\d+)?))?',
     re.I
 )
@@ -95,12 +95,16 @@ def get_iop(text):
                 curr['iop_measurement_le'] = {
                     'value': convert_iop_value(val)
                 }
+            curr['instrument'] = d.get('INSTRUMENT', None)
+            curr['method1'] = d.get('METHOD1', None)
+            curr['method2'] = d.get('METHOD2', None)
             if curr:
                 yield curr
 
     for m in IOP_PATTERN2.finditer(text):
         curr = {}
         d = m.groupdict()
+        curr['instrument'] = d.get('INSTRUMENT', None)
         if val := d.get('OS', None):
             curr['iop_measurement_le'] = {
                 'value': convert_iop_value(val)
