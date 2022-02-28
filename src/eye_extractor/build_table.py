@@ -190,9 +190,10 @@ def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path):
         jsonl_file = max(list_of_paths, key=lambda p: p.stat().st_ctime)
     with (
             open(jsonl_file, encoding='utf8') as fh,
-    open(outpath, 'w', encoding='utf8') as out,
+            open(outpath, 'w', encoding='utf8', newline='') as out,
     ):
         writer = csv.DictWriter(out, fieldnames=OUTPUT_COLUMNS.keys())
+        writer.writeheader()
         for line in fh:
             data = json.loads(line.strip())
             result = process_data(data)
