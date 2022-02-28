@@ -9,32 +9,10 @@ import pathlib
 import click
 from loguru import logger
 
-from eye_extractor.laterality import Laterality
+from eye_extractor.output.amd import build_amd_variables
 from eye_extractor.output.columns import OUTPUT_COLUMNS
+from eye_extractor.output.laterality import laterality_from_int, laterality_iter
 from eye_extractor.output.validators import validate_columns_in_row
-
-
-def laterality_from_int(val):
-    match val:
-        case 0:
-            return Laterality.OD
-        case 1:
-            return Laterality.OS
-        case 2:
-            return Laterality.OU
-    return Laterality.UNKNOWN
-
-
-def laterality_iter(lat: Laterality):
-    match lat:
-        case Laterality.OD:
-            return 're',
-        case Laterality.OS:
-            return 'le',
-        case Laterality.OU:
-            return 'le', 're'
-    # TODO: how to incorporate 'unknown'?
-    return []
 
 
 def parse_va_exam(row, prev_denom, results):
@@ -133,31 +111,6 @@ def get_manifest(data):
     return {}
 
 
-def get_amd(data):
-    results = {
-        'amd_re': 8,
-        'amd_le': 8,
-    }
-    for item in data:
-        laterality = laterality_from_int(item['laterality'])
-        if {Laterality.OS, Laterality.OU} & {laterality}:
-            results['amd_le'] = min(1, results['amd_le'])
-        elif laterality:  # any mention
-            results['amd_le'] = min(0, results['amd_le'])
-        if {Laterality.OD, Laterality.OU} & {laterality}:
-            results['amd_re'] = min(1, results['amd_re'])
-        elif laterality:  # any mention
-            results['amd_re'] = min(0, results['amd_re'])
-    return results
-
-
-def get_drusen(data):
-    results = {}
-    for k, v in data.items():
-        results[k] = v['label'].upper()
-    return results
-
-
 def process_data(data):
     result = {
         'docid': data['ft_id'],
@@ -167,8 +120,7 @@ def process_data(data):
     }
     result.update(get_va(data['va']))
     result.update(get_manifest(data['manifestrx']))
-    result.update(get_amd(data['amd']))
-    result.update(get_drusen(data['drusen']))
+    result.update(build_amd_variables(data))
     return result
 
 

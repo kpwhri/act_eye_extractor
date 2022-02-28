@@ -1,6 +1,6 @@
 """Intraocular Pressure (IOP)"""
 import re
-from eye_extractor.common import right_eye, left_eye
+from eye_extractor.va.common import right_eye, left_eye
 
 
 tonometry = r'(?P<INSTRUMENT>tonometry|tappl|tapp|ta|iops?|intraocular pressures?|t?nct|pressure)'

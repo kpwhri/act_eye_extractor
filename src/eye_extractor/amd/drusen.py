@@ -40,14 +40,15 @@ BOTH_DRUSEN_PAT = re.compile(r'(soft(\s*(and|,|/)\s*hard)?|hard(\s*(and|,|/)\s*s
 NO_DRUSEN_PAT = re.compile(r'((no|or) drusen)', re.I)
 
 
-def get_drusen(text, headers=None):
+def get_drusen(text, *, headers=None, lateralities=None):
     data = {}
     if headers:
         if macula_text := headers.get('MACULA', None):
             lateralities = build_laterality_table(macula_text)
             data |= find_drusen(macula_text, lateralities)
     else:
-        lateralities = build_laterality_table(text)
+        if not lateralities:
+            lateralities = build_laterality_table(text)
         data |= find_drusen(text, lateralities)
     return data
 

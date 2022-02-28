@@ -1,6 +1,6 @@
 import re
 
-from eye_extractor.common import right_eye, left_eye, bva, vision_20, prescript, add_power
+from eye_extractor.va.common import right_eye, left_eye, bva, vision_20, prescript, add_power
 
 MANIFEST_PAT = re.compile(
     rf'(?:(MANIFEST\W*)?REFRACTION)\W*(manifest\W*)?'

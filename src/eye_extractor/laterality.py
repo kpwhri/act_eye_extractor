@@ -97,6 +97,12 @@ def create_variable(data, text, match, lateralities, variable, value):
     add_laterality_to_variable(data, lat, variable, value)
 
 
+def create_new_variable(text, match, lateralities, variable, value):
+    data = {}
+    create_variable(data, text, match, lateralities, variable, value)
+    return data
+
+
 def get_laterality_for_term(lateralities, match: Match, text):
     for lat, start, end, is_lat in lateralities:
         if not is_lat:
@@ -115,3 +121,5 @@ def add_laterality_to_variable(data, laterality, variable, value):
         data[f'{variable}_le'] = value
     if laterality in {Laterality.OU, Laterality.OD}:
         data[f'{variable}_re'] = value
+    if laterality not in {Laterality.OU, Laterality.OD, Laterality.OS}:
+        data[f'{variable}_unk'] = value
