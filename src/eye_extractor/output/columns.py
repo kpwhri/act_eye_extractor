@@ -55,4 +55,8 @@ OUTPUT_COLUMNS = {
     'manifestrx_ncorr_le': [],
     'amd_re': [is_int],
     'amd_le': [is_int],
+    'drusen_size_re': [],
+    'drusen_type_re': [],
+    'drusen_size_le': [],
+    'drusen_type_le': [],
 }
