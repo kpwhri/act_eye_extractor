@@ -7,6 +7,7 @@ from eye_extractor.amd.srh import SRH_PAT, get_subretinal_hemorrhage
     ('subretinal hemorrhage', 1),
     ('srh', 1),
     ('srhfe', 1),
+    ('srheme', 1),
     ('dysrhythmia', 0),
 ])
 def test_srh_pattern(text, exp):
