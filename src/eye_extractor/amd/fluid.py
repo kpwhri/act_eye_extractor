@@ -43,8 +43,8 @@ INTRARETINAL_FLUID_PAT = re.compile(
 SUB_AND_INTRARETINAL_FLUID_PAT = re.compile(
     rf'(?:'
     rf'sub(\W?retinal)?(?:\W*fluid)?\W*(?:\w+\W+){{0,2}}intra\W?retinal\W*fluid'
-    rf'|srf(\W+|and)irf'
-    rf'|irf(\W+|and)srf'
+    rf'|srf\W+(?:and\W+)?irf'
+    rf'|irf\W+(?:and\W+)?srf'
     rf')',
     re.IGNORECASE
 )
@@ -81,7 +81,7 @@ def _get_fluid(text, lateralities, source):
             )
             data.append(
                 create_new_variable(text, m, lateralities, 'fluid_amd', {
-                    'value': positive_value if negword else negative_value,
+                    'value': negative_value if negword else positive_value,
                     'term': m.group(),
                     'label': 'no' if negword else positive_word,
                     'negated': negword,

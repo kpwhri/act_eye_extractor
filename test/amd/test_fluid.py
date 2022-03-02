@@ -27,6 +27,7 @@ def test_subretinal_fluid_pattern(text, exp):
     ('subretinal fluid', 0),
     ('intraretinal fluid', 1),
     ('airflow', 0),
+    ('irf', 1),
 ])
 def test_intraretinal_fluid_pattern(text, exp):
     assert bool(INTRARETINAL_FLUID_PAT.search(text)) == exp
@@ -39,6 +40,8 @@ def test_intraretinal_fluid_pattern(text, exp):
     ('subretinal and intraretinal fluid', 1),
     ('subretinal fluid and intraretinal fluid', 1),
     ('sub and intraretinal fluid', 1),
+    ('srf/irf', 1),
+    ('srf and irf', 1),
 ])
 def test_intraretinal_fluid_pattern(text, exp):
     assert bool(SUB_AND_INTRARETINAL_FLUID_PAT.search(text)) == exp
@@ -48,6 +51,8 @@ def test_intraretinal_fluid_pattern(text, exp):
     ('no new heme and fluid od', 0, 'no'),
     ('new subretinal fluid in central macula', 99, None),
     ('fluid not noted today', 0, 'not'),
+    ('no irf', 20, 'no'),
+    ('srf not noted', 10, 'not'),
 ])
 def test_fluid_value_first_variable(text, exp_value, exp_negword):
     data = get_fluid(text)
