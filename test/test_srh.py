@@ -1,6 +1,6 @@
 import pytest
 
-from eye_extractor.amd.srh import SRH_PAT, get_subretinal_hemorrhage
+from eye_extractor.amd.srh import SRH_PAT, get_subretinal_hemorrhage, SRH_IN_MACULA_PAT
 
 
 @pytest.mark.parametrize('text, exp', [
@@ -12,6 +12,15 @@ from eye_extractor.amd.srh import SRH_PAT, get_subretinal_hemorrhage
 ])
 def test_srh_pattern(text, exp):
     assert bool(SRH_PAT.search(text)) == exp
+
+
+@pytest.mark.parametrize('text, exp', [
+    ('no hemorrhage', 1),
+    ('hem', 1),
+    ('no heme', 1),
+])
+def test_srh_in_macula_pattern(text, exp):
+    assert bool(SRH_IN_MACULA_PAT.search(text)) == exp
 
 
 @pytest.mark.parametrize('text, exp_value, exp_negword', [
