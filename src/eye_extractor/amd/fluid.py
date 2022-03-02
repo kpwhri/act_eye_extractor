@@ -1,0 +1,114 @@
+import enum
+import re
+
+from eye_extractor.amd.utils import run_on_macula
+from eye_extractor.common.negation import is_negated, is_post_negated
+from eye_extractor.laterality import create_new_variable
+
+
+class FluidAMD(enum.IntEnum):
+    NO = 0
+    SUBRETINAL_FLUID = 1
+    NO_SUBRETINAL_FLUID = 10
+    INTRARETINAL_FLUID = 2
+    NO_INTRARETINAL_FLUID = 20
+    SUB_AND_INTRARETINAL_FLUID = 3
+    NO_SUB_AND_INTRARETINAL_FLUID = 30
+    UNKNOWN = 99
+
+
+FLUID_NOS_PAT = re.compile(
+    rf'(?:'
+    rf'fluid'
+    rf')',
+    re.IGNORECASE
+)
+
+SUBRETINAL_FLUID_PAT = re.compile(
+    rf'(?:'
+    rf'sub\W?retinal\W*fluid'
+    rf'|\bsrf\b'
+    rf')',
+    re.IGNORECASE
+)
+
+INTRARETINAL_FLUID_PAT = re.compile(
+    rf'(?:'
+    rf'intra\W?retinal\W*fluid'
+    rf'|\birf\b'
+    rf')',
+    re.IGNORECASE
+)
+
+SUB_AND_INTRARETINAL_FLUID_PAT = re.compile(
+    rf'(?:'
+    rf'sub(\W?retinal)?(?:\W*fluid)?\W*(?:\w+\W+){{0,2}}intra\W?retinal\W*fluid'
+    rf'|srf(\W+|and)irf'
+    rf'|irf(\W+|and)srf'
+    rf')',
+    re.IGNORECASE
+)
+
+
+def get_fluid(text, *, headers=None, lateralities=None):
+    return run_on_macula(
+        macula_func=_get_fluid_in_macula,
+        default_func=_get_fluid_in_macula,  # for testing
+        text=text,
+        headers=headers,
+        lateralities=lateralities,
+        all_func=_get_fluid,
+    )
+
+
+def _get_fluid(text, lateralities, source):
+    data = []
+    for label, pat, positive_value, negative_value, positive_word in [
+        ('SUBRETINAL_FLUID_PAT', SUBRETINAL_FLUID_PAT,
+         FluidAMD.SUBRETINAL_FLUID, FluidAMD.NO_SUBRETINAL_FLUID, 'subretinal fluid'
+         ),
+        ('INTRARETINAL_FLUID_PAT', INTRARETINAL_FLUID_PAT,
+         FluidAMD.INTRARETINAL_FLUID, FluidAMD.NO_INTRARETINAL_FLUID, 'intraretinal fluid'
+         ),
+        ('SUB_AND_INTRARETINAL_FLUID_PAT', SUB_AND_INTRARETINAL_FLUID_PAT,
+         FluidAMD.SUB_AND_INTRARETINAL_FLUID, FluidAMD.NO_SUB_AND_INTRARETINAL_FLUID, 'sub and intraretinal fluid'
+         ),
+    ]:
+        for m in pat.finditer(text):
+            negword = (
+                is_negated(m, text, {'no', 'or', 'without'}, word_window=4)
+                or is_post_negated(m, text, {'not'}, word_window=3)
+            )
+            data.append(
+                create_new_variable(text, m, lateralities, 'fluid_amd', {
+                    'value': positive_value if negword else negative_value,
+                    'term': m.group(),
+                    'label': 'no' if negword else positive_word,
+                    'negated': negword,
+                    'regex': label,
+                    'source': source,
+                })
+            )
+
+    return data
+
+
+def _get_fluid_in_macula(text, lateralities, source):
+    data = []
+    for m in FLUID_NOS_PAT.finditer(text):
+        negword = (
+                is_negated(m, text, {'no', 'or', 'without'}, word_window=4)
+                or is_post_negated(m, text, {'not'}, word_window=3)
+        )
+        data.append(
+            create_new_variable(text, m, lateralities, 'fluid_amd', {
+                'value': FluidAMD.NO if negword else FluidAMD.UNKNOWN,
+                'term': m.group(),
+                'label': 'no' if negword else 'unknown',
+                'negated': negword,
+                'regex': 'FLUID_NOS_PAT',
+                'source': source,
+            })
+        )
+    data += _get_fluid(text, lateralities, source)
+    return data

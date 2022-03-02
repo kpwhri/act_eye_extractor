@@ -1,9 +1,10 @@
 import re
 
+from eye_extractor.amd.utils import run_on_macula
 from eye_extractor.common.negation import is_negated
-from eye_extractor.laterality import build_laterality_table, create_new_variable
+from eye_extractor.laterality import create_new_variable
 
-change = r'(?:chang|disrupt|dispers|atrophy|abnormal|atrophy|clump|mottl|pigment)\w*'
+change = r'(?:chang|disrupt|dispers|migrat|atrophy|abnormal|atrophy|clump|mottl|pigment)\w*'
 pigment = r'(?:(?:hyper)?pigment\w*|\brpe\b)'
 
 PIGMENTARY_PAT = re.compile(
@@ -16,16 +17,13 @@ PIGMENTARY_PAT = re.compile(
 
 
 def get_pigmentary_changes(text, *, headers=None, lateralities=None):
-    data = []
-    if headers:
-        if macula_text := headers.get('MACULA', None):
-            lateralities = build_laterality_table(macula_text)
-            data += _get_pigmentary_changes(macula_text, lateralities, source='MACULA')
-    else:
-        if not lateralities:
-            lateralities = build_laterality_table(text)
-        data += _get_pigmentary_changes(text, lateralities, source='ALL')
-    return data
+    return run_on_macula(
+        macula_func=_get_pigmentary_changes,
+        default_func=_get_pigmentary_changes,
+        text=text,
+        headers=headers,
+        lateralities=lateralities,
+    )
 
 
 def _get_pigmentary_changes(text, lateralities, source):
@@ -39,7 +37,7 @@ def _get_pigmentary_changes(text, lateralities, source):
                 'label': 'no' if negword else 'yes',
                 'negated': negword,
                 'regex': 'PIGMENTARY_PAT',
-                'source': 'ALL',
+                'source': source,
             })
         )
     return data

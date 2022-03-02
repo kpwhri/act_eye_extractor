@@ -5,7 +5,7 @@ from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 SRH_PAT = re.compile(
     r'('
-    r'subretinal\s*hem\w+'
+    r'subretinal\W*(hem\w+|\bhg\b)'
     r'|\bsrh'
     r')',
     re.IGNORECASE

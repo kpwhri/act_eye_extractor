@@ -22,7 +22,7 @@ def test_pigmentary_pattern(text, exp):
     ('no drusen or pigment dispersion', 0, 'no'),
     ('no evidence of drusen or pigment dispersion', 0, 'or'),
 ])
-def test_srh_value_first_variable(text, exp_value, exp_negword):
+def test_pigment_value_first_variable(text, exp_value, exp_negword):
     data = get_pigmentary_changes(text)
     assert len(data) > 0
     first_variable = list(data[0].values())[0]
