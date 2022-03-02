@@ -8,6 +8,8 @@ def build_amd_variables(data):
     results = {}
     results.update(get_amd(curr))
     results.update(get_drusen(curr))
+    results.update(get_subretinal_hemorrhage(curr))
+    results.update(get_pigmentary_changes(curr))
     return results
 
 
@@ -40,4 +42,11 @@ def get_subretinal_hemorrhage(data):
     return column_from_variable({
         'subretinal_hem_re': -1,
         'subretinal_hem_le': -1,
+    }, data)
+
+
+def get_pigmentary_changes(data):
+    return column_from_variable({
+        'pigmentchanges_re': -1,
+        'pigmentchanges_le': -1,
     }, data)

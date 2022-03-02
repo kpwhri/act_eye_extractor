@@ -22,7 +22,8 @@ def get_subretinal_hemorrhage(text, *, headers=None, lateralities=None):
         data.append(
             create_new_variable(text, m, lateralities, 'subretinal_hem', {
                 'value': 0 if negword else 1,
-                'term': m.group(), 'label': 'yes',
+                'term': m.group(),
+                'label': 'no' if negword else 'yes',
                 'negated': negword,
                 'regex': 'SRH_PAT', 'source': 'ALL',
             })

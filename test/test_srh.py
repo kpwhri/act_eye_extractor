@@ -23,7 +23,7 @@ def test_srh_pattern(text, exp):
 def test_srh_value_first_variable(text, exp_value, exp_negword):
     data = get_subretinal_hemorrhage(text)
     assert len(data) > 0
-    first_variable = data[0]
+    first_variable = list(data[0].values())[0]
     assert first_variable['value'] == exp_value
-    assert first_variable['negword'] == exp_negword
+    assert first_variable['negated'] == exp_negword
 

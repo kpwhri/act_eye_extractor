@@ -59,4 +59,6 @@ OUTPUT_COLUMNS = {
     'drusen_type_re': [],
     'drusen_size_le': [],
     'drusen_type_le': [],
+    'pigmentchanges_le': [is_in_range(0, 1)],
+    'pigmentchanges_re': [is_in_range(0, 1)],
 }
