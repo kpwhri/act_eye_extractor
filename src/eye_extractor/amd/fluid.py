@@ -14,7 +14,26 @@ class FluidAMD(enum.IntEnum):
     NO_INTRARETINAL_FLUID = 20
     SUB_AND_INTRARETINAL_FLUID = 3
     NO_SUB_AND_INTRARETINAL_FLUID = 30
-    UNKNOWN = 99
+    UNKNOWN = 99  # unknown fluid
+
+
+def fluid_prioritization(new_value: FluidAMD, curr_value: FluidAMD | None):
+    if curr_value is None:  # may start as None
+        return new_value
+    elif curr_value == new_value:
+        return curr_value
+    elif {curr_value, new_value} == {FluidAMD.SUBRETINAL_FLUID, FluidAMD.INTRARETINAL_FLUID}:
+        return FluidAMD.SUB_AND_INTRARETINAL_FLUID
+    elif {curr_value, new_value} == {FluidAMD.NO_SUBRETINAL_FLUID, FluidAMD.NO_INTRARETINAL_FLUID}:
+        return FluidAMD.NO_SUB_AND_INTRARETINAL_FLUID
+    elif curr_value.value in {0, 10, 20, 30, 99} and new_value in {1, 2, 3, 99}:
+        # group negatives/positives
+        # 99=Unknown fluid is the highest of the 'no' so it will override negatives in next line
+        return new_value
+    elif new_value.value > curr_value.value:
+        # take the highest positive or negative in the group (this is the most specific)
+        return new_value
+    return curr_value  # default to current value
 
 
 FLUID_NOS_PAT = re.compile(
@@ -76,8 +95,8 @@ def _get_fluid(text, lateralities, source):
     ]:
         for m in pat.finditer(text):
             negword = (
-                is_negated(m, text, {'no', 'or', 'without'}, word_window=4)
-                or is_post_negated(m, text, {'not'}, word_window=3)
+                    is_negated(m, text, {'no', 'or', 'without'}, word_window=4)
+                    or is_post_negated(m, text, {'not'}, word_window=3)
             )
             data.append(
                 create_new_variable(text, m, lateralities, 'fluid_amd', {

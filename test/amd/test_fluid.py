@@ -1,7 +1,8 @@
 import pytest
 
 from eye_extractor.amd.fluid import FLUID_NOS_PAT, SUBRETINAL_FLUID_PAT, INTRARETINAL_FLUID_PAT, get_fluid, \
-    SUB_AND_INTRARETINAL_FLUID_PAT
+    SUB_AND_INTRARETINAL_FLUID_PAT, FluidAMD
+from eye_extractor.output.amd import get_fluid_from_variable
 
 
 @pytest.mark.parametrize('text, exp', [
@@ -60,3 +61,12 @@ def test_fluid_value_first_variable(text, exp_value, exp_negword):
     first_variable = list(data[0].values())[0]
     assert first_variable['value'] == exp_value
     assert first_variable['negated'] == exp_negword
+
+
+@pytest.mark.parametrize('data, exp_fluid_amd_re, exp_fluid_amd_le', [
+    ([], FluidAMD.NO, FluidAMD.NO),
+])
+def test_fluid_to_column(data, exp_fluid_amd_re, exp_fluid_amd_le):
+    result = get_fluid_from_variable(data)
+    assert result['fluid_amd_re'] == exp_fluid_amd_re
+    assert result['fluid_amd_le'] == exp_fluid_amd_le

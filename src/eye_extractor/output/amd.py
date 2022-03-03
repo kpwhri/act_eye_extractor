@@ -1,3 +1,4 @@
+from eye_extractor.amd.fluid import FluidAMD, fluid_prioritization
 from eye_extractor.output.laterality import laterality_from_int
 from eye_extractor.laterality import Laterality
 from eye_extractor.output.variable import column_from_variable
@@ -50,3 +51,15 @@ def get_pigmentary_changes(data):
         'pigmentchanges_re': -1,
         'pigmentchanges_le': -1,
     }, data)
+
+
+def get_fluid_from_variable(data):
+    return column_from_variable(
+        {
+            'fluid_amd_re': FluidAMD.NO,
+            'fluid_amd_le': FluidAMD.NO,
+        },
+        data,
+        transformer_func=FluidAMD,
+        result_func=fluid_prioritization,
+    )
