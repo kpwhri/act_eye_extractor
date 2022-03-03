@@ -16,6 +16,7 @@ ALL_UVEITIS_PAT = re.compile(
 UVEITIS_PAT = re.compile(
     # IU and AU do not appear
     # WARN: careful with 'IU' and the unit 'IU' if pursued
+    # WARN: AU might also appear under allergies as 'gold'
     r'(?:'
     r'(?:anterior'
     r'|intermediate'
