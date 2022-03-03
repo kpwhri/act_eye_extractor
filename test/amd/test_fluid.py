@@ -18,6 +18,10 @@ def test_fluid_nos_pattern(text, exp):
     ('with fluid and exudates', 0),
     ('subretinal fluid', 1),
     ('intraretinal fluid', 0),
+    ('srf', 1),
+    ('sr fluid', 1),
+    ('srfluids', 1),
+    ('bowsr fanta', 0),
 ])
 def test_subretinal_fluid_pattern(text, exp):
     assert bool(SUBRETINAL_FLUID_PAT.search(text)) == exp
@@ -29,6 +33,9 @@ def test_subretinal_fluid_pattern(text, exp):
     ('intraretinal fluid', 1),
     ('airflow', 0),
     ('irf', 1),
+    ('ir fluid', 1),
+    ('irfluids', 1),
+    ('bowir fanta', 0),
 ])
 def test_intraretinal_fluid_pattern(text, exp):
     assert bool(INTRARETINAL_FLUID_PAT.search(text)) == exp
@@ -43,6 +50,7 @@ def test_intraretinal_fluid_pattern(text, exp):
     ('sub and intraretinal fluid', 1),
     ('srf/irf', 1),
     ('srf and irf', 1),
+    ('sr fluid and irfluids', 1),
 ])
 def test_intraretinal_fluid_pattern(text, exp):
     assert bool(SUB_AND_INTRARETINAL_FLUID_PAT.search(text)) == exp

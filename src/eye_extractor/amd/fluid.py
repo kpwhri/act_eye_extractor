@@ -36,6 +36,9 @@ def fluid_prioritization(new_value: FluidAMD, curr_value: FluidAMD | None):
     return curr_value  # default to current value
 
 
+srf = r'sr\s*f(?:luids?)?'
+irf = r'ir\s*f(?:luids?)?'
+
 FLUID_NOS_PAT = re.compile(
     rf'(?:'
     rf'fluid'
@@ -46,7 +49,7 @@ FLUID_NOS_PAT = re.compile(
 SUBRETINAL_FLUID_PAT = re.compile(
     rf'(?:'
     rf'sub\W?retinal\W*fluid'
-    rf'|\bsrf\b'
+    rf'|\b{srf}\b'
     rf')',
     re.IGNORECASE
 )
@@ -54,7 +57,7 @@ SUBRETINAL_FLUID_PAT = re.compile(
 INTRARETINAL_FLUID_PAT = re.compile(
     rf'(?:'
     rf'intra\W?retinal\W*fluid'
-    rf'|\birf\b'
+    rf'|\b{irf}\b'
     rf')',
     re.IGNORECASE
 )
@@ -62,8 +65,8 @@ INTRARETINAL_FLUID_PAT = re.compile(
 SUB_AND_INTRARETINAL_FLUID_PAT = re.compile(
     rf'(?:'
     rf'sub(\W?retinal)?(?:\W*fluid)?\W*(?:\w+\W+){{0,2}}intra\W?retinal\W*fluid'
-    rf'|srf\W+(?:and\W+)?irf'
-    rf'|irf\W+(?:and\W+)?srf'
+    rf'|{srf}\W+(?:and\W+)?{irf}'
+    rf'|{irf}\W+(?:and\W+)?{srf}'
     rf')',
     re.IGNORECASE
 )
