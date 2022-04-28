@@ -7,7 +7,8 @@ RAO_PAT = re.compile(
     r'(?:'
     r'\b[cb]?rao\b'
     r'|\brvas[o0]\b'
-    r'(?:branch|central)?\W*retinal\W*(artery|vein)?\W*occlu\w+'
+    r'|(?:(?:branch|central)\W*)?retinal\W*(arter(y|ial)|vein(al)?)?\W*occlu\w+'
     r''
-    r')'
+    r')',
+    re.I
 )
