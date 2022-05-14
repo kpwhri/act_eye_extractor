@@ -28,3 +28,7 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
             if varname in row and compare_func(new_value, curr_value):
                 results[varname] = result_func(new_value, curr_value)
     return results
+
+
+def column_from_variable_binary(data, label):
+    return column_from_variable({f'{label}_le': -1, f'{label}_re': -1}, data)
