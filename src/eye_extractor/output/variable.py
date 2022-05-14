@@ -20,7 +20,8 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
     if result_func is None:
         result_func = lambda n, c: n  # default to return New value
     if transformer_func is None:
-        transformer_func = lambda n: n  # no deserialization required
+        # no deserialization required (or created with `create_variable` function)
+        transformer_func = lambda n: n['value'] if isinstance(n, dict) else n
     for row in data:
         for varname, curr_value in results.items():
             new_value = transformer_func(row[varname])

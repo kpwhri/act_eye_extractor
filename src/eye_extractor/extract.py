@@ -10,6 +10,7 @@ from eye_extractor.cataract.cataract import get_cataract
 from eye_extractor.headers import extract_headers_and_text
 from eye_extractor.iop import get_iop
 from eye_extractor.laterality import build_laterality_table
+from eye_extractor.rao.algorithm import extract_ro_variables
 from eye_extractor.va.extractor2 import extract_va
 from eye_extractor.va.rx import get_manifest_rx
 
@@ -24,6 +25,7 @@ def extract_all(text: str, data: dict = None):
     data['amd'] = extract_amd_variables(text, headers=headers, lateralities=lateralities)
     data['cataract'] = get_cataract(text)
     data['manifestrx'] = list(get_manifest_rx(text))
+    data['ro'] = extract_ro_variables(text, headers=headers, lateralities=lateralities)
     return data
 
 

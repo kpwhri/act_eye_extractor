@@ -12,6 +12,7 @@ from loguru import logger
 from eye_extractor.output.amd import build_amd_variables
 from eye_extractor.output.columns import OUTPUT_COLUMNS
 from eye_extractor.output.laterality import laterality_from_int, laterality_iter
+from eye_extractor.output.ro import build_ro_variables
 from eye_extractor.output.uveitis import build_uveitis_variables
 from eye_extractor.output.validators import validate_columns_in_row
 
@@ -123,6 +124,7 @@ def process_data(data):
     result.update(get_manifest(data['manifestrx']))
     result.update(build_amd_variables(data))
     result.update(build_uveitis_variables(data))
+    result.update(build_ro_variables(data))
     return result
 
 
