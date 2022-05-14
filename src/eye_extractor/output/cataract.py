@@ -9,4 +9,4 @@ def build_cataract_variables(data):
 
 
 def build_cataract(data):
-    return column_from_variable_binary(data, 'cataract_yesno')
+    return column_from_variable_binary(data, 'cataractiol_yesno')

@@ -20,7 +20,7 @@ def get_cataract(text, *, headers=None, lateralities=None):
     for m in CATARACT_PAT.finditer(text):
         negword = is_negated(m, text, {'no', 'or'})
         data.append(
-            create_new_variable(text, m, lateralities, 'cataract_yesno', {
+            create_new_variable(text, m, lateralities, 'cataractiol_yesno', {
                 'value': 0 if negword else 1,
                 'term': m.group(),
                 'label': 'no' if negword else 'yes',
