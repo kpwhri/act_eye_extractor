@@ -77,4 +77,6 @@ OUTPUT_COLUMNS = {
     'cataractsurg_iolpower_le': [],
     'cataractsurg_otherlens_re': [],
     'cataractsurg_otherlens_le': [],
+    'cataract_type_re': [],
+    'cataract_type_le': [],
 }

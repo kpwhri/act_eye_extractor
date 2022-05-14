@@ -7,11 +7,11 @@ from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 class CataractType(enum.IntEnum):
     UNKNOWN = 0
-    NONE = 0
-    NS = 1
-    CS = 2
-    ACS = 3
-    PSC = 4
+    NONE = 1
+    NS = 2
+    CS = 3
+    ACS = 4
+    PSC = 5
 
 
 digit_pat = r'\d(?:\-\d)?\+?'  # digits are used to ensure

@@ -1,6 +1,7 @@
 import pytest
 
 from eye_extractor.cataract.cataract_type import NS_PAT, CS_PAT, PSC_PAT, ACS_PAT, get_cataract_type, CataractType
+from eye_extractor.output.cataract import build_cataract_type
 
 
 @pytest.mark.parametrize('text', [
@@ -42,9 +43,21 @@ def test_cs_cataract_pattern(text):
     ('CS 1+', CataractType.CS, None),
     ('cortical cataract', CataractType.CS, None),
 ])
-def test_fluid_value_first_variable(text, exp_value, exp_negword):
+def test_cataract_value_first_variable(text, exp_value, exp_negword):
     data = get_cataract_type(text)
+    print(data)
     assert len(data) > 0
     first_variable = list(data[0].values())[0]
     assert first_variable['value'] == exp_value
     assert first_variable['negated'] == exp_negword
+
+
+@pytest.mark.parametrize('data, exp_cataract_type_re, exp_cataract_type_le', [
+    ([], CataractType.UNKNOWN, CataractType.UNKNOWN),
+    ([{'cataract_type_le': 1}], CataractType.UNKNOWN, CataractType.NONE),
+    ([{'cataract_type_le': 2, 'cataract_type_re': 3}], CataractType.CS, CataractType.NS),
+])
+def test_cataract_to_column(data, exp_cataract_type_re, exp_cataract_type_le):
+    result = build_cataract_type(data)
+    assert result['cataract_type_le'] == exp_cataract_type_le
+    assert result['cataract_type_re'] == exp_cataract_type_re

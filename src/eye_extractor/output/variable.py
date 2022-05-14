@@ -24,6 +24,8 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
         transformer_func = lambda n: n['value'] if isinstance(n, dict) else n
     for row in data:
         for varname, curr_value in results.items():
+            if varname not in row:
+                continue
             new_value = transformer_func(row[varname])
             if varname in row and compare_func(new_value, curr_value):
                 results[varname] = result_func(new_value, curr_value)
