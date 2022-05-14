@@ -23,3 +23,16 @@ def build_cataract_type(data):
         data,
         transformer_func=CataractType,
     )
+
+
+def build_nscataract_severity(data):
+    return column_from_variable(
+        {
+            'nscataract_severity_re': -1,
+            'nscataract_severity_le': -1,
+        },
+        data,
+        transformer_func=lambda n: n['severity'],
+        filter_func=lambda n: n['value'] == CataractType.NS.value,
+        convert_func=lambda n: f'cataract_type_{n[-2:]}',
+    )

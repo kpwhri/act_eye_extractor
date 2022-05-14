@@ -1,4 +1,5 @@
-def column_from_variable(results, data, *, compare_func=None, transformer_func=None, result_func=None):
+def column_from_variable(results, data, *, compare_func=None, transformer_func=None,
+                         result_func=None, convert_func=None, filter_func=None):
     """
     Assuming values that can be graded according to a comparator functions,
         converts the results of `create_new_variable` into only that with the
@@ -22,12 +23,19 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
     if transformer_func is None:
         # no deserialization required (or created with `create_variable` function)
         transformer_func = lambda n: n['value'] if isinstance(n, dict) else n
+    if filter_func is None:  # inclusion criteria
+        filter_func = lambda n: n
+    if convert_func is None:  # if using different names (want different output name)
+        convert_func = lambda n: n
     for row in data:
         for varname, curr_value in results.items():
-            if varname not in row:
+            target_varname = convert_func(varname)
+            if target_varname not in row:
                 continue
-            new_value = transformer_func(row[varname])
-            if varname in row and compare_func(new_value, curr_value):
+            if not filter_func(row[target_varname]):  # apply inclusion criteria in filter func
+                continue
+            new_value = transformer_func(row[target_varname])
+            if compare_func(new_value, curr_value):
                 results[varname] = result_func(new_value, curr_value)
     return results
 

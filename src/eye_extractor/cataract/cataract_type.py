@@ -14,35 +14,37 @@ class CataractType(enum.IntEnum):
     PSC = 5
 
 
-digit_pat = r'\d(?:\-\d)?\+?'  # digits are used to ensure
-ns_pat = r'\b(?:NS|nuclear)\b'
+digit_pat = r'\d(?:\.\d)?(?:\-\d(?:\.\d)?)?\+?'  # digits are used to ensure
+ns_pat = r'\b(?:NSC?|nuclear)\b'
 NS_PAT = re.compile(
     rf'(?:'
-    rf'{ns_pat}\W*{digit_pat}'
-    rf'|{digit_pat}\W*{ns_pat}'
-    rf'|nuclear\s*cataract'
+    rf'{ns_pat}\s*(?P<severity1>{digit_pat})'
+    rf'|(?P<severity2>{digit_pat})\s*{ns_pat}'
+    rf'|nuclear(?:\s*sclerotic)?\s*cataract'
+    rf'|nuclear\s*sclerosis'
     rf')',
     re.I)
 cs_pat = r'\b(?:CS|cortical)\b'
 CS_PAT = re.compile(
     rf'(?:'
-    rf'{cs_pat}\W*{digit_pat}'
-    rf'|{digit_pat}\W*{cs_pat}'
+    rf'{cs_pat}\s*(?P<severity1>{digit_pat})'
+    rf'|(?P<severity2>{digit_pat})\s*{cs_pat}'
     rf'|cortical\s*cataract'
     rf')',
     re.I)
 psc_pat = r'\b(?:PSC)\b'
 PSC_PAT = re.compile(
     rf'(?:'
-    rf'{psc_pat}\W*{digit_pat}'
-    rf'|{digit_pat}\W*{psc_pat}'
+    rf'{psc_pat}\s*{digit_pat}'
+    rf'|{digit_pat}\s*{psc_pat}'
+    rf'|posterior\s*subcapsular\s*cataract'
     rf')',
     re.I)
 acs_pat = r'\b(?:ACS)\b'
 ACS_PAT = re.compile(
     rf'(?:'
-    rf'{acs_pat}\W*{digit_pat}'
-    rf'|{digit_pat}\W*{acs_pat}'
+    rf'{acs_pat}\s*(?P<severity1>{digit_pat})'
+    rf'|(?P<severity2>{digit_pat})\s*{acs_pat}'
     rf')',
     re.I)
 
@@ -59,6 +61,11 @@ def get_cataract_type(text, *, headers=None, lateralities=None):
     ]:
         for m in pat.finditer(text):
             negword = is_negated(m, text, {'no', 'or', 'without'})
+            gd = m.groupdict()
+            if severity := gd.get('severity1', '') or gd.get('severity2', '') or None:
+                severity = max(float(s.strip('+ ')) for s in severity.split('-'))
+            else:
+                severity = -1
             data.append(
                 create_new_variable(text, m, lateralities, 'cataract_type', {
                     'value': CataractType.NONE if negword else cattype,
@@ -66,6 +73,7 @@ def get_cataract_type(text, *, headers=None, lateralities=None):
                     'label': f'NO {catlabel}' if negword else catlabel,
                     'negated': negword,
                     'regex': f'{catlabel}_PAT', 'source': 'ALL',
+                    'severity': severity,
                 })
             )
     if headers:
