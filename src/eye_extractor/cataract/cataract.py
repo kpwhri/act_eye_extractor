@@ -6,7 +6,7 @@ from eye_extractor.laterality import build_laterality_table, create_new_variable
 CATARACT_PAT = re.compile(
     r'(?:'
     r'(need|require)s?\W*cataract\W*surgery'
-    r'|(significant|cortical|nuclear)\W*cataract'
+    r'|(significant|cortical|nuclear|mild)\W*cataract'
     r''
     r')',
     re.I
