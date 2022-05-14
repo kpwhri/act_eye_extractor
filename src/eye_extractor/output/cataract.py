@@ -26,13 +26,25 @@ def build_cataract_type(data):
 
 
 def build_nscataract_severity(data):
+    return build_cataract_severity(data, 'ns', CataractType.NS)
+
+
+def build_cortcataract_severity(data):
+    return build_cataract_severity(data, 'cort', CataractType.CS, CataractType.ACS)
+
+
+def build_pscataract_severity(data):
+    return build_cataract_severity(data, 'ps', CataractType.PSC)
+
+
+def build_cataract_severity(data, label, *cataracttypes):
     return column_from_variable(
         {
-            'nscataract_severity_re': -1,
-            'nscataract_severity_le': -1,
+            f'{label}cataract_severity_re': -1,
+            f'{label}cataract_severity_le': -1,
         },
         data,
         transformer_func=lambda n: n['severity'],
-        filter_func=lambda n: n['value'] == CataractType.NS.value,
+        filter_func=lambda n: n['value'] in {ctype.value for ctype in cataracttypes},
         convert_func=lambda n: f'cataract_type_{n[-2:]}',
     )

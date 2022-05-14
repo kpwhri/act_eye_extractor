@@ -81,4 +81,8 @@ OUTPUT_COLUMNS = {
     'cataract_type_le': [],
     'nscataract_severity_re': [is_int(-1, 5)],
     'nscataract_severity_le': [is_int(-1, 5)],
+    'cortcataract_severity_re': [is_int(-1, 5)],
+    'cortcataract_severity_le': [is_int(-1, 5)],
+    'pscataract_severity_re': [is_int(-1, 5)],
+    'pscataract_severity_le': [is_int(-1, 5)],
 }

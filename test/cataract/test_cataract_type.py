@@ -1,7 +1,8 @@
 import pytest
 
 from eye_extractor.cataract.cataract_type import NS_PAT, CS_PAT, PSC_PAT, ACS_PAT, get_cataract_type, CataractType
-from eye_extractor.output.cataract import build_cataract_type, build_nscataract_severity
+from eye_extractor.output.cataract import build_cataract_type, build_nscataract_severity, build_pscataract_severity, \
+    build_cortcataract_severity
 
 
 @pytest.mark.parametrize('text', [
@@ -31,6 +32,7 @@ def test_psc_cataract_pattern(text):
 
 @pytest.mark.parametrize('text', [
     'CS 2',
+    'ACS 2-4',
     'cortical cataract',
 ])
 def test_cs_cataract_pattern(text):
@@ -85,3 +87,47 @@ def test_nscataract_severity(data, exp_nscataract_severity_re, exp_nscataract_se
     result = build_nscataract_severity(data)
     assert result['nscataract_severity_le'] == exp_nscataract_severity_le
     assert result['nscataract_severity_re'] == exp_nscataract_severity_re
+
+
+@pytest.mark.parametrize('data, exp_cortcataract_severity_re, exp_cortcataract_severity_le', [
+    ([], -1, -1),
+    ([{'cataract_type_le': {'value': CataractType.CS.value, 'severity': -1}}], -1, -1),
+    ([{'cataract_type_le': {'value': CataractType.ACS.value, 'severity': -1}}], -1, -1),
+    ([{'cataract_type_re': {'value': CataractType.NS.value, 'severity': 3.5}}], -1, -1),
+    ([{'cataract_type_re': {'value': CataractType.CS.value, 'severity': 3.5}}], 3.5, -1),
+    ([{'cataract_type_re': {'value': CataractType.ACS.value, 'severity': 3.5}}], 3.5, -1),
+    ([
+         {'cataract_type_re': {'value': CataractType.CS.value, 'severity': 3.5},
+          'cataract_type_le': {'value': CataractType.CS.value, 'severity': 3.5},
+          },
+         {'cataract_type_re': {'value': CataractType.ACS.value, 'severity': 4},
+          'cataract_type_le': {'value': CataractType.ACS.value, 'severity': 2},
+          },
+     ],
+     4, 3.5),
+])
+def test_nscataract_severity(data, exp_cortcataract_severity_re, exp_cortcataract_severity_le):
+    result = build_cortcataract_severity(data)
+    assert result['cortcataract_severity_le'] == exp_cortcataract_severity_le
+    assert result['cortcataract_severity_re'] == exp_cortcataract_severity_re
+
+
+@pytest.mark.parametrize('data, exp_pscataract_severity_re, exp_pscataract_severity_le', [
+    ([], -1, -1),
+    ([{'cataract_type_le': {'value': CataractType.PSC.value, 'severity': -1}}], -1, -1),
+    ([{'cataract_type_re': {'value': CataractType.CS.value, 'severity': 3.5}}], -1, -1),
+    ([{'cataract_type_re': {'value': CataractType.PSC.value, 'severity': 3.5}}], 3.5, -1),
+    ([
+         {'cataract_type_re': {'value': CataractType.PSC.value, 'severity': 3.5},
+          'cataract_type_le': {'value': CataractType.PSC.value, 'severity': 3.5},
+          },
+         {'cataract_type_re': {'value': CataractType.PSC.value, 'severity': 4},
+          'cataract_type_le': {'value': CataractType.PSC.value, 'severity': 2},
+          },
+     ],
+     4, 3.5),
+])
+def test_pscataract_severity(data, exp_pscataract_severity_re, exp_pscataract_severity_le):
+    result = build_pscataract_severity(data)
+    assert result['pscataract_severity_le'] == exp_pscataract_severity_le
+    assert result['pscataract_severity_re'] == exp_pscataract_severity_re
