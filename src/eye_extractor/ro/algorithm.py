@@ -1,4 +1,4 @@
-from eye_extractor.rao.rao import get_rao
+from eye_extractor.ro.rao import get_rao
 
 
 def extract_ro_variables(text, *, headers=None, lateralities=None):

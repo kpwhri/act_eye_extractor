@@ -1,7 +1,7 @@
 import pytest
 
 from eye_extractor.output.ro import build_rao
-from eye_extractor.rao.rao import RAO_PAT, get_rao
+from eye_extractor.ro.rao import RAO_PAT, get_rao
 
 
 @pytest.mark.parametrize('text', [
@@ -24,7 +24,6 @@ def test_rao_value(text, exp_value, exp_negword):
     first_variable = list(data[0].values())[0]
     assert first_variable['value'] == exp_value
     assert first_variable['negated'] == exp_negword
-    print(data)
 
 
 @pytest.mark.parametrize('data, exp_rao_re, exp_rao_le', [

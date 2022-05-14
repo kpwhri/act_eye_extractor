@@ -10,7 +10,7 @@ from eye_extractor.cataract.cataract import get_cataract
 from eye_extractor.headers import extract_headers_and_text
 from eye_extractor.iop import get_iop
 from eye_extractor.laterality import build_laterality_table
-from eye_extractor.rao.algorithm import extract_ro_variables
+from eye_extractor.ro.algorithm import extract_ro_variables
 from eye_extractor.va.extractor2 import extract_va
 from eye_extractor.va.rx import get_manifest_rx
 
