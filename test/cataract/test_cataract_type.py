@@ -45,7 +45,6 @@ def test_cs_cataract_pattern(text):
 ])
 def test_cataract_value_first_variable(text, exp_value, exp_negword):
     data = get_cataract_type(text)
-    print(data)
     assert len(data) > 0
     first_variable = list(data[0].values())[0]
     assert first_variable['value'] == exp_value
