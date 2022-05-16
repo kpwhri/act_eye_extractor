@@ -2,6 +2,8 @@ from eye_extractor.output.variable import column_from_variable
 
 
 def build_uveitis_variables(data):
+    if 'uveitis' not in data:
+        return {}
     curr = data['uveitis']
     results = {}
     results.update(build_uveitis(curr))

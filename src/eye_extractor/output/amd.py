@@ -7,10 +7,10 @@ from eye_extractor.output.variable import column_from_variable
 def build_amd_variables(data):
     curr = data['amd']
     results = {}
-    results.update(get_amd(curr))
-    results.update(get_drusen(curr))
-    results.update(get_subretinal_hemorrhage(curr))
-    results.update(get_pigmentary_changes(curr))
+    results.update(get_amd(curr['amd']))
+    results.update(get_drusen(curr['drusen']))
+    results.update(get_subretinal_hemorrhage(curr['srh']))
+    results.update(get_pigmentary_changes(curr['pigment']))
     return results
 
 

@@ -47,5 +47,6 @@ def validate_columns_in_row(column_dict, data, *, strict=False, id_col=None):
                 validator(val, id_col)
             except ValidatorError as ve:
                 logger.exception(ve)
+                logger.warning(f'For column {col}')
                 if strict:
                     raise ve
