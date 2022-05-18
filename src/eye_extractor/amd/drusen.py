@@ -77,30 +77,30 @@ def find_drusen(text, lateralities):
         })
 
     for m in BOTH_DRUSEN_PAT.finditer(text):
-        create_variable(data, text, m, lateralities, 'drusen_size', {
+        create_variable(data, text, m, lateralities, 'drusen_type', {
             'value': 3, 'term': m.group(), 'label': 'both', 'source': 'MACULA',
         })
 
     for m in HARD_DRUSEN_PAT.finditer(text):
-        create_variable(data, text, m, lateralities, 'drusen_size', {
+        create_variable(data, text, m, lateralities, 'drusen_type', {
             'value': 1, 'term': m.group(), 'label': 'hard', 'source': 'MACULA',
         })
 
     for m in SOFT_DRUSEN_PAT.finditer(text):
-        create_variable(data, text, m, lateralities, 'drusen_size', {
+        create_variable(data, text, m, lateralities, 'drusen_type', {
             'value': 2, 'term': m.group(), 'label': 'soft', 'source': 'MACULA',
         })
 
     for m in SMALL_DRUSEN_PAT.finditer(text):
-        create_variable(data, text, m, lateralities, 'drusen_type', {
+        create_variable(data, text, m, lateralities, 'drusen_size', {
             'value': 1, 'term': m.group(), 'label': 'small', 'source': 'MACULA',
         })
     for m in INTERMEDIATE_DRUSEN_PAT.finditer(text):
-        create_variable(data, text, m, lateralities, 'drusen_type', {
+        create_variable(data, text, m, lateralities, 'drusen_size', {
             'value': 2, 'term': m.group(), 'label': 'intermediate', 'source': 'MACULA',
         })
     for m in LARGE_DRUSEN_PAT.finditer(text):
-        create_variable(data, text, m, lateralities, 'drusen_type', {
+        create_variable(data, text, m, lateralities, 'drusen_size', {
             'value': 3, 'term': m.group(), 'label': 'large', 'source': 'MACULA',
         })
     return data
