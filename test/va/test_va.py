@@ -74,7 +74,7 @@ def test_get_manifest_rx(
 
 def test_bcv_pat():
     text = 'Best Correct Vision: OD: 20/25-2 OS: 20/40'
-    m = BCV_PAT.search(text)
+    m = BCV_PAT.update_history_from_key(text)
     assert m is not None
     assert m.group('od_denominator') == '25'
     assert m.group('od_correct') == '-2'

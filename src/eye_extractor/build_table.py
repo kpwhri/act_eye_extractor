@@ -9,6 +9,7 @@ import pathlib
 import click
 from loguru import logger
 
+from eye_extractor.builders.build_history import build_history
 from eye_extractor.output.amd import build_amd_variables
 from eye_extractor.output.cataract import build_cataract_variables
 from eye_extractor.output.cataract_surgery import build_cataract_surgery_variables
@@ -129,6 +130,7 @@ def process_data(data):
     result.update(build_ro_variables(data))
     result.update(build_cataract_variables(data))
     result.update(build_cataract_surgery_variables(data))
+    result.update(build_history(data))
     return result
 
 
