@@ -3,6 +3,7 @@ import re
 from eye_extractor.common.negation import is_negated
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
+# TODO: Transform into list and process like `laterality.py`.
 DIABETIC_RETINOPATHY_PATS = [
     ('diabetic_retinopathy', re.compile(
         r'\b('
@@ -18,7 +19,7 @@ DIABETIC_RETINOPATHY_PATS = [
     )),
     ('cotton_wool_spot', re.compile(
         r'\b('
-        r'cotton\W?wool\W?spots?|cwss?'
+        r'cotton\W?wool\W?spots?|cwss?|cws?'
         r')\b',
         re.I
     )),
@@ -88,14 +89,6 @@ DIABETIC_RETINOPATHY_PATS = [
     ('laser_panretinal_scars', re.compile(
         r'\b('
         r'prp|laser panretinal photo\W?coagulation|scatter photo\W?coagulation'
-        r')\b',
-        re.I
-    )),
-    ('neovascularization', re.compile(
-        r'\b('
-        r'NV|Neovascularization|neovascularization of( the)? angle|neovascularization'
-        r'|neovascularization of (the )?disc|neovascularization of the optic disc'
-        r'|NVA|NVI|NVD|NVE'
         r')\b',
         re.I
     )),
@@ -196,7 +189,7 @@ def get_dr(text, *, headers=None, lateralities=None):
     data = []
     for variable, PAT in DIABETIC_RETINOPATHY_PATS:
         for m in PAT.finditer(text):
-            negword = is_negated(m, text, {'no', 'or'})
+            negword = is_negated(m, text, {'no', 'or', 'neg', 'without'}, word_window=3)
             data.append(
                 create_new_variable(text, m, lateralities, variable, {
                     'value': 0 if negword else 1,
@@ -216,16 +209,3 @@ def extract_dr_variables(text: str, *, headers=None, lateralities=None) -> dict:
     return {
         'dr': get_dr(text, headers=headers, lateralities=lateralities)
     }
-
-
-# import pathlib
-#
-# path = pathlib.Path(r'G:\CTRHS\ACT_Eye\PROGRAMMING\NLP\corpus\corpus_20210326_train')
-#
-# num_files = 0
-# for i, file in enumerate(path.iterdir()):
-#     name, extension = file.name.split(".")
-#     if extension == "txt":
-#         num_files += 1
-#
-# print(num_files)
