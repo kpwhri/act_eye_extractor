@@ -1,7 +1,7 @@
 import re
 
-from eye_extractor.common.negation import is_negated
-from eye_extractor.laterality import build_laterality_table, create_new_variable
+from ..common.negation import is_negated
+from ..laterality import build_laterality_table, create_new_variable
 
 # RAO, retinal artery occlusion, RvasO (retinal vascular occlusion - can be vein or artery),
 # BRAO, Branch retinal artery occlusion, CRAO, Central retinal artery occlusion

@@ -41,7 +41,7 @@ Getting Started
 Prerequisites
 -------------
 
--  Python 3.8+
+-  Python 3.10+
 
 Installation
 ------------

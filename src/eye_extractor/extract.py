@@ -8,6 +8,7 @@ from loguru import logger
 from eye_extractor.amd.algorithm import extract_amd_variables
 from eye_extractor.cataract.cataract import get_cataract
 from eye_extractor.cataract.cataract_surgery import get_cataract_surgery
+from eye_extractor.dr.diabetic_retinopathy import extract_dr_variables
 from eye_extractor.headers import extract_headers_and_text
 from eye_extractor.iop import get_iop
 from eye_extractor.laterality import build_laterality_table
@@ -22,14 +23,16 @@ def extract_all(text: str, data: dict = None):
     lateralities = build_laterality_table(text)
     if data is None:
         data = {}
-    data['va'] = list(extract_va(text))
-    data['iop'] = list(get_iop(text))
-    data['amd'] = extract_amd_variables(text, headers=headers, lateralities=lateralities)
-    data['cataractsurg'] = get_cataract_surgery(text)
-    data['cataract'] = get_cataract(text, headers=headers, lateralities=lateralities)
-    data['manifestrx'] = list(get_manifest_rx(text))
-    data['ro'] = extract_ro_variables(text, headers=headers, lateralities=lateralities)
-    data['uveitis'] = get_uveitis(text, headers=headers, lateralities=lateralities)
+    # data['va'] = list(extract_va(text))
+    # data['iop'] = list(get_iop(text))
+    # data['amd'] = extract_amd_variables(text, headers=headers, lateralities=lateralities)
+    # data['cataractsurg'] = get_cataract_surgery(text)
+    # data['cataract'] = get_cataract(text, headers=headers, lateralities=lateralities)
+    # data['manifestrx'] = list(get_manifest_rx(text))
+    # data['ro'] = extract_ro_variables(text, headers=headers, lateralities=lateralities)
+    # data['uveitis'] = get_uveitis(text, headers=headers, lateralities=lateralities)
+    data['dr'] = extract_dr_variables(text, headers=headers, lateralities=lateralities)
+    print(data)
     return data
 
 
