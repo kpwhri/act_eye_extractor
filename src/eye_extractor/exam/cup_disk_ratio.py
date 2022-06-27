@@ -25,7 +25,9 @@ def extract_cup_disk_ratio(text, *, headers=None, lateralities=None):
             {
                 'context': m.group(),
                 'cupdiscratio_rev': m.group('od'),
+                'cupdiscratio_reh': m.group('od'),
                 'cupdiscratio_lev': m.group('os'),
+                'cupdiscratio_leh': m.group('os'),
                 'regex': 'CUP_DISK_PAT', 'source': 'ALL',
             }
         )
