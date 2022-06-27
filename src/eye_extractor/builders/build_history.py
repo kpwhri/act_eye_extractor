@@ -9,7 +9,7 @@ def build_family_history(data):
     return {
         'famhx_glaucoma': data.get('glaucoma', -1),
         'famhx_amd': data.get('amd', -1),
-        'famhx_catarct': data.get('cataracts', -1),
+        'famhx_cataract': data.get('cataracts', -1),
     }
 
 

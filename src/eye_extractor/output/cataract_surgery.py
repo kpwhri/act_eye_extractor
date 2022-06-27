@@ -3,8 +3,10 @@ from eye_extractor.laterality import Laterality
 
 def build_cataract_surgery_variables(data):
     curr = data['cataractsurg']
-    lat = curr['cataractsurg_lat']
     results = {}
+    if not curr:
+        return results
+    lat = curr['cataractsurg_lat']
     results['cataractsurg_yesno'] = 'RE' if lat == Laterality.OD else 'LE' if lat == Laterality.OS else '-1'
     results.update(build_cataractsurg_ioltype(curr))
     results.update(build_cataractsurg_date(curr, lat))

@@ -14,6 +14,7 @@ from eye_extractor.output.amd import build_amd_variables
 from eye_extractor.output.cataract import build_cataract_variables
 from eye_extractor.output.cataract_surgery import build_cataract_surgery_variables
 from eye_extractor.output.columns import OUTPUT_COLUMNS
+from eye_extractor.output.iop import build_iop
 from eye_extractor.output.laterality import laterality_from_int, laterality_iter
 from eye_extractor.output.ro import build_ro_variables
 from eye_extractor.output.uveitis import build_uveitis_variables
@@ -118,10 +119,11 @@ def get_manifest(data):
 
 def process_data(data):
     result = {
-        'docid': data['ft_id'],
+        'docid': data['note_id'],
         'studyid': data['studyid'],
-        'date': data['event_date'],
-        'encid': data['enc_id']
+        'date': data['note_date'],
+        'encid': data['enc_id'],
+        'is_training': data['train'],
     }
     result.update(get_va(data['va']))
     result.update(build_iop(data['iop']))
@@ -131,7 +133,7 @@ def process_data(data):
     result.update(build_ro_variables(data))
     result.update(build_cataract_variables(data))
     result.update(build_cataract_surgery_variables(data))
-    result.update(build_history(data))
+    result.update(build_history(data['history']))
     return result
 
 
@@ -141,7 +143,7 @@ def process_data(data):
 def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path):
     """
 
-    :param jsonl_file: if file, read that file; if directory, get most recent jsonl file
+    :param jsonl_file: if file, read that file; if directory, run all
     :param outdir:
     :return:
     """
@@ -149,19 +151,19 @@ def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path):
     outdir.mkdir(parents=True, exist_ok=True)
     outpath = outdir / f'variables_{now}.csv'
     if jsonl_file.is_dir():
-        list_of_paths = jsonl_file.glob('*.jsonl')
-        jsonl_file = max(list_of_paths, key=lambda p: p.stat().st_ctime)
-    with (
-            open(jsonl_file, encoding='utf8') as fh,
-            open(outpath, 'w', encoding='utf8', newline='') as out,
-    ):
-        writer = csv.DictWriter(out, fieldnames=OUTPUT_COLUMNS.keys())
-        writer.writeheader()
-        for line in fh:
-            data = json.loads(line.strip())
-            result = process_data(data)
-            validate_columns_in_row(OUTPUT_COLUMNS, result, id_col='studyid')
-            writer.writerow(result)
+        jsonl_files = jsonl_file.glob('*.jsonl')
+    else:
+        jsonl_files = [jsonl_file]
+    with open(outpath, 'w', encoding='utf8', newline='') as out:
+        for jsonl_file in jsonl_files:
+            with open(jsonl_file, encoding='utf8') as fh:
+                writer = csv.DictWriter(out, fieldnames=OUTPUT_COLUMNS.keys())
+                writer.writeheader()
+                for line in fh:
+                    data = json.loads(line.strip())
+                    result = process_data(data)
+                    validate_columns_in_row(OUTPUT_COLUMNS, result, id_col='studyid')
+                    writer.writerow(result)
 
 
 if __name__ == '__main__':
