@@ -6,6 +6,7 @@ from loguru import logger
 
 from eye_extractor.laterality import build_laterality_table, LATERALITY, \
     get_immediate_next_or_prev_laterality_from_table, Laterality
+from eye_extractor.notes.operative import OperativeReport
 
 iol_models = '|'.join([
     'sn60wf', 'ma60ac', r'sn6at\d', r'mta\W*400\W*ac',
@@ -56,6 +57,11 @@ SURGERY_DATE_PAT = re.compile(
 
 DATE_PAT = re.compile(
     r'(?:date: (?P<date>.{,20}\d{4}))',
+    re.I
+)
+
+IS_CATSURG_PAT = re.compile(
+    r'(?:preoperative\W*diagnosis:.{0,50}cataract|operative\W*report\W*ophthalmology cataract)',
     re.I
 )
 
@@ -149,7 +155,10 @@ def cataractsurg_ioltype(text):
 
 
 def get_cataract_surgery(text):
+    if not IS_CATSURG_PAT.search(text):
+        return {}
+    doc = OperativeReport.build_operative_report(text)
     return {
         'cataractsurg_ioltype': list(cataractsurg_ioltype(text)),
-        'surgery_date': get_surgery_date(text),
+        'surgery_date': get_surgery_date(doc.get_opdate()),
     }
