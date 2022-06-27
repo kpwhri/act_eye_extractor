@@ -7,6 +7,9 @@ OUTPUT_COLUMNS = {
     'date': [is_date],
     'encid': [is_int],
     # visual acuity
+    'iop_measurement_re': [],
+    'iop_measurement_le': [],
+    'iop_instrument_type': [],
     'vacc_denominator_re': [is_int, is_in_range(15, 401)],
     'vacc_denominator_le': [is_int, is_in_range(15, 401)],
     'vasc_denominator_re': [is_int, is_in_range(15, 401)],

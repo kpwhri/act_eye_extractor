@@ -124,6 +124,7 @@ def process_data(data):
         'encid': data['enc_id']
     }
     result.update(get_va(data['va']))
+    result.update(build_iop(data['iop']))
     result.update(get_manifest(data['manifestrx']))
     result.update(build_amd_variables(data))
     result.update(build_uveitis_variables(data))
