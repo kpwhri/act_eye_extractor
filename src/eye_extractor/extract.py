@@ -42,7 +42,8 @@ def extract_all(text: str, data: dict = None):
 @click.command()
 @click.argument('directories', nargs=-1, type=click.Path(exists=True, file_okay=False, path_type=pathlib.Path))
 @click.option('--outdir', type=click.Path(file_okay=False, path_type=pathlib.Path), default=None)
-def extract_variables(directories: tuple[pathlib.Path], outdir: pathlib.Path = None):
+@click.option('--filelist', type=click.Path(dir_okay=False, path_type=pathlib.Path), default=None)
+def extract_variables(directories: tuple[pathlib.Path], outdir: pathlib.Path = None, filelist: pathlib.Path = None):
     """
     Iterate through all '*.txt' files in directory for processing by eye extractor.
         Optionally, will include relevant metadata from associated *.meta json files
@@ -53,24 +54,41 @@ def extract_variables(directories: tuple[pathlib.Path], outdir: pathlib.Path = N
     outdir.mkdir(parents=True, exist_ok=True)
     now = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
     with open(outdir / f'eye_extractor_{now}.jsonl', 'w', encoding='utf8') as out:
-        for line in extract_variables_from_directories(*directories):
-            out.write(json.dumps(line, default=str) + '\n')
+        if filelist is not None:
+            for line in extract_variables_from_filelist(filelist):
+                out.write(json.dumps(line, default=str) + '\n')
+        else:
+            for line in extract_variables_from_directories(*directories):
+                out.write(json.dumps(line, default=str) + '\n')
+
+
+def extract_variable_from_file(file, directory):
+    with open(file, encoding='utf8') as fh:
+        text = fh.read()
+    metadata = directory / f'{file.stem}.meta'
+    if metadata.exists():
+        with open(metadata, encoding='utf8') as fh:
+            data = json.load(fh)
+    else:
+        data = {'filename': str(file)}
+    data = extract_all(text, data)
+    return data
+
+
+def extract_variables_from_filelist(filelist):
+    with open(filelist) as fh:
+        for i, line in enumerate(fh, start=1):
+            file = pathlib.Path(line.strip())
+            yield extract_variable_from_file(file, file.parent)
+            if i % 10000 == 0:
+                logger.info(f'Processed {i} records.')
 
 
 def extract_variables_from_directories(*directories: pathlib.Path):
     for directory in directories:
         logger.info(f'Reading Directory: {directory}')
         for i, file in enumerate(directory.glob('*.txt'), start=1):
-            with open(file, encoding='utf8') as fh:
-                text = fh.read()
-            metadata = directory / f'{file.stem}.meta'
-            if metadata.exists():
-                with open(metadata, encoding='utf8') as fh:
-                    data = json.load(fh)
-            else:
-                data = {'filename': str(file)}
-            data = extract_all(text, data)
-            yield data
+            yield extract_variable_from_file(file, directory)
             if i % 10000 == 0:
                 logger.info(f'Processed {i} records.')
 
