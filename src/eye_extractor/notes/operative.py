@@ -60,8 +60,6 @@ class OperativeReport:
         self.headers = headers
 
     def _get_header_text(self, header_group):
-        print(self.headers)
-        print(header_group)
         return '\n'.join(self.headers[header] for header in header_group if header in self.headers)
 
     def get_preop(self):
