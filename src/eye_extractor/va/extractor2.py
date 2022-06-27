@@ -23,6 +23,7 @@ class VisualAcuity(enum.Enum):
     NEAR = 6
     HISTORICAL = 7
     RX = 8
+    ETDRS = 9
 
 
 VISUAL_ACUITY = {
@@ -45,6 +46,9 @@ VISUAL_ACUITY = {
     'CORRECTION': [VisualAcuity.CORRECTED],
     'CC': [VisualAcuity.CORRECTED],
     'C': [VisualAcuity.CORRECTED],  # handle a typo
+    'SNELLEN': [VisualAcuity.SNELLEN],
+    'ETDRS': [VisualAcuity.ETDRS],
+    'LIGHTHOUSE': [VisualAcuity.ETDRS],
 }
 KEYWORD_PATTERN = re.compile(
     fr'\b({"|".join(VISUAL_ACUITY.keys())})\b',
@@ -265,14 +269,15 @@ def extract_va(text):
             values['exam'] = 'vaph'
         elif VisualAcuity.CORRECTED in results:
             values['exam'] = 'vacc'
-        elif VisualAcuity.SNELLEN in results:
-            values['exam'] = 'vasc'
         elif VisualAcuity.UNCORRECTED in results:
+            values['exam'] = 'vasc'
+        elif VisualAcuity.SNELLEN in results:  # not sure why this works?
             values['exam'] = 'vasc'
         else:
             # print(f'Unrecognized exam: {results} {values}')
             continue
 
+        values['format'] = 'etdrs' if VisualAcuity.ETDRS in results else 'snellen'
         yield values
 
 
