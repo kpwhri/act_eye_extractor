@@ -14,10 +14,18 @@ from eye_extractor.output.amd import build_amd_variables
 from eye_extractor.output.cataract import build_cataract_variables
 from eye_extractor.output.cataract_surgery import build_cataract_surgery_variables
 from eye_extractor.output.columns import OUTPUT_COLUMNS
+from eye_extractor.output.iop import build_iop
 from eye_extractor.output.laterality import laterality_from_int, laterality_iter
 from eye_extractor.output.ro import build_ro_variables
 from eye_extractor.output.uveitis import build_uveitis_variables
 from eye_extractor.output.validators import validate_columns_in_row
+
+
+etdrs_lookup = {
+    'vacc': 'wc',
+    'vasc': 'nc',
+    'vaph': 'ph',
+}
 
 
 def parse_va_exam(row, prev_denom, results):
@@ -25,41 +33,47 @@ def parse_va_exam(row, prev_denom, results):
     denom = row['denominator']
     num_correct = row['correct']
     text = row.get('text', '')
+    is_etdrs = row.get('format') == 'etdrs'
     laterality = laterality_from_int(row['laterality'])
     if not denom:
         return
     for lat in laterality_iter(laterality):
-        # denominator
-        variable = f'{exam}_denominator_{lat}'
-        if isinstance(denom, int):
-            pass
-        elif denom.upper() in {'NI', 'NO IMPROVEMENT'}:
-            if lat in prev_denom:
-                denom = prev_denom[lat][0]
-                num_correct = prev_denom[lat][1]
-            else:
-                logger.warning(f'Did not find previous score for "ni" in "{text}".')
+        if is_etdrs:  # TODO: not sure how to capture: too few examples
+            variable = f'etdrs_{etdrs_lookup[exam]}_{lat}'
+            num_correct = int(num_correct)
+            results[variable] = num_correct
+        else:  # snellen
+            # denominator
+            variable = f'{exam}_denominator_{lat}'
+            if isinstance(denom, int):
+                pass
+            elif denom.upper() in {'NI', 'NO IMPROVEMENT'}:
+                if lat in prev_denom:
+                    denom = prev_denom[lat][0]
+                    num_correct = prev_denom[lat][1]
+                else:
+                    logger.warning(f'Did not find previous score for "ni" in "{text}".')
+                    continue
+            elif denom.upper() in {'NT', 'NA'}:  # not taken
                 continue
-        elif denom.upper() in {'NT', 'NA'}:  # not taken
-            continue
-        # get the max result
-        denom = int(denom)
-        if denom > results.get(variable, -1):
-            if denom > 401:
-                logger.info(f'Denominator too high: "{denom}" in {text}.')
-            results[variable] = denom
-        else:
-            continue
+            # get the max result
+            denom = int(denom)
+            if denom > results.get(variable, -1):
+                if denom > 401:
+                    logger.info(f'Denominator too high: "{denom}" in {text}.')
+                results[variable] = denom
+            else:
+                continue
 
-        # number correct
-        variable = f'{exam}_numbercorrect_{lat}'
-        num_correct = int(num_correct)
-        prev_denom[lat] = (denom, num_correct, True)
-        results[variable] = num_correct
-        if -6 <= num_correct <= 6:
-            pass
-        else:
-            logger.info(f'Invalid number correct "{num_correct}" in {text}.')
+            # number correct
+            variable = f'{exam}_numbercorrect_{lat}'
+            num_correct = int(num_correct)
+            prev_denom[lat] = (denom, num_correct, True)
+            results[variable] = num_correct
+            if -6 <= num_correct <= 6:
+                pass
+            else:
+                logger.info(f'Invalid number correct "{num_correct}" in {text}.')
 
 
 def parse_va_test(row, prev_denom, results, *, no_improvement=False):
@@ -118,19 +132,21 @@ def get_manifest(data):
 
 def process_data(data):
     result = {
-        'docid': data['ft_id'],
+        'docid': data['note_id'],
         'studyid': data['studyid'],
-        'date': data['event_date'],
-        'encid': data['enc_id']
+        'date': data['note_date'],
+        'encid': data['enc_id'],
+        'is_training': data['train'],
     }
     result.update(get_va(data['va']))
+    result.update(build_iop(data['iop']))
     result.update(get_manifest(data['manifestrx']))
     result.update(build_amd_variables(data))
     result.update(build_uveitis_variables(data))
     result.update(build_ro_variables(data))
     result.update(build_cataract_variables(data))
     result.update(build_cataract_surgery_variables(data))
-    result.update(build_history(data))
+    result.update(build_history(data['history']))
     return result
 
 
@@ -140,7 +156,7 @@ def process_data(data):
 def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path):
     """
 
-    :param jsonl_file: if file, read that file; if directory, get most recent jsonl file
+    :param jsonl_file: if file, read that file; if directory, run all
     :param outdir:
     :return:
     """
@@ -148,19 +164,20 @@ def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path):
     outdir.mkdir(parents=True, exist_ok=True)
     outpath = outdir / f'variables_{now}.csv'
     if jsonl_file.is_dir():
-        list_of_paths = jsonl_file.glob('*.jsonl')
-        jsonl_file = max(list_of_paths, key=lambda p: p.stat().st_ctime)
-    with (
-            open(jsonl_file, encoding='utf8') as fh,
-            open(outpath, 'w', encoding='utf8', newline='') as out,
-    ):
-        writer = csv.DictWriter(out, fieldnames=OUTPUT_COLUMNS.keys())
-        writer.writeheader()
-        for line in fh:
-            data = json.loads(line.strip())
-            result = process_data(data)
-            validate_columns_in_row(OUTPUT_COLUMNS, result, id_col='studyid')
-            writer.writerow(result)
+        jsonl_files = jsonl_file.glob('*.jsonl')
+    else:
+        jsonl_files = [jsonl_file]
+    with open(outpath, 'w', encoding='utf8', newline='') as out:
+        for i, jsonl_file in enumerate(jsonl_files):
+            with open(jsonl_file, encoding='utf8') as fh:
+                writer = csv.DictWriter(out, fieldnames=OUTPUT_COLUMNS.keys())
+                if i == 0:
+                    writer.writeheader()
+                for line in fh:
+                    data = json.loads(line.strip())
+                    result = process_data(data)
+                    validate_columns_in_row(OUTPUT_COLUMNS, result, id_col='studyid')
+                    writer.writerow(result)
 
 
 if __name__ == '__main__':

@@ -30,6 +30,9 @@ LATERALITY = {
     'BILATERAL': Laterality.OU
 }
 
+od_pattern = '|'.join(k for k, v in LATERALITY.items() if v == Laterality.OD).replace('.', r'\.')
+os_pattern = '|'.join(k for k, v in LATERALITY.items() if v == Laterality.OS).replace('.', r'\.')
+
 laterality_pattern = '|'.join(LATERALITY.keys()).replace('.', r'\.')
 
 LATERALITY_PATTERN = re.compile(
@@ -46,6 +49,19 @@ LATERALITY_SPLIT_PATTERN = re.compile(  # for determining likely boundaries
 def laterality_finder(text):
     for m in LATERALITY_PATTERN.finditer(text):
         yield LATERALITY[m.group().upper()]
+
+
+def simplify_lateralities(lats):
+    """Simplify lateralities (e.g., OD, OS -> OU"""
+    lats = set(lats)
+    if Laterality.OD in lats and Laterality.OS in lats:
+        return Laterality.OU
+    elif Laterality.OD in lats:
+        return Laterality.OD
+    elif Laterality.OS in lats:
+        return Laterality.OS
+    else:
+        return Laterality.UNKNOWN
 
 
 def build_laterality_table(text):

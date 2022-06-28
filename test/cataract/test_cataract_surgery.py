@@ -2,9 +2,11 @@ import datetime
 
 import pytest
 
-from eye_extractor.cataract.cataract_surgery import IOL_TYPE_PAT, get_iol_type, get_cataract_laterality, get_surgery_date, \
+from eye_extractor.cataract.cataract_surgery import IOL_TYPE_PAT, get_iol_type, get_cataract_laterality, \
+    get_surgery_date, \
     cataractsurg_ioltype
 from eye_extractor.laterality import Laterality
+from eye_extractor.notes.operative import OperativeReport
 
 
 @pytest.mark.parametrize('text, kinds', [
@@ -75,3 +77,23 @@ def test_cataract_laterality(text, lat):
 def test_surgery_date(text, exp):
     date = get_surgery_date(text)
     assert exp == date
+
+
+@pytest.mark.parametrize('text, laterality', [
+    ('Cataract fragments of left eye following 	cataract surgery', Laterality.OS),
+])
+def test_cataract_surgery_laterality(text, laterality):
+    pass
+
+
+@pytest.fixture()
+def example_catsurg_op():
+    return ('DATE OF SURGERY: October 15, 2018 PREOPERATIVE DIAGNOSIS: Nuclear cataract, right eye.'
+            ' POSTOPERATIVE DIAGNOSIS: Nuclear cataract, right eye.')
+
+
+def test_parse_catsurg(example_catsurg_op):
+    doc = OperativeReport.build_operative_report(example_catsurg_op)
+    assert doc.get_opdate() == ' October 15, 2018 '
+    assert doc.get_preop() == ' Nuclear cataract, right eye. '
+    assert doc.get_postop() == ' Nuclear cataract, right eye.'

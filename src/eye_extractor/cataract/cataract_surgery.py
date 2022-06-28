@@ -5,7 +5,8 @@ from dateutil.parser import parse, ParserError
 from loguru import logger
 
 from eye_extractor.laterality import build_laterality_table, LATERALITY, \
-    get_immediate_next_or_prev_laterality_from_table, Laterality
+    get_immediate_next_or_prev_laterality_from_table, Laterality, laterality_finder, simplify_lateralities
+from eye_extractor.notes.operative import OperativeReport
 
 iol_models = '|'.join([
     'sn60wf', 'ma60ac', r'sn6at\d', r'mta\W*400\W*ac',
@@ -56,6 +57,11 @@ SURGERY_DATE_PAT = re.compile(
 
 DATE_PAT = re.compile(
     r'(?:date: (?P<date>.{,20}\d{4}))',
+    re.I
+)
+
+IS_CATSURG_PAT = re.compile(
+    r'(?:preoperative\W*diagnosis:.{0,50}cataract|operative\W*report\W*ophthalmology cataract)',
     re.I
 )
 
@@ -148,8 +154,33 @@ def cataractsurg_ioltype(text):
     return iols
 
 
+def get_cataractsurg_laterality(doc: OperativeReport):
+    text = doc.get_preop() or doc.get_postop()
+    if not text:
+        return Laterality.UNKNOWN
+    return simplify_lateralities(laterality_finder(text))
+
+
+def get_cataractsurg_complications(doc: OperativeReport, text):
+    complications = doc.get_complications()
+    if not complications:
+        if 'no complications' in text.lower():
+            return {'text': 'no complications', 'value': 0}
+        else:
+            return {'text': '', 'value': -1}
+    if 'none' in complications.lower():
+        return {'text': complications[:20], 'value': 0}
+    else:
+        return {'text': complications[:20], 'value': 1, 'complication': complications[:30]}
+
+
 def get_cataract_surgery(text):
+    if not IS_CATSURG_PAT.search(text):
+        return {}
+    doc = OperativeReport.build_operative_report(text)
     return {
+        'cataractsurg_lat': get_cataractsurg_laterality(doc),
         'cataractsurg_ioltype': list(cataractsurg_ioltype(text)),
-        'surgery_date': get_surgery_date(text),
+        'cataractsurg_dt': get_surgery_date(doc.get_opdate()),
+        'catsurg_comp': get_cataractsurg_complications(doc, text)
     }
