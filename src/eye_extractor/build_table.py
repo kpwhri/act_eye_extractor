@@ -168,10 +168,11 @@ def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path):
     else:
         jsonl_files = [jsonl_file]
     with open(outpath, 'w', encoding='utf8', newline='') as out:
-        for jsonl_file in jsonl_files:
+        for i, jsonl_file in enumerate(jsonl_files):
             with open(jsonl_file, encoding='utf8') as fh:
                 writer = csv.DictWriter(out, fieldnames=OUTPUT_COLUMNS.keys())
-                writer.writeheader()
+                if i == 0:
+                    writer.writeheader()
                 for line in fh:
                     data = json.loads(line.strip())
                     result = process_data(data)
