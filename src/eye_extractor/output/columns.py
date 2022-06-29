@@ -127,4 +127,9 @@ OUTPUT_COLUMNS = {
     'perhx_retinal_detachment': [is_in_range(-1, 1)],
     'perhx_amblyopia': [is_in_range(-1, 1)],
     'perhx_amd': [is_in_range(-1, 1)],
+    # exam section
+    'cupdiscratio_rev': [],
+    'cupdiscratio_reh': [],
+    'cupdiscratio_lev': [],
+    'cupdiscratio_leh': [],
 }

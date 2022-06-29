@@ -14,6 +14,7 @@ from eye_extractor.output.amd import build_amd_variables
 from eye_extractor.output.cataract import build_cataract_variables
 from eye_extractor.output.cataract_surgery import build_cataract_surgery_variables
 from eye_extractor.output.columns import OUTPUT_COLUMNS
+from eye_extractor.output.exam import build_exam
 from eye_extractor.output.iop import build_iop
 from eye_extractor.output.laterality import laterality_from_int, laterality_iter
 from eye_extractor.output.ro import build_ro_variables
@@ -147,6 +148,7 @@ def process_data(data):
     result.update(build_cataract_variables(data))
     result.update(build_cataract_surgery_variables(data))
     result.update(build_history(data['history']))
+    result.update(build_exam(data))
     return result
 
 
