@@ -8,6 +8,7 @@ from loguru import logger
 from eye_extractor.amd.algorithm import extract_amd_variables
 from eye_extractor.cataract.cataract import get_cataract
 from eye_extractor.cataract.cataract_surgery import get_cataract_surgery
+from eye_extractor.exam.algorithm import get_exam
 from eye_extractor.headers import extract_headers_and_text
 from eye_extractor.history.famhx import create_family_history
 from eye_extractor.history.perhx import create_personal_history
@@ -36,6 +37,7 @@ def extract_all(text: str, data: dict = None):
         'family': create_family_history(text, headers=headers, lateralities=lateralities),
         'personal': create_personal_history(text, headers=headers, lateralities=lateralities),
     }
+    data['exam'] = get_exam(text, headers=headers, lateralities=lateralities)
     return data
 
 

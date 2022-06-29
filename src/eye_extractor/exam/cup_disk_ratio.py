@@ -32,19 +32,39 @@ CUP_DISC_NO_LAT_LABEL_PAT = re.compile(
 )
 
 
+def followed_by_date(m, text):
+    m = re.search(
+        r'(?P<m>\d{1,2})[-/](?P<d>\d{1,2})[-/](?P<y>\d{2,4})',
+        text[m.end():m.end() + 30],
+        re.I
+    )
+    if m:
+        year = m.group('y')
+        if len(year) == 2:
+            year = f'20{year}'
+        month = m.group('m')
+        day = m.group('d')
+        return f'{year}-{month}-{day}'
+
+
 def extract_cup_disk_ratio(text, *, headers=None, lateralities=None):
     data = []
-    for m in CUP_DISK_PAT.finditer(text):
-        data.append(
-            {
-                'context': m.group(),
-                'cupdiscratio_rev': m.group('od') or m.group('ou') or m.group('ou2'),
-                'cupdiscratio_reh': m.group('od') or m.group('ou') or m.group('ou2'),
-                'cupdiscratio_lev': m.group('os') or m.group('ou') or m.group('ou2'),
-                'cupdiscratio_leh': m.group('os') or m.group('ou') or m.group('ou2'),
-                'regex': 'CUP_DISK_PAT', 'source': 'ALL',
-            }
-        )
+    for pat_label, pat in [
+        ('CUP_DISK_PAT', CUP_DISK_PAT),
+        ('CUP_DISC_NO_LAT_LABEL_PAT', CUP_DISC_NO_LAT_LABEL_PAT),
+    ]:
+        for m in pat.finditer(text):
+            data.append(
+                {
+                    'context': m.group(),
+                    'cupdiscratio_rev': m.group('od') or m.group('ou') or m.group('ou2'),
+                    'cupdiscratio_reh': m.group('od') or m.group('ou') or m.group('ou2'),
+                    'cupdiscratio_lev': m.group('os') or m.group('ou') or m.group('ou2'),
+                    'cupdiscratio_leh': m.group('os') or m.group('ou') or m.group('ou2'),
+                    'measurement_date': followed_by_date(m, text),
+                    'regex': pat_label, 'source': 'ALL',
+                }
+            )
     if headers:
         pass
     return data
