@@ -5,6 +5,7 @@ Cup/Disc Ratio	BE	cupdisc_checkbox		categories	No Mention/ WNL / Result
 """
 import re
 
+from eye_extractor.common.regex import coalesce_match
 from eye_extractor.laterality import od_pattern, os_pattern, ou_pattern
 
 cd_ratio = (rf'c(?:up)?\W*d(?:is[kc])?\W*?'
@@ -17,6 +18,9 @@ CUP_DISK_PAT = re.compile(
     rf'(?:'
     rf'\s*(?:{od_pattern}|pd)\s*(?P<od>{ratio})\W*'
     rf'\s*(?:{os_pattern})\s*(?P<os>{ratio})\b'
+    rf'|'
+    rf'\s*(?P<od2>{ratio})\s*(?:{od_pattern}|pd)\W*'
+    rf'\s*(?P<os2>{ratio})\s*(?:{os_pattern})\b'
     rf'|'
     rf'\s*(?:{ou_pattern})\s*(?P<ou>{ratio})\b'
     rf'|'
@@ -76,10 +80,10 @@ def extract_cup_disk_ratio(text, *, headers=None, lateralities=None):
             data.append(
                 {
                     'context': m.group(),
-                    'cupdiscratio_rev': m.group('od') or m.group('ou') or m.group('ou2'),
-                    'cupdiscratio_reh': m.group('od') or m.group('ou') or m.group('ou2'),
-                    'cupdiscratio_lev': m.group('os') or m.group('ou') or m.group('ou2'),
-                    'cupdiscratio_leh': m.group('os') or m.group('ou') or m.group('ou2'),
+                    'cupdiscratio_rev': coalesce_match(m, 'od', 'od2', 'ou', 'ou2'),
+                    'cupdiscratio_reh': coalesce_match(m, 'od', 'od2', 'ou', 'ou2'),
+                    'cupdiscratio_lev': coalesce_match(m, 'os', 'os2', 'ou', 'ou2'),
+                    'cupdiscratio_leh': coalesce_match(m, 'os', 'os2', 'ou', 'ou2'),
                     'measurement_date': followed_by_date(m, text),
                     'regex': pat_label, 'source': 'ALL',
                 }
@@ -89,14 +93,16 @@ def extract_cup_disk_ratio(text, *, headers=None, lateralities=None):
             data.append(
                 {
                     'context': m.group(),
-                    'cupdiscratio_rev': m.group('od') or m.group('ou'),
-                    'cupdiscratio_reh': m.group('od') or m.group('ou'),
-                    'cupdiscratio_lev': m.group('os') or m.group('ou'),
-                    'cupdiscratio_leh': m.group('os') or m.group('ou'),
                     'measurement_date': followed_by_date(m, text),
                     'regex': 'CUP_DISC_UNILAT_PAT', 'source': 'ALL',
                 }
             )
+            if coalesce_match(m, 'od', 'ou'):
+                data[-1]['cupdiscratio_rev'] = m.group('ratio')
+                data[-1]['cupdiscratio_reh'] = m.group('ratio')
+            elif coalesce_match(m, 'os', 'ou'):
+                data[-1]['cupdiscratio_lev'] = m.group('ratio')
+                data[-1]['cupdiscratio_leh'] = m.group('ratio')
 
     if headers:
         pass
