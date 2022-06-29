@@ -32,6 +32,7 @@ LATERALITY = {
 
 od_pattern = '|'.join(k for k, v in LATERALITY.items() if v == Laterality.OD).replace('.', r'\.')
 os_pattern = '|'.join(k for k, v in LATERALITY.items() if v == Laterality.OS).replace('.', r'\.')
+ou_pattern = '|'.join(k for k, v in LATERALITY.items() if v == Laterality.OU).replace('.', r'\.')
 
 laterality_pattern = '|'.join(LATERALITY.keys()).replace('.', r'\.')
 

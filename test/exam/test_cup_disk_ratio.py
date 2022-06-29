@@ -5,8 +5,13 @@ from eye_extractor.exam.cup_disk_ratio import CUP_DISK_PAT
 
 @pytest.mark.parametrize('text, exp_od, exp_os', [
     ('C/D (0.27-0.55): OD 0.75 OS 0.60', '0.75', '0.60'),
+    ('C/D: OD 0.75 OS 0.60', '0.75', '0.60'),
+    ('C/D OD 0.75 OS 0.60', '0.75', '0.60'),
+    ('c/d OU 0.5', '0.5', '0.5'),
+    ('c/d 0.5 OU', '0.5', '0.5'),
 ])
 def test_cup_disk_regex(text, exp_od, exp_os):
     m = CUP_DISK_PAT.search(text)
-    assert m.group('od') == exp_od
-    assert m.group('os') == exp_os
+    assert m is not None
+    assert m.group('od') or m.group('ou') or m.group('ou2') == exp_od
+    assert m.group('os') or m.group('ou') or m.group('ou2') == exp_os
