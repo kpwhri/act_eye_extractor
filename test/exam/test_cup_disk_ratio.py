@@ -9,6 +9,8 @@ from eye_extractor.exam.cup_disk_ratio import CUP_DISK_PAT
     ('C/D OD 0.75 OS 0.60', '0.75', '0.60'),
     ('c/d OU 0.5', '0.5', '0.5'),
     ('c/d 0.5 OU', '0.5', '0.5'),
+    ('c/d ratios OD 0.5 OS 0.6', '0.5', '0.6'),
+    ('c/d ratios OD 0.5 / OS 0.6', '0.5', '0.6'),
 ])
 def test_cup_disk_regex(text, exp_od, exp_os):
     m = CUP_DISK_PAT.search(text)

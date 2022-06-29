@@ -10,9 +10,10 @@ from eye_extractor.laterality import od_pattern, os_pattern, ou_pattern
 CUP_DISK_PAT = re.compile(
     r'\b(?:'
     rf'c(?:up)?\W*d(?:is[kc])?\W*?'
+    rf'(?:ratios?\s*)?'
     rf'(?:\(.*?\))?[:-]?'
     rf'(?:'
-    rf'\s*(?:{od_pattern})\s*(?P<od>\d\.\d+)\s*'
+    rf'\s*(?:{od_pattern})\s*(?P<od>\d\.\d+)\W*'
     rf'\s*(?:{os_pattern})\s*(?P<os>\d\.\d+)\b'
     rf'|'
     rf'\s*(?:{ou_pattern})\s*(?P<ou>\d\.\d+)\b'
