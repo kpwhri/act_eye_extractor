@@ -15,7 +15,7 @@ ratio = r'\d\.\d+'
 CUP_DISK_PAT = re.compile(
     rf'\b(?:{cd_ratio}'
     rf'(?:'
-    rf'\s*(?:{od_pattern})\s*(?P<od>{ratio})\W*'
+    rf'\s*(?:{od_pattern}|pd)\s*(?P<od>{ratio})\W*'
     rf'\s*(?:{os_pattern})\s*(?P<os>{ratio})\b'
     rf'|'
     rf'\s*(?:{ou_pattern})\s*(?P<ou>{ratio})\b'
@@ -28,6 +28,25 @@ CUP_DISK_PAT = re.compile(
 
 CUP_DISC_NO_LAT_LABEL_PAT = re.compile(
     rf'\b(?:{cd_ratio}\W*(?P<od>{ratio})\s*(?:[,/]\s*)?(?P<os>{ratio}))\b',
+    re.I
+)
+
+CUP_DISC_UNILAT_PAT = re.compile(
+    rf'\b(?:'
+    rf'(?:'
+    rf'(?P<od>{od_pattern})|(?P<os>{os_pattern})|(?P<ou>{ou_pattern})'
+    rf')\W*'
+    rf'(?:linear\s*)?'
+    rf'{cd_ratio}\s*'
+    rf'(?P<ratio>{ratio})\s*'
+    rf'(?:\(\+?(?P<incr>{ratio})\))?'
+    rf')\b',
+    re.I
+)
+
+
+CUP_DISC_HV_PAT = re.compile(
+    rf'\b(?:{cd_ratio})',
     re.I
 )
 
@@ -65,6 +84,20 @@ def extract_cup_disk_ratio(text, *, headers=None, lateralities=None):
                     'regex': pat_label, 'source': 'ALL',
                 }
             )
+    if len(data) == 0:
+        for m in CUP_DISC_UNILAT_PAT.finditer(text):
+            data.append(
+                {
+                    'context': m.group(),
+                    'cupdiscratio_rev': m.group('od') or m.group('ou'),
+                    'cupdiscratio_reh': m.group('od') or m.group('ou'),
+                    'cupdiscratio_lev': m.group('os') or m.group('ou'),
+                    'cupdiscratio_leh': m.group('os') or m.group('ou'),
+                    'measurement_date': followed_by_date(m, text),
+                    'regex': 'CUP_DISC_UNILAT_PAT', 'source': 'ALL',
+                }
+            )
+
     if headers:
         pass
     return data
