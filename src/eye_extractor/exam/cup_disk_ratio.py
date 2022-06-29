@@ -2,6 +2,12 @@
 Cup Disk Ratio
 
 Cup/Disc Ratio	BE	cupdisc_checkbox		categories	No Mention/ WNL / Result
+
+TODO:
+* handle v/h when presented separately
+    - c/d od 0.6v0.65h os 0.5v/0.55h
+    - c/d 0.6+/0.6+ od 0.5+/0.5+ os
+* handle (+0.01) language (see incr in CUP_DISC_UNILAT_PAT)
 """
 import re
 
