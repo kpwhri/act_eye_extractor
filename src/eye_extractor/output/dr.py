@@ -92,3 +92,84 @@ def build_neovasc(data):
 
 def build_nva(data):
     return column_from_variable_binary(data, 'nva_yesno')
+
+
+def build_nvi(data):
+    return column_from_variable_binary(data, 'nvi_yesno')
+
+
+# def build_nvd(data):
+#     return column_from_variable({
+#             f'venbeading_re': -1,
+#             f'venbeading_le': -1,
+#         },
+#         data)
+
+
+# def build_nve(data):
+#     return column_from_variable({
+#             f'venbeading_re': -1,
+#             f'venbeading_le': -1,
+#         },
+#         data)
+
+
+# def build_dr_type(data):
+#     return column_from_variable({
+#             f'venbeading_re': -1,
+#             f'venbeading_le': -1,
+#         },
+#         data)
+
+
+# def build_npdr(data):
+#     return column_from_variable({
+#             f'venbeading_re': -1,
+#             f'venbeading_le': -1,
+#         },
+#         data)
+
+
+# def build_pdr(data):
+#     return column_from_variable({
+#             f'venbeading_re': -1,
+#             f'venbeading_le': -1,
+#         },
+#         data)
+
+
+# def build_dr_tx(data):
+#     return column_from_variable({
+#             f'venbeading_re': -1,
+#             f'venbeading_le': -1,
+#         },
+#         data)
+
+
+def build_edema(data):
+    return column_from_variable_binary(data, 'dmacedema_yesno')
+
+
+def build_sig_edema(data):
+    return column_from_variable_binary(data, 'dmacedema_clinsignif')
+
+
+def build_oct_cme(data)
+    return column_from_variable_binary(data, 'oct_centralmac')
+
+
+# def build_edema_tx(data):
+#     return column_from_variable({
+#             f'venbeading_re': -1,
+#             f'venbeading_le': -1,
+#         },
+#         data)
+
+
+# def build_edema_antivegf
+#     return column_from_variable({
+#             f'venbeading_re': -1,
+#             f'venbeading_le': -1,
+#         },
+#         data)
+
