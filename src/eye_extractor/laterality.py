@@ -4,10 +4,10 @@ from typing import Match
 
 
 class Laterality(enum.IntEnum):
-    OD = 0  # right
-    OS = 1  # left
-    OU = 2  # both/bilateral
-    UNKNOWN = 3
+    OD = 1  # right
+    OS = 2  # left
+    OU = 3  # both/bilateral
+    UNKNOWN = 4
 
 
 LATERALITY = {
@@ -121,15 +121,26 @@ def create_new_variable(text, match, lateralities, variable, value):
 
 
 def get_laterality_for_term(lateralities, match: Match, text):
-    for lat, start, end, is_lat in lateralities:
-        if not is_lat:
-            continue
-        if start > match.start():  # after
-            return lat
-        elif len(text[end:match.start()]) < 10 and 'with' in text[end:match.start()]:
-            return lat
+    """Get laterality for a particular match by its index, so `match` must have been found in `text`"""
+    return get_laterality_by_index(lateralities, match.start(), text)
+
+
+def get_laterality_by_index(lateralities, match_start, text):
+    # lateralities: tuple of identified lateralities as: LateralityEnum, start_index, end_index, has ':' after
+    prev_lat = None
+    for lat, lat_start, lat_end, is_section_start in lateralities:
+        if is_section_start:
+            if lat_start > match_start:  # laterality is after the match
+                if prev_lat:  # after and previous laterality found
+                    return prev_lat
+                return Laterality.UNKNOWN
+            else:
+                prev_lat = lat
+        else:  # not followed by colon
+            if len(text[lat_end:match_start]) < 10 and 'with' in text[lat_end:match_start]:
+                return lat
     if lateralities:
-        return lateralities[-1][1]
+        return lateralities[-1][0]
     return Laterality.OU  # default to both
 
 
