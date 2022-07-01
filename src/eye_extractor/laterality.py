@@ -215,8 +215,8 @@ class LateralityLocator:
     def get_by_index(self, match_start, text):
         prev_section_lat = self.get_previous_section(match_start, text)
         prev_lat, next_lat = self.get_previous_next_non_section(match_start, text)
-        if prev_section_lat and (prev_section_dist := self.distance(match_start, prev_section_lat)) < 50:
-            if prev_lat and (prev_dist := self.distance(match_start, prev_lat)) < 50:
+        if prev_section_lat and (prev_section_dist := self.distance(match_start, prev_section_lat)) < 100:
+            if prev_lat and (prev_dist := self.distance(match_start, prev_lat)) < 100:
                 prev_commas = self.contains_before(match_start, text, prev_lat, ',')
                 if next_lat and (next_dist := self.distance(match_start, prev_lat)) < 50:
                     next_commas = self.contains_after(match_start, text, next_lat, ',')
@@ -232,7 +232,7 @@ class LateralityLocator:
                 return prev_section_lat.laterality if prev_section_commas < next_commas else next_lat.laterality
             return prev_section_lat.laterality
         else:
-            if prev_lat and (prev_dist := self.distance(match_start, prev_lat)) < 50:
+            if prev_lat and (prev_dist := self.distance(match_start, prev_lat)) < 100:
                 prev_commas = self.contains_before(match_start, text, prev_lat, ',')
                 if next_lat and (next_dist := self.distance(match_start, prev_lat)) < 50:
                     next_commas = self.contains_after(match_start, text, next_lat, ',')
