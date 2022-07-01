@@ -1,5 +1,9 @@
+from enum import Enum
+
+
 def column_from_variable(results, data, *, compare_func=None, transformer_func=None,
-                         result_func=None, convert_func=None, filter_func=None):
+                         result_func=None, convert_func=None, filter_func=None,
+                         rename_func=None, enum_to_str=False):
     """
     Assuming values that can be graded according to a comparator functions,
         converts the results of `create_new_variable` into only that with the
@@ -8,6 +12,10 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
     Compare_func asks 'given the existing value and this new value, should we change something (T/F)
     Result_func asks 'given the existing value and this new value, what should be the result?'
 
+    :param convert_func:
+    :param filter_func:
+    :param rename_func:
+    :param enum_to_str: if result is enum, convert to string; otherwise, convert to int value
     :param transformer_func: function to return serialized results to desired object
         most commonly this might be an IntEnum
     :param result_func: function that gives the new result (e.g., new intenum, etc.)
@@ -27,6 +35,11 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
         filter_func = lambda n: n
     if convert_func is None:  # if using different names (want different output name)
         convert_func = lambda n: n
+    if rename_func is None:  # final renaming of variable after processing
+        if enum_to_str:  # convert result enum to string value, replace underscore
+            rename_func = lambda n: n.name.replace('_', ' ') if isinstance(n, Enum) else n
+        else:
+            rename_func = lambda n: n.value if isinstance(n, Enum) else n
     for row in data:
         for varname, curr_value in results.items():
             target_varname = convert_func(varname)
@@ -37,7 +50,7 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
             new_value = transformer_func(row[target_varname])
             if compare_func(new_value, curr_value):
                 results[varname] = result_func(new_value, curr_value)
-    return results
+    return {varname: rename_func(value) for varname, value in results.items()}
 
 
 def column_from_variable_binary(data, label):
