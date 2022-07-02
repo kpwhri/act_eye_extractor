@@ -10,7 +10,8 @@ from eye_extractor.output.cataract import build_posterior_cap_opacity
     (build_from_number_pco(1), '1+ PCO', True),
     (build_from_number_pco(1), 'PCO 1+', True),
     (build_from_number_pco(1), '1+', False),
-    (build_from_number_pco(1), 'gd 1+ PCO', False),
+    (build_from_number_pco(1), 'gd 1 PCO', True),
+    (build_from_number_pco(1), 'gd 1+ PCO', True),
 ])
 def test_iol_patterns(pat, text, exp_match):
     assert bool(pat.search(text)) == exp_match
