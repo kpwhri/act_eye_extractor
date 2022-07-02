@@ -5,8 +5,8 @@ from loguru import logger
 from eye_extractor.history.common import create_history, history_pat
 
 START_PER_HX_PAT = re.compile(
-    rf'('
-    rf'(?:past|personal)\W*(?:ocular|eye)\W*{history_pat}\W*?:'
+    rf'(?:'
+    rf'(?:past|personal)\W*(?:ocular|eye)\W*{history_pat}\W*?(?:of\W*)?:'
     rf'|past\W*medical\W*history ?:?'
     rf'|active\W*problem\W*list ?:?'
     rf'|\bpmh\W*?:'
