@@ -9,7 +9,7 @@ class Laterality(enum.IntEnum):
     OD = 1  # right
     OS = 2  # left
     OU = 3  # both/bilateral
-    UNKNOWN = 4
+    UNKNOWN = 0  # keep 0 so that it will test 'False'
 
 
 LATERALITY = {

@@ -43,7 +43,7 @@ IOL_TYPE_PAT = re.compile(
 
 LATERALITY_PAT = re.compile(
     rf'('
-    rf'which side\W*(?P<lat>left|right)'
+    rf'which (?:side|eye)\W*(?P<lat>left|right)'
     rf')',
     re.I
 )
