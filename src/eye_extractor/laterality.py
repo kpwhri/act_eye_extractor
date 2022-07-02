@@ -51,7 +51,7 @@ LATERALITY_SPLIT_PATTERN = re.compile(  # for determining likely boundaries
 
 def laterality_finder(text):
     for m in LATERALITY_PATTERN.finditer(text):
-        yield LATERALITY[m.group().upper()]
+        yield lat_lookup(m)
 
 
 def simplify_lateralities(lats):
@@ -67,11 +67,15 @@ def simplify_lateralities(lats):
         return Laterality.UNKNOWN
 
 
+def lat_lookup(m):
+    return LATERALITY[m.group().upper().strip().strip(':').strip()]
+
+
 def build_laterality_table(text):
     latloc = LateralityLocator()
     for m in LATERALITY_PATTERN.finditer(text):
         is_lat = m.group().endswith(':')
-        latloc.add(LATERALITY[m.group().upper().strip(': ')], m.start(), m.end(), is_lat)
+        latloc.add(lat_lookup(m), m.start(), m.end(), is_lat)
     return latloc
 
 
@@ -224,7 +228,7 @@ class LateralityLocator:
                         return prev_lat.laterality if prev_dist < next_dist else next_lat.laterality
                     return prev_lat.laterality if prev_commas < next_commas else next_lat.laterality
                 return prev_lat.laterality
-            elif next_lat and (next_dist := self.distance(match_start, prev_lat)) < 50:
+            elif next_lat and (next_dist := self.distance(match_start, next_lat)) < 50:
                 next_commas = self.contains_after(match_start, text, next_lat, ',')
                 prev_section_commas = self.contains_before(match_start, text, prev_section_lat, ',')
                 if next_commas == prev_section_commas:

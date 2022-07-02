@@ -9,7 +9,7 @@ import enum
 
 from loguru import logger
 
-from eye_extractor.laterality import Laterality, LATERALITY, LATERALITY_PATTERN
+from eye_extractor.laterality import Laterality, LATERALITY, LATERALITY_PATTERN, lat_lookup
 from eye_extractor.va.pattern import VA_LINE_CC, VA_LINE_SC, VA_LINE_GROUPED
 
 
@@ -223,7 +223,7 @@ def extract_va(text):
     yield from rows
     # find other terms
     keywords = get_keywords_stopwords(text)
-    lateralities = [(m.group(), m.start(), LATERALITY[m.group().upper()]) for m in LATERALITY_PATTERN.finditer(text)]
+    lateralities = [(m.group(), m.start(), lat_lookup(m)) for m in LATERALITY_PATTERN.finditer(text)]
     matches = [(m, m.start(), m.end()) for m in VA_PATTERN.finditer(text)]
     for i, (m, start, end) in enumerate(matches):
         not_list = set()  # handle table order where CC/PH -> CC/PH
