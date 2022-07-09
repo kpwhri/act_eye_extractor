@@ -6,7 +6,7 @@ import click
 from loguru import logger
 
 from eye_extractor.amd.algorithm import extract_amd_variables
-from eye_extractor.cataract.cataract import get_cataract
+from eye_extractor.cataract.algorithm import extract_cataract
 from eye_extractor.cataract.cataract_surgery import get_cataract_surgery
 from eye_extractor.exam.algorithm import get_exam
 from eye_extractor.headers import extract_headers_and_text
@@ -29,7 +29,7 @@ def extract_all(text: str, data: dict = None):
     data['iop'] = list(get_iop(text))
     data['amd'] = extract_amd_variables(text, headers=headers, lateralities=lateralities)
     data['cataractsurg'] = get_cataract_surgery(text)
-    data['cataract'] = get_cataract(text, headers=headers, lateralities=lateralities)
+    data['cataract'] = extract_cataract(text, headers=headers, lateralities=lateralities)
     data['manifestrx'] = list(get_manifest_rx(text))
     data['ro'] = extract_ro_variables(text, headers=headers, lateralities=lateralities)
     data['uveitis'] = get_uveitis(text, headers=headers, lateralities=lateralities)
