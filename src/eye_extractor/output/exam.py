@@ -19,7 +19,7 @@ def build_cup_disc_ratio(data):
     # get undated or most recent date
     curr_list = list(filter(lambda x: x['measurement_date'] is None, data))
     if not curr_list:
-        curr_list = sorted(data, key=lambda x: -x['measurement_date'])
+        curr_list = sorted(data, key=lambda x: x['measurement_date'], reverse=True)
     cols = ['cupdiscratio_rev', 'cupdiscratio_reh', 'cupdiscratio_lev', 'cupdiscratio_leh']
     for d in curr_list:
         # exit once all values have been filled

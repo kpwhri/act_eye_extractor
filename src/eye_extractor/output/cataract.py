@@ -28,7 +28,7 @@ def build_cataract_type(data):
             'cataract_type_le': CataractType.UNKNOWN,
         },
         data,
-        transformer_func=CataractType,
+        transformer_func=lambda x: CataractType(x['value']),
     )
 
 
