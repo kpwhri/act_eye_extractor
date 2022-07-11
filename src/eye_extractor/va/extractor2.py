@@ -66,11 +66,12 @@ STOPWORDS_PATTERN = re.compile(
 )
 
 VA_PATTERN = re.compile(
-    r'(\s|^|~|:)(?P<numerator>20|3E|E)/\s*(?P<score>(\d+|nt|na|NT|NA))\s*(?P<sign>[+|-])*\s*(?P<diopter>\d)*'
-    r'|(20/\s*)?(?P<test>HM|CF|LP|NLP)(\W+(@|at|x)?\s*'
+    r'(?:\s|^|~|:)(?P<numerator>20|3E|E)/\s*(?P<score>(?:\d+|NT|NA))\s*(?P<sign>[+|-])*\s*(?P<diopter>\d)*'
+    r'|(?:20/\s*)?(?P<test>HM|CF|LP|NLP)(?:\W+(?:@|at|x)?\s*'
     r'(?P<distance>\d+)\s*(?P<distance_metric>\'|"|in|ft|feet)'
     r'(?P<test2>HM|CF|LP|NLP)?'
-    r'|$)'
+    r'|$)',
+    re.I
 )
 
 

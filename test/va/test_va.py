@@ -4,7 +4,8 @@ import re
 import pytest
 
 from eye_extractor.build_table import get_va
-from eye_extractor.va.extractor2 import vacc_numbercorrect_le, extract_va
+from eye_extractor.history.common import update_history_from_key
+from eye_extractor.va.extractor2 import vacc_numbercorrect_le, extract_va, VA_PATTERN
 from eye_extractor.va.pattern import VA
 from eye_extractor.va.rx import get_manifest_rx, BCV_PAT
 
@@ -16,14 +17,41 @@ def test_vacc_le(text, exp):
     assert vacc_numbercorrect_le(text) == exp
 
 
-@pytest.mark.parametrize('text', [
-    '20/70', '20/', '20/hm', '20/NI',
+@pytest.mark.parametrize('text, exp_num, exp_score, exp_diopter, exp_test, exp_test2, exp_test3', [
+    ('20/70', '20', '70', None, None, None, None),
+    ('20/', None, None, None, None, None, None),
+    ('20/hm', None, None, None, None, None, 'hm'),
+    ('20/NI', '20', 'NI', None, None, None, None),
+    ('20/40+1', '20', '40', '+1', None, None, None),
+    ('20/hm at 3ft', None, None, None, 'hm', None, None),
+    ('20/HM 3\'', None, None, None, 'HM', None, None),
 ])
-def test_va_pattern_matches(text):
+def test_va_pattern_matches(text, exp_num, exp_score, exp_diopter, exp_test, exp_test2, exp_test3):
     pat = re.compile(VA.replace("##", "_0"), re.I)
     m = pat.match(text)
     assert m is not None
     assert m.group() == text
+    assert m.group('numerator_0') == exp_num, m.groupdict()
+    assert m.group('score_0') == exp_score, m.groupdict()
+    assert m.group('diopter_0') == exp_diopter, m.groupdict()
+    assert m.group('test_0') == exp_test, m.groupdict()
+    assert m.group('test2_0') == exp_test2, m.groupdict()
+    assert m.group('test3_0') == exp_test3, m.groupdict()
+
+
+@pytest.mark.parametrize('text, exp_num, exp_score, exp_diopter, exp_test, exp_test2', [
+    ('20/20', '20', '20', None, None, None),
+    ('20/40+1', '20', '40', '1', None, None),
+    ('20/hm at 3ft', None, None, None, 'hm', None),
+    ('20/HM', None, None, None, 'HM', None),
+])
+def test_va_pattern(text, exp_num, exp_score, exp_diopter, exp_test, exp_test2):
+    m = VA_PATTERN.search(text)
+    assert m.group('numerator') == exp_num
+    assert m.group('score') == exp_score
+    assert m.group('diopter') == exp_diopter
+    assert m.group('test') == exp_test
+    assert m.group('test2') == exp_test2
 
 
 @pytest.mark.parametrize(
@@ -74,7 +102,7 @@ def test_get_manifest_rx(
 
 def test_bcv_pat():
     text = 'Best Correct Vision: OD: 20/25-2 OS: 20/40'
-    m = BCV_PAT.update_history_from_key(text)
+    m = BCV_PAT.search(text)
     assert m is not None
     assert m.group('od_denominator') == '25'
     assert m.group('od_correct') == '-2'
