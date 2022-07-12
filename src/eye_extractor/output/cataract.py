@@ -51,7 +51,7 @@ def build_cataract_severity(data, label, *cataracttypes):
             f'{label}cataract_severity_le': -1,
         },
         data,
-        transformer_func=lambda n: n['severity'],
+        transformer_func=lambda n: int(n['severity']),
         filter_func=lambda n: n['value'] in {ctype.value for ctype in cataracttypes},
         convert_func=lambda n: f'cataract_type_{n[-2:]}',
     )

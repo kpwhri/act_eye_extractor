@@ -2,7 +2,7 @@ from eye_extractor.output.validators import is_int, is_in_range, is_date, contai
 
 OUTPUT_COLUMNS = {
     # metadata
-    'docid': [is_int],
+    'docid': [],
     'studyid': [is_int],
     'date': [is_date],
     'encid': [is_int],
