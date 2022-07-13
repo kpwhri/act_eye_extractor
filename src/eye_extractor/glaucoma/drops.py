@@ -116,7 +116,7 @@ def extract_glaucoma_drops(text, *, headers=None, lateralities=None):
         # TODO: confirm presence of 'current medications'
         negword = is_negated(m, text, {'no', 'or', 'without'})
         term = m.group()
-        standardized_name = get_standardized_name()
+        standardized_name = get_standardized_name(term)
         for gd in DRUG_TO_ENUM[standardized_name]:
             data.append(
                 create_new_variable(text, m, lateralities, varname.format(gd.name.lower()), {
