@@ -1,6 +1,10 @@
+import json
+
 import pytest
 
-from eye_extractor.glaucoma.drops import DROPS_RX, get_standardized_name, DRUG_TO_ENUM, NO_OPT_MED_RX
+from eye_extractor.glaucoma.drops import DROPS_RX, get_standardized_name, DRUG_TO_ENUM, NO_OPT_MED_RX, \
+    extract_glaucoma_drops
+from eye_extractor.output.glaucoma import build_glaucoma_drops
 
 
 @pytest.mark.parametrize('pat, text, exp_count, exp_neg', [
@@ -18,3 +22,14 @@ def test_patterns(pat, text, exp_count, exp_neg):
         else:
             standardized_term = get_standardized_name(match)
             assert standardized_term in DRUG_TO_ENUM
+
+
+@pytest.mark.parametrize('text, exp_dict', [
+    ('No Active Ophthalmic Medications', {'glaucoma_rx_none': 1}),
+])
+def test_drops_extract_and_build(text, exp_dict):
+    pre_json = extract_glaucoma_drops(text)
+    post_json = json.loads(json.dumps(pre_json))
+    result = build_glaucoma_drops(post_json)
+    for key, val in result.items():
+        assert val == exp_dict.get(key, -1)
