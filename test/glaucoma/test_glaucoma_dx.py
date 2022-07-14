@@ -1,7 +1,7 @@
 import pytest
 
 from eye_extractor.glaucoma.dx import POAG_PAT, NTG_PAT, LTG_PAT, PXG_PAT, PG_PAT, CONGENITAL_PAT, ICE_PAT, NV_PAT, \
-    UVEI_PAT, ACG_PAT, STEROID_PAT
+    UVEI_PAT, ACG_PAT, STEROID_PAT, TRAUMATIC_PAT
 
 
 @pytest.mark.parametrize('pat, text, exp', [
@@ -34,6 +34,8 @@ from eye_extractor.glaucoma.dx import POAG_PAT, NTG_PAT, LTG_PAT, PXG_PAT, PG_PA
     (ACG_PAT, 'acg', True),
     (STEROID_PAT, 'steroid responder', True),
     (STEROID_PAT, 'steroid induced', True),
+    (TRAUMATIC_PAT, 'blunt trauma', True),
+    (TRAUMATIC_PAT, 'traumatic', True),
 ])
 def test_cataract_type_patterns(pat, text, exp):
     m = pat.search(text)
