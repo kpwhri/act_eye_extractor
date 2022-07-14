@@ -3,7 +3,8 @@ import json
 import pytest
 
 from eye_extractor.glaucoma.dx import POAG_PAT, NTG_PAT, LTG_PAT, PXG_PAT, PG_PAT, CONGENITAL_PAT, ICE_PAT, NV_PAT, \
-    UVEI_PAT, ACG_PAT, STEROID_PAT, TRAUMATIC_PAT, extract_glaucoma_dx
+    UVEI_PAT, ACG_PAT, STEROID_PAT, TRAUMATIC_PAT, extract_glaucoma_dx, SUSPECT_PAT, OCULAR_HYPERTENSIVE_PAT, \
+    CUPPING_PAT
 from eye_extractor.output.glaucoma import build_glaucoma_dx
 
 
@@ -41,6 +42,9 @@ from eye_extractor.output.glaucoma import build_glaucoma_dx
     (STEROID_PAT, 'steroid induced', True),
     (TRAUMATIC_PAT, 'blunt trauma', True),
     (TRAUMATIC_PAT, 'traumatic', True),
+    (SUSPECT_PAT, 'SUSPECT', True),
+    (OCULAR_HYPERTENSIVE_PAT, 'OHTN', True),
+    (CUPPING_PAT, 'cupping', True),
 ])
 def test_glaucomatype_patterns(pat, text, exp):
     m = pat.search(text)
