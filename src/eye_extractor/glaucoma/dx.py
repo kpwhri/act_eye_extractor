@@ -10,6 +10,8 @@ class GlaucomaDx(enum.IntEnum):
     NONE = 0
     PREGLAUCOMA = 101
     SUSPECT = 102
+    CUPPING = 103
+    OCULAR_HYPERTENSIVE = 104
     GLAUCOMA = 110
 
 
@@ -29,6 +31,8 @@ class GlaucomaType(enum.IntEnum):
     STEROID = 11
     PREGLAUCOMA = 101
     SUSPECT = 102
+    CUPPING = 103
+    OCULAR_HYPERTENSIVE = 104
     GLAUCOMA = 110
 
 
@@ -139,6 +143,22 @@ SUSPECT_PAT = re.compile(
     re.I
 )
 
+CUPPING_PAT = re.compile(
+    rf'(?:'
+    rf'\b(?:cupping)\b'
+    rf')',
+    re.I
+)
+
+OCULAR_HYPERTENSIVE_PAT = re.compile(
+    rf'(?:'
+    rf'\bocul\w+\W*hypertens\w+'
+    rf'|'
+    rf'\bothn\b'
+    rf')',
+    re.I
+)
+
 
 def extract_glaucoma_dx(text, *, headers=None, lateralities=None):
     """
@@ -175,7 +195,8 @@ def extract_glaucoma_dx(text, *, headers=None, lateralities=None):
                 pass
             elif 'glaucoma' in matchedtext.lower() or 'syndrome' in matchedtext.lower():
                 pass
-            elif has_before(m.start(), text, {'glauc', 'gl', 'glaucoma', 'syndrome'}, word_window=3):
+            elif has_before(m.start(), text, {'glauc', 'gl', 'glaucoma', 'syndrome'},
+                            word_window=3, skip_n_boundary_chars=1):
                 pass
             elif has_after(m.end(), text, {'glauc', 'gl', 'glaucoma', 'syndrome'}, word_window=3):
                 pass
@@ -197,18 +218,23 @@ def extract_glaucoma_dx(text, *, headers=None, lateralities=None):
         for sect_name in ['TYPE OF GLAUCOMA', 'GLAUCOMA FLOWSHEET']:
             if section_text := headers.get(sect_name, None):
                 section_lateralities = build_laterality_table(section_text)
-                for m in SUSPECT_PAT.finditer(section_text):
-                    negword = is_negated(m, section_text, {'no', 'or', 'without'})
-                    data.append(
-                        create_new_variable(text, m, section_lateralities, 'glaucoma_dx', {
-                            'value': 0 if negword else GlaucomaDx.SUSPECT,
-                            'term': m.group(),
-                            'label': 'no' if negword else 'yes',
-                            'negated': negword,
-                            'regex': 'SUSPECT_PAT',
-                            'source': sect_name,
-                        })
-                    )
+                for pat, pat_label, value in [
+                    (SUSPECT_PAT, 'SUSPECT_PAT', GlaucomaDx.SUSPECT),
+                    (OCULAR_HYPERTENSIVE_PAT, 'OCULAR_HYPERTENSIVE_PAT', GlaucomaDx.OCULAR_HYPERTENSIVE),
+                    (CUPPING_PAT, 'CUPPING_PAT', GlaucomaDx.CUPPING),
+                ]:
+                    for m in pat.finditer(section_text):
+                        negword = is_negated(m, section_text, {'no', 'or', 'without'})
+                        data.append(
+                            create_new_variable(text, m, section_lateralities, 'glaucoma_dx', {
+                                'value': 0 if negword else value,
+                                'term': m.group(),
+                                'label': 'no' if negword else 'yes',
+                                'negated': negword,
+                                'regex': pat_label,
+                                'source': sect_name,
+                            })
+                        )
     for m in SUSPECT_PAT.finditer(text):
         if not has_before(m.start(), text, {'glaucoma'}, word_window=5, skip_n_boundary_chars=1):
             continue  # TODO: exclude family history

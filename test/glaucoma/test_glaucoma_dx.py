@@ -11,6 +11,7 @@ from eye_extractor.output.glaucoma import build_glaucoma_dx
     (POAG_PAT, 'POAG', True),
     (POAG_PAT, 'OAG', True),
     (POAG_PAT, 'primary open-angle', True),
+    (POAG_PAT, 'open angle', True),
     (NTG_PAT, 'normal pressure', True),
     (NTG_PAT, 'normal tension', True),
     (NTG_PAT, 'ntg', True),
@@ -60,8 +61,8 @@ def test_glaucomatype_patterns(pat, text, exp):
          'UNKNOWN', 'UNKNOWN', 'UNKNOWN',
          'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
         ('Type of Glaucoma: open angle OS', '', '',
-         'UNKNOWN', 'UNKNOWN', 'UNKNOWN',
-         'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+         'UNKNOWN', 'GLAUCOMA', 'UNKNOWN',
+         'UNKNOWN', 'POAG', 'UNKNOWN'),
     ])
 def test_glaucomatype_extract_build(
         text, section_label, section_text,
