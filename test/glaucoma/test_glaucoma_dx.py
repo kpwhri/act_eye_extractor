@@ -57,6 +57,9 @@ def test_glaucomatype_patterns(pat, text, exp):
         ('', 'Type of Glaucoma', 'suspect',
          'UNKNOWN', 'UNKNOWN', 'SUSPECT',
          'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+        ('', 'Type of Glaucoma', 'OHTN',
+         'UNKNOWN', 'UNKNOWN', 'OCULAR HYPERTENSIVE',
+         'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
         ('', 'Type of Glaucoma', 'open angle OS',  # fix?
          'UNKNOWN', 'UNKNOWN', 'UNKNOWN',
          'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),

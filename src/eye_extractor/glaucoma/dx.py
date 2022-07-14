@@ -154,7 +154,7 @@ OCULAR_HYPERTENSIVE_PAT = re.compile(
     rf'(?:'
     rf'\bocul\w+\W*hypertens\w+'
     rf'|'
-    rf'\bothn\b'
+    rf'\bohtn\b'
     rf')',
     re.I
 )
