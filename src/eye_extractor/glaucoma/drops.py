@@ -115,8 +115,7 @@ def get_standardized_name(term):
 
 
 def extract_glaucoma_drops(text, *, headers=None, lateralities=None):
-    if not lateralities:
-        lateralities = build_laterality_table(text)
+    lateralities = lateralities or build_laterality_table(text)
     varname = 'glaucoma_rx_{}'
     data = []
     if m := NO_OPT_MED_RX.search(text):
