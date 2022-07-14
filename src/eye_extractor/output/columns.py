@@ -1,4 +1,4 @@
-from eye_extractor.output.validators import is_int, is_in_range, is_date, contains
+from eye_extractor.output.validators import is_int, is_in_range, is_date, contains, is_string, is_upper
 
 OUTPUT_COLUMNS = {
     # metadata
@@ -162,4 +162,12 @@ OUTPUT_COLUMNS = {
     'glaucoma_rx_physostigmine': [is_in_range(-1, 1)],
     'glaucoma_rx_brinzolamide': [is_in_range(-1, 1)],
     'glaucoma_rx_tafluprost': [is_in_range(-1, 1)],
+    # glaucoma dx/type
+    'glaucoma_dx_re': [is_upper],
+    'glaucoma_dx_le': [is_upper],
+    'glaucoma_dx_unk': [is_upper],
+    'glaucoma_type_re': [is_upper],
+    'glaucoma_type_le': [is_upper],
+    'glaucoma_type_unk': [is_upper],
+
 }

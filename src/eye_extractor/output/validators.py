@@ -17,7 +17,19 @@ def is_date(val, *error_messages):
         raise ValidatorError(f'Value {val} is not a valid date: {", ".join(error_messages)}')
 
 
+def is_string(val, *error_messages):
+    if not isinstance(val, str):
+        raise ValidatorError(f'Value {val} is not a valid string: {", ".join(error_messages)}')
+
+
+def is_upper(val, *error_messages):
+    is_string(val, *error_messages)
+    if re.search(r'[a-z]', val):
+        raise ValidatorError(f'Value {val} is not an uppercased string: {", ".join(error_messages)}')
+
+
 def is_in_range(start, end):
+    """Inclusive range check"""
     def _is_in_range(val, *error_messages):
         is_int(val, *error_messages)
         if start <= val <= end:
