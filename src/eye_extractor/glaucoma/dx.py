@@ -80,7 +80,7 @@ ACG_PAT = re.compile(
     rf'(?:'
     rf'\b(?:acg)\b'
     rf'|'
-    rf'(?:angle\W*clos[ue]\w*|clos[ue]\w*\W*angle)'
+    rf'(?:angle\W*clos[ue]\w*|(?:clos[ue]\w*|narrow)\W*angle)'
     rf')',
     re.I
 )

@@ -30,6 +30,7 @@ from eye_extractor.glaucoma.dx import POAG_PAT, NTG_PAT, LTG_PAT, PXG_PAT, PG_PA
     (UVEI_PAT, 'uveitic glaucoma', True),
     (UVEI_PAT, 'uveitis', False),
     (ACG_PAT, 'closed angle glaucoma', True),
+    (ACG_PAT, 'narrow angle glaucoma', True),
     (ACG_PAT, 'angle-closure glaucoma', True),
     (ACG_PAT, 'acg', True),
     (STEROID_PAT, 'steroid responder', True),
