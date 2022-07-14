@@ -70,6 +70,9 @@ def test_glaucomatype_patterns(pat, text, exp):
         ('Type of Glaucoma: open angle OS', '', '',
          'UNKNOWN', 'GLAUCOMA', 'UNKNOWN',
          'UNKNOWN', 'POAG', 'UNKNOWN'),
+        ('Type of Glaucoma: suspect + steroid responder', 'Type of Glaucoma', 'suspect + steroid responder',
+         'UNKNOWN', 'UNKNOWN', 'SUSPECT',
+         'UNKNOWN', 'UNKNOWN', 'STEROID'),
     ])
 def test_glaucomatype_extract_build(
         text, section_label, section_text,

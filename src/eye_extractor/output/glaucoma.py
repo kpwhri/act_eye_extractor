@@ -38,6 +38,7 @@ def build_glaucoma_dx(data):
         data,
         transformer_func=lambda x: GlaucomaType(x['value']),
         enum_to_str=True,
-        compare_func=lambda n, c: c == GlaucomaType.UNKNOWN,  # only update an unknown
+        # compare: only update an unknown or auto-fill Glaucoma
+        compare_func=lambda n, c: c in {GlaucomaType.UNKNOWN, GlaucomaType.GLAUCOMA},
         sideeffect_func=_build_glaucoma_dx_sideeffect_func,
     )
