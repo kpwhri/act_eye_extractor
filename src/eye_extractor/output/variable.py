@@ -94,7 +94,7 @@ from enum import Enum
 
 def column_from_variable(results, data, *, compare_func=None, transformer_func=None,
                          result_func=None, convert_func=None, filter_func=None,
-                         rename_func=None, enum_to_str=False):
+                         rename_func=None, sideeffect_func=None, enum_to_str=False):
     """
     Assuming values that can be graded according to a comparator functions,
         converts the results of `create_new_variable` into only that with the
@@ -103,6 +103,8 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
     Compare_func asks 'given the existing value and this new value, should we change something (T/F)
     Result_func asks 'given the existing value and this new value, what should be the result?'
 
+    :param sideeffect_func: make side effects that affect other variables when compare_func is True
+        (i.e., when updating value)
     :param convert_func: change the variable/column name from what it was supplied; this is what variable will be output
     :param filter_func: returns bool; only consider values in which this returns True
     :param rename_func: rename the final values after doing all processing
@@ -126,6 +128,8 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
         filter_func = lambda n: n
     if convert_func is None:  # if using different names (want different output name)
         convert_func = lambda n: n
+    if sideeffect_func is None:  # side effects when variable is updated
+        sideeffect_func = lambda r, v, n: None
     if rename_func is None:  # final renaming of variable after processing
         if enum_to_str:  # convert result enum to string value, replace underscore
             rename_func = lambda n: n.name.replace('_', ' ') if isinstance(n, Enum) else n
@@ -133,14 +137,15 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
             rename_func = lambda n: n.value if isinstance(n, Enum) else n
     for row in data:  # for each element in list read from json file
         for varname, curr_value in results.items():
-            target_varname = convert_func(varname)
+            target_varname = convert_func(varname)  # change the column/variable name
             if target_varname not in row:
                 continue
             if not filter_func(row[target_varname]):  # apply inclusion criteria in filter func
                 continue
-            new_value = transformer_func(row[target_varname])
-            if compare_func(new_value, curr_value):
-                results[varname] = result_func(new_value, curr_value)
+            new_value = transformer_func(row[target_varname])  # what should the new value be?
+            if compare_func(new_value, curr_value):  # should the value be updated?
+                results[varname] = result_func(new_value, curr_value)  # how to merge the prev/new value
+                sideeffect_func(results, varname, new_value)
     return {varname: rename_func(value) for varname, value in results.items()}
 
 

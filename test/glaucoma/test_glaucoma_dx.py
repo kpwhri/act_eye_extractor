@@ -1,7 +1,10 @@
+import json
+
 import pytest
 
 from eye_extractor.glaucoma.dx import POAG_PAT, NTG_PAT, LTG_PAT, PXG_PAT, PG_PAT, CONGENITAL_PAT, ICE_PAT, NV_PAT, \
-    UVEI_PAT, ACG_PAT, STEROID_PAT, TRAUMATIC_PAT
+    UVEI_PAT, ACG_PAT, STEROID_PAT, TRAUMATIC_PAT, extract_glaucoma_dx
+from eye_extractor.output.glaucoma import build_glaucoma_dx
 
 
 @pytest.mark.parametrize('pat, text, exp', [
@@ -38,6 +41,33 @@ from eye_extractor.glaucoma.dx import POAG_PAT, NTG_PAT, LTG_PAT, PXG_PAT, PG_PA
     (TRAUMATIC_PAT, 'blunt trauma', True),
     (TRAUMATIC_PAT, 'traumatic', True),
 ])
-def test_cataract_type_patterns(pat, text, exp):
+def test_glaucomatype_patterns(pat, text, exp):
     m = pat.search(text)
     assert bool(m) is exp
+
+
+@pytest.mark.parametrize(
+    'text, section_label, section_text,'
+    'exp_glaucoma_dx_re, exp_glaucoma_dx_le, exp_glaucoma_dx_unk,'
+    'exp_glaucoma_type_re, exp_glaucoma_type_le, exp_glaucoma_type_unk', [
+        ('', '', '',
+         'UNKNOWN', 'UNKNOWN', 'UNKNOWN',
+         'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+        ('', 'Type of Glaucoma', 'suspect',
+         'UNKNOWN', 'UNKNOWN', 'SUSPECT',
+         'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+    ])
+def test_glaucomatype_extract_build(
+        text, section_label, section_text,
+        exp_glaucoma_dx_re, exp_glaucoma_dx_le, exp_glaucoma_dx_unk,
+        exp_glaucoma_type_re, exp_glaucoma_type_le, exp_glaucoma_type_unk,
+):
+    pre_json = extract_glaucoma_dx(text, headers={section_label.upper(): section_text})
+    post_json = json.loads(json.dumps(pre_json))
+    result = build_glaucoma_dx(post_json)
+    assert result['glaucoma_dx_re'] == exp_glaucoma_dx_re
+    assert result['glaucoma_dx_le'] == exp_glaucoma_dx_le
+    assert result['glaucoma_dx_unk'] == exp_glaucoma_dx_unk
+    assert result['glaucoma_type_re'] == exp_glaucoma_type_re
+    assert result['glaucoma_type_le'] == exp_glaucoma_type_le
+    assert result['glaucoma_type_unk'] == exp_glaucoma_type_unk

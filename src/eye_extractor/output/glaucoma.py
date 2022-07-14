@@ -1,4 +1,14 @@
 from eye_extractor.glaucoma.drops import GenericDrop
+from eye_extractor.glaucoma.dx import GlaucomaType, GlaucomaDx
+from eye_extractor.output.variable import column_from_variable
+
+
+def build_glaucoma(data):
+    results = {}
+    curr = data['glaucoma']
+    results.update(build_glaucoma_drops(curr['drops']))
+    results.update(build_glaucoma_dx(curr['dx']))
+    return results
 
 
 def build_glaucoma_drops(data):
@@ -9,8 +19,25 @@ def build_glaucoma_drops(data):
     return results
 
 
-def build_glaucoma(data):
-    results = {}
-    curr = data['glaucoma']
-    results.update(build_glaucoma_drops(curr['drops']))
-    return results
+def _build_glaucoma_dx_sideeffect_func(results, varname, newvalue):
+    """Set dx to GLAUCOMA if a glaucoma type found"""
+    if 'glaucoma_type' in varname and newvalue != GlaucomaType.NONE:
+        results[f'glaucoma_dx_{varname.split("_")[-1]}'] = GlaucomaType.GLAUCOMA
+
+
+def build_glaucoma_dx(data):
+    return column_from_variable(
+        {
+            'glaucoma_dx_re': GlaucomaType.UNKNOWN,
+            'glaucoma_dx_le': GlaucomaType.UNKNOWN,
+            'glaucoma_dx_unk': GlaucomaType.UNKNOWN,
+            'glaucoma_type_re': GlaucomaType.UNKNOWN,
+            'glaucoma_type_le': GlaucomaType.UNKNOWN,
+            'glaucoma_type_unk': GlaucomaType.UNKNOWN,
+        },
+        data,
+        transformer_func=lambda x: GlaucomaType(x['value']),
+        enum_to_str=True,
+        compare_func=lambda n, c: c == GlaucomaType.UNKNOWN,  # only update an unknown
+        sideeffect_func=_build_glaucoma_dx_sideeffect_func,
+    )

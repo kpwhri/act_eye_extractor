@@ -8,9 +8,9 @@ from eye_extractor.laterality import build_laterality_table, create_new_variable
 class GlaucomaDx(enum.IntEnum):
     UNKNOWN = -1
     NONE = 0
-    PREGLAUCOMA = 1
-    GLAUCOMA_SUSPECT = 2
-    GLAUCOMA = 3
+    PREGLAUCOMA = 101
+    SUSPECT = 102
+    GLAUCOMA = 110
 
 
 class GlaucomaType(enum.IntEnum):
@@ -27,6 +27,9 @@ class GlaucomaType(enum.IntEnum):
     NV = 9
     UVEITIC = 10
     STEROID = 11
+    PREGLAUCOMA = 101
+    SUSPECT = 102
+    GLAUCOMA = 110
 
 
 POAG_PAT = re.compile(
@@ -132,11 +135,12 @@ TRAUMATIC_PAT = re.compile(
 SUSPECT_PAT = re.compile(
     rf'(?:'
     rf'\b(?:suspect)\b'
-    rf')'
+    rf')',
+    re.I
 )
 
 
-def get_glaucoma_dx(text, *, headers=None, lateralities=None):
+def extract_glaucoma_dx(text, *, headers=None, lateralities=None):
     """
     1. Try to identify secondary glaucoma
     2. Try to identify primaries
@@ -197,11 +201,11 @@ def get_glaucoma_dx(text, *, headers=None, lateralities=None):
                     negword = is_negated(m, section_text, {'no', 'or', 'without'})
                     data.append(
                         create_new_variable(text, m, section_lateralities, 'glaucoma_dx', {
-                            'value': 0 if negword else 1,
+                            'value': 0 if negword else GlaucomaDx.SUSPECT,
                             'term': m.group(),
                             'label': 'no' if negword else 'yes',
                             'negated': negword,
-                            'regex': 'GLAUCOMA_DX_PAT',
+                            'regex': 'SUSPECT_PAT',
                             'source': sect_name,
                         })
                     )
@@ -215,7 +219,7 @@ def get_glaucoma_dx(text, *, headers=None, lateralities=None):
                 'term': m.group(),
                 'label': 'no' if negword else 'yes',
                 'negated': negword,
-                'regex': 'GLAUCOMA_DX_PAT',
+                'regex': 'SUSPECT_PAT',
                 'source': 'ALL',
             })
         )
