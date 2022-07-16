@@ -48,6 +48,10 @@ LATERALITY_SPLIT_PATTERN = re.compile(  # for determining likely boundaries
     re.IGNORECASE
 )
 
+LATERALITY_PLUS_COLON_PATTERN = re.compile(
+    rf'\b(?:{laterality_pattern})\W*:'
+)
+
 
 def laterality_finder(text):
     for m in LATERALITY_PATTERN.finditer(text):
