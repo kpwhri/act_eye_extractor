@@ -33,3 +33,8 @@ def test_disc_unilat_pat(text, exp_lat, exp_ratio):
     else:
         assert m.group(exp_lat) is not None
         assert m.group('ratio') == exp_ratio
+
+
+# TODO: OD CUP/DISC: V 0.55/ H 0.55 sl pale
+#   OS CUP/DISC: V 0.55/ H 0.55 s
+# large c/d
