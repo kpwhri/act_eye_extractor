@@ -241,7 +241,7 @@ def extract_glaucoma_dx(text, *, headers=None, lateralities=None):
         negword = is_negated(m, text, {'no', 'or', 'without'})
         data.append(
             create_new_variable(text, m, lateralities, 'glaucoma_dx', {
-                'value': 0 if negword else 1,
+                'value': 0 if negword else GlaucomaDx.SUSPECT,
                 'term': m.group(),
                 'label': 'no' if negword else 'yes',
                 'negated': negword,

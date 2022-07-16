@@ -136,7 +136,7 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
         else:
             rename_func = lambda n: n.value if isinstance(n, Enum) else n
     for row in data:  # for each element in list read from json file
-        for varname, curr_value in results.items():
+        for varname, curr_value in list(results.items()):
             target_varname = convert_func(varname)  # change the column/variable name
             if target_varname not in row:
                 continue
