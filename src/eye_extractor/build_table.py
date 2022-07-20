@@ -40,7 +40,8 @@ def parse_va_exam(row, prev_denom, results):
     if not denom:
         return
     for lat in laterality_iter(laterality):
-        if is_etdrs:  # TODO: not sure how to capture: too few examples
+        if is_etdrs:
+            continue  # TODO: not sure how to capture: too few examples
             variable = f'etdrs_{etdrs_lookup[exam]}_{lat}'
             num_correct = int(num_correct)
             results[variable] = num_correct

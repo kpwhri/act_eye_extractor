@@ -35,9 +35,18 @@ def is_in_range(start, end):
         if start <= val <= end:
             pass
         else:
-            raise ValidatorError(f'Value {val} is not in range {start}, {end}: {", ".join(error_messages)}')
-
+            raise ValidatorError(f'Value {val} is not in int range {start}, {end}: {", ".join(error_messages)}')
     return _is_in_range
+
+
+def is_float_in_range(start, end):
+    """Inclusive range check"""
+    def _is_float_in_range(val, *error_messages):
+        if start <= val <= end:
+            pass
+        else:
+            raise ValidatorError(f'Value {val} is not in float range {start}, {end}: {", ".join(error_messages)}')
+    return _is_float_in_range
 
 
 def contains(*choices):
@@ -58,7 +67,6 @@ def validate_columns_in_row(column_dict, data, *, strict=False, id_col=None):
             try:
                 validator(val, id_col)
             except ValidatorError as ve:
-                logger.exception(ve)
-                logger.warning(f'For column {col}')
+                logger.error(f'For column {col}: {str(ve)}')
                 if strict:
                     raise ve

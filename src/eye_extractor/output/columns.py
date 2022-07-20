@@ -1,4 +1,5 @@
-from eye_extractor.output.validators import is_int, is_in_range, is_date, contains, is_string, is_upper
+from eye_extractor.output.validators import is_int, is_in_range, is_date, contains, is_string, is_upper, \
+    is_float_in_range
 
 OUTPUT_COLUMNS = {
     # metadata
@@ -101,12 +102,12 @@ OUTPUT_COLUMNS = {
     'catsurg_comp_yesno_le': [],
     'catsurg_comp_describe_re': [],
     'catsurg_comp_describe_le': [],
-    'nscataract_severity_re': [is_in_range(-1, 5)],
-    'nscataract_severity_le': [is_in_range(-1, 5)],
-    'cortcataract_severity_re': [is_in_range(-1, 5)],
-    'cortcataract_severity_le': [is_in_range(-1, 5)],
-    'pscataract_severity_re': [is_in_range(-1, 5)],
-    'pscataract_severity_le': [is_in_range(-1, 5)],
+    'nscataract_severity_re': [is_float_in_range(-1, 5)],
+    'nscataract_severity_le': [is_float_in_range(-1, 5)],
+    'cortcataract_severity_re': [is_float_in_range(-1, 5)],
+    'cortcataract_severity_le': [is_float_in_range(-1, 5)],
+    'pscataract_severity_re': [is_float_in_range(-1, 5)],
+    'pscataract_severity_le': [is_float_in_range(-1, 5)],
     'uveitis_yesno_re': [],
     'uveitis_yesno_le': [],
     'famhx_glaucoma': [is_in_range(-1, 1)],
