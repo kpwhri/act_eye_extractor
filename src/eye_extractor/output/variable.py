@@ -40,7 +40,7 @@ For the building, each of the elements in the list (n=2 in this case), are read 
             'intraocular_lens_le': IolLens.UNKNOWN,
         },
         data,
-        transformer_func=lambda x: IolLens(x['value']),  # x['value'] gets the 2/4 and converts it back to Enum
+        transformer_func=IolLens,  # the x['value'] will be retrieved gets the 2/4 and converted back to Enum
         enum_to_str=True,  # convert the IolLens enum values to strings (e.g., 'PCIOL', and 'ACIOL') to be
                            #   written to output file; default is to write the integer value if it is an Enum
     )

@@ -28,7 +28,7 @@ def build_cataract_type(data):
             'cataract_type_le': CataractType.UNKNOWN,
         },
         data,
-        transformer_func=lambda x: CataractType(x['value']) if isinstance(x, dict) else CataractType(x),
+        transformer_func=CataractType,
     )
 
 
@@ -64,7 +64,7 @@ def build_intraocular_lens(data):
             'intraocular_lens_le': IolLens.UNKNOWN,
         },
         data,
-        transformer_func=lambda x: IolLens(x['value']),
+        transformer_func=IolLens,
         enum_to_str=True,
     )
 
@@ -76,7 +76,7 @@ def build_posterior_cap_opacity(data):
             'posterior_cap_opacity_le': PosteriorCapsuleOpacity.NO_INDICATION,
         },
         data,
-        transformer_func=lambda x: PosteriorCapsuleOpacity(x['value']),
+        transformer_func=PosteriorCapsuleOpacity,
         rename_func=lambda x: {
             'P1': '1+',
             'P2': '2+',
