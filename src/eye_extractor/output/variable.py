@@ -89,6 +89,7 @@ When checking to see if the default (IolLens.UNKNOWN) should be updated, we can 
             rename_func=lambda x: x.name.lower(),
 
 """
+import enum
 from enum import Enum
 
 
@@ -124,6 +125,9 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
     if transformer_func is None:
         # no deserialization required (or created with `create_variable` function)
         transformer_func = lambda n: n['value'] if isinstance(n, dict) else n
+    elif isinstance(transformer_func, enum.EnumMeta):
+        enumclass = transformer_func
+        transformer_func = lambda n: enumclass(n['value'] if isinstance(n, dict) else n)
     if filter_func is None:  # inclusion criteria
         filter_func = lambda n: n
     if convert_func is None:  # if using different names (want different output name)

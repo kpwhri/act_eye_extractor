@@ -78,4 +78,4 @@ def extract_gonio(text, *, headers=None, lateralities=None):
                     'source': 'ALL',
                 })
             )
-
+    return data

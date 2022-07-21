@@ -1,3 +1,4 @@
+from eye_extractor.exam.gonio import Gonio
 from eye_extractor.glaucoma.drops import GenericDrop
 from eye_extractor.glaucoma.dx import GlaucomaType, GlaucomaDx
 from eye_extractor.output.variable import column_from_variable
@@ -43,4 +44,17 @@ def build_glaucoma_dx(data):
             GlaucomaType.UNKNOWN, GlaucomaType.GLAUCOMA,
         },
         sideeffect_func=_build_glaucoma_dx_sideeffect_func,
+    )
+
+
+def build_gonio(data):
+    return column_from_variable(
+        {
+            'gonio_re': Gonio.UNKNOWN,
+            'gonio_le': Gonio.UNKNOWN,
+            'gonio_unk': Gonio.UNKNOWN,
+        },
+        data,
+        transformer_func=Gonio,
+        enum_to_str=True,
     )
