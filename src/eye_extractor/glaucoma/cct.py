@@ -17,6 +17,14 @@ CCT_OD_OS_PAT = re.compile(
     re.I
 )
 
+CCT_OS_OD_PAT = re.compile(
+    rf'\b(?:'
+    rf'(?:{os_pattern})?\W*(?P<os>{cct})\W*(?:{os_pattern})?\W+'
+    rf'(?:{od_pattern})?\W*(?P<od>{cct})\W*(?:{od_pattern})?'
+    rf')\b',
+    re.I
+)
+
 CCT_OD_PAT = re.compile(
     rf'\b(?:'
     rf'(?:{od_pattern})\W*(?P<od1>{cct})'
@@ -52,26 +60,30 @@ CCT_PAT = re.compile(
 )
 
 CCT_SECTION_PAT = re.compile(
-    rf'\b(?:'
-    rf'pachymetry|cct'
-    rf')'
+    rf'\b(?:pachymetry|cct)\b',
+    re.I
 )
 
 
 def search_cct(text, sect_name):
-    if m := CCT_OD_OS_PAT.search(text):
+    def get_od_os(match):
         return {
             'centralcornealthickness_re': {
-                'value': int(m.group('od')),
-                'term': m.group(),
+                'value': int(match.group('od')),
+                'term': match.group(),
                 'regex': 'CCT_OD_OS_PAT',
                 'source': sect_name,
             }, 'centralcornealthickness_le': {
-                'value': int(m.group('os')),
-                'term': m.group(),
+                'value': int(match.group('os')),
+                'term': match.group(),
                 'regex': 'CCT_OD_OS_PAT',
                 'source': sect_name,
             }}
+
+    if m := CCT_OD_OS_PAT.search(text):
+        return get_od_os(m)
+    elif m := CCT_OS_OD_PAT.search(text):
+        return get_od_os(m)
     elif m := CCT_OU_PAT.search(text):
         entry = {
             'value': int(m.group('ou1') or m.group('ou2')),

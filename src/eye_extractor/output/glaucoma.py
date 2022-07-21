@@ -1,6 +1,6 @@
 from eye_extractor.exam.gonio import Gonio
 from eye_extractor.glaucoma.drops import GenericDrop
-from eye_extractor.glaucoma.dx import GlaucomaType, GlaucomaDx
+from eye_extractor.glaucoma.dx import GlaucomaType
 from eye_extractor.output.variable import column_from_variable
 
 
@@ -10,6 +10,7 @@ def build_glaucoma(data):
     results.update(build_glaucoma_drops(curr['drops']))
     results.update(build_glaucoma_dx(curr['dx']))
     results.update(build_gonio(curr['gonio']))
+    results.update(build_cct(curr['cct']))
     return results
 
 
@@ -58,4 +59,16 @@ def build_gonio(data):
         data,
         transformer_func=Gonio,
         enum_to_str=True,
+    )
+
+
+def build_cct(data):
+    return column_from_variable(
+        {
+            'centralcornealthickness_re': -1,
+            'centralcornealthickness_le': -1,
+            'centralcornealthickness_unk': -1,
+        },
+        data,
+        compare_func=lambda new, current: current == -1,  # only update defaults
     )
