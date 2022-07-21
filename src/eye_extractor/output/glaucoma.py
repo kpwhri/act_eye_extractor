@@ -9,6 +9,7 @@ def build_glaucoma(data):
     curr = data['glaucoma']
     results.update(build_glaucoma_drops(curr['drops']))
     results.update(build_glaucoma_dx(curr['dx']))
+    results.update(build_gonio(curr['gonio']))
     return results
 
 
