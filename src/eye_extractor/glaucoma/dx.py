@@ -226,7 +226,7 @@ def extract_glaucoma_dx(text, *, headers=None, lateralities=None):
                     for m in pat.finditer(section_text):
                         negword = is_negated(m, section_text, {'no', 'or', 'without'})
                         data.append(
-                            create_new_variable(text, m, section_lateralities, 'glaucoma_dx', {
+                            create_new_variable(section_text, m, section_lateralities, 'glaucoma_dx', {
                                 'value': 0 if negword else value,
                                 'term': m.group(),
                                 'label': 'no' if negword else 'yes',
