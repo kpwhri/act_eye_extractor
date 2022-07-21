@@ -174,4 +174,8 @@ OUTPUT_COLUMNS = {
     'gonio_re': [is_upper],
     'gonio_le': [is_upper],
     'gonio_unk': [is_upper],
+    # cct
+    'centralcornealthickness_re': [is_in_range(450, 750)],
+    'centralcornealthickness_le': [is_in_range(450, 750)],
+    'centralcornealthickness_unk': [is_in_range(450, 750)],
 }
