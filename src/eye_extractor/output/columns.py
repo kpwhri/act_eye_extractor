@@ -170,4 +170,8 @@ OUTPUT_COLUMNS = {
     'glaucoma_type_re': [is_upper],
     'glaucoma_type_le': [is_upper],
     'glaucoma_type_unk': [is_upper],
+    # gonioscopy
+    'gonio_re': [is_upper],
+    'gonio_le': [is_upper],
+    'gonio_unk': [is_upper],
 }
