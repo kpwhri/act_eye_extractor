@@ -11,16 +11,35 @@ cct = r'\d{3}'
 
 CCT_OD_OS_PAT = re.compile(
     rf'\b(?:'
-    rf'(?:{od_pattern})?\W*(?P<od>{cct})\W*(?:{od_pattern})?\W+'
-    rf'(?:{os_pattern})?\W*(?P<os>{cct})\W*(?:{os_pattern})?'
+    # OD 500; 500 os
+    rf'(?:{od_pattern})\W*(?P<od1>{cct})\W+(?P<os1>{cct})\W*(?:{os_pattern})'
+    # OD 500; OS 500
+    rf'|(?:{od_pattern})\W*(?P<od2>{cct})\W*(?:{os_pattern})\W*(?P<os2>{cct})'
+    # 500 od; os 500
+    rf'|(?P<od3>{cct})\W*(?:{od_pattern})\W*(?:{os_pattern})\W*(?P<os3>{cct})'
+    # 500 od; 500 os
+    rf'|(?P<od4>{cct})\W*(?:{od_pattern})\W+(?P<os4>{cct})\W*(?:{os_pattern})'
+    rf')\b',
+    re.I
+)
+CCT_OS_OD_PAT = re.compile(
+    rf'\b(?:'
+    # OS 500; 500 od
+    rf'(?:{os_pattern})\W*(?P<os1>{cct})\W+(?P<od1>{cct})\W*(?:{od_pattern})'
+    # OS 500; OD 500
+    rf'|(?:{os_pattern})\W*(?P<os2>{cct})\W*(?:{od_pattern})\W*(?P<od2>{cct})'
+    # 500 os; od 500
+    rf'|(?P<os3>{cct})\W*(?:{os_pattern})\W*(?:{od_pattern})\W*(?P<od3>{cct})'
+    # 500 os; 500 od
+    rf'|(?P<os4>{cct})\W*(?:{os_pattern})\W+(?P<od4>{cct})\W*(?:{od_pattern})'
     rf')\b',
     re.I
 )
 
-CCT_OS_OD_PAT = re.compile(
+CCT_OD_OS_GEN_PAT = re.compile(
     rf'\b(?:'
-    rf'(?:{os_pattern})?\W*(?P<os>{cct})\W*(?:{os_pattern})?\W+'
-    rf'(?:{od_pattern})?\W*(?P<od>{cct})\W*(?:{od_pattern})?'
+    rf'(?:{od_pattern})?\W*(?P<od>{cct})\W*(?:{od_pattern})?\W+'
+    rf'(?:{os_pattern})?\W*(?P<os>{cct})\W*(?:{os_pattern})?'
     rf')\b',
     re.I
 )
@@ -66,24 +85,40 @@ CCT_SECTION_PAT = re.compile(
 
 
 def search_cct(text, sect_name):
-    def get_od_os(match):
+    def get_od_os(match, pat):
         return {
             'centralcornealthickness_re': {
-                'value': int(match.group('od')),
+                'value': int(
+                    match.group('od1') or match.group('od2') or match.group('od3') or match.group('od4')
+                ),
                 'term': match.group(),
-                'regex': 'CCT_OD_OS_PAT',
+                'regex': pat,
                 'source': sect_name,
             }, 'centralcornealthickness_le': {
-                'value': int(match.group('os')),
+                'value': int(
+                    match.group('os1') or match.group('os2') or match.group('os3') or match.group('os4')
+                ),
                 'term': match.group(),
-                'regex': 'CCT_OD_OS_PAT',
+                'regex': pat,
                 'source': sect_name,
             }}
-
     if m := CCT_OD_OS_PAT.search(text):
-        return get_od_os(m)
+        return get_od_os(m, 'CCT_OD_OS_PAT')
     elif m := CCT_OS_OD_PAT.search(text):
-        return get_od_os(m)
+        return get_od_os(m, 'CCT_OS_OD_PAT')
+    elif m := CCT_OD_OS_GEN_PAT.search(text):
+        return {
+            'centralcornealthickness_re': {
+                'value': int(m.group('od')),
+                'term': m.group(),
+                'regex': 'CCT_OD_OS_GEN_PAT',
+                'source': sect_name,
+            }, 'centralcornealthickness_le': {
+                'value': int(m.group('os')),
+                'term': m.group(),
+                'regex': 'CCT_OD_OS_GEN_PAT',
+                'source': sect_name,
+            }}
     elif m := CCT_OU_PAT.search(text):
         entry = {
             'value': int(m.group('ou1') or m.group('ou2')),
