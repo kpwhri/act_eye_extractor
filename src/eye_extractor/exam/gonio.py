@@ -21,7 +21,24 @@ OPEN_PAT = re.compile(  # make more specific? this will likely be expensive
 
 CLOSED_PAT = re.compile(
     rf'\b(?:'
-    rf'closed?'
+    rf'close(?:ure|d)?'
+    rf')\b',
+    re.I
+)
+
+OPEN_4_PAT = re.compile(
+    rf'\b(?:'
+    rf'open(?:ed)?'
+    rf'|4'
+    rf'|iv'
+    rf')\b',
+    re.I
+)
+
+CLOSED_0_PAT = re.compile(
+    rf'\b(?:'
+    rf'close(?:ure|d)?'
+    rf'|0'
     rf')\b',
     re.I
 )
@@ -39,15 +56,15 @@ def extract_gonio(text, *, headers=None, lateralities=None):
     data = []
 
     if headers:  # look for 'suspect', etc. in glaucoma section(s)
-        for sect_name in ['GONIO', 'GONIOSCOPY']:
+        for sect_name in ['ANGLE', 'ANGLES', 'GONIO', 'GONIOSCOPY']:
             if section_text := headers.get(sect_name, None):
                 section_lateralities = build_laterality_table(section_text)
                 for pat, pat_label, value in [
-                    (OPEN_PAT, 'OPEN_PAT', Gonio.OPEN),
-                    (CLOSED_PAT, 'CLOSED_PAT', Gonio.CLOSED),
+                    (OPEN_4_PAT, 'OPEN_4_PAT', Gonio.OPEN),
+                    (CLOSED_0_PAT, 'CLOSED_0_PAT', Gonio.CLOSED),
                 ]:
                     for m in pat.finditer(section_text):
-                        negword = is_negated(m, section_text, {'no', 'or', 'without', 'not'})
+                        negword = is_negated(m, section_text, {'no', 'or', 'without', 'not', 'such'})
                         data.append(
                             create_new_variable(section_text, m, section_lateralities, 'gonio', {
                                 'value': Gonio.NONE if negword else value,

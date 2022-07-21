@@ -18,6 +18,10 @@ def test_gonio_patterns(pat, text, exp):
 
 @pytest.mark.parametrize('text, headers, exp_gonio_re, exp_gonio_le, exp_gonio_unk', [
     ('gonioscopy, he has had open angles', None, 'UNKNOWN', 'UNKNOWN', 'OPEN'),
+    ('', {'ANGLE': 'OPEN, OU'}, 'OPEN', 'OPEN', 'UNKNOWN'),
+    ('', {'ANGLE': 'IV OU'}, 'OPEN', 'OPEN', 'UNKNOWN'),
+    ('', {'ANGLE': '4 OU'}, 'OPEN', 'OPEN', 'UNKNOWN'),
+    ('', {'ANGLE': '0 OD'}, 'CLOSED', 'UNKNOWN', 'UNKNOWN'),
 ])
 def test_gonio_extract_build(text, headers, exp_gonio_re, exp_gonio_le, exp_gonio_unk):
     pre_json = extract_gonio(text, headers=headers)
