@@ -89,3 +89,21 @@ def build_disc_hem(data):
         },
         data,
     )
+
+
+def build_disc_notch(data):
+    """
+    Build disc notch into 1=yes, 0=no, -1=unknown
+    Default comparison is used to only retain greatest (i.e., any yes)
+    :param data:
+    :return:
+    """
+    return column_from_variable(
+        {
+            'disc_notch_re': -1,
+            'disc_notch_le': -1,
+            'disc_notch_unk': -1,
+        },
+        data,
+    )
+
