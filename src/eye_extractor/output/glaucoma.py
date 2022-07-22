@@ -107,3 +107,19 @@ def build_disc_notch(data):
         data,
     )
 
+
+def build_tilted_disc(data):
+    """
+    Build tilted disc into 1=yes, 0=no, -1=unknown
+    Default comparison is used to only retain greatest (i.e., any yes)
+    :param data:
+    :return:
+    """
+    return column_from_variable(
+        {
+            'tilted_disc_re': -1,
+            'tilted_disc_le': -1,
+            'tilted_disc_unk': -1,
+        },
+        data,
+    )
