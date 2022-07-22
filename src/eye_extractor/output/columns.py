@@ -186,4 +186,8 @@ OUTPUT_COLUMNS = {
     'disc_notch_re': [is_in_range(-1, 1)],
     'disc_notch_le': [is_in_range(-1, 1)],
     'disc_notch_unk': [is_in_range(-1, 1)],
+    # tilted disc: yes/no/unknown
+    'tilted_disc_re': [is_in_range(-1, 1)],
+    'tilted_disc_le': [is_in_range(-1, 1)],
+    'tilted_disc_unk': [is_in_range(-1, 1)],
 }
