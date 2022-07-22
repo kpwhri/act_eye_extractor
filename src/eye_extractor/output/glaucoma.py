@@ -72,3 +72,20 @@ def build_cct(data):
         data,
         compare_func=lambda new, current: current == -1,  # only update defaults
     )
+
+
+def build_disc_hem(data):
+    """
+    Build disc hemorrhage into 1=yes, 0=no, -1=unknown
+    Default comparison is used to only retain greatest (i.e., any yes)
+    :param data:
+    :return:
+    """
+    return column_from_variable(
+        {
+            'disc_hem_re': -1,
+            'disc_hem_le': -1,
+            'disc_hem_unk': -1,
+        },
+        data,
+    )
