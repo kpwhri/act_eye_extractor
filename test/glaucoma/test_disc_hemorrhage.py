@@ -8,6 +8,8 @@ from eye_extractor.output.glaucoma import build_disc_hem
 
 @pytest.mark.parametrize('pat, text, exp', [
     (DH_PAT, 'no dh', True),
+    (DH_PAT, 'no disc hemorrhages', True),
+    (DH_PAT, 'disc heme', True),
 ])
 def test_dh_patterns(pat, text, exp):
     m = pat.search(text)
@@ -18,8 +20,10 @@ def test_dh_patterns(pat, text, exp):
     ('no dh', None, -1, -1, 0),
     ('dh', None, -1, -1, 1),
     ('OD: dh', None, 1, -1, -1),
+    ('Optic disc hemorrhage', None, -1, -1, 1),
+    ('h/o disc hemorrhage', None, -1, -1, 1),  # TODO: how should history be handled?
 ])
-def test_cct_extract_and_build(text, headers, exp_disc_hem_re, exp_disc_hem_le, exp_disc_hem_unk):
+def test_dh_extract_and_build(text, headers, exp_disc_hem_re, exp_disc_hem_le, exp_disc_hem_unk):
     pre_json = extract_disc_hem(text, headers=headers, lateralities=None)
     post_json = json.loads(json.dumps(pre_json))
     result = build_disc_hem(post_json)
