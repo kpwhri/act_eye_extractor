@@ -178,4 +178,8 @@ OUTPUT_COLUMNS = {
     'centralcornealthickness_re': [is_in_range(450, 750)],
     'centralcornealthickness_le': [is_in_range(450, 750)],
     'centralcornealthickness_unk': [is_in_range(450, 750)],
+    # disc hemorrhage: yes/no/unknown
+    'disc_hemo_re': [is_in_range(-1, 1)],
+    'disc_hemo_le': [is_in_range(-1, 1)],
+    'disc_hemo_unk': [is_in_range(-1, 1)],
 }
