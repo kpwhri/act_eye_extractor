@@ -16,6 +16,9 @@ def test_notch_patterns(pat, text, exp):
 
 
 @pytest.mark.parametrize('text, headers, exp_disc_notch_re, exp_disc_notch_le, exp_disc_notch_unk', [
+    ('no notching', None, -1, -1, 0),
+    ('inferior notch was discovered OS', None, -1, 1, -1),
+    ('sup notch OU', None, 1, 1, -1),
 ])
 def test_notch_extract_and_build(text, headers, exp_disc_notch_re, exp_disc_notch_le, exp_disc_notch_unk):
     pre_json = extract_disc_notch(text, headers=headers, lateralities=None)
