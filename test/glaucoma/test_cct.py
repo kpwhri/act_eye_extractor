@@ -19,6 +19,8 @@ from eye_extractor.output.glaucoma import build_cct
     (CCT_OD_OS_PAT, 'Pachymetry: OD: 494 OS: 495', True),
     (CCT_OS_OD_PAT, 'Pachymetry: OS: 494 OD: 495', True),
     (CCT_OD_OS_PAT, 'Pachymetry: OS: 494 OD: 495', False),
+    (CCT_OD_OS_PAT, 'PACHYMETRY: 470 microns OD and 480 microns OS', True),
+    (CCT_OD_OS_PAT, 'PACHYMETRY: 470 microns OD, 480 microns OS', True),
 ])
 def test_cct_patterns(pat, text, exp):
     m = pat.search(text)
