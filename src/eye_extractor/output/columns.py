@@ -182,4 +182,8 @@ OUTPUT_COLUMNS = {
     'disc_hemo_re': [is_in_range(-1, 1)],
     'disc_hemo_le': [is_in_range(-1, 1)],
     'disc_hemo_unk': [is_in_range(-1, 1)],
+    # disc notch: yes/no/unknown
+    'disc_notch_re': [is_in_range(-1, 1)],
+    'disc_notch_le': [is_in_range(-1, 1)],
+    'disc_notch_unk': [is_in_range(-1, 1)],
 }
