@@ -2,6 +2,7 @@ from eye_extractor.exam.gonio import Gonio
 from eye_extractor.glaucoma.drops import GenericDrop
 from eye_extractor.glaucoma.dx import GlaucomaType
 from eye_extractor.glaucoma.exfoliation import Exfoliation
+from eye_extractor.glaucoma.preglaucoma import Preglaucoma
 from eye_extractor.glaucoma.tx import GlaucomaTreatment
 from eye_extractor.output.variable import column_from_variable
 
@@ -188,4 +189,26 @@ def build_exfoliation(data):
         },
         data,
         transformer_func=Exfoliation,
+    )
+
+
+def build_preglaucoma_dx(data):
+    """
+    Build exfoliation (non-glaucoma)
+    Default comparison is used to only retain greatest (i.e., any yes)
+    :param data:
+    :return:
+    """
+    return column_from_variable(
+        {
+            'preglaucoma_re': Preglaucoma.UNKNOWN,
+            'preglaucoma_le': Preglaucoma.UNKNOWN,
+            'preglaucoma_unk': Preglaucoma.UNKNOWN,
+        },
+        data,
+        enum_to_str=True,
+        transformer_func=Preglaucoma,
+        compare_func=lambda n, c: c in {
+            Preglaucoma.UNKNOWN, Preglaucoma.NONE
+        },
     )
