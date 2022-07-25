@@ -65,11 +65,11 @@ LTG_PAT = re.compile(
 
 PXG_PAT = re.compile(
     rf'(?:'
-    rf'\b(?:pxg|pex|pxf|xfs)\b'
+    rf'\b(?:pxg|p[de]x|pxf|xfs|peg)\b'
     rf'|'
     rf'capsulare'
     rf'|'
-    rf'(?:pseudo\W*)exfoliat\w*'
+    rf'(?:pseudo\W*)?exfoll?iat\w*'
     rf')',
     re.I
 )

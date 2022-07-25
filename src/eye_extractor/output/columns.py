@@ -194,4 +194,8 @@ OUTPUT_COLUMNS = {
     'ppa_re': [is_in_range(-1, 1)],
     'ppa_le': [is_in_range(-1, 1)],
     'ppa_unk': [is_in_range(-1, 1)],
+    # exfoliation: yes/no/unknown
+    'exfoliation_re': [is_in_range(-1, 1)],
+    'exfoliation_le': [is_in_range(-1, 1)],
+    'exfoliation_unk': [is_in_range(-1, 1)],
 }
