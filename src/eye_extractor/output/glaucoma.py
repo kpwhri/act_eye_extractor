@@ -123,3 +123,20 @@ def build_tilted_disc(data):
         },
         data,
     )
+
+
+def build_ppa(data):
+    """
+    Build perpapillary atrophy into 1=yes, 0=no, -1=unknown
+    Default comparison is used to only retain greatest (i.e., any yes)
+    :param data:
+    :return:
+    """
+    return column_from_variable(
+        {
+            'ppa_re': -1,
+            'ppa_le': -1,
+            'ppa_unk': -1,
+        },
+        data,
+    )
