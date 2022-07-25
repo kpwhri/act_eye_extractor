@@ -25,13 +25,20 @@ Types of changes:
   - UNKNOWN
   - NONE
   - OBSERVE
-  - CONTINUE_RX
-  - NEW_MEDICATION
+  - CONTINUE RX
+  - NEW MEDICATION
   - ALT
   - SLT
   - SURGERY
   - TRABECULOPLASTY
 - Exfoliation variable (yes=1/no=0/unknown=-1) for `exfoliation_re`, `exfoliation_le`, `exfoliation_unk`
+- Preglaucoma variable for `preglaucoma_re`, `preglaucoma_le`, `preglaucoma_unk`:
+  - UNKNOWN
+  - NONE
+  - SUSPECT
+  - PPG
+  - INCREASED CD
+  - OHTN (ocular hypertension)
 
 ### Fixed
 - Typo in determining type of glaucoma drops

@@ -6,6 +6,7 @@ from eye_extractor.glaucoma.drops import extract_glaucoma_drops
 from eye_extractor.glaucoma.dx import extract_glaucoma_dx
 from eye_extractor.glaucoma.exfoliation import extract_exfoliation
 from eye_extractor.glaucoma.ppa import extract_ppa
+from eye_extractor.glaucoma.preglaucoma import extract_preglaucoma_dx
 from eye_extractor.glaucoma.tilted_disc import extract_tilted_disc
 from eye_extractor.glaucoma.tx import extract_tx
 
@@ -22,4 +23,5 @@ def extract_glaucoma(text, *, headers=None, lateralities=None):
     data['ppa'] = extract_ppa(text, headers=headers, lateralities=lateralities)
     data['tx'] = extract_tx(text, headers=headers, lateralities=lateralities)
     data['exfoliation'] = extract_exfoliation(text, headers=headers, lateralities=lateralities)
+    data['preglaucoma'] = extract_preglaucoma_dx(text, headers=headers, lateralities=lateralities)
     return data

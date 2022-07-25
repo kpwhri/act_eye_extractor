@@ -198,4 +198,8 @@ OUTPUT_COLUMNS = {
     'exfoliation_re': [is_in_range(-1, 1)],
     'exfoliation_le': [is_in_range(-1, 1)],
     'exfoliation_unk': [is_in_range(-1, 1)],
+    # preglaucoma
+    'preglaucoma_re': [is_upper],
+    'preglaucoma_le': [is_upper],
+    'preglaucoma_unk': [is_upper],
 }

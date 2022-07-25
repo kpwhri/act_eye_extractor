@@ -20,6 +20,7 @@ def build_glaucoma(data):
     results.update(build_ppa(curr['ppa']))
     results.update(build_tx(curr['tx']))
     results.update(build_exfoliation(curr['exfoliation']))
+    results.update(build_preglaucoma_dx(curr['preglaucoma']))
     return results
 
 
