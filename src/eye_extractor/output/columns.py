@@ -190,4 +190,8 @@ OUTPUT_COLUMNS = {
     'tilted_disc_re': [is_in_range(-1, 1)],
     'tilted_disc_le': [is_in_range(-1, 1)],
     'tilted_disc_unk': [is_in_range(-1, 1)],
+    # peri-papillary atrophy: yes/no/unknown
+    'ppa_re': [is_in_range(-1, 1)],
+    'ppa_le': [is_in_range(-1, 1)],
+    'ppa_unk': [is_in_range(-1, 1)],
 }
