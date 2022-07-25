@@ -55,9 +55,18 @@ CUP_DISC_UNILAT_PAT = re.compile(
     re.I
 )
 
-
 CUP_DISC_HV_PAT = re.compile(
     rf'\b(?:{cd_ratio})',
+    re.I
+)
+
+OD_CUP_DISC = re.compile(
+    rf'\bod\W*cup\W*dis[ck]\W*(?P<od>{ratio})',
+    re.I
+)
+
+OS_CUP_DISC = re.compile(
+    rf'\bos\W*cup\W*dis[ck]\W*(?P<os>{ratio})',
     re.I
 )
 
@@ -79,6 +88,15 @@ def followed_by_date(m, text):
 
 def extract_cup_disk_ratio(text, *, headers=None, lateralities=None):
     data = []
+    if (mod := OD_CUP_DISC.search(text)) and (mos := OS_CUP_DISC.search(text)):
+        data.append(
+            {
+                'context': f'{mod.group()}_{mos.group()}',
+                'cupdiscratio_rev': mod.group('od'),
+                'cupdiscratio_lev': mos.group('os'),
+                'regex': 'OD|OS_CUP_DISC', 'source': 'ALL',
+            }
+        )
     for pat_label, pat in [
         ('CUP_DISK_PAT', CUP_DISK_PAT),
         ('CUP_DISC_NO_LAT_LABEL_PAT', CUP_DISC_NO_LAT_LABEL_PAT),

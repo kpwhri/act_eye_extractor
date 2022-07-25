@@ -1,7 +1,8 @@
 import pytest
 
 from eye_extractor.common.regex import coalesce_match
-from eye_extractor.exam.cup_disk_ratio import CUP_DISK_PAT, CUP_DISC_NO_LAT_LABEL_PAT, CUP_DISC_UNILAT_PAT
+from eye_extractor.exam.cup_disk_ratio import CUP_DISK_PAT, CUP_DISC_NO_LAT_LABEL_PAT, CUP_DISC_UNILAT_PAT, OD_CUP_DISC, \
+    OS_CUP_DISC
 
 
 @pytest.mark.parametrize('pat, text, exp_od, exp_os', [
@@ -13,6 +14,8 @@ from eye_extractor.exam.cup_disk_ratio import CUP_DISK_PAT, CUP_DISC_NO_LAT_LABE
     (CUP_DISK_PAT, 'c/d ratios OD 0.5 OS 0.6', '0.5', '0.6'),
     (CUP_DISK_PAT, 'c/d ratios OD 0.5 / OS 0.6', '0.5', '0.6'),
     (CUP_DISC_NO_LAT_LABEL_PAT, 'c/d ratio 0.5, 0.3', '0.5', '0.3'),
+    (OD_CUP_DISC, 'OD CUP/DISC: 0.6', '0.6', None),
+    (OS_CUP_DISC, 'OS CUP/DISC: 0.6', None, '0.6'),
 ])
 def test_cup_disk_regex(pat, text, exp_od, exp_os):
     m = pat.search(text)
