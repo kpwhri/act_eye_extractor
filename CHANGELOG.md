@@ -31,6 +31,7 @@ Types of changes:
   - SLT
   - SURGERY
   - TRABECULOPLASTY
+- Exfoliation variable (yes=1/no=0/unknown=-1) for `exfoliation_re`, `exfoliation_le`, `exfoliation_unk`
 
 ### Fixed
 - Typo in determining type of glaucoma drops
