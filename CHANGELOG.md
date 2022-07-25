@@ -19,7 +19,18 @@ Types of changes:
 
 ### Added
 - Additional cup disc ratio patterns
-- peripapillary atrophy variables (yes=1/no=0/unknown=-1) for `re`, `le`, `unk`
+- peripapillary atrophy variables (yes=1/no=0/unknown=-1) for `ppa_re`, `ppa_le`, `ppa_unk`
+- Headers API to improve access to multiple header types
+- Glaucoma treatment variable for `glaucoma_dx_re`, `glaucoma_dx_le`, `glaucoma_dx_unk`: 
+  - UNKNOWN
+  - NONE
+  - OBSERVE
+  - CONTINUE_RX
+  - NEW_MEDICATION
+  - ALT
+  - SLT
+  - SURGERY
+  - TRABECULOPLASTY
 
 ### Fixed
 - Typo in determining type of glaucoma drops

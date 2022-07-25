@@ -1,6 +1,7 @@
 """
 Treat headers and their text as key-value pairs
 """
+from collections import UserDict
 import re
 
 from eye_extractor.amd.drusen import find_drusen
@@ -11,12 +12,19 @@ HEADER_PAT = re.compile(  # built in reverse, always looks for semicolon
 )
 
 
+class Headers(UserDict):
+    def iterate(self, *headers: str):
+        for header in headers:
+            if text := self.data.get(header, None):
+                yield header, text
+
+
 def extract_headers_and_text(text):
     result = {}
     it = iter(x[::-1].strip() for x in HEADER_PAT.split(text[::-1])[:-1])
     for value, key in zip(it, it):
         result[key] = value.split('.')[0]
-    return result
+    return Headers(result)
 
 
 def get_data_from_headers(text):

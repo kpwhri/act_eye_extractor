@@ -117,14 +117,14 @@ def get_immediate_next_or_prev_laterality_from_table(table, index, *, max_skips=
     return lat, start, end
 
 
-def create_variable(data, text, match, lateralities, variable, value):
-    lat = get_laterality_for_term(lateralities, match, text)
+def create_variable(data, text, match, lateralities, variable, value, *, known_laterality=None):
+    lat = known_laterality or get_laterality_for_term(lateralities, match, text)
     add_laterality_to_variable(data, lat, variable, value)
 
 
-def create_new_variable(text, match, lateralities, variable, value):
+def create_new_variable(text, match, lateralities, variable, value, *, known_laterality=None):
     data = {}
-    create_variable(data, text, match, lateralities, variable, value)
+    create_variable(data, text, match, lateralities, variable, value, known_laterality=known_laterality)
     return data
 
 
