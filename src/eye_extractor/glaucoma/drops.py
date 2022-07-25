@@ -69,6 +69,7 @@ DRUG_TO_ENUM = {
     'epinal': [GenericDrop.EPINEPHRINE],
     'durysta': [GenericDrop.BIMATOPROST],
     'carbastat': [GenericDrop.CARBACHOL],
+    'betoptics': [GenericDrop.BETAXOLOL],
     'betoptic s': [GenericDrop.BETAXOLOL],
     'betoptic': [GenericDrop.BETAXOLOL],
     'betimol': [GenericDrop.TIMOLOL],
