@@ -21,7 +21,7 @@ class GlaucomaType(enum.IntEnum):
     POAG = 1
     NTG = 2
     LTG = 3
-    PXG = 4
+    PXG = 4  # exfoliative
     PG = 5  # pigmentary
     ACG = 6
     ICE = 7
