@@ -22,7 +22,7 @@ class GlaucomaTreatment(enum.IntEnum):
 
 
 drops = '|'.join(DRUG_TO_ENUM.keys()).replace(' ', r'\W*')
-medrx = rf'(?:med(?:ication?)?s?|{drops})'
+medrx = rf'(?:med(?:ication?)?s?|rx|{drops})'
 
 OBSERVE_PAT = re.compile(
     rf'(?:'
