@@ -207,4 +207,8 @@ OUTPUT_COLUMNS = {
     'glaucoma_tx_re': [is_upper],
     'glaucoma_tx_le': [is_upper],
     'glaucoma_tx_unk': [is_upper],
+    # pigmentary epithelial detachment
+    'ped_re': [is_in_range(-1, 1)],
+    'ped_le': [is_in_range(-1, 1)],
+    'ped_unk': [is_in_range(-1, 1)],
 }

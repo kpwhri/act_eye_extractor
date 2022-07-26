@@ -40,6 +40,11 @@ Types of changes:
   - INCREASED CD
   - OHTN (ocular hypertension)
 - Validator takes logical `or` rather than `and`
+- Pigmentary epithelial detachment (yes=1/no=0/unknown=-1) for `ped_re`, `ped_le`, `ped_unk`
+- Unknown laterality to amd fluid: `amd_fluid_unk`
+
+### Changed
+- Output format of `amd_fluid_` to uppercase string
 
 ### Fixed
 - Typo in determining type of glaucoma drops
