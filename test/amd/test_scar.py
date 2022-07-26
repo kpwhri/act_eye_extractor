@@ -22,6 +22,9 @@ def test_scar_patterns(pat, text, exp):
 
 @pytest.mark.parametrize('text, headers, exp_subret_fibrous_re, exp_subret_fibrous_le, exp_subret_fibrous_unk', [
         ('', {'MACULA': 'scar'}, 'UNKNOWN', 'UNKNOWN', 'YES'),
+        ('', {'MACULA': 'OD: macular scar'}, 'MACULAR', 'UNKNOWN', 'UNKNOWN'),
+        ('', {'MACULA': 'sub ret scar os'}, 'UNKNOWN', 'SUBRETINAL', 'UNKNOWN'),
+        ('disciform scar ou', None, 'DISCIFORM', 'DISCIFORM', 'UNKNOWN'),
     ])
 def test_scar_extract_build(text, headers, exp_subret_fibrous_re, exp_subret_fibrous_le, exp_subret_fibrous_unk):
     pre_json = extract_subret_fibrous(text, headers=Headers(headers))
