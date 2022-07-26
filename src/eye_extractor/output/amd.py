@@ -1,4 +1,5 @@
 from eye_extractor.amd.fluid import FluidAMD, fluid_prioritization
+from eye_extractor.amd.ped import PigEpiDetach
 from eye_extractor.output.laterality import laterality_from_int
 from eye_extractor.laterality import Laterality
 from eye_extractor.output.variable import column_from_variable
@@ -12,6 +13,7 @@ def build_amd_variables(data):
     results.update(get_subretinal_hemorrhage(curr['srh']))
     results.update(get_pigmentary_changes(curr['pigment']))
     results.update(get_fluid_from_variable(curr['fluid']))
+    results.update(build_ped(curr['ped']))
     return results
 
 
@@ -57,10 +59,25 @@ def get_pigmentary_changes(data):
 def get_fluid_from_variable(data):
     return column_from_variable(
         {
-            'fluid_amd_re': FluidAMD.NO,
-            'fluid_amd_le': FluidAMD.NO,
+            'fluid_amd_re': FluidAMD.UNKNOWN,
+            'fluid_amd_le': FluidAMD.UNKNOWN,
+            'fluid_amd_unk': FluidAMD.UNKNOWN,
         },
         data,
         transformer_func=FluidAMD,
         result_func=fluid_prioritization,
+        enum_to_str=True,
+    )
+
+
+def build_ped(data):
+    """Build binary pigmentary epithelial detachment variable"""
+    return column_from_variable(
+        {
+            'ped_re': PigEpiDetach.UNKNOWN,
+            'ped_le': PigEpiDetach.UNKNOWN,
+            'ped_unk': PigEpiDetach.UNKNOWN,
+        },
+        data,
+        transformer_func=PigEpiDetach,
     )
