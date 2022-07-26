@@ -1,4 +1,5 @@
 from eye_extractor.amd.amd import get_amd
+from eye_extractor.amd.cnv import extract_choroidalneovasc
 from eye_extractor.amd.drusen import get_drusen
 from eye_extractor.amd.fluid import get_fluid
 from eye_extractor.amd.ped import extract_ped
@@ -14,4 +15,5 @@ def extract_amd_variables(text, *, headers=None, lateralities=None):
         'pigment': get_pigmentary_changes(text, headers=headers, lateralities=lateralities),
         'fluid': get_fluid(text, headers=headers, lateralities=lateralities),
         'ped': extract_ped(text, headers=headers, lateralities=lateralities),
+        'cnv': extract_choroidalneovasc(text, headers=headers, lateralities=lateralities),
     }

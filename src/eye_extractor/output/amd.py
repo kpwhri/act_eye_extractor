@@ -1,3 +1,4 @@
+from eye_extractor.amd.cnv import ChoroidalNeoVasc
 from eye_extractor.amd.fluid import FluidAMD, fluid_prioritization
 from eye_extractor.amd.ped import PigEpiDetach
 from eye_extractor.output.laterality import laterality_from_int
@@ -14,6 +15,7 @@ def build_amd_variables(data):
     results.update(get_pigmentary_changes(curr['pigment']))
     results.update(get_fluid_from_variable(curr['fluid']))
     results.update(build_ped(curr['ped']))
+    results.update(build_choroidalneovasc(curr['cnv']))
     return results
 
 
@@ -80,4 +82,18 @@ def build_ped(data):
         },
         data,
         transformer_func=PigEpiDetach,
+    )
+
+
+def build_choroidalneovasc(data):
+    """Build cnv/choroidal neovascularization as binary (yes/no/unknown)"""
+    return column_from_variable(
+        {
+            'choroidalneovasc_re': ChoroidalNeoVasc.UNKNOWN,
+            'choroidalneovasc_le': ChoroidalNeoVasc.UNKNOWN,
+            'choroidalneovasc_unk': ChoroidalNeoVasc.UNKNOWN,
+        },
+        data,
+        transformer_func=ChoroidalNeoVasc,
+        compare_func=lambda n, c: c == ChoroidalNeoVasc.UNKNOWN,  # take first; only update unknown
     )
