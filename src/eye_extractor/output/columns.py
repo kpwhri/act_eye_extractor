@@ -211,4 +211,8 @@ OUTPUT_COLUMNS = {
     'ped_re': [is_in_range(-1, 1)],
     'ped_le': [is_in_range(-1, 1)],
     'ped_unk': [is_in_range(-1, 1)],
+    # choroidal neovascularization
+    'choroidalneovasc_re': [is_in_range(-1, 1)],
+    'choroidalneovasc_le': [is_in_range(-1, 1)],
+    'choroidalneovasc_unk': [is_in_range(-1, 1)],
 }
