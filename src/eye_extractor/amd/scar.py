@@ -14,7 +14,7 @@ class Scar(enum.IntEnum):
     DISCIFORM = 4
 
 
-scar = r'(?:scars?|fibros[ie]s)'
+scar = r'(?:scars?|fibros[ie]s|fibrous)'
 subret = r'(?:sub\s*ret\w*)'
 
 SCAR_PAT = re.compile(

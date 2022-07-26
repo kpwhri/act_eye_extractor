@@ -215,4 +215,8 @@ OUTPUT_COLUMNS = {
     'choroidalneovasc_re': [is_in_range(-1, 1)],
     'choroidalneovasc_le': [is_in_range(-1, 1)],
     'choroidalneovasc_unk': [is_in_range(-1, 1)],
+    # scar: subretinal fibrous
+    'subret_fibrous_re': [is_upper],
+    'subret_fibrous_le': [is_upper],
+    'subret_fibrous_unk': [is_upper],
 }
