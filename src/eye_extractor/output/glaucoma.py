@@ -12,15 +12,15 @@ def build_glaucoma(data):
     curr = data['glaucoma']
     results.update(build_glaucoma_drops(curr['drops']))
     results.update(build_glaucoma_dx(curr['dx']))
-    results.update(build_gonio(curr['gonio']))
-    results.update(build_cct(curr['cct']))
-    results.update(build_disc_hem(curr['disc_hem']))
-    results.update(build_disc_notch(curr['disc_notch']))
-    results.update(build_tilted_disc(curr['tilted_disc']))
-    results.update(build_ppa(curr['ppa']))
-    results.update(build_tx(curr['tx']))
-    results.update(build_exfoliation(curr['exfoliation']))
-    results.update(build_preglaucoma_dx(curr['preglaucoma']))
+    results.update(build_gonio(curr.get('gonio', None)))
+    results.update(build_cct(curr.get('cct', None)))
+    results.update(build_disc_hem(curr.get('disc_hem', None)))
+    results.update(build_disc_notch(curr.get('disc_notch', None)))
+    results.update(build_tilted_disc(curr.get('tilted_disc', None)))
+    results.update(build_ppa(curr.get('ppa', None)))
+    results.update(build_tx(curr.get('tx', None)))
+    results.update(build_exfoliation(curr.get('exfoliation', None)))
+    results.update(build_preglaucoma_dx(curr.get('preglaucoma', None)))
     return results
 
 
