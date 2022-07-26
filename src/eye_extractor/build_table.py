@@ -158,7 +158,8 @@ def process_data(data):
 @click.command()
 @click.argument('jsonl_file', type=click.Path(exists=True, path_type=pathlib.Path))
 @click.argument('outdir', type=click.Path(file_okay=False, path_type=pathlib.Path))
-def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path):
+@click.option('--add-column', multiple=True, help='Additional columns to include in output.')
+def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path, add_column=None):
     """
 
     :param jsonl_file: if file, read that file; if directory, run all
@@ -168,6 +169,8 @@ def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path):
     now = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
     outdir.mkdir(parents=True, exist_ok=True)
     outpath = outdir / f'variables_{now}.csv'
+    for col in add_column or []:
+        OUTPUT_COLUMNS[col] = []
     if jsonl_file.is_dir():
         jsonl_files = jsonl_file.glob('*.jsonl')
     else:

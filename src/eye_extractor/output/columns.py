@@ -1,5 +1,5 @@
 from eye_extractor.output.validators import is_int, is_in_range, is_date, contains, is_string, is_upper, \
-    is_float_in_range
+    is_float_in_range, equals
 
 OUTPUT_COLUMNS = {
     # metadata
@@ -12,22 +12,22 @@ OUTPUT_COLUMNS = {
     'iop_measurement_re': [],
     'iop_measurement_le': [],
     'iop_instrument_type': [],
-    'vacc_denominator_re': [is_int, is_in_range(15, 401)],
-    'vacc_denominator_le': [is_int, is_in_range(15, 401)],
-    'vasc_denominator_re': [is_int, is_in_range(15, 401)],
-    'vasc_denominator_le': [is_int, is_in_range(15, 401)],
-    'vaph_denominator_re': [is_int, is_in_range(15, 401)],
-    'vaph_denominator_le': [is_int, is_in_range(15, 401)],
-    'varx_denominator_re': [is_int, is_in_range(15, 401)],
-    'varx_denominator_le': [is_int, is_in_range(15, 401)],
-    'vacc_numbercorrect_re': [is_int, is_in_range(-6, 6)],
-    'vacc_numbercorrect_le': [is_int, is_in_range(-6, 6)],
-    'vasc_numbercorrect_re': [is_int, is_in_range(-6, 6)],
-    'vasc_numbercorrect_le': [is_int, is_in_range(-6, 6)],
-    'vaph_numbercorrect_re': [is_int, is_in_range(-6, 6)],
-    'vaph_numbercorrect_le': [is_int, is_in_range(-6, 6)],
-    'varx_numbercorrect_re': [is_int, is_in_range(-6, 6)],
-    'varx_numbercorrect_le': [is_int, is_in_range(-6, 6)],
+    'vacc_denominator_re': [is_in_range(15, 401)],
+    'vacc_denominator_le': [is_in_range(15, 401)],
+    'vasc_denominator_re': [is_in_range(15, 401)],
+    'vasc_denominator_le': [is_in_range(15, 401)],
+    'vaph_denominator_re': [is_in_range(15, 401)],
+    'vaph_denominator_le': [is_in_range(15, 401)],
+    'varx_denominator_re': [is_in_range(15, 401)],
+    'varx_denominator_le': [is_in_range(15, 401)],
+    'vacc_numbercorrect_re': [is_in_range(-6, 6)],
+    'vacc_numbercorrect_le': [is_in_range(-6, 6)],
+    'vasc_numbercorrect_re': [is_in_range(-6, 6)],
+    'vasc_numbercorrect_le': [is_in_range(-6, 6)],
+    'vaph_numbercorrect_re': [is_in_range(-6, 6)],
+    'vaph_numbercorrect_le': [is_in_range(-6, 6)],
+    'varx_numbercorrect_re': [is_in_range(-6, 6)],
+    'varx_numbercorrect_le': [is_in_range(-6, 6)],
     'vacc_letters_re': [contains('CF', 'HM', 'LP', 'NLP')],
     'vacc_letters_le': [contains('CF', 'HM', 'LP', 'NLP')],
     'vasc_letters_re': [contains('CF', 'HM', 'LP', 'NLP')],
@@ -175,13 +175,13 @@ OUTPUT_COLUMNS = {
     'gonio_le': [is_upper],
     'gonio_unk': [is_upper],
     # cct
-    'centralcornealthickness_re': [is_in_range(450, 750)],
-    'centralcornealthickness_le': [is_in_range(450, 750)],
-    'centralcornealthickness_unk': [is_in_range(450, 750)],
+    'centralcornealthickness_re': [is_in_range(450, 750), equals(-1)],
+    'centralcornealthickness_le': [is_in_range(450, 750), equals(-1)],
+    'centralcornealthickness_unk': [is_in_range(450, 750), equals(-1)],
     # disc hemorrhage: yes/no/unknown
-    'disc_hemo_re': [is_in_range(-1, 1)],
-    'disc_hemo_le': [is_in_range(-1, 1)],
-    'disc_hemo_unk': [is_in_range(-1, 1)],
+    'disc_hem_re': [is_in_range(-1, 1)],
+    'disc_hem_le': [is_in_range(-1, 1)],
+    'disc_hem_unk': [is_in_range(-1, 1)],
     # disc notch: yes/no/unknown
     'disc_notch_re': [is_in_range(-1, 1)],
     'disc_notch_le': [is_in_range(-1, 1)],
@@ -202,4 +202,8 @@ OUTPUT_COLUMNS = {
     'preglaucoma_re': [is_upper],
     'preglaucoma_le': [is_upper],
     'preglaucoma_unk': [is_upper],
+    # glaucoma treatment
+    'glaucoma_tx_re': [is_upper],
+    'glaucoma_tx_le': [is_upper],
+    'glaucoma_tx_unk': [is_upper],
 }
