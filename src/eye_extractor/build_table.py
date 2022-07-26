@@ -133,7 +133,7 @@ def get_manifest(data):
     return {}
 
 
-def process_data(data):
+def process_data(data, *, add_columns=None):
     result = {
         'docid': data['note_id'],
         'studyid': data['studyid'],
@@ -141,6 +141,8 @@ def process_data(data):
         'encid': data['enc_id'],
         'is_training': data['train'],
     }
+    for col in add_columns or []:
+        result[col] = data[col]
     result.update(get_va(data['va']))
     result.update(build_iop(data['iop']))
     result.update(get_manifest(data['manifestrx']))
@@ -158,8 +160,8 @@ def process_data(data):
 @click.command()
 @click.argument('jsonl_file', type=click.Path(exists=True, path_type=pathlib.Path))
 @click.argument('outdir', type=click.Path(file_okay=False, path_type=pathlib.Path))
-@click.option('--add-column', multiple=True, help='Additional columns to include in output.')
-def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path, add_column=None):
+@click.option('--add-column', 'add_columns', multiple=True, help='Additional columns to include in output.')
+def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path, add_columns=None):
     """
 
     :param jsonl_file: if file, read that file; if directory, run all
@@ -169,7 +171,7 @@ def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path, add_column=None)
     now = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
     outdir.mkdir(parents=True, exist_ok=True)
     outpath = outdir / f'variables_{now}.csv'
-    for col in add_column or []:
+    for col in add_columns or []:
         OUTPUT_COLUMNS[col] = []
     if jsonl_file.is_dir():
         jsonl_files = jsonl_file.glob('*.jsonl')
@@ -183,7 +185,7 @@ def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path, add_column=None)
                     writer.writeheader()
                 for line in fh:
                     data = json.loads(line.strip())
-                    result = process_data(data)
+                    result = process_data(data, add_columns=add_columns)
                     validate_columns_in_row(OUTPUT_COLUMNS, result, id_col='studyid')
                     writer.writerow(result)
 

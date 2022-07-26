@@ -39,6 +39,7 @@ Types of changes:
   - PPG
   - INCREASED CD
   - OHTN (ocular hypertension)
+- Validator takes logical `or` rather than `and`
 
 ### Fixed
 - Typo in determining type of glaucoma drops

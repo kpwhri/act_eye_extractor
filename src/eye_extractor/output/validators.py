@@ -95,6 +95,7 @@ def _validate_columns_in_row_or(column_dict, data, *, strict=False, id_col=None)
             except ValidatorError as ve:
                 curr_errors.append(ve)
             else:
+                curr_errors = None
                 break
         if curr_errors:
             logger.error(f'For column {col}: {", ".join(str(ve) for ve in curr_errors)}')
