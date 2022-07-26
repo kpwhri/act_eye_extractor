@@ -9,11 +9,12 @@ from eye_extractor.laterality import create_new_variable
 class FluidAMD(enum.IntEnum):
     UNKNOWN = -1
     NO = 0
-    SUBRETINAL_FLUID = 1
+    FLUID = 1
+    SUBRETINAL_FLUID = 11  # 1
     NO_SUBRETINAL_FLUID = 10
-    INTRARETINAL_FLUID = 2
+    INTRARETINAL_FLUID = 21
     NO_INTRARETINAL_FLUID = 20
-    SUB_AND_INTRARETINAL_FLUID = 3
+    SUB_AND_INTRARETINAL_FLUID = 31
     NO_SUB_AND_INTRARETINAL_FLUID = 30
 
 
@@ -26,7 +27,7 @@ def fluid_prioritization(new_value: FluidAMD, curr_value: FluidAMD | None):
         return FluidAMD.SUB_AND_INTRARETINAL_FLUID
     elif {curr_value, new_value} == {FluidAMD.NO_SUBRETINAL_FLUID, FluidAMD.NO_INTRARETINAL_FLUID}:
         return FluidAMD.NO_SUB_AND_INTRARETINAL_FLUID
-    elif curr_value.value in {0, 10, 20, 30, -1} and new_value in {1, 2, 3, 99}:
+    elif curr_value.value in {0, 10, 20, 30, -1} and new_value in {1, 11, 21, 31}:
         # group negatives/positives
         # -1=Unknown fluid is the lowest of the 'no' so it will override negatives in next line
         return new_value
@@ -124,9 +125,9 @@ def _get_fluid_in_macula(text, lateralities, source):
         )
         data.append(
             create_new_variable(text, m, lateralities, 'fluid_amd', {
-                'value': FluidAMD.NO if negword else FluidAMD.UNKNOWN,
+                'value': FluidAMD.NO if negword else FluidAMD.FLUID,
                 'term': m.group(),
-                'label': 'no' if negword else 'unknown',
+                'label': 'no' if negword else 'yes',
                 'negated': negword,
                 'regex': 'FLUID_NOS_PAT',
                 'source': source,
