@@ -49,7 +49,7 @@ FLUID_NOS_PAT = re.compile(
 
 SUBRETINAL_FLUID_PAT = re.compile(
     rf'(?:'
-    rf'sub\W?retinal\W*fluid'
+    rf'sub\W?ret\w*\W*fluid'
     rf'|\b{srf}\b'
     rf')',
     re.IGNORECASE
@@ -57,7 +57,7 @@ SUBRETINAL_FLUID_PAT = re.compile(
 
 INTRARETINAL_FLUID_PAT = re.compile(
     rf'(?:'
-    rf'intra\W?retinal\W*fluid'
+    rf'intra\W?ret\w*\W*fluid'
     rf'|\b{irf}\b'
     rf')',
     re.IGNORECASE
@@ -65,7 +65,7 @@ INTRARETINAL_FLUID_PAT = re.compile(
 
 SUB_AND_INTRARETINAL_FLUID_PAT = re.compile(
     rf'(?:'
-    rf'sub(\W?retinal)?(?:\W*fluid)?\W*(?:\w+\W+){{0,2}}intra\W?retinal\W*fluid'
+    rf'sub(\W?ret\w*)?(?:\W*fluid)?\W*(?:\w+\W+){{0,2}}intra\W?ret\w*\W*fluid'
     rf'|{srf}\W+(?:and\W+)?{irf}'
     rf'|{irf}\W+(?:and\W+)?{srf}'
     rf')',

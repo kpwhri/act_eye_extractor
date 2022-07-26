@@ -25,6 +25,7 @@ def test_fluid_nos_pattern(text, exp):
     ('sr fluid', 1),
     ('srfluids', 1),
     ('bowsr fanta', 0),
+    ('sub ret fluid', 1),
 ])
 def test_subretinal_fluid_pattern(text, exp):
     assert bool(SUBRETINAL_FLUID_PAT.search(text)) == exp
