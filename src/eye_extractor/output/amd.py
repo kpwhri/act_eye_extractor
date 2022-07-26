@@ -11,6 +11,7 @@ def build_amd_variables(data):
     results.update(get_drusen(curr['drusen']))
     results.update(get_subretinal_hemorrhage(curr['srh']))
     results.update(get_pigmentary_changes(curr['pigment']))
+    results.update(get_fluid_from_variable(curr['fluid']))
     return results
 
 
