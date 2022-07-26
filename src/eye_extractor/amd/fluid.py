@@ -7,6 +7,7 @@ from eye_extractor.laterality import create_new_variable
 
 
 class FluidAMD(enum.IntEnum):
+    UNKNOWN = -1
     NO = 0
     SUBRETINAL_FLUID = 1
     NO_SUBRETINAL_FLUID = 10
@@ -14,7 +15,6 @@ class FluidAMD(enum.IntEnum):
     NO_INTRARETINAL_FLUID = 20
     SUB_AND_INTRARETINAL_FLUID = 3
     NO_SUB_AND_INTRARETINAL_FLUID = 30
-    UNKNOWN = 99  # unknown fluid
 
 
 def fluid_prioritization(new_value: FluidAMD, curr_value: FluidAMD | None):
@@ -26,9 +26,9 @@ def fluid_prioritization(new_value: FluidAMD, curr_value: FluidAMD | None):
         return FluidAMD.SUB_AND_INTRARETINAL_FLUID
     elif {curr_value, new_value} == {FluidAMD.NO_SUBRETINAL_FLUID, FluidAMD.NO_INTRARETINAL_FLUID}:
         return FluidAMD.NO_SUB_AND_INTRARETINAL_FLUID
-    elif curr_value.value in {0, 10, 20, 30, 99} and new_value in {1, 2, 3, 99}:
+    elif curr_value.value in {0, 10, 20, 30, -1} and new_value in {1, 2, 3, 99}:
         # group negatives/positives
-        # 99=Unknown fluid is the highest of the 'no' so it will override negatives in next line
+        # -1=Unknown fluid is the lowest of the 'no' so it will override negatives in next line
         return new_value
     elif new_value.value > curr_value.value:
         # take the highest positive or negative in the group (this is the most specific)

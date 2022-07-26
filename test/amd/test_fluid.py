@@ -58,7 +58,7 @@ def test_intraretinal_fluid_pattern(text, exp):
 
 @pytest.mark.parametrize('text, exp_value, exp_negword', [
     ('no new heme and fluid od', 0, 'no'),
-    ('new subretinal fluid in central macula', 99, None),
+    ('new subretinal fluid in central macula', -1, None),
     ('fluid not noted today', 0, 'not'),
     ('no irf', 20, 'no'),
     ('srf not noted', 10, 'not'),
@@ -72,7 +72,7 @@ def test_fluid_value_first_variable(text, exp_value, exp_negword):
 
 
 @pytest.mark.parametrize('data, exp_fluid_amd_re, exp_fluid_amd_le', [
-    ([], FluidAMD.NO, FluidAMD.NO),
+    ([], 'UNKNOWN', 'UNKNOWN'),
 ])
 def test_fluid_to_column(data, exp_fluid_amd_re, exp_fluid_amd_le):
     result = get_fluid_from_variable(data)
