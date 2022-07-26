@@ -4,6 +4,7 @@ from eye_extractor.amd.drusen import get_drusen
 from eye_extractor.amd.fluid import get_fluid
 from eye_extractor.amd.ped import extract_ped
 from eye_extractor.amd.pigment import get_pigmentary_changes
+from eye_extractor.amd.scar import extract_subret_fibrous
 from eye_extractor.amd.srh import get_subretinal_hemorrhage
 
 
@@ -16,4 +17,5 @@ def extract_amd_variables(text, *, headers=None, lateralities=None):
         'fluid': get_fluid(text, headers=headers, lateralities=lateralities),
         'ped': extract_ped(text, headers=headers, lateralities=lateralities),
         'cnv': extract_choroidalneovasc(text, headers=headers, lateralities=lateralities),
+        'scar': extract_subret_fibrous(text, headers=headers, lateralities=lateralities),
     }

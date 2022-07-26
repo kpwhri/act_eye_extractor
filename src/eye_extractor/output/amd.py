@@ -1,6 +1,7 @@
 from eye_extractor.amd.cnv import ChoroidalNeoVasc
 from eye_extractor.amd.fluid import FluidAMD, fluid_prioritization
 from eye_extractor.amd.ped import PigEpiDetach
+from eye_extractor.amd.scar import Scar
 from eye_extractor.output.laterality import laterality_from_int
 from eye_extractor.laterality import Laterality
 from eye_extractor.output.variable import column_from_variable
@@ -16,6 +17,7 @@ def build_amd_variables(data):
     results.update(get_fluid_from_variable(curr['fluid']))
     results.update(build_ped(curr['ped']))
     results.update(build_choroidalneovasc(curr['cnv']))
+    results.update(build_subret_fibrous(curr['scar']))
     return results
 
 
@@ -96,4 +98,19 @@ def build_choroidalneovasc(data):
         data,
         transformer_func=ChoroidalNeoVasc,
         compare_func=lambda n, c: c == ChoroidalNeoVasc.UNKNOWN,  # take first; only update unknown
+    )
+
+
+def build_subret_fibrous(data):
+    """Build cnv/choroidal neovascularization as binary (yes/no/unknown)"""
+    return column_from_variable(
+        {
+            'subret_fibrous_re': Scar.UNKNOWN,
+            'subret_fibrous_le': Scar.UNKNOWN,
+            'subret_fibrous_unk': Scar.UNKNOWN,
+        },
+        data,
+        transformer_func=Scar,
+        compare_func=lambda n, c: c == Scar.UNKNOWN,  # take first; only update unknown
+        enum_to_str=True,
     )
