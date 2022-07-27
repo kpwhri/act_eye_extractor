@@ -219,4 +219,8 @@ OUTPUT_COLUMNS = {
     'subret_fibrous_re': [is_upper],
     'subret_fibrous_le': [is_upper],
     'subret_fibrous_unk': [is_upper],
+    # geographic atrophy (yes/no/unknown)
+    'geoatrophy_re': [is_in_range(-1, 1)],
+    'geoatrophy_le': [is_in_range(-1, 1)],
+    'geoatrophy_unk': [is_in_range(-1, 1)],
 }

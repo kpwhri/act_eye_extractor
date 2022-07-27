@@ -50,6 +50,7 @@ Types of changes:
   - MACULAR
   - SUBRETINAL
   - DISCIFORM
+- geographic atrophy (GA) (yes=1/no=0/unknown=-1) for `geoatrophy_re`, `geoatrophy_le`, `geoatrophy_unk`
 
 ### Changed
 - Output format of `amd_fluid_` to uppercase string
