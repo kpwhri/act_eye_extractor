@@ -1,5 +1,6 @@
 from eye_extractor.amd.cnv import ChoroidalNeoVasc
 from eye_extractor.amd.fluid import FluidAMD, fluid_prioritization
+from eye_extractor.amd.ga import GeoAtrophy
 from eye_extractor.amd.ped import PigEpiDetach
 from eye_extractor.amd.scar import Scar
 from eye_extractor.output.laterality import laterality_from_int
@@ -113,4 +114,19 @@ def build_subret_fibrous(data):
         transformer_func=Scar,
         compare_func=lambda n, c: c == Scar.UNKNOWN,  # take first; only update unknown
         enum_to_str=True,
+    )
+
+
+def build_geoatrophy(data):
+    """Build cnv/choroidal neovascularization as binary (yes/no/unknown)"""
+    return column_from_variable(
+        {
+            'geoatrophy_re': GeoAtrophy.UNKNOWN,
+            'geoatrophy_le': GeoAtrophy.UNKNOWN,
+            'geoatrophy_unk': GeoAtrophy.UNKNOWN,
+        },
+        data,
+        transformer_func=GeoAtrophy,
+        compare_func=lambda n, c: c == GeoAtrophy.UNKNOWN,  # take first; only update unknown
+        enum_to_str=False,  # store as int
     )
