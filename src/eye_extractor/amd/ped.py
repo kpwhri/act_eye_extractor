@@ -17,7 +17,7 @@ class PigEpiDetach(enum.IntEnum):
 
 PED_PAT = re.compile(
     rf'\b(?:'
-    rf'peds?'
+    rf'r?peds?'
     rf'|{pig_epith}\W*{detach}'
     rf'|{detach}\W+(?:\w+\W*){{,3}}{pig_epith}'
     rf')\b',

@@ -12,6 +12,7 @@ from eye_extractor.output.amd import build_ped
     (PED_PAT, 'detachment of the retinal pigment epithelium', True),
     (PED_PAT, 'ped', True),
     (PED_PAT, 'PEDs', True),
+    (PED_PAT, 'RPED', True),
 ])
 def test_ped_patterns(pat, text, exp):
     m = pat.search(text)
