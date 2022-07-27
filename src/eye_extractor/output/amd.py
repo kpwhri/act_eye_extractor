@@ -19,6 +19,7 @@ def build_amd_variables(data):
     results.update(build_ped(curr['ped']))
     results.update(build_choroidalneovasc(curr['cnv']))
     results.update(build_subret_fibrous(curr['scar']))
+    results.update(build_geoatrophy(curr['ga']))
     return results
 
 
@@ -118,7 +119,7 @@ def build_subret_fibrous(data):
 
 
 def build_geoatrophy(data):
-    """Build cnv/choroidal neovascularization as binary (yes/no/unknown)"""
+    """Build geographic atropy as binary (yes/no/unknown)"""
     return column_from_variable(
         {
             'geoatrophy_re': GeoAtrophy.UNKNOWN,
