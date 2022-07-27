@@ -16,7 +16,8 @@ GA_PAT = re.compile(
     rf'\b(?:'
     rf'ga'
     rf'|geo\w*\s*atroph\w*'
-    rf')\b'
+    rf')\b',
+    re.I
 )
 
 
