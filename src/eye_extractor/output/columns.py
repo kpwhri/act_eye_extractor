@@ -227,4 +227,8 @@ OUTPUT_COLUMNS = {
     'dryamd_severity_re': [is_upper],
     'dryamd_severity_le': [is_upper],
     'dryamd_severity_unk': [is_upper],
+    # wet severity
+    'wetamd_severity_re': [is_upper],
+    'wetamd_severity_le': [is_upper],
+    'wetamd_severity_unk': [is_upper],
 }

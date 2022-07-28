@@ -16,7 +16,7 @@ class DrySeverity(enum.IntEnum):
     L4 = 14
 
 
-amd = r'(?:ar?md|age\W*related\W*macul\w+\W*degen\w*)'
+amd = r'(?:ar?md|macul\w+\W*degen\w*)'
 dry = r'(?:dry|atroph\w*|nnv|non\W*(?:exudat|neovascul)\w+)'
 
 DRY_AMD_PAT = re.compile(

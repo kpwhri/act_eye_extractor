@@ -8,6 +8,7 @@ from eye_extractor.amd.ped import extract_ped
 from eye_extractor.amd.pigment import get_pigmentary_changes
 from eye_extractor.amd.scar import extract_subret_fibrous
 from eye_extractor.amd.srh import get_subretinal_hemorrhage
+from eye_extractor.amd.wet import extract_wetamd_severity
 
 
 def extract_amd_variables(text, *, headers=None, lateralities=None):
@@ -22,4 +23,5 @@ def extract_amd_variables(text, *, headers=None, lateralities=None):
         'scar': extract_subret_fibrous(text, headers=headers, lateralities=lateralities),
         'ga': extract_geoatrophy(text, headers=headers, lateralities=lateralities),
         'dry': extract_dryamd_severity(text, headers=headers, lateralities=lateralities),
+        'wet': extract_wetamd_severity(text, headers=headers, lateralities=lateralities),
     }

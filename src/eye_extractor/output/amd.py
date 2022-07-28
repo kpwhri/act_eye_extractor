@@ -4,6 +4,7 @@ from eye_extractor.amd.fluid import FluidAMD, fluid_prioritization
 from eye_extractor.amd.ga import GeoAtrophy
 from eye_extractor.amd.ped import PigEpiDetach
 from eye_extractor.amd.scar import Scar
+from eye_extractor.amd.wet import WetSeverity
 from eye_extractor.output.laterality import laterality_from_int
 from eye_extractor.laterality import Laterality
 from eye_extractor.output.variable import column_from_variable
@@ -22,6 +23,7 @@ def build_amd_variables(data):
     results.update(build_subret_fibrous(curr['scar']))
     results.update(build_geoatrophy(curr['ga']))
     results.update(build_dryamd_severity(curr['dry']))
+    results.update(build_wetamd_severity(curr['wet']))
     return results
 
 
@@ -145,5 +147,19 @@ def build_dryamd_severity(data):
         },
         data,
         transformer_func=DrySeverity,
+        enum_to_str=True,
+    )
+
+
+def build_wetamd_severity(data):
+    """Build wet amd severity"""
+    return column_from_variable(
+        {
+            'wetamd_severity_re': WetSeverity.UNKNOWN,
+            'wetamd_severity_le': WetSeverity.UNKNOWN,
+            'wetamd_severity_unk': WetSeverity.UNKNOWN,
+        },
+        data,
+        transformer_func=WetSeverity,
         enum_to_str=True,
     )
