@@ -10,7 +10,7 @@ class Vitamin(enum.IntEnum):
     YES = 1
 
 
-vitamins = r'(?:ocuvite|preservision|areds2?)'
+vitamins = r'(?:ocuvite|preservision|areds2?|icaps?)'
 
 CONTINUE_VITAMIN_PAT = re.compile(  # verb + med
     rf'\b'
@@ -36,7 +36,9 @@ def extract_amd_vitamin(text, *, headers=None, lateralities=None):
     """
     data = []
     if headers:
-        for sect_name, sect_text in headers.iterate('EYE MEDICATIONS', 'MEDICATIONS'):  # TODO: other sections?
+        for sect_name, sect_text in headers.iterate(
+                'CURRENT EYE MEDICATIONS', 'EYE MEDICATIONS', 'MEDICATIONS', 'PLAN',
+        ):  # TODO: other sections?
             for m in VITAMIN_PAT.finditer(sect_text):
                 negword = is_negated(m, sect_text, {'no', 'not', 'or', 'without'})
                 data.append(
