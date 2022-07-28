@@ -148,23 +148,23 @@ Please use the [issue tracker](https://github.com/kpwhri/eye_extractor/issues).
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[contributors-shield]: https://img.shields.io/github/contributors/kpwhri/eye_extractor.svg?style=flat-square
+[contributors-shield]: https://img.shields.io/github/contributors/kpwhri/act_eye_extractor.svg?style=flat-square
 
-[contributors-url]: https://github.com/kpwhri/eye_extractor/graphs/contributors
+[contributors-url]: https://github.com/kpwhri/act_eye_extractor/graphs/contributors
 
-[forks-shield]: https://img.shields.io/github/forks/kpwhri/eye_extractor.svg?style=flat-square
+[forks-shield]: https://img.shields.io/github/forks/kpwhri/act_eye_extractor.svg?style=flat-square
 
-[forks-url]: https://github.com/kpwhri/eye_extractor/network/members
+[forks-url]: https://github.com/kpwhri/act_eye_extractor/network/members
 
-[stars-shield]: https://img.shields.io/github/stars/kpwhri/eye_extractor.svg?style=flat-square
+[stars-shield]: https://img.shields.io/github/stars/kpwhri/act_eye_extractor.svg?style=flat-square
 
-[stars-url]: https://github.com/kpwhri/eye_extractor/stargazers
+[stars-url]: https://github.com/kpwhri/act_eye_extractor/stargazers
 
-[issues-shield]: https://img.shields.io/github/issues/kpwhri/eye_extractor.svg?style=flat-square
+[issues-shield]: https://img.shields.io/github/issues/kpwhri/act_eye_extractor.svg?style=flat-square
 
-[issues-url]: https://github.com/kpwhri/eye_extractor/issues
+[issues-url]: https://github.com/kpwhri/act_eye_extractor/issues
 
-[license-shield]: https://img.shields.io/github/license/kpwhri/eye_extractor.svg?style=flat-square
+[license-shield]: https://img.shields.io/github/license/kpwhri/act_eye_extractor.svg?style=flat-square
 
 [license-url]: https://kpwhri.mit-license.org/
 
