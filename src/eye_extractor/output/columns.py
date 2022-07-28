@@ -231,4 +231,6 @@ OUTPUT_COLUMNS = {
     'wetamd_severity_re': [is_upper],
     'wetamd_severity_le': [is_upper],
     'wetamd_severity_unk': [is_upper],
+    # vitamin (yes/no/unknown)
+    'amd_vitamin': [is_in_range(-1, 1)],
 }

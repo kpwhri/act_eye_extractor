@@ -55,6 +55,7 @@ Types of changes:
   - NB: severity does not seem to appear, so 'UNSPECIFIED' ~= 'YES' (1)
 - wet severity variable for `wetamd_severity_re`, `wetamd_severity_le`, `wetamd_severity_unk`
   - NB: severity does not seem to appear, so 'UNSPECIFIED' ~= 'YES' (1)
+- amd vitamin variable `amd_vitamin` (yes=1/no=0/unknown=-1)
 
 ### Changed
 - Output format of `amd_fluid_` to uppercase string
