@@ -51,6 +51,8 @@ Types of changes:
   - SUBRETINAL
   - DISCIFORM
 - geographic atrophy (GA) (yes=1/no=0/unknown=-1) for `geoatrophy_re`, `geoatrophy_le`, `geoatrophy_unk`
+- dry severity variable for `dryamd_severity_re`, `dryamd_severity_le`, `dryamd_severity_unk`
+  - NB: severity does not seem to appear, so 'UNSPECIFIED' ~= 'YES' (1)
 
 ### Changed
 - Output format of `amd_fluid_` to uppercase string

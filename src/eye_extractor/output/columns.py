@@ -223,4 +223,8 @@ OUTPUT_COLUMNS = {
     'geoatrophy_re': [is_in_range(-1, 1)],
     'geoatrophy_le': [is_in_range(-1, 1)],
     'geoatrophy_unk': [is_in_range(-1, 1)],
+    # dry severity
+    'dryamd_severity_re': [is_upper],
+    'dryamd_severity_le': [is_upper],
+    'dryamd_severity_unk': [is_upper],
 }

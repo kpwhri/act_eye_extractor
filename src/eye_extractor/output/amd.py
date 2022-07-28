@@ -1,4 +1,5 @@
 from eye_extractor.amd.cnv import ChoroidalNeoVasc
+from eye_extractor.amd.dry import DrySeverity
 from eye_extractor.amd.fluid import FluidAMD, fluid_prioritization
 from eye_extractor.amd.ga import GeoAtrophy
 from eye_extractor.amd.ped import PigEpiDetach
@@ -20,6 +21,7 @@ def build_amd_variables(data):
     results.update(build_choroidalneovasc(curr['cnv']))
     results.update(build_subret_fibrous(curr['scar']))
     results.update(build_geoatrophy(curr['ga']))
+    results.update(build_dryamd_severity(curr['dry']))
     return results
 
 
@@ -119,7 +121,7 @@ def build_subret_fibrous(data):
 
 
 def build_geoatrophy(data):
-    """Build geographic atropy as binary (yes/no/unknown)"""
+    """Build geographic atrophy as binary (yes/no/unknown)"""
     return column_from_variable(
         {
             'geoatrophy_re': GeoAtrophy.UNKNOWN,
@@ -130,4 +132,18 @@ def build_geoatrophy(data):
         transformer_func=GeoAtrophy,
         compare_func=lambda n, c: c == GeoAtrophy.UNKNOWN,  # take first; only update unknown
         enum_to_str=False,  # store as int
+    )
+
+
+def build_dryamd_severity(data):
+    """Build dry amd severity"""
+    return column_from_variable(
+        {
+            'dryamd_severity_re': DrySeverity.UNKNOWN,
+            'dryamd_severity_le': DrySeverity.UNKNOWN,
+            'dryamd_severity_unk': DrySeverity.UNKNOWN,
+        },
+        data,
+        transformer_func=DrySeverity,
+        enum_to_str=True,
     )
