@@ -2,7 +2,6 @@ import enum
 import re
 
 from eye_extractor.common.negation import is_negated
-from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 
 class Vitamin(enum.IntEnum):
@@ -28,6 +27,13 @@ VITAMIN_PAT = re.compile(
 
 
 def extract_amd_vitamin(text, *, headers=None, lateralities=None):
+    """
+
+    :param text:
+    :param headers:
+    :param lateralities: not required as this is an oral vitamin
+    :return:
+    """
     data = []
     if headers:
         for sect_name, sect_text in headers.iterate('EYE MEDICATIONS', 'MEDICATIONS'):  # TODO: other sections?
