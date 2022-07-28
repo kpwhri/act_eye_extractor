@@ -17,7 +17,7 @@ class DrySeverity(enum.IntEnum):
 
 
 amd = r'(?:ar?md|age\W*related\W*macul\w+\W*degen\w*)'
-dry = r'(?:dry|atrophic)'
+dry = r'(?:dry|atroph\w*|nnv|non\W*(?:exudat|neovascul)\w+)'
 
 DRY_AMD_PAT = re.compile(
     rf'\b(?:'
@@ -28,7 +28,7 @@ DRY_AMD_PAT = re.compile(
 )
 
 DRY_PAT = re.compile(
-    rf'\b(?:dry|atroph\w*)\b',
+    rf'\b{dry}\b',
     re.I
 )
 
