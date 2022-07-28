@@ -33,7 +33,6 @@
     * [Prerequisites](#prerequisites)
     * [Installation](#installation)
 * [Usage](#usage)
-    * [Build MetaMapLite Directory from SQL/CSV](#mml-to-txt)
 * [Roadmap](#roadmap)
 * [Contributing](#contributing)
 * [License](#license)
