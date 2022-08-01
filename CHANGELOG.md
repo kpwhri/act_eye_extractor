@@ -17,6 +17,8 @@ Types of changes:
 
 ## [Unreleased]
 
+## v20220801
+
 ### Added
 - Additional cup disc ratio patterns
 - peripapillary atrophy variables (yes=1/no=0/unknown=-1) for `ppa_re`, `ppa_le`, `ppa_unk`
