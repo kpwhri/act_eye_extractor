@@ -105,5 +105,4 @@ def extract_tx(text, *, headers=None, lateralities=None):
                             'source': section,
                         }, known_laterality=curr_laterality)
                     )
-    print(data)
     return data
