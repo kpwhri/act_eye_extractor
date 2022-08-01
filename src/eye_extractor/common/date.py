@@ -36,6 +36,10 @@ DATE_PAT4 = re.compile(
     re.I
 )
 
+DATE_PAT5 = re.compile(
+    r'\b(?P<year>\d{4})\b'
+)
+
 MONTHS = {
     'jan': 1,
     'feb': 2,
@@ -49,16 +53,17 @@ MONTHS = {
     'oct': 10,
     'nov': 11,
     'dec': 12,
+    None: 2,  # default to feb
 }
 
 
 def parse_date(text):
     """Look for date in text and return datetime object"""
-    for pat in [DATE_PAT1, DATE_PAT2, DATE_PAT3, DATE_PAT4]:
+    for pat in [DATE_PAT1, DATE_PAT2, DATE_PAT3, DATE_PAT4, DATE_PAT5]:
         if m := pat.search(text):
             data = m.groupdict()
             curr_day = data.get('day', 17)  # default to 17, close to mid-month
-            curr_month = data.get('month', None) or MONTHS[data.get('month_name')]
+            curr_month = data.get('month', None) or MONTHS[data.get('month_name', None)]
             curr_year = data.get('year')
             try:
                 return datetime.date(int(curr_year), int(curr_month), int(curr_day))
