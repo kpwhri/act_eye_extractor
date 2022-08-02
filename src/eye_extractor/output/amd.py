@@ -2,6 +2,7 @@ from eye_extractor.amd.cnv import ChoroidalNeoVasc
 from eye_extractor.amd.dry import DrySeverity
 from eye_extractor.amd.fluid import FluidAMD, fluid_prioritization
 from eye_extractor.amd.ga import GeoAtrophy
+from eye_extractor.amd.lasertype import Laser
 from eye_extractor.amd.ped import PigEpiDetach
 from eye_extractor.amd.scar import Scar
 from eye_extractor.amd.vitamins import Vitamin
@@ -168,7 +169,7 @@ def build_wetamd_severity(data):
 
 
 def build_amd_vitamin(data):
-    """Build wet amd severity"""
+    """Build amd vitamin"""
     return column_from_variable(
         {
             'amd_vitamin': Vitamin.UNKNOWN,
@@ -176,4 +177,32 @@ def build_amd_vitamin(data):
         data,
         transformer_func=Vitamin,
         enum_to_str=False,
+    )
+
+
+def build_lasertype(data):
+    """Laser type for AMD"""
+    def _compare_lasertype(new, curr):
+        match new, curr:
+            case _, Laser.UNKNOWN:
+                return True
+            case _, Laser.PHOTODYNAMIC | Laser.THERMAL:
+                return False
+            case Laser.PHOTODYNAMIC | Laser.THERMAL, _:
+                return True
+            case Laser.LASER | Laser.NONE, _:
+                return True
+            case _:
+                return False
+
+    return column_from_variable(
+        {
+            'amd_lasertype_re': Laser.UNKNOWN,
+            'amd_lasertype_le': Laser.UNKNOWN,
+            'amd_lasertype_unk': Laser.UNKNOWN,
+        },
+        data,
+        transformer_func=Laser,
+        enum_to_str=False,
+        compare_func=_compare_lasertype,
     )

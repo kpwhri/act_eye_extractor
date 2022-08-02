@@ -124,7 +124,10 @@ def create_variable(data, text, match, lateralities, variable, value, *, known_l
 
 def create_new_variable(text, match, lateralities, variable, value, *, known_laterality=None):
     data = {}
-    create_variable(data, text, match, lateralities, variable, value, known_laterality=known_laterality)
+    create_variable(data, text, match,
+                    lateralities or build_laterality_table(text),
+                    variable, value,
+                    known_laterality=known_laterality)
     return data
 
 
