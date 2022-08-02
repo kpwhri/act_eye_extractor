@@ -17,6 +17,16 @@ Types of changes:
 
 ## [Unreleased]
 
+### Added
+- AMD lasertype for `amd_lasertype_re`, `amd_lasertype_le`, `amd_lasertype_unk`
+  - -1 (UNKNOWN)
+  - 0 (NONE/NEGATED)
+  - 1 (LASER)
+  - 2 (PHOTODYNAMIC)
+  - 3 (THERMAL)
+  - 4 (OTHER) -> not implemented: NLP requires target
+  - 5 (UNSPECIFIED) -> not implemented: unclear
+
 ## v20220801
 
 ### Added

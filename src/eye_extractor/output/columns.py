@@ -233,4 +233,8 @@ OUTPUT_COLUMNS = {
     'wetamd_severity_unk': [is_upper],
     # vitamin (yes/no/unknown)
     'amd_vitamin': [is_in_range(-1, 1)],
+    # lasertype
+    'amd_lasertype_re': [is_in_range(-1, 5)],
+    'amd_lasertype_le': [is_in_range(-1, 5)],
+    'amd_lasertype_unk': [is_in_range(-1, 5)],
 }

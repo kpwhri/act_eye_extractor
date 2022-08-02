@@ -4,6 +4,7 @@ from eye_extractor.amd.drusen import get_drusen
 from eye_extractor.amd.dry import extract_dryamd_severity
 from eye_extractor.amd.fluid import get_fluid
 from eye_extractor.amd.ga import extract_geoatrophy
+from eye_extractor.amd.lasertype import extract_lasertype
 from eye_extractor.amd.ped import extract_ped
 from eye_extractor.amd.pigment import get_pigmentary_changes
 from eye_extractor.amd.scar import extract_subret_fibrous
@@ -26,4 +27,5 @@ def extract_amd_variables(text, *, headers=None, lateralities=None):
         'dry': extract_dryamd_severity(text, headers=headers, lateralities=lateralities),
         'wet': extract_wetamd_severity(text, headers=headers, lateralities=lateralities),
         'vitamin': extract_amd_vitamin(text, headers=headers, lateralities=lateralities),
+        'lasertype': extract_lasertype(text, headers=headers, lateralities=lateralities),
     }

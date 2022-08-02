@@ -27,6 +27,7 @@ def build_amd_variables(data):
     results.update(build_dryamd_severity(curr['dry']))
     results.update(build_wetamd_severity(curr['wet']))
     results.update(build_amd_vitamin(curr['vitamin']))
+    results.update(build_lasertype(curr['lasertype']))
     return results
 
 
