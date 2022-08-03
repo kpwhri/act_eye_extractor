@@ -1,6 +1,6 @@
 import pytest
 
-from eye_extractor.dr.diabetic_retinopathy import get_dr
+from eye_extractor.dr.diabetic_retinopathy import HemorrhageType, get_dr_binary, get_hemorrhage_type
 
 
 @pytest.mark.parametrize('text, exp_value, exp_negword', [
@@ -13,6 +13,8 @@ from eye_extractor.dr.diabetic_retinopathy import get_dr
     ('OU  VESSELS: Normal pattern without exudates, hemorrhage, plaques, ', 0, 'without'),
     ('ASSESSMENT : Resolving vitreous/preretinal hemorrhage  No retinal tears', 1, None),
     ('OU   No Microaneurysms/hemes, cotton-wool spots, exudates, IRMA, Venous beading, NVE', 0, 'no'),
+    ('OD: area of IRMA just nasal to disc,', 1, None),
+    ('also has small area of IRMA right eye', 1, None),
     ('Oct macula: 7/4/1776 CMT OS:222, increased IRF - Avastin OS', 1, None),
     ('PERIPHERAL RETINA: Laser scars OD, Laser scars versus cobblestone OS', 1, None),
     pytest.param('Central macular thickness: 234 um, No SRF, few focal scars', 1, None,
@@ -30,12 +32,48 @@ from eye_extractor.dr.diabetic_retinopathy import get_dr
     ('Intravitreal injection of Avastin (Bevacizumab) of your left eye', 1, None),
     ('TRIAMCINOLONE ACETONIDE 0.1 % TOPICAL CREAM', 1, None)
 ])
-def test_dr_value(text, exp_value, exp_negword):
-    data = get_dr(text)
+def test_get_dr_binary(text, exp_value, exp_negword):
+    data = get_dr_binary(text)
     variable = list(data[0].values())[0]
 
+    assert len(data) > 0
     assert variable['value'] == exp_value
     assert variable['negated'] == exp_negword
 
+
+@pytest.mark.parametrize('text, exp_value, exp_negword', [
+    ('Acute left retinal tear with small vitreous hemorrhage', HemorrhageType.VITREOUS, None),
+    ('OD: preretinal hemorrhage extending from temporal periphery', HemorrhageType.PRERETINAL, None),
+    ('subretinal hemorrhage from his macular degeneration', HemorrhageType.SUBRETINAL, None),
+    ('swelling and intraretinal hemorrhage', HemorrhageType.INTRARETINAL, None),
+    ('dot blot hemorrhage near inferior margin of GA', HemorrhageType.DOT_BLOT, None)
+])
+def test_get_hemorrhage_type(text, exp_value, exp_negword):
+    data = get_hemorrhage_type(text)
+    variable = list(data[0].values())[0]
+
+    assert len(data) > 0
+    assert variable['value'] == exp_value
+    assert variable['negated'] == exp_negword
+
+# TODO: def test_get_fluid
+
+# TODO: def test_get_laser_scar_type
+
+# TODO: def test_get_nvd
+
+# TODO: def test_get_nve
+
+# TODO: def test_get_dr_type
+
+# TODO: def test_get_npdr
+
+# TODO: def test_get_pdr
+
+# TODO: def test_get_dr_tx
+
+# TODO: def test_get_edema_tx
+
+# TODO: def test_get_edema_antivegf
 
 

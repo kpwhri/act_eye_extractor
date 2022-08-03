@@ -106,7 +106,7 @@ def test_nscataract_severity(data, exp_nscataract_severity_re, exp_nscataract_se
      ],
      4, 3.5),
 ])
-def test_nscataract_severity(data, exp_cortcataract_severity_re, exp_cortcataract_severity_le):
+def test_cortcataract_severity(data, exp_cortcataract_severity_re, exp_cortcataract_severity_le):
     result = build_cortcataract_severity(data)
     assert result['cortcataract_severity_le'] == exp_cortcataract_severity_le
     assert result['cortcataract_severity_re'] == exp_cortcataract_severity_re

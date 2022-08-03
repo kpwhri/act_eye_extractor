@@ -1,12 +1,5 @@
+from eye_extractor.dr.diabetic_retinopathy import HemorrhageType
 from eye_extractor.output.variable import column_from_variable, column_from_variable_binary
-
-
-def build_dr_variables(data):
-    curr = data['dr']
-    results = {}
-    results.update(build_dr(curr))
-    results.update(build_ret_micro(curr))
-    return results
 
 
 def build_dr(data):
@@ -46,12 +39,14 @@ def build_hemorrhage(data):
     return column_from_variable_binary(data, 'hemorrhage_dr')
 
 
-# def build_hemorrhage_type(data):
-#     return column_from_variable({
-#             f'venbeading_re': -1,
-#             f'venbeading_le': -1,
-#         },
-#         data)
+def build_hemorrhage_type(data):
+    return column_from_variable({
+            f'hemorrhage_typ_dr_re': HemorrhageType.UNKNOWN,
+            f'hemorrhage_typ_dr_le': HemorrhageType.UNKNOWN,
+        },
+        data,
+        transformer_func=HemorrhageType
+    )
 
 
 # def build_irma(data):
@@ -62,7 +57,7 @@ def build_hemorrhage(data):
 #         data)
 
 
-# def build_fuild(data):
+# def build_fluid(data):
 #     return column_from_variable({
 #             f'venbeading_re': -1,
 #             f'venbeading_le': -1,
@@ -154,7 +149,7 @@ def build_sig_edema(data):
     return column_from_variable_binary(data, 'dmacedema_clinsignif')
 
 
-def build_oct_cme(data)
+def build_oct_cme(data):
     return column_from_variable_binary(data, 'oct_centralmac')
 
 
@@ -173,3 +168,8 @@ def build_oct_cme(data)
 #         },
 #         data)
 
+def build_dr_variables(data):
+    curr = data['dr']
+    results = {}
+    results.update(build_hemorrhage_type(curr))
+    return results

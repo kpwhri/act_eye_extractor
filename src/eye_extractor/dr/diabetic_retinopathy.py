@@ -1,9 +1,20 @@
+import enum
 import re
 
 from eye_extractor.common.negation import is_negated
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
-# TODO: Transform into list and process like `laterality.py`.
+
+class HemorrhageType(enum.IntEnum):
+    UNKNOWN = 0
+    NONE = 1
+    INTRARETINAL = 2
+    DOT_BLOT = 3
+    PRERETINAL = 4
+    VITREOUS = 5
+    SUBRETINAL = 6
+
+
 DIABETIC_RETINOPATHY_PATS = [
     ('diab_retinop_yesno', re.compile(
         r'\b('
@@ -30,10 +41,10 @@ DIABETIC_RETINOPATHY_PATS = [
         re.I
     )),
     ('venbeading', re.compile(
-        r'\b('
-        r'venous beadings?|vbs?'
-        r')\b',
-        re.I
+            r'\b('
+            r'venous beadings?|vbs?'
+            r')\b',
+            re.I
     )),
     ('disc_edema_DR', re.compile(
         r'\b('
@@ -44,13 +55,6 @@ DIABETIC_RETINOPATHY_PATS = [
     ('hemorrhage_dr', re.compile(
         r'\b('
         r'hemorrhage'
-        r')\b',
-        re.I
-    )),
-    ('hemorrhage_typ_dr', re.compile(
-        r'\b('
-        r'(intraretinal|dot blot|preretinal|vitreous|subretinal) hemorrhage'
-        r'|hemorrhage (intraretinal|dot blot|preretinal|vitreous|subretinal)'
         r')\b',
         re.I
     )),
@@ -175,8 +179,39 @@ DIABETIC_RETINOPATHY_PATS = [
     )),
 ]
 
+INTRARETINAL_PAT = re.compile(
+        r'\b('
+        r'intraretinal\s*hemorrhage'
+        r'|hemorrhage\s*intraretinal'
+        r')\b'
+    )
+DOT_BLOT_PAT = re.compile(
+        r'\b('
+        r'dot blot\s*hemorrhage'
+        r'|hemorrhage\s*dot blot'
+        r')\b'
+    )
+PRERETINAL_PAT = re.compile(
+        r'\b('
+        r'preretinal\s*hemorrhage'
+        r'|hemorrhage\s*preretinal'
+        r')\b'
+    )
+VITREOUS_PAT = re.compile(
+        r'\b('
+        r'vitreous\s*hemorrhage'
+        r'|hemorrhage\s*vitreous'
+        r')\b'
+    )
+SUBRETINAL_PAT = re.compile(
+        r'\b('
+        r'subretinal\s*hemorrhage'
+        r'|hemorrhage\s*subretinal'
+        r')\b'
+    )
 
-def get_dr(text, *, headers=None, lateralities=None):
+# TODO: Perform conditional variable creation for non-binary values
+def get_dr_binary(text, *, headers=None, lateralities=None):
     if not lateralities:
         lateralities = build_laterality_table(text)
     data = []
@@ -190,6 +225,34 @@ def get_dr(text, *, headers=None, lateralities=None):
                     'label': 'no' if negword else 'yes',
                     'negated': negword,
                     'regex': f'{variable}_PAT',
+                    'source': 'ALL'
+                })
+            )
+    if headers:
+        pass
+    return data
+
+
+def get_hemorrhage_type(text, *, headers=None, lateralities=None):
+    if not lateralities:
+        lateralities = build_laterality_table(text)
+    data = []
+    for pat, hemtype, hemlabel in [
+        (INTRARETINAL_PAT, HemorrhageType.INTRARETINAL, 'intraretinal'),
+        (DOT_BLOT_PAT, HemorrhageType.DOT_BLOT, 'dot blot'),
+        (PRERETINAL_PAT, HemorrhageType.PRERETINAL, 'preretinal'),
+        (VITREOUS_PAT, HemorrhageType.VITREOUS, 'vitreous'),
+        (SUBRETINAL_PAT, HemorrhageType.SUBRETINAL, 'subretinal'),
+    ]:
+        for m in pat.finditer(text):
+            negword = is_negated(m, text, {'no', 'or', 'neg', 'without'}, word_window=3)
+            data.append(
+                create_new_variable(text, m, lateralities, 'hemorrhage_typ_dr', {
+                    'value': HemorrhageType.NONE if negword else hemtype,
+                    'term': m.group(),
+                    'label': f'No {hemlabel} hemorrhage' if negword else f'{hemlabel} hemorrhage',
+                    'negated': negword,
+                    'regex': f'{hemlabel}_PAT',
                     'source': 'ALL',
                 })
             )
@@ -200,5 +263,6 @@ def get_dr(text, *, headers=None, lateralities=None):
 
 def extract_dr_variables(text: str, *, headers=None, lateralities=None) -> dict:
     return {
-        'dr': get_dr(text, headers=headers, lateralities=lateralities)
+        'dr': get_dr_binary(text, headers=headers, lateralities=lateralities),
+        'hemorrhage_type': get_hemorrhage_type(text, headers=headers, lateralities=lateralities)
     }
