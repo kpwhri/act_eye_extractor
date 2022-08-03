@@ -6,14 +6,14 @@ from eye_extractor.laterality import Laterality
 VA = (r'('
       r'(?P<numerator##>20|3E|E|\d+(\'|ft))/\s*(?P<score##>\d+|ni|no improvement)\s*(?P<diopter##>[+-]\d?)*'
       r'|'
-      r'20/\s*(?P<test3##>HM|CF|LP|NLP)'
-      r'|'
-      r'(20/\D*|ni|na|nt|no improvement|)'
-      r'|'
       r'(20/\s*)?(?P<test##>HM|CF|LP|NLP)(\W+(@|at|x)?\s*'  # open paren: distance
       r'(?P<distance##>\d+)\s*(?P<distance_metric##>\'|"|in|ft|feet)'
       r'(?P<test2##>HM|CF|LP|NLP)?'
       r')'  # close paren: distance
+      r'|'
+      r'20/\s*(?P<test3##>HM|CF|LP|NLP)'
+      r'|'
+      r'(20/\D*|ni|na|nt|no improvement|)'
       r')')
 OD = r'(O\W*D|R(ight)?\W*E(ye)?)'
 OS = r'(O\W*S|L(eft)?\W*E(ye)?)'

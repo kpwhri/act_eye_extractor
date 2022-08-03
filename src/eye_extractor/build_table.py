@@ -14,6 +14,9 @@ from eye_extractor.output.amd import build_amd_variables
 from eye_extractor.output.cataract import build_cataract_variables
 from eye_extractor.output.cataract_surgery import build_cataract_surgery_variables
 from eye_extractor.output.columns import OUTPUT_COLUMNS
+from eye_extractor.output.dr import build_dr
+from eye_extractor.output.exam import build_exam
+from eye_extractor.output.glaucoma import build_glaucoma
 from eye_extractor.output.iop import build_iop
 from eye_extractor.output.laterality import laterality_from_int, laterality_iter
 from eye_extractor.output.ro import build_ro_variables
@@ -38,7 +41,8 @@ def parse_va_exam(row, prev_denom, results):
     if not denom:
         return
     for lat in laterality_iter(laterality):
-        if is_etdrs:  # TODO: not sure how to capture: too few examples
+        if is_etdrs:
+            continue  # TODO: not sure how to capture: too few examples
             variable = f'etdrs_{etdrs_lookup[exam]}_{lat}'
             num_correct = int(num_correct)
             results[variable] = num_correct
@@ -130,7 +134,7 @@ def get_manifest(data):
     return {}
 
 
-def process_data(data):
+def process_data(data, *, add_columns=None):
     result = {
         'docid': data['note_id'],
         'studyid': data['studyid'],
@@ -138,22 +142,28 @@ def process_data(data):
         'encid': data['enc_id'],
         'is_training': data['train'],
     }
+    for col in add_columns or []:
+        result[col] = data[col]
     result.update(get_va(data['va']))
     result.update(build_iop(data['iop']))
     result.update(get_manifest(data['manifestrx']))
     result.update(build_amd_variables(data))
+    result.update(build_glaucoma(data))
     result.update(build_uveitis_variables(data))
     result.update(build_ro_variables(data))
     result.update(build_cataract_variables(data))
     result.update(build_cataract_surgery_variables(data))
     result.update(build_history(data['history']))
+    result.update(build_exam(data))
+    result.update(build_dr(data))
     return result
 
 
 @click.command()
 @click.argument('jsonl_file', type=click.Path(exists=True, path_type=pathlib.Path))
 @click.argument('outdir', type=click.Path(file_okay=False, path_type=pathlib.Path))
-def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path):
+@click.option('--add-column', 'add_columns', multiple=True, help='Additional columns to include in output.')
+def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path, add_columns=None):
     """
 
     :param jsonl_file: if file, read that file; if directory, run all
@@ -163,6 +173,8 @@ def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path):
     now = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
     outdir.mkdir(parents=True, exist_ok=True)
     outpath = outdir / f'variables_{now}.csv'
+    for col in add_columns or []:
+        OUTPUT_COLUMNS[col] = []
     if jsonl_file.is_dir():
         jsonl_files = jsonl_file.glob('*.jsonl')
     else:
@@ -175,7 +187,7 @@ def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path):
                     writer.writeheader()
                 for line in fh:
                     data = json.loads(line.strip())
-                    result = process_data(data)
+                    result = process_data(data, add_columns=add_columns)
                     validate_columns_in_row(OUTPUT_COLUMNS, result, id_col='studyid')
                     writer.writerow(result)
 

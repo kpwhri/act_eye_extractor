@@ -1,7 +1,10 @@
+import json
+
 import pytest
 
 from eye_extractor.amd.fluid import FLUID_NOS_PAT, SUBRETINAL_FLUID_PAT, INTRARETINAL_FLUID_PAT, get_fluid, \
     SUB_AND_INTRARETINAL_FLUID_PAT, FluidAMD
+from eye_extractor.headers import Headers
 from eye_extractor.output.amd import get_fluid_from_variable
 
 
@@ -22,6 +25,7 @@ def test_fluid_nos_pattern(text, exp):
     ('sr fluid', 1),
     ('srfluids', 1),
     ('bowsr fanta', 0),
+    ('sub ret fluid', 1),
 ])
 def test_subretinal_fluid_pattern(text, exp):
     assert bool(SUBRETINAL_FLUID_PAT.search(text)) == exp
@@ -58,7 +62,7 @@ def test_intraretinal_fluid_pattern(text, exp):
 
 @pytest.mark.parametrize('text, exp_value, exp_negword', [
     ('no new heme and fluid od', 0, 'no'),
-    ('new subretinal fluid in central macula', 99, None),
+    ('new subretinal fluid in central macula', 1, None),
     ('fluid not noted today', 0, 'not'),
     ('no irf', 20, 'no'),
     ('srf not noted', 10, 'not'),
@@ -72,9 +76,22 @@ def test_fluid_value_first_variable(text, exp_value, exp_negword):
 
 
 @pytest.mark.parametrize('data, exp_fluid_amd_re, exp_fluid_amd_le', [
-    ([], FluidAMD.NO, FluidAMD.NO),
+    ([], 'UNKNOWN', 'UNKNOWN'),
 ])
 def test_fluid_to_column(data, exp_fluid_amd_re, exp_fluid_amd_le):
     result = get_fluid_from_variable(data)
     assert result['fluid_amd_re'] == exp_fluid_amd_re
     assert result['fluid_amd_le'] == exp_fluid_amd_le
+
+
+@pytest.mark.parametrize('text, headers, exp_fluid_re, exp_fluid_le, exp_fluid_unk', [
+    ('', {'MACULA': 'subretinal fluid od'}, 'SUBRETINAL FLUID', 'UNKNOWN', 'UNKNOWN'),
+    ('', {'MACULA': 'with fluid and exudates'}, 'UNKNOWN', 'UNKNOWN', 'FLUID'),
+])
+def test_ped_extract_build(text, headers, exp_fluid_re, exp_fluid_le, exp_fluid_unk, ):
+    pre_json = get_fluid(text, headers=Headers(headers))
+    post_json = json.loads(json.dumps(pre_json))
+    result = get_fluid_from_variable(post_json)
+    assert result['fluid_amd_re'] == exp_fluid_re
+    assert result['fluid_amd_le'] == exp_fluid_le
+    assert result['fluid_amd_unk'] == exp_fluid_unk

@@ -69,8 +69,8 @@ def create_history(text, start_pats):
             start = m.end()
             end = find_end(text, start)
             curr_text = text[start:end]
-            yes_no_list = re.split(r'\b(yes|no)\b', curr_text)
-            if yes_no_list:
+            yes_no_list = [x.strip() for x in re.split(r'\b(yes|no)\b', curr_text.strip()) if x.strip()]
+            if len(yes_no_list) > 1:
                 it = iter(yes_no_list)
                 for key, val in zip(it, it):
                     if key in {'yes', 'no'}:

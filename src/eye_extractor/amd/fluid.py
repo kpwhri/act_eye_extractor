@@ -7,14 +7,15 @@ from eye_extractor.laterality import create_new_variable
 
 
 class FluidAMD(enum.IntEnum):
+    UNKNOWN = -1
     NO = 0
-    SUBRETINAL_FLUID = 1
+    FLUID = 1
+    SUBRETINAL_FLUID = 11  # 1
     NO_SUBRETINAL_FLUID = 10
-    INTRARETINAL_FLUID = 2
+    INTRARETINAL_FLUID = 21
     NO_INTRARETINAL_FLUID = 20
-    SUB_AND_INTRARETINAL_FLUID = 3
+    SUB_AND_INTRARETINAL_FLUID = 31
     NO_SUB_AND_INTRARETINAL_FLUID = 30
-    UNKNOWN = 99  # unknown fluid
 
 
 def fluid_prioritization(new_value: FluidAMD, curr_value: FluidAMD | None):
@@ -26,9 +27,9 @@ def fluid_prioritization(new_value: FluidAMD, curr_value: FluidAMD | None):
         return FluidAMD.SUB_AND_INTRARETINAL_FLUID
     elif {curr_value, new_value} == {FluidAMD.NO_SUBRETINAL_FLUID, FluidAMD.NO_INTRARETINAL_FLUID}:
         return FluidAMD.NO_SUB_AND_INTRARETINAL_FLUID
-    elif curr_value.value in {0, 10, 20, 30, 99} and new_value in {1, 2, 3, 99}:
+    elif curr_value.value in {0, 10, 20, 30, -1} and new_value in {1, 11, 21, 31}:
         # group negatives/positives
-        # 99=Unknown fluid is the highest of the 'no' so it will override negatives in next line
+        # -1=Unknown fluid is the lowest of the 'no' so it will override negatives in next line
         return new_value
     elif new_value.value > curr_value.value:
         # take the highest positive or negative in the group (this is the most specific)
@@ -48,7 +49,7 @@ FLUID_NOS_PAT = re.compile(
 
 SUBRETINAL_FLUID_PAT = re.compile(
     rf'(?:'
-    rf'sub\W?retinal\W*fluid'
+    rf'sub\W?ret\w*\W*fluid'
     rf'|\b{srf}\b'
     rf')',
     re.IGNORECASE
@@ -56,7 +57,7 @@ SUBRETINAL_FLUID_PAT = re.compile(
 
 INTRARETINAL_FLUID_PAT = re.compile(
     rf'(?:'
-    rf'intra\W?retinal\W*fluid'
+    rf'intra\W?ret\w*\W*fluid'
     rf'|\b{irf}\b'
     rf')',
     re.IGNORECASE
@@ -64,7 +65,7 @@ INTRARETINAL_FLUID_PAT = re.compile(
 
 SUB_AND_INTRARETINAL_FLUID_PAT = re.compile(
     rf'(?:'
-    rf'sub(\W?retinal)?(?:\W*fluid)?\W*(?:\w+\W+){{0,2}}intra\W?retinal\W*fluid'
+    rf'sub(\W?ret\w*)?(?:\W*fluid)?\W*(?:\w+\W+){{0,2}}intra\W?ret\w*\W*fluid'
     rf'|{srf}\W+(?:and\W+)?{irf}'
     rf'|{irf}\W+(?:and\W+)?{srf}'
     rf')',
@@ -124,9 +125,9 @@ def _get_fluid_in_macula(text, lateralities, source):
         )
         data.append(
             create_new_variable(text, m, lateralities, 'fluid_amd', {
-                'value': FluidAMD.NO if negword else FluidAMD.UNKNOWN,
+                'value': FluidAMD.NO if negword else FluidAMD.FLUID,
                 'term': m.group(),
-                'label': 'no' if negword else 'unknown',
+                'label': 'no' if negword else 'yes',
                 'negated': negword,
                 'regex': 'FLUID_NOS_PAT',
                 'source': source,

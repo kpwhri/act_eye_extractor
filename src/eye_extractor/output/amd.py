@@ -1,4 +1,12 @@
+from eye_extractor.amd.cnv import ChoroidalNeoVasc
+from eye_extractor.amd.dry import DrySeverity
 from eye_extractor.amd.fluid import FluidAMD, fluid_prioritization
+from eye_extractor.amd.ga import GeoAtrophy
+from eye_extractor.amd.lasertype import Laser
+from eye_extractor.amd.ped import PigEpiDetach
+from eye_extractor.amd.scar import Scar
+from eye_extractor.amd.vitamins import Vitamin
+from eye_extractor.amd.wet import WetSeverity
 from eye_extractor.output.laterality import laterality_from_int
 from eye_extractor.laterality import Laterality
 from eye_extractor.output.variable import column_from_variable
@@ -11,6 +19,15 @@ def build_amd_variables(data):
     results.update(get_drusen(curr['drusen']))
     results.update(get_subretinal_hemorrhage(curr['srh']))
     results.update(get_pigmentary_changes(curr['pigment']))
+    results.update(get_fluid_from_variable(curr['fluid']))
+    results.update(build_ped(curr['ped']))
+    results.update(build_choroidalneovasc(curr['cnv']))
+    results.update(build_subret_fibrous(curr['scar']))
+    results.update(build_geoatrophy(curr['ga']))
+    results.update(build_dryamd_severity(curr['dry']))
+    results.update(build_wetamd_severity(curr['wet']))
+    results.update(build_amd_vitamin(curr['vitamin']))
+    results.update(build_lasertype(curr['lasertype']))
     return results
 
 
@@ -56,10 +73,137 @@ def get_pigmentary_changes(data):
 def get_fluid_from_variable(data):
     return column_from_variable(
         {
-            'fluid_amd_re': FluidAMD.NO,
-            'fluid_amd_le': FluidAMD.NO,
+            'fluid_amd_re': FluidAMD.UNKNOWN,
+            'fluid_amd_le': FluidAMD.UNKNOWN,
+            'fluid_amd_unk': FluidAMD.UNKNOWN,
         },
         data,
         transformer_func=FluidAMD,
         result_func=fluid_prioritization,
+        enum_to_str=True,
+    )
+
+
+def build_ped(data):
+    """Build binary pigmentary epithelial detachment variable"""
+    return column_from_variable(
+        {
+            'ped_re': PigEpiDetach.UNKNOWN,
+            'ped_le': PigEpiDetach.UNKNOWN,
+            'ped_unk': PigEpiDetach.UNKNOWN,
+        },
+        data,
+        transformer_func=PigEpiDetach,
+    )
+
+
+def build_choroidalneovasc(data):
+    """Build cnv/choroidal neovascularization as binary (yes/no/unknown)"""
+    return column_from_variable(
+        {
+            'choroidalneovasc_re': ChoroidalNeoVasc.UNKNOWN,
+            'choroidalneovasc_le': ChoroidalNeoVasc.UNKNOWN,
+            'choroidalneovasc_unk': ChoroidalNeoVasc.UNKNOWN,
+        },
+        data,
+        transformer_func=ChoroidalNeoVasc,
+        compare_func=lambda n, c: c == ChoroidalNeoVasc.UNKNOWN,  # take first; only update unknown
+    )
+
+
+def build_subret_fibrous(data):
+    """Build cnv/choroidal neovascularization as binary (yes/no/unknown)"""
+    return column_from_variable(
+        {
+            'subret_fibrous_re': Scar.UNKNOWN,
+            'subret_fibrous_le': Scar.UNKNOWN,
+            'subret_fibrous_unk': Scar.UNKNOWN,
+        },
+        data,
+        transformer_func=Scar,
+        compare_func=lambda n, c: c == Scar.UNKNOWN,  # take first; only update unknown
+        enum_to_str=True,
+    )
+
+
+def build_geoatrophy(data):
+    """Build geographic atrophy as binary (yes/no/unknown)"""
+    return column_from_variable(
+        {
+            'geoatrophy_re': GeoAtrophy.UNKNOWN,
+            'geoatrophy_le': GeoAtrophy.UNKNOWN,
+            'geoatrophy_unk': GeoAtrophy.UNKNOWN,
+        },
+        data,
+        transformer_func=GeoAtrophy,
+        compare_func=lambda n, c: c == GeoAtrophy.UNKNOWN,  # take first; only update unknown
+        enum_to_str=False,  # store as int
+    )
+
+
+def build_dryamd_severity(data):
+    """Build dry amd severity"""
+    return column_from_variable(
+        {
+            'dryamd_severity_re': DrySeverity.UNKNOWN,
+            'dryamd_severity_le': DrySeverity.UNKNOWN,
+            'dryamd_severity_unk': DrySeverity.UNKNOWN,
+        },
+        data,
+        transformer_func=DrySeverity,
+        enum_to_str=True,
+    )
+
+
+def build_wetamd_severity(data):
+    """Build wet amd severity"""
+    return column_from_variable(
+        {
+            'wetamd_severity_re': WetSeverity.UNKNOWN,
+            'wetamd_severity_le': WetSeverity.UNKNOWN,
+            'wetamd_severity_unk': WetSeverity.UNKNOWN,
+        },
+        data,
+        transformer_func=WetSeverity,
+        enum_to_str=True,
+    )
+
+
+def build_amd_vitamin(data):
+    """Build amd vitamin"""
+    return column_from_variable(
+        {
+            'amd_vitamin': Vitamin.UNKNOWN,
+        },
+        data,
+        transformer_func=Vitamin,
+        enum_to_str=False,
+    )
+
+
+def build_lasertype(data):
+    """Laser type for AMD"""
+    def _compare_lasertype(new, curr):
+        match new, curr:
+            case _, Laser.UNKNOWN:
+                return True
+            case _, Laser.PHOTODYNAMIC | Laser.THERMAL:
+                return False
+            case Laser.PHOTODYNAMIC | Laser.THERMAL, _:
+                return True
+            case Laser.LASER | Laser.NONE, _:
+                return True
+            case _:
+                return False
+
+    return column_from_variable(
+        {
+            'amd_lasertype_re': Laser.UNKNOWN,
+            'amd_lasertype_le': Laser.UNKNOWN,
+            'amd_lasertype_unk': Laser.UNKNOWN,
+        },
+        data,
+        transformer_func=Laser,
+        enum_to_str=False,
+        compare_func=_compare_lasertype,
     )

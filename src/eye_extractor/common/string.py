@@ -10,4 +10,4 @@ def remove_punctuation(text):
 
 
 def replace_punctuation(text):
-    return REPLACE.sub(text, ' ')
+    return REPLACE.sub(' ', text)

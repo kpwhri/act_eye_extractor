@@ -32,7 +32,7 @@ def test_psc_cataract_pattern(text):
 
 @pytest.mark.parametrize('text', [
     'CS 2',
-    'ACS 2-4',
+    'CS 2-4',
     'cortical cataract',
 ])
 def test_cs_cataract_pattern(text):
