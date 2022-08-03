@@ -1,3 +1,4 @@
+from eye_extractor.common.algo.treatment import Treatment
 from eye_extractor.exam.gonio import Gonio
 from eye_extractor.common.drug.drops import GenericDrop
 from eye_extractor.glaucoma.dx import GlaucomaType
@@ -171,6 +172,31 @@ def build_tx(data):
         # compare: only update an unknown
         compare_func=lambda n, c: c in {
             GlaucomaTreatment.UNKNOWN, GlaucomaTreatment.NONE
+        },
+    )
+
+
+def build_tx_new(data):
+    """
+    Build treatment plan into Treatment variable
+    Default comparison is used to only retain greatest (i.e., any yes)
+    :param data:
+    :return:
+    """
+    # TODO: check if this note is about glaucoma
+    return column_from_variable(
+        {
+            'tx_re': Treatment.UNKNOWN,
+            'tx_le': Treatment.UNKNOWN,
+            'tx_unk': Treatment.UNKNOWN,
+        },
+        data,
+        renamevar_func=lambda x: f'glaucoma_{x}',
+        transformer_func=Treatment,
+        enum_to_str=True,
+        # compare: only update an unknown
+        compare_func=lambda n, c: c in {
+            Treatment.UNKNOWN, Treatment.NONE
         },
     )
 

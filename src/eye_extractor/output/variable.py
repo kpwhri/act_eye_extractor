@@ -95,7 +95,8 @@ from enum import Enum
 
 def column_from_variable(results, data, *, compare_func=None, transformer_func=None,
                          result_func=None, convert_func=None, filter_func=None,
-                         rename_func=None, sideeffect_func=None, enum_to_str=False):
+                         rename_func=None, sideeffect_func=None, renamevar_func=None,
+                         enum_to_str=False):
     """
     Assuming values that can be graded according to a comparator functions,
         converts the results of `create_new_variable` into only that with the
@@ -109,6 +110,7 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
     :param convert_func: change the variable/column name from what it was supplied; this is what variable will be output
     :param filter_func: returns bool; only consider values in which this returns True
     :param rename_func: rename the final values after doing all processing
+    :param renamevar_func: rename the final variable names after doing all processing
     :param enum_to_str: if result is enum, convert to string; otherwise, convert to int value
     :param transformer_func: function to return serialized results to desired object
         most commonly this might be an IntEnum
@@ -139,6 +141,8 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
             rename_func = lambda n: n.name.replace('_', ' ') if isinstance(n, Enum) else n
         else:
             rename_func = lambda n: n.value if isinstance(n, Enum) else n
+    if renamevar_func is None:  # final renaming of variable name after processing
+        renamevar_func = lambda n: n
     for row in data or []:  # for each element in list read from json file
         for varname, curr_value in list(results.items()):
             target_varname = convert_func(varname)  # change the column/variable name
@@ -150,7 +154,7 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
             if compare_func(new_value, curr_value):  # should the value be updated?
                 results[varname] = result_func(new_value, curr_value)  # how to merge the prev/new value
                 sideeffect_func(results, varname, new_value)
-    return {varname: rename_func(value) for varname, value in results.items()}
+    return {renamevar_func(varname): rename_func(value) for varname, value in results.items()}
 
 
 def column_from_variable_binary(data, label):
