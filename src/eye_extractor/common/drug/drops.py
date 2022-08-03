@@ -1,6 +1,6 @@
 import enum
 
-from eye_extractor.common.drug.shared import build_regex_from_dict
+from eye_extractor.common.drug.shared import build_regex_from_dict, build_pattern_from_dict
 
 
 class GenericDrop(enum.IntEnum):
@@ -98,4 +98,5 @@ DROP_TO_ENUM = {
     'tafluprost': [GenericDrop.TAFLUPROST],
 }
 
+DROPS_PAT = build_pattern_from_dict(DROP_TO_ENUM)
 DROPS_RX = build_regex_from_dict(DROP_TO_ENUM)
