@@ -191,6 +191,7 @@ def build_tx_new(data):
             'tx_unk': Treatment.UNKNOWN,
         },
         data,
+        filter_func=lambda x: x.get('category', 'ALL') in {'ALL', 'GLAUCOMA'},
         renamevar_func=lambda x: f'glaucoma_{x}',
         transformer_func=Treatment,
         enum_to_str=True,
