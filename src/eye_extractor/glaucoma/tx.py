@@ -5,7 +5,7 @@ import enum
 import re
 
 from eye_extractor.common.negation import is_negated, is_post_negated, has_before
-from eye_extractor.glaucoma.drops import DRUG_TO_ENUM
+from eye_extractor.common.drug.drops import DROP_TO_ENUM
 from eye_extractor.laterality import build_laterality_table, create_new_variable, Laterality
 
 
@@ -21,7 +21,7 @@ class GlaucomaTreatment(enum.IntEnum):
     TRABECULOPLASTY = 7
 
 
-drops = '|'.join(DRUG_TO_ENUM.keys()).replace(' ', r'\W*')
+drops = '|'.join(DROP_TO_ENUM.keys()).replace(' ', r'\W*')
 medrx = rf'(?:med(?:ication?)?s?|rx|{drops})'
 
 OBSERVE_PAT = re.compile(

@@ -2,8 +2,9 @@ import json
 
 import pytest
 
-from eye_extractor.glaucoma.drops import DROPS_RX, get_standardized_name, DRUG_TO_ENUM, NO_OPT_MED_RX, \
-    extract_glaucoma_drops
+from eye_extractor.glaucoma.drops import NO_OPT_MED_RX, extract_glaucoma_drops
+from eye_extractor.common.drug.drops import DROP_TO_ENUM, DROPS_RX
+from eye_extractor.common.drug.shared import get_standardized_name
 from eye_extractor.output.glaucoma import build_glaucoma_drops
 
 
@@ -21,7 +22,7 @@ def test_patterns(pat, text, exp_count, exp_neg):
             assert exp_neg in match  # this is a tuple
         else:
             standardized_term = get_standardized_name(match)
-            assert standardized_term in DRUG_TO_ENUM
+            assert standardized_term in DROP_TO_ENUM
 
 
 @pytest.mark.parametrize('text, exp_dict', [

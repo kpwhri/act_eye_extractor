@@ -1,5 +1,5 @@
 from eye_extractor.exam.gonio import Gonio
-from eye_extractor.glaucoma.drops import GenericDrop
+from eye_extractor.common.drug.drops import GenericDrop
 from eye_extractor.glaucoma.dx import GlaucomaType
 from eye_extractor.glaucoma.exfoliation import Exfoliation
 from eye_extractor.glaucoma.preglaucoma import Preglaucoma
