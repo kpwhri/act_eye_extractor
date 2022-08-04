@@ -30,6 +30,7 @@ class Treatment(enum.IntEnum):
 # headers
 PLAN_HEADERS = ('PLAN', 'PLAN COMMENTS', 'COMMENTS')
 GLAUCOMA_HEADERS = ('PLAN', 'PLAN COMMENTS', 'COMMENTS')
+AMD_HEADERS = ('ASSESSMENT', 'IMPRESSION', 'IMP', 'HX', 'PAST', 'ASSESSMENT COMMENTS')
 
 # regular expressions
 medrx = rf'(?:med(?:ication?)?s?|rx|{ALL_DRUG_PAT})'
@@ -82,6 +83,27 @@ TRABECULOPLASTY_PAT = re.compile(
     re.I
 )
 
+# - amd
+LASER_PAT = re.compile(
+    rf'\blaser(?:\W*photo\W?coagulation)?\b',
+    re.I
+)
+
+PHOTODYNAMIC_PAT = re.compile(  # verb + med
+    rf'\b(?:'
+    rf'pdt'
+    rf'|photodynamic(?:\W*therapy)?'
+    rf')\b',
+    re.I
+)
+
+THERMAL_PAT = re.compile(  # verb + med
+    rf'\b(?:'
+    rf'thermal(?:\W*laser)?'
+    rf')\b',
+    re.I
+)
+
 
 def is_treatment_uncertain(m, text):
     return (
@@ -121,6 +143,16 @@ def extract_treatment(text, *, headers=None, lateralities=None, target_headers=N
                 ('SLT_PAT', SLT_PAT, Treatment.SLT),
                 ('SURGERY_PAT', SURGERY_PAT, Treatment.SURGERY),
                 ('TRABECULOPLASTY_PAT', TRABECULOPLASTY_PAT, Treatment.TRABECULOPLASTY),
+        ):
+            data.append(result)
+        # amd targets
+        for result in _extract_treatment(
+            headers,
+            AMD_HEADERS,
+            'AMD',
+            ('LASER_PAT', LASER_PAT, Treatment.LASER),
+            ('PHOTODYNAMIC_PAT', PHOTODYNAMIC_PAT, Treatment.PHOTODYNAMIC),
+            ('THERMAL_PAT', THERMAL_PAT, Treatment.THERMAL),
         ):
             data.append(result)
     return data
