@@ -2,6 +2,8 @@ import enum
 import re
 
 from eye_extractor.common.drug.all import ALL_DRUG_PAT
+from eye_extractor.common.drug.antivegf import ANTIVEGF_RX, ANTIVEGF_TO_ENUM, ANTIVEGF_PAT
+from eye_extractor.common.drug.shared import get_standardized_name
 from eye_extractor.common.negation import is_negated, is_post_negated, has_before
 from eye_extractor.laterality import build_laterality_table, Laterality, create_new_variable
 
@@ -31,6 +33,7 @@ class Treatment(enum.IntEnum):
 PLAN_HEADERS = ('PLAN', 'PLAN COMMENTS', 'COMMENTS')
 GLAUCOMA_HEADERS = ('PLAN', 'PLAN COMMENTS', 'COMMENTS')
 AMD_HEADERS = ('ASSESSMENT', 'IMPRESSION', 'IMP', 'HX', 'PAST', 'ASSESSMENT COMMENTS')
+ANTIVEGF_HEADERS = ('SUBJECTIVE', 'CHIEF COMPLAINT', 'HISTORY OF PRESENT ILLNESS')
 
 # regular expressions
 medrx = rf'(?:med(?:ication?)?s?|rx|{ALL_DRUG_PAT})'
@@ -114,9 +117,9 @@ def is_treatment_uncertain(m, text):
 
 def get_contextual_laterality(m, section_text):
     curr_laterality = None
-    if has_before(m.start(), section_text, {'r'}, char_window=4):
+    if has_before(m.start(), section_text, {'r', 'rt'}, char_window=6):
         curr_laterality = Laterality.OD
-    elif has_before(m.start(), section_text, {'l'}, char_window=4):
+    elif has_before(m.start(), section_text, {'l', 'lt'}, char_window=6):
         curr_laterality = Laterality.OS
     return curr_laterality
 
@@ -125,7 +128,7 @@ def extract_treatment(text, *, headers=None, lateralities=None, target_headers=N
     data = []
     if headers:
         # default values to 'continue', etc.
-        for result in _extract_treatment(
+        for result in _extract_treatment_section(
                 headers,
                 PLAN_HEADERS,
                 'ALL',
@@ -135,7 +138,7 @@ def extract_treatment(text, *, headers=None, lateralities=None, target_headers=N
         ):
             data.append(result)
         # glaucoma targets
-        for result in _extract_treatment(
+        for result in _extract_treatment_section(
                 headers,
                 GLAUCOMA_HEADERS,
                 'GLAUCOMA',
@@ -146,33 +149,55 @@ def extract_treatment(text, *, headers=None, lateralities=None, target_headers=N
         ):
             data.append(result)
         # amd targets
-        for result in _extract_treatment(
-            headers,
-            AMD_HEADERS,
-            'AMD',
-            ('LASER_PAT', LASER_PAT, Treatment.LASER),
-            ('PHOTODYNAMIC_PAT', PHOTODYNAMIC_PAT, Treatment.PHOTODYNAMIC),
-            ('THERMAL_PAT', THERMAL_PAT, Treatment.THERMAL),
+        for result in _extract_treatment_section(
+                headers,
+                AMD_HEADERS,
+                'AMD',
+                ('LASER_PAT', LASER_PAT, Treatment.LASER),
+                ('PHOTODYNAMIC_PAT', PHOTODYNAMIC_PAT, Treatment.PHOTODYNAMIC),
+                ('THERMAL_PAT', THERMAL_PAT, Treatment.THERMAL),
         ):
             data.append(result)
+        for result in _extract_treatment_section(
+                headers,
+                AMD_HEADERS,
+                'ANTIVEGF',
+                ('ANTIVEGF_RX', ANTIVEGF_RX, lambda m: ANTIVEGF_TO_ENUM[get_standardized_name(m.group())]),
+        ):
+            data.append(result)
+    # all text
+    for result in _extract_treatment(
+            'ALL', text, lateralities, 'ANTIVEGF',
+            ('ANTIVEGF_RX',
+             re.compile(f's/p\W*(?P<term>{ANTIVEGF_PAT})', re.I),
+             lambda m: ANTIVEGF_TO_ENUM[get_standardized_name(m.group('term'))]
+             )
+    ):
+        data.append(result)
     return data
 
 
-def _extract_treatment(headers, target_headers, category, *patterns):
+def _extract_treatment_section(headers, target_headers, category, *patterns):
     for section, section_text in headers.iterate(*target_headers):
         section_lateralities = build_laterality_table(section_text)
-        for pat_label, pat, value in patterns:
-            for m in pat.finditer(section_text):
-                if is_treatment_uncertain(m, section_text):
-                    continue
-                negword = is_negated(m, section_text, {'no', 'or', 'without'})
-                curr_laterality = get_contextual_laterality(m, section_text)
-                yield create_new_variable(section_text, m, section_lateralities, 'tx', {
-                    'value': Treatment.NONE if negword else value,
-                    'term': m.group(),
-                    'label': 'no' if negword else value.name,
-                    'negated': negword,
-                    'regex': pat_label,
-                    'category': category,
-                    'source': section,
-                }, known_laterality=curr_laterality)
+        yield from _extract_treatment(section, section_text, section_lateralities, category, *patterns)
+
+
+def _extract_treatment(section, section_text, section_lateralities, category, *patterns):
+    for pat_label, pat, value in patterns:
+        for m in pat.finditer(section_text):
+            if is_treatment_uncertain(m, section_text):
+                continue
+            negword = is_negated(m, section_text, {'no', 'or', 'without', 'if'})
+            curr_laterality = get_contextual_laterality(m, section_text)
+            if callable(value):
+                value = callable(m)
+            yield create_new_variable(section_text, m, section_lateralities, 'tx', {
+                'value': Treatment.NONE if negword else value,
+                'term': m.group(),
+                'label': 'no' if negword else value.name,
+                'negated': negword,
+                'regex': pat_label,
+                'category': category,
+                'source': section,
+            }, known_laterality=curr_laterality)
