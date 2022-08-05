@@ -171,5 +171,6 @@ def build_oct_cme(data):
 def build_dr_variables(data):
     curr = data['dr']
     results = {}
+    results.update(build_dr(curr))
     results.update(build_hemorrhage_type(curr))
     return results
