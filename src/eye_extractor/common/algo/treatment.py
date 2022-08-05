@@ -169,7 +169,7 @@ def extract_treatment(text, *, headers=None, lateralities=None, target_headers=N
     for result in _extract_treatment(
             'ALL', text, lateralities, 'ANTIVEGF',
             ('ANTIVEGF_RX',
-             re.compile(f's/p\W*(?P<term>{ANTIVEGF_PAT})', re.I),
+             re.compile(fr's/p\W*(?P<term>{ANTIVEGF_PAT})', re.I),
              lambda m: ANTIVEGF_TO_ENUM[get_standardized_name(m.group('term'))]
              )
     ):
@@ -190,8 +190,9 @@ def _extract_treatment(section, section_text, section_lateralities, category, *p
                 continue
             negword = is_negated(m, section_text, {'no', 'or', 'without', 'if'})
             curr_laterality = get_contextual_laterality(m, section_text)
+            # TODO: check if disease is mentioned in vicinity (e.g., DR, AMD, etc.)
             if callable(value):
-                value = callable(m)
+                value = value(m)
             yield create_new_variable(section_text, m, section_lateralities, 'tx', {
                 'value': Treatment.NONE if negword else value,
                 'term': m.group(),

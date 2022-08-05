@@ -237,4 +237,8 @@ OUTPUT_COLUMNS = {
     'amd_lasertype_re': [is_in_range(-1, 5)],
     'amd_lasertype_le': [is_in_range(-1, 5)],
     'amd_lasertype_unk': [is_in_range(-1, 5)],
+    # antivegf
+    'amd_antivegf_re': [is_in_range(-1, 5)],
+    'amd_antivegf_le': [is_in_range(-1, 5)],
+    'amd_antivegf_unk': [is_in_range(-1, 5)],
 }

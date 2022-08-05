@@ -8,6 +8,7 @@ from eye_extractor.amd.scar import Scar
 from eye_extractor.amd.vitamins import Vitamin
 from eye_extractor.amd.wet import WetSeverity
 from eye_extractor.common.algo.treatment import Treatment
+from eye_extractor.common.drug.antivegf import rename_antivegf, AntiVegf
 from eye_extractor.output.laterality import laterality_from_int
 from eye_extractor.laterality import Laterality
 from eye_extractor.output.variable import column_from_variable
@@ -30,6 +31,7 @@ def build_amd_variables(data):
     results.update(build_amd_vitamin(curr['vitamin']))
     # results.update(build_lasertype(curr['lasertype']))
     results.update(build_lasertype_new(data['common']['treatment']))
+    results.update(build_amd_antivegf(data['common']['treatment']))
     return results
 
 
@@ -249,4 +251,22 @@ def build_lasertype_new(data):
         transformer_func=Treatment,
         enum_to_str=False,
         compare_func=_compare_lasertype,
+    )
+
+
+def build_amd_antivegf(data):
+    # TODO: check is AMD
+
+    return column_from_variable(
+        {
+            'tx_re': AntiVegf.UNKNOWN,
+            'tx_le': AntiVegf.UNKNOWN,
+            'tx_unk': AntiVegf.UNKNOWN,
+        },
+        data,
+        renamevar_func=lambda x: f'amd_antivegf_{x.split("_")[-1]}',
+        rename_func=rename_antivegf,
+        filter_func=lambda x: x.get('category', None) in {'ANTIVEGF'},
+        transformer_func=AntiVegf,
+        enum_to_str=False,
     )
