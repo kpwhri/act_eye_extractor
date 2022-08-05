@@ -7,6 +7,8 @@ from eye_extractor.amd.ped import PigEpiDetach
 from eye_extractor.amd.scar import Scar
 from eye_extractor.amd.vitamins import Vitamin
 from eye_extractor.amd.wet import WetSeverity
+from eye_extractor.common.algo.treatment import Treatment
+from eye_extractor.common.drug.antivegf import rename_antivegf, AntiVegf
 from eye_extractor.output.laterality import laterality_from_int
 from eye_extractor.laterality import Laterality
 from eye_extractor.output.variable import column_from_variable
@@ -27,7 +29,9 @@ def build_amd_variables(data):
     results.update(build_dryamd_severity(curr['dry']))
     results.update(build_wetamd_severity(curr['wet']))
     results.update(build_amd_vitamin(curr['vitamin']))
-    results.update(build_lasertype(curr['lasertype']))
+    # results.update(build_lasertype(curr['lasertype']))
+    results.update(build_lasertype_new(data['common']['treatment']))
+    results.update(build_amd_antivegf(data['common']['treatment']))
     return results
 
 
@@ -206,4 +210,63 @@ def build_lasertype(data):
         transformer_func=Laser,
         enum_to_str=False,
         compare_func=_compare_lasertype,
+    )
+
+
+def build_lasertype_new(data):
+    """Laser type for AMD using treatment algorithm"""
+    def _compare_lasertype(new, curr):
+        match new, curr:
+            case _, Treatment.UNKNOWN:
+                return True
+            case _, Treatment.PHOTODYNAMIC | Treatment.THERMAL:
+                return False
+            case Treatment.PHOTODYNAMIC | Treatment.THERMAL, _:
+                return True
+            case Treatment.LASER | Treatment.NONE, _:
+                return True
+            case _:
+                return False
+
+    def _rename_lasertype(val):
+        match val:
+            case Treatment.LASER:
+                return 1
+            case Treatment.PHOTODYNAMIC:
+                return 2
+            case Treatment.THERMAL:
+                return 3
+        return val.value
+
+    return column_from_variable(
+        {
+            'tx_re': Treatment.UNKNOWN,
+            'tx_le': Treatment.UNKNOWN,
+            'tx_unk': Treatment.UNKNOWN,
+        },
+        data,
+        renamevar_func=lambda x: f'amd_lasertype_{x.split("_")[-1]}',
+        rename_func=_rename_lasertype,
+        filter_func=lambda x: x.get('category', None) in {'AMD'},
+        transformer_func=Treatment,
+        enum_to_str=False,
+        compare_func=_compare_lasertype,
+    )
+
+
+def build_amd_antivegf(data):
+    # TODO: check is AMD
+
+    return column_from_variable(
+        {
+            'tx_re': AntiVegf.UNKNOWN,
+            'tx_le': AntiVegf.UNKNOWN,
+            'tx_unk': AntiVegf.UNKNOWN,
+        },
+        data,
+        renamevar_func=lambda x: f'amd_antivegf_{x.split("_")[-1]}',
+        rename_func=rename_antivegf,
+        filter_func=lambda x: x.get('category', None) in {'ANTIVEGF'},
+        transformer_func=AntiVegf,
+        enum_to_str=False,
     )

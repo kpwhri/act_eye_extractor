@@ -9,6 +9,7 @@ from eye_extractor.amd.algorithm import extract_amd_variables
 from eye_extractor.cataract.algorithm import extract_cataract
 from eye_extractor.cataract.cataract_surgery import get_cataract_surgery
 from eye_extractor.dr.diabetic_retinopathy import extract_dr_variables
+from eye_extractor.common.algo.extract import extract_common_algorithms
 from eye_extractor.exam.algorithm import get_exam
 from eye_extractor.glaucoma.algorithm import extract_glaucoma
 from eye_extractor.headers import extract_headers_and_text
@@ -42,6 +43,8 @@ def extract_all(text: str, data: dict = None):
     }
     data['exam'] = get_exam(text, headers=headers, lateralities=lateralities)
     data['dr'] = extract_dr_variables(text, headers=headers, lateralities=lateralities)
+    data['common'] = extract_common_algorithms(text, headers=headers, lateralities=lateralities)
+
     return data
 
 

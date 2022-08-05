@@ -1,6 +1,6 @@
 import enum
 
-from eye_extractor.common.drug.shared import build_regex_from_dict
+from eye_extractor.common.drug.shared import build_regex_from_dict, build_pattern_from_dict
 
 
 class AntiVegf(enum.IntEnum):
@@ -21,4 +21,20 @@ ANTIVEGF_TO_ENUM = {
     'lucentis': AntiVegf.RANIBIZUMAB,
 }
 
+ANTIVEGF_PAT = build_pattern_from_dict(ANTIVEGF_TO_ENUM)
 ANTIVEGF_RX = build_regex_from_dict(ANTIVEGF_TO_ENUM)
+
+
+def rename_antivegf(val: AntiVegf) -> int:
+    # convert to output values
+    match val:
+        case AntiVegf.BEVACIZUMAB:
+            return 1
+        case AntiVegf.AFLIBERCEPT:
+            return 2
+        case AntiVegf.RANIBIZUMAB:
+            return 3
+        case AntiVegf.YES:
+            return 4
+        case _:
+            return val.value

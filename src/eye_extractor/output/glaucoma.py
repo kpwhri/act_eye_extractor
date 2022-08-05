@@ -19,7 +19,8 @@ def build_glaucoma(data):
     results.update(build_disc_notch(curr.get('disc_notch', None)))
     results.update(build_tilted_disc(curr.get('tilted_disc', None)))
     results.update(build_ppa(curr.get('ppa', None)))
-    results.update(build_tx(curr.get('tx', None)))
+    # results.update(build_tx(curr.get('tx', None)))
+    results.update(build_tx_new(data['common']['treatment']))
     results.update(build_exfoliation(curr.get('exfoliation', None)))
     results.update(build_preglaucoma_dx(curr.get('preglaucoma', None)))
     return results
