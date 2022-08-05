@@ -210,6 +210,7 @@ SUBRETINAL_PAT = re.compile(
         r')\b'
     )
 
+
 # TODO: Perform conditional variable creation for non-binary values
 def get_dr_binary(text, *, headers=None, lateralities=None):
     if not lateralities:

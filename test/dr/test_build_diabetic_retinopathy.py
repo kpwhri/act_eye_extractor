@@ -1,6 +1,6 @@
 import pytest
 from eye_extractor.dr.diabetic_retinopathy import HemorrhageType
-from eye_extractor.output.dr import build_dr, build_hemorrhage_type
+from eye_extractor.output.dr import build_dr, build_ret_micro, build_hemorrhage_type
 
 
 @pytest.mark.parametrize('data, exp_diab_retinop_yesno_re, exp_diab_retinop_yesno_le', [
@@ -18,6 +18,23 @@ def test_build_dr(data, exp_diab_retinop_yesno_re, exp_diab_retinop_yesno_le):
     result = build_dr(data)
     assert result['diab_retinop_yesno_re'] == exp_diab_retinop_yesno_re
     assert result['diab_retinop_yesno_le'] == exp_diab_retinop_yesno_le
+
+
+@pytest.mark.parametrize('data, exp_ret_microaneurysm_re, exp_ret_microaneurysm_le', [
+    ([], -1, -1),
+    ([{'ret_microaneurysm_re': {'value': 1},
+       'ret_microaneurysm_le': {'value': 1}}],
+     1, 1),
+    ([{'ret_microaneurysm_re': {'value': 0},
+       'ret_microaneurysm_le': {'value': 0}}],
+     0, 0),
+    ([{'ret_microaneurysm_re': {'value': 1}}], 1, -1),
+    ([{'ret_microaneurysm_le': {'value': 0}}], -1, 0)
+])
+def test_build_ret_micro(data, exp_ret_microaneurysm_re, exp_ret_microaneurysm_le):
+    result = build_ret_micro(data)
+    assert result['ret_microaneurysm_re'] == exp_ret_microaneurysm_re
+    assert result['ret_microaneurysm_le'] == exp_ret_microaneurysm_le
 
 
 @pytest.mark.parametrize('data, exp_hemorrhage_typ_dr_re, exp_hemorrhage_typ_dr_le', [
