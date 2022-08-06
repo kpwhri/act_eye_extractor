@@ -32,7 +32,7 @@ def build_hard_exudates(data):
 #     )
 
 def build_disc_edema(data):
-    return column_from_variable_binary(data, 'disc_edema_DR')
+    return column_from_variable_binary(data, 'disc_edema_dr')
 
 
 def build_hemorrhage(data):
@@ -173,5 +173,8 @@ def build_dr_variables(data):
     results = {}
     results.update(build_dr(curr))
     results.update(build_ret_micro(curr))
+    results.update(build_hard_exudates(curr))
+    results.update(build_disc_edema(curr))
+    results.update(build_hemorrhage(curr))
     results.update(build_hemorrhage_type(curr))
     return results
