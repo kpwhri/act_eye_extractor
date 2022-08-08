@@ -35,7 +35,6 @@ from eye_extractor.dr.diabetic_retinopathy import HemorrhageType, get_dr_binary,
 def test_get_dr_binary(text, exp_value, exp_negword):
     data = get_dr_binary(text)
     variable = list(data[0].values())[0]
-    print(variable['term'])
 
     assert len(data) > 0
     assert variable['value'] == exp_value
