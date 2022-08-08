@@ -258,9 +258,9 @@ OUTPUT_COLUMNS = {
     # hemorrhage_dr
     'hemorrhage_dr_re': [is_in_range(-1, 1)],
     'hemorrhage_dr_le': [is_in_range(-1, 1)],
-    # hermorrhage_typ_dr
-    'hermorrhage_typ_dr_re': [is_in_range(-1, 6)],
-    'hermorrhage_typ_dr_le': [is_in_range(-1, 6)],
+    # hemorrhage_typ_dr
+    'hemorrhage_typ_dr_re': [is_in_range(-1, 6)],
+    'hemorrhage_typ_dr_le': [is_in_range(-1, 6)],
 }
 
 
