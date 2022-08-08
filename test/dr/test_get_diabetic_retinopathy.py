@@ -1,6 +1,7 @@
 import pytest
 
 from eye_extractor.dr.diabetic_retinopathy import HemorrhageType, get_dr_binary, get_hemorrhage_type
+from eye_extractor.output.dr import build_hemorrhage_type
 
 
 @pytest.mark.parametrize('text, exp_value, exp_negword', [
@@ -56,6 +57,24 @@ def test_get_hemorrhage_type(text, exp_value, exp_negword):
     assert variable['value'] == exp_value
     assert variable['negated'] == exp_negword
 
+
+@pytest.mark.parametrize('text, hemorrhage_type_dr_re, hemorrhage_type_dr_le, hemorrhage_type_dr_unk', [
+    ('Acute left retinal tear with small vitreous hemorrhage', 0, HemorrhageType.VITREOUS.value, 0),
+    ('OD: preretinal hemorrhage extending from temporal periphery', HemorrhageType.PRERETINAL.value, 0, 0),
+    ('subretinal hemorrhage from his macular degeneration', 0, 0, HemorrhageType.SUBRETINAL.value),
+    ('swelling and intraretinal hemorrhage', 0, 0, HemorrhageType.INTRARETINAL.value),
+    ('dot blot hemorrhage near inferior margin of GA', 0, 0, HemorrhageType.DOT_BLOT.value),
+])
+def test_get_hemorrhage_type_extract_and_build(text, hemorrhage_type_dr_re, hemorrhage_type_dr_le,
+                                               hemorrhage_type_dr_unk):
+    data = get_hemorrhage_type(text)
+    result = build_hemorrhage_type(data)
+
+    assert result['hemorrhage_typ_dr_re'] == hemorrhage_type_dr_re
+    assert result['hemorrhage_typ_dr_le'] == hemorrhage_type_dr_le
+    assert result['hemorrhage_typ_dr_unk'] == hemorrhage_type_dr_unk
+
+
 # TODO: def test_get_fluid
 
 # TODO: def test_get_laser_scar_type
@@ -75,5 +94,3 @@ def test_get_hemorrhage_type(text, exp_value, exp_negword):
 # TODO: def test_get_edema_tx
 
 # TODO: def test_get_edema_antivegf
-
-

@@ -43,6 +43,7 @@ def build_hemorrhage_type(data):
     return column_from_variable({
             f'hemorrhage_typ_dr_re': HemorrhageType.UNKNOWN,
             f'hemorrhage_typ_dr_le': HemorrhageType.UNKNOWN,
+            f'hemorrhage_typ_dr_unk': HemorrhageType.UNKNOWN,
         },
         data,
         transformer_func=HemorrhageType
