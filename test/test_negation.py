@@ -28,6 +28,9 @@ def test_has_after(start_idx, text, terms, word_window, char_window, boundary_ch
         ('no glaucoma: yes :', {'no'}, 10, 0, ':', 1, None),  # don't skip second boundary_chars
         ('no glaucoma: yes :', {'no'}, 10, 0, ':', 2, 'no'),  # skip first and second boundary_chars
         ('no glaucoma: yes :', {'no'}, 2, 0, ':', 2, None),  # limit to only two word lookahead
+        ('no d/b hemes, ', {'no'}, 3, 0, ':', 0, 'no'),  # keep 'd/b' as single item
+        ('no d/ b hemes, ', {'no'}, 3, 0, ':', 0, None),  # space, so should be two chars
+        ('no d / b hemes, ', {'no'}, 4, 0, ':', 0, 'no'),  # ensure that the `/` still gets skipped
     ])
 def test_has_before(text, terms, word_window, char_window, boundary_chars, skip_n_boundary_chars, exp):
     res = has_before(len(text), text, terms, word_window=word_window, char_window=char_window,
