@@ -10,7 +10,7 @@ def build_ret_micro(data):
     return column_from_variable_binary(data, 'ret_microaneurysm')
 
 
-def build_cotton_wspot(data):
+def build_cottonwspot(data):
     return column_from_variable_binary(data, 'cottonwspot')
 
 
@@ -174,6 +174,7 @@ def build_dr_variables(data):
     results = {}
     results.update(build_dr(curr))
     results.update(build_ret_micro(curr))
+    results.update(build_cottonwspot(curr))
     results.update(build_hard_exudates(curr))
     results.update(build_disc_edema(curr))
     results.update(build_hemorrhage(curr))

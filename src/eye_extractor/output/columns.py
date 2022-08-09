@@ -243,22 +243,25 @@ OUTPUT_COLUMNS = {
     'amd_antivegf_unk': [is_in_range(-1, 5)],
 
     ## DIABETIC RETINOPATHY
-    # diab_retinop_yesno
+    # diabetic retinopathy
     'diab_retinop_yesno_re': [is_in_range(-1, 1)],
     'diab_retinop_yesno_le': [is_in_range(-1, 1)],
-    # ret_microaneurysm
+    # retinal microaneurysm
     'ret_microaneurysm_re': [is_in_range(-1, 1)],
     'ret_microaneurysm_le': [is_in_range(-1, 1)],
-    # hardexudates
+    # cotton wool spot
+    'cottonwspot_re': [is_in_range(-1, 1)],
+    'cottonwspot_le': [is_in_range(-1, 1)],
+    # hard exudates
     'hardexudates_re': [is_in_range(-1, 1)],
     'hardexudates_le': [is_in_range(-1, 1)],
-    # disc_edema_dr
+    # disc edema
     'disc_edema_dr_re': [is_in_range(-1, 1)],
     'disc_edema_dr_le': [is_in_range(-1, 1)],
-    # hemorrhage_dr
+    # hemorrhage
     'hemorrhage_dr_re': [is_in_range(-1, 1)],
     'hemorrhage_dr_le': [is_in_range(-1, 1)],
-    # hemorrhage_typ_dr
+    # hemorrhage type
     'hemorrhage_typ_dr_re': [is_in_range(-1, 6)],
     'hemorrhage_typ_dr_le': [is_in_range(-1, 6)],
 }

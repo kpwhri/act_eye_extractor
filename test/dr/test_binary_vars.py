@@ -2,12 +2,14 @@ import pytest
 
 from eye_extractor.dr.binary_vars import get_dr_binary
 from eye_extractor.output.dr import (
-    build_dr,
-    build_ret_micro,
-    build_hard_exudates,
+    build_cottonwspot,
     build_disc_edema,
-    build_hemorrhage
+    build_dr,
+    build_hard_exudates,
+    build_hemorrhage,
+    build_ret_micro
 )
+
 
 @pytest.mark.parametrize('text, exp_value, exp_negword', [
     ('No visible diabetic retinopathy this visit', 0, 'no'),
@@ -79,6 +81,23 @@ def test_build_ret_micro(data, exp_ret_microaneurysm_re, exp_ret_microaneurysm_l
     result = build_ret_micro(data)
     assert result['ret_microaneurysm_re'] == exp_ret_microaneurysm_re
     assert result['ret_microaneurysm_le'] == exp_ret_microaneurysm_le
+
+
+@pytest.mark.parametrize('data, exp_cottonwspot_re, exp_cottonwspot_le', [
+    ([], -1, -1),
+    ([{'cottonwspot_re': {'value': 1},
+       'cottonwspot_le': {'value': 1}}],
+     1, 1),
+    ([{'cottonwspot_re': {'value': 0},
+       'cottonwspot_le': {'value': 0}}],
+     0, 0),
+    ([{'cottonwspot_re': {'value': 1}}], 1, -1),
+    ([{'cottonwspot_le': {'value': 0}}], -1, 0)
+])
+def test_build_cottonwspot(data, exp_cottonwspot_re, exp_cottonwspot_le):
+    result = build_cottonwspot(data)
+    assert result['cottonwspot_re'] == exp_cottonwspot_re
+    assert result['cottonwspot_le'] == exp_cottonwspot_le
 
 
 @pytest.mark.parametrize('data, exp_hardexudates_re, exp_hardexudates_le', [
