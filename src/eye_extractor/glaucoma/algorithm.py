@@ -2,6 +2,7 @@ from eye_extractor.exam.gonio import extract_gonio
 from eye_extractor.glaucoma.cct import extract_cct
 from eye_extractor.glaucoma.disc_hemorrhage import extract_disc_hem
 from eye_extractor.glaucoma.disc_notch import extract_disc_notch
+from eye_extractor.glaucoma.disc_pallor import extract_disc_pallor
 from eye_extractor.glaucoma.drops import extract_glaucoma_drops
 from eye_extractor.glaucoma.dx import extract_glaucoma_dx
 from eye_extractor.glaucoma.exfoliation import extract_exfoliation
@@ -24,4 +25,5 @@ def extract_glaucoma(text, *, headers=None, lateralities=None):
     data['tx'] = extract_tx(text, headers=headers, lateralities=lateralities)
     data['exfoliation'] = extract_exfoliation(text, headers=headers, lateralities=lateralities)
     data['preglaucoma'] = extract_preglaucoma_dx(text, headers=headers, lateralities=lateralities)
+    data['disc_pallor'] = extract_disc_pallor(text, headers=headers, lateralities=lateralities)
     return data

@@ -17,6 +17,9 @@ Types of changes:
 
 ## [Unreleased]
 
+### Added
+- Glaucoma disc pallor for `disc_pallor_glaucoma_re`, `disc_pallor_glaucoma_le`, `disc_pallor_glaucoma_unk`
+  - YES/NO/UNKNOWN
 
 ## v20220808
 

@@ -23,6 +23,7 @@ def build_glaucoma(data):
     results.update(build_tx_new(data['common']['treatment']))
     results.update(build_exfoliation(curr.get('exfoliation', None)))
     results.update(build_preglaucoma_dx(curr.get('preglaucoma', None)))
+    results.update(build_disc_pallor(curr.get('disc_pallor', None)))
     return results
 
 

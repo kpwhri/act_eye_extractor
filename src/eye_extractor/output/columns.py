@@ -207,6 +207,10 @@ OUTPUT_COLUMNS = {
     'glaucoma_tx_re': [is_upper],
     'glaucoma_tx_le': [is_upper],
     'glaucoma_tx_unk': [is_upper],
+    # glaucoma disc pallor: yes/no/unknown
+    'disc_pallor_glaucoma_re': [is_in_range(-1, 1)],
+    'disc_pallor_glaucoma_le': [is_in_range(-1, 1)],
+    'disc_pallor_glaucoma_unk': [is_in_range(-1, 1)],
     # pigmentary epithelial detachment
     'ped_re': [is_in_range(-1, 1)],
     'ped_le': [is_in_range(-1, 1)],
