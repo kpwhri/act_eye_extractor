@@ -17,6 +17,9 @@ Types of changes:
 
 ## [Unreleased]
 
+
+## v20220808
+
 ### Added
 - AMD lasertype for `amd_lasertype_re`, `amd_lasertype_le`, `amd_lasertype_unk`
   - -1 (UNKNOWN)
