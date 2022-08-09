@@ -1,7 +1,6 @@
 import enum
 import re
 
-from eye_extractor.common.date import parse_date_after
 from eye_extractor.common.negation import is_negated
 from eye_extractor.laterality import create_new_variable
 
@@ -13,7 +12,7 @@ class DiscPallor(enum.IntEnum):
 
 
 DISC_PALLOR_PAT = re.compile(
-    rf'\bpallor\b',
+    rf'\bpallor\b',  # unlikely 'atrophy', this tends to be PPA
     re.I
 )
 
