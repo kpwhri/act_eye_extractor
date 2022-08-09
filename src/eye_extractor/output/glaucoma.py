@@ -241,3 +241,20 @@ def build_preglaucoma_dx(data):
             Preglaucoma.UNKNOWN, Preglaucoma.NONE
         },
     )
+
+
+def build_disc_pallor(data):
+    """
+    Build disc notch into 1=yes, 0=no, -1=unknown
+    Default comparison is used to only retain greatest (i.e., any yes)
+    :param data:
+    :return:
+    """
+    return column_from_variable(
+        {
+            'disc_pallor_glaucoma_re': -1,
+            'disc_pallor_glaucoma_le': -1,
+            'disc_pallor_glaucoma_unk': -1,
+        },
+        data,
+    )
