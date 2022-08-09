@@ -1,4 +1,4 @@
-from eye_extractor.dr.diabetic_retinopathy import HemorrhageType
+from eye_extractor.dr.hemorrhage_type import HemorrhageType
 from eye_extractor.output.variable import column_from_variable, column_from_variable_binary
 
 

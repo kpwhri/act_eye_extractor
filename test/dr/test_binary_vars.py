@@ -1,13 +1,50 @@
 import pytest
-from eye_extractor.dr.diabetic_retinopathy import HemorrhageType
+
+from eye_extractor.dr.binary_vars import get_dr_binary
 from eye_extractor.output.dr import (
     build_dr,
     build_ret_micro,
     build_hard_exudates,
     build_disc_edema,
-    build_hemorrhage,
-    build_hemorrhage_type
+    build_hemorrhage
 )
+
+@pytest.mark.parametrize('text, exp_value, exp_negword', [
+    ('No visible diabetic retinopathy this visit', 0, 'no'),
+    ('MA: OD normal 6/6', 1, None),
+    ('No d/b hemes, CWS or NVE OU', 0, 'no'),
+    ('OS:  Numerous hard exudates superior macula', 1, None),
+    ('Vessels: good crossings; no venous beading;', 0, 'no'),
+    ('The optic disc edema has changed location', 1, None),
+    ('OU  VESSELS: Normal pattern without exudates, hemorrhage, plaques, ', 0, 'without'),
+    ('ASSESSMENT : Resolving vitreous/preretinal hemorrhage  No retinal tears', 1, None),
+    ('OU   No Microaneurysms/hemes, cotton-wool spots, exudates, IRMA, Venous beading, NVE', 0, 'no'),
+    ('OD: area of IRMA just nasal to disc,', 1, None),
+    ('also has small area of IRMA right eye', 1, None),
+    ('increased IRF - Avastin OS', 1, None),
+    ('PERIPHERAL RETINA: Laser scars OD, Laser scars versus cobblestone OS', 1, None),
+    pytest.param('Central macular thickness: 234 um, No SRF, few focal scars', 1, None,
+                 marks=pytest.mark.skip(reason="Unhandled instance of negation.")),
+    ('Dilated OD M/N- c/d 0.5 OU, macula clear, laser scars around atrophic hole', 1, None),
+    ('Hx of BRVO OD with PRP', 1, None),
+    ('Corneal neovascularization, unspecified.', 1, None),
+    ('IRIS: Normal Appearance, neg Rubeosis, OU', 0, 'neg'),
+    ('Mild nonproliferative diabetic retinopathy (362.04)', 1, None),
+    ('PI OS NO PDR active', 0, 'no'),
+    ('Plan for surgery: Pars Plana Vitrectomy with Membrane Peel left eye.', 1, None),
+    ('Patient presents with: Diabetic macular edema E11.311', 1, None),
+    ('No CSME', 0, 'no'),
+    ('OD: erm, CMT 291; OS: erm, CMT 280 No change', 1, None),
+    ('Intravitreal injection of Avastin (Bevacizumab) of your left eye', 1, None),
+    ('TRIAMCINOLONE ACETONIDE 0.1 % TOPICAL CREAM', 1, None)
+])
+def test_get_dr_binary(text, exp_value, exp_negword):
+    data = get_dr_binary(text)
+    variable = list(data[0].values())[0]
+
+    assert len(data) > 0
+    assert variable['value'] == exp_value
+    assert variable['negated'] == exp_negword
 
 
 @pytest.mark.parametrize('data, exp_diab_retinop_yesno_re, exp_diab_retinop_yesno_le', [
@@ -93,29 +130,3 @@ def test_build_hemorrhage(data, exp_hemorrhage_dr_re, exp_hemorrhage_dr_le):
     result = build_hemorrhage(data)
     assert result['hemorrhage_dr_re'] == exp_hemorrhage_dr_re
     assert result['hemorrhage_dr_le'] == exp_hemorrhage_dr_le
-
-
-@pytest.mark.parametrize('data, exp_hemorrhage_typ_dr_re, exp_hemorrhage_typ_dr_le', [
-    ([], HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
-    ([{'hemorrhage_typ_dr_re': 1}],
-     HemorrhageType.NONE, HemorrhageType.UNKNOWN),
-    ([{'hemorrhage_typ_dr_re': 2,
-       'hemorrhage_typ_dr_le': 2}],
-     HemorrhageType.INTRARETINAL,
-     HemorrhageType.INTRARETINAL),
-    ([{'hemorrhage_typ_dr_re': 3,
-      'hemorrhage_typ_dr_le': 4}],
-     HemorrhageType.DOT_BLOT,
-     HemorrhageType.PRERETINAL),
-    ([{'hemorrhage_typ_dr_le': 5}],
-     HemorrhageType.UNKNOWN,
-     HemorrhageType.VITREOUS),
-    ([{'hemorrhage_typ_dr_re': 1,
-       'hemorrhage_typ_dr_le': 6}],
-     HemorrhageType.NONE,
-     HemorrhageType.SUBRETINAL)
-])
-def test_hemorrhage_type_to_column(data, exp_hemorrhage_typ_dr_re, exp_hemorrhage_typ_dr_le):
-    result = build_hemorrhage_type(data)
-    assert result['hemorrhage_typ_dr_re'] == exp_hemorrhage_typ_dr_re
-    assert result['hemorrhage_typ_dr_le'] == exp_hemorrhage_typ_dr_le
