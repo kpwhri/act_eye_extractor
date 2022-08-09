@@ -26,6 +26,30 @@ Types of changes:
   - 3 (THERMAL)
   - 4 (OTHER) -> not implemented: NLP requires target
   - 5 (UNSPECIFIED) -> not implemented: unclear
+- AMD antivegf for `amd_antivegf_re`, `amd_antivegf_le`, `amd_antivegf_unk`
+  - -1 (UNKNOWN)
+  - 0 (NONE/NEGATED)
+  - 1 (BEVACIZUMAB)
+  - 2 (AFLIBERCEPT)
+  - 3 (RANIBIZUMAB)
+  - 4 (OTHER)
+  - 5 (UNSPECIFIED) -> not implemented: unclear
+- Diabetic retinopathy (yes/no)
+- DR Microaneurysm (yes/no)
+- DR Hard Exudates (yes/no)
+- DR Disc Edema (yes/no)
+- DR Hemorrhage (yes/no)
+- DR Hemorrhage Type (yes/no)
+  - 0 (UNKNOWN)
+  - 1 (NONE)
+  - 2 (INTRARETINAL)
+  - 3 (DOT_BLOT)
+  - 4 (PRERETINAL)
+  - 5 (VITREOUS)
+  - 6 (SUBRETINAL)
+
+### Changed
+- Merged treatment options across diseases
 
 ## v20220801
 
