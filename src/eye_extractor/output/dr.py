@@ -179,4 +179,5 @@ def build_dr_variables(data):
     results.update(build_disc_edema(curr))
     results.update(build_hemorrhage(curr))
     results.update(build_hemorrhage_type(curr))
+    results.update(build_laser_scars(curr))
     return results

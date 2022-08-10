@@ -264,6 +264,9 @@ OUTPUT_COLUMNS = {
     # hemorrhage type
     'hemorrhage_typ_dr_re': [is_in_range(-1, 6)],
     'hemorrhage_typ_dr_le': [is_in_range(-1, 6)],
+    # laser scars
+    'dr_laser_scars_re': [is_in_range(-1, 1)],
+    'dr_laser_scars_le': [is_in_range(-1, 1)],
 }
 
 

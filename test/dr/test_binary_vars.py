@@ -7,6 +7,7 @@ from eye_extractor.output.dr import (
     build_dr,
     build_hard_exudates,
     build_hemorrhage,
+    build_laser_scars,
     build_ret_micro
 )
 
@@ -149,3 +150,20 @@ def test_build_hemorrhage(data, exp_hemorrhage_dr_re, exp_hemorrhage_dr_le):
     result = build_hemorrhage(data)
     assert result['hemorrhage_dr_re'] == exp_hemorrhage_dr_re
     assert result['hemorrhage_dr_le'] == exp_hemorrhage_dr_le
+
+
+@pytest.mark.parametrize('data, exp_dr_laser_scars_re, exp_dr_laser_scars_le', [
+    ([], -1, -1),
+    ([{'dr_laser_scars_re': {'value': 1},
+       'dr_laser_scars_le': {'value': 1}}],
+     1, 1),
+    ([{'dr_laser_scars_re': {'value': 0},
+       'dr_laser_scars_le': {'value': 0}}],
+     0, 0),
+    ([{'dr_laser_scars_re': {'value': 1}}], 1, -1),
+    ([{'dr_laser_scars_le': {'value': 0}}], -1, 0)
+])
+def test_build_laser_scars(data, exp_dr_laser_scars_re, exp_dr_laser_scars_le):
+    result = build_laser_scars(data)
+    assert result['dr_laser_scars_re'] == exp_dr_laser_scars_re
+    assert result['dr_laser_scars_le'] == exp_dr_laser_scars_le
