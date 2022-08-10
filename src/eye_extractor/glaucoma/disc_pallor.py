@@ -42,16 +42,19 @@ def extract_disc_pallor(text, *, headers=None, lateralities=None):
             ]:
                 for result in _extract_disc_pallor(pat_label, pat, value, sect_text, sect_name):
                     data.append(result)
-    for result in _extract_disc_pallor('DISC_ATROPHY_PAT', DISC_ATROPHY_PAT, DiscPallor.YES, text, 'ALL'):
+    for result in _extract_disc_pallor(
+            'DISC_ATROPHY_PAT', DISC_ATROPHY_PAT, DiscPallor.YES, text, 'ALL',
+            lateralities=lateralities
+    ):
         data.append(result)
     return data
 
 
-def _extract_disc_pallor(pat_label, pat, value, sect_text, sect_name):
+def _extract_disc_pallor(pat_label, pat, value, sect_text, sect_name, lateralities=None):
     for m in pat.finditer(sect_text):
         negword = is_negated(m, sect_text, {'no', 'not', 'or', 'without'})
         yield create_new_variable(
-            sect_text, m, None, 'disc_pallor_glaucoma', {
+            sect_text, m, lateralities, 'disc_pallor_glaucoma', {
                 'value': DiscPallor.NO if negword else value,
                 'term': m.group(),
                 'label': 'no' if negword else value.name.lower(),
