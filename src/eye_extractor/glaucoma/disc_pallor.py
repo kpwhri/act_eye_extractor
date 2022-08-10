@@ -16,6 +16,11 @@ DISC_PALLOR_PAT = re.compile(
     re.I
 )
 
+DISC_ATROPHY_PAT = re.compile(
+    rf'\boptic\W*disc\W*atroph\w*',
+    re.I
+)
+
 
 def extract_disc_pallor(text, *, headers=None, lateralities=None):
     """
@@ -33,19 +38,25 @@ def extract_disc_pallor(text, *, headers=None, lateralities=None):
         ):
             for pat_label, pat, value in [
                 ('DISC_PALLOR_PAT', DISC_PALLOR_PAT, DiscPallor.YES),
+                ('DISC_ATROPHY_PAT', DISC_ATROPHY_PAT, DiscPallor.YES),
             ]:
-                for m in pat.finditer(sect_text):
-                    negword = is_negated(m, sect_text, {'no', 'not', 'or', 'without'})
-                    data.append(
-                        create_new_variable(
-                            sect_text, m, lateralities, 'disc_pallor_glaucoma', {
-                                'value': DiscPallor.NO if negword else value,
-                                'term': m.group(),
-                                'label': 'no' if negword else value.name.lower(),
-                                'negated': negword,
-                                'regex': pat_label,
-                                'source': sect_name,
-                            }
-                        )
-                    )
+                for result in _extract_disc_pallor(pat_label, pat, value, sect_text, sect_name):
+                    data.append(result)
+    for result in _extract_disc_pallor('DISC_ATROPHY_PAT', DISC_ATROPHY_PAT, DiscPallor.YES, text, 'ALL'):
+        data.append(result)
     return data
+
+
+def _extract_disc_pallor(pat_label, pat, value, sect_text, sect_name):
+    for m in pat.finditer(sect_text):
+        negword = is_negated(m, sect_text, {'no', 'not', 'or', 'without'})
+        yield create_new_variable(
+            sect_text, m, None, 'disc_pallor_glaucoma', {
+                'value': DiscPallor.NO if negword else value,
+                'term': m.group(),
+                'label': 'no' if negword else value.name.lower(),
+                'negated': negword,
+                'regex': pat_label,
+                'source': sect_name,
+            }
+        )
