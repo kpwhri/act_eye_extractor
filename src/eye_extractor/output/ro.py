@@ -99,7 +99,7 @@ def build_ro_variables(data):
     results.update(build_rao(curr['rao']))
     # RVO
     results.update(build_rvo(curr['rvo']))
-    results.update(build_rvo_type(curr['rvo']))
-    results.update(build_rvo_treatment(curr['rvo']))
-    results.update(build_rvo_antivegf(curr['rvo']))
+    results.update(build_rvo_type(curr['rvo_type']))
+    results.update(build_rvo_treatment(data['common']['treatment']))
+    results.update(build_rvo_antivegf(data['common']['treatment']))
     return results

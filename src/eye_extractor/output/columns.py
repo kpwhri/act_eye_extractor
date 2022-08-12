@@ -79,10 +79,26 @@ OUTPUT_COLUMNS = {
     'drusen_type_le': [],
     'pigmentchanges_le': [is_in_range(-1, 1)],
     'pigmentchanges_re': [is_in_range(-1, 1)],
+
+    ## RO (RVO/RAO)
+    # RVO
     'rvo_yesno_le': [is_in_range(-1, 1)],
     'rvo_yesno_re': [is_in_range(-1, 1)],
+    'rvo_type_re': [is_in_range(-1, 6)],
+    'rvo_type_le': [is_in_range(-1, 6)],
+    'rvo_type_unk': [is_in_range(-1, 6)],
+    'rvo_treatment_re': [is_in_range(-1, 6)],
+    'rvo_treatment_le': [is_in_range(-1, 6)],
+    'rvo_treatment_unk': [is_in_range(-1, 6)],
+    'rvo_antivegf_re': [is_in_range(-1, 6)],
+    'rvo_antivegf_le': [is_in_range(-1, 6)],
+    'rvo_antivegf_unk': [is_in_range(-1, 6)],
+
+    # RAO
     'rao_yesno_le': [is_in_range(-1, 1)],
     'rao_yesno_re': [is_in_range(-1, 1)],
+
+    ## Cataract
     'cataract_yesno_le': [is_in_range(-1, 1)],
     'cataract_yesno_re': [is_in_range(-1, 1)],
     'cataractiol_yesno_le': [is_in_range(-1, 1)],
