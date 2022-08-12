@@ -5,6 +5,7 @@ from eye_extractor.output.dr import (
     build_cottonwspot,
     build_disc_edema,
     build_dr,
+    build_edema,
     build_hard_exudates,
     build_hemorrhage,
     build_laser_scars,
@@ -12,7 +13,9 @@ from eye_extractor.output.dr import (
     build_neovasc,
     build_nva,
     build_nvi,
-    build_ret_micro
+    build_oct_cme,
+    build_ret_micro,
+    build_sig_edema
 )
 
 
@@ -276,3 +279,64 @@ def test_build_nvi(data, exp_nvi_yesno_re, exp_nvi_yesno_le, exp_nvi_yesno_unk):
     assert result['nvi_yesno_re'] == exp_nvi_yesno_re
     assert result['nvi_yesno_le'] == exp_nvi_yesno_le
     assert result['nvi_yesno_unk'] == exp_nvi_yesno_unk
+
+
+@pytest.mark.parametrize('data, exp_dmacedema_yesno_re, exp_dmacedema_yesno_le, exp_dmacedema_yesno_unk', [
+    ([], -1, -1, -1),
+    ([{'dmacedema_yesno_re': {'value': 1},
+       'dmacedema_yesno_le': {'value': 1}}],
+     1, 1, -1),
+    ([{'dmacedema_yesno_re': {'value': 0},
+       'dmacedema_yesno_le': {'value': 0}}],
+     0, 0, -1),
+    ([{'dmacedema_yesno_re': {'value': 1}}], 1, -1, -1),
+    ([{'dmacedema_yesno_le': {'value': 0}}], -1, 0, -1),
+    ([{'dmacedema_yesno_unk': {'value': 1}}], -1, -1, 1),
+    ([{'dmacedema_yesno_unk': {'value': 0}}], -1, -1, 0)
+])
+def test_build_edema(data, exp_dmacedema_yesno_re, exp_dmacedema_yesno_le, exp_dmacedema_yesno_unk):
+    result = build_edema(data)
+    assert result['dmacedema_yesno_re'] == exp_dmacedema_yesno_re
+    assert result['dmacedema_yesno_le'] == exp_dmacedema_yesno_le
+    assert result['dmacedema_yesno_unk'] == exp_dmacedema_yesno_unk
+
+
+@pytest.mark.parametrize('data, exp_dmacedema_clinsignif_re, exp_dmacedema_clinsignif_le, '
+                         'exp_dmacedema_clinsignif_unk', [
+                             ([], -1, -1, -1),
+                             ([{'dmacedema_clinsignif_re': {'value': 1},
+                                'dmacedema_clinsignif_le': {'value': 1}}],
+                              1, 1, -1),
+                             ([{'dmacedema_clinsignif_re': {'value': 0},
+                                'dmacedema_clinsignif_le': {'value': 0}}],
+                              0, 0, -1),
+                             ([{'dmacedema_clinsignif_re': {'value': 1}}], 1, -1, -1),
+                             ([{'dmacedema_clinsignif_le': {'value': 0}}], -1, 0, -1),
+                             ([{'dmacedema_clinsignif_unk': {'value': 1}}], -1, -1, 1),
+                             ([{'dmacedema_clinsignif_unk': {'value': 0}}], -1, -1, 0)
+                         ])
+def test_build_sig_edema(data, exp_dmacedema_clinsignif_re, exp_dmacedema_clinsignif_le, exp_dmacedema_clinsignif_unk):
+    result = build_sig_edema(data)
+    assert result['dmacedema_clinsignif_re'] == exp_dmacedema_clinsignif_re
+    assert result['dmacedema_clinsignif_le'] == exp_dmacedema_clinsignif_le
+    assert result['dmacedema_clinsignif_unk'] == exp_dmacedema_clinsignif_unk
+
+
+@pytest.mark.parametrize('data, exp_oct_centralmac_re, exp_oct_centralmac_le, exp_oct_centralmac_unk', [
+    ([], -1, -1, -1),
+    ([{'oct_centralmac_re': {'value': 1},
+       'oct_centralmac_le': {'value': 1}}],
+     1, 1, -1),
+    ([{'oct_centralmac_re': {'value': 0},
+       'oct_centralmac_le': {'value': 0}}],
+     0, 0, -1),
+    ([{'oct_centralmac_re': {'value': 1}}], 1, -1, -1),
+    ([{'oct_centralmac_le': {'value': 0}}], -1, 0, -1),
+    ([{'oct_centralmac_unk': {'value': 1}}], -1, -1, 1),
+    ([{'oct_centralmac_unk': {'value': 0}}], -1, -1, 0)
+])
+def test_build_oct_cme(data, exp_oct_centralmac_re, exp_oct_centralmac_le, exp_oct_centralmac_unk):
+    result = build_oct_cme(data)
+    assert result['oct_centralmac_re'] == exp_oct_centralmac_re
+    assert result['oct_centralmac_le'] == exp_oct_centralmac_le
+    assert result['oct_centralmac_unk'] == exp_oct_centralmac_unk

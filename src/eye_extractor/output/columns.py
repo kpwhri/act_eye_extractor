@@ -316,4 +316,16 @@ OUTPUT_COLUMNS = {
     'nvi_yesno_re': [is_in_range(-1, 1)],
     'nvi_yesno_le': [is_in_range(-1, 1)],
     'nvi_yesno_unk': [is_in_range(-1, 1)],
+    # diabetic macular edema
+    'dmacedema_yesno_re': [is_in_range(-1, 1)],
+    'dmacedema_yesno_le': [is_in_range(-1, 1)],
+    'dmacedema_yesno_unk': [is_in_range(-1, 1)],
+    # clinically significant diabetic macular edema
+    'dmacedema_clinsignif_re': [is_in_range(-1, 1)],
+    'dmacedema_clinsignif_le': [is_in_range(-1, 1)],
+    'dmacedema_clinsignif_unk': [is_in_range(-1, 1)],
+    # OCT for central macular thickness
+    'oct_centralmac_re': [is_in_range(-1, 1)],
+    'oct_centralmac_le': [is_in_range(-1, 1)],
+    'oct_centralmac_unk': [is_in_range(-1, 1)],
 }
