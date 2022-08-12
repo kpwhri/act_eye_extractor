@@ -71,7 +71,7 @@ def test_rvo_type(text, exp):
 def test_rvo_type_extract_and_build(text, headers, exp_rvo_type_re, exp_rvo_type_le, exp_rvo_type_unk):
     pre_json = extract_rvo(text, headers=Headers(headers), lateralities=None)
     post_json = json.loads(json.dumps(pre_json))
-    result = build_rvo_type(post_json)
+    result = build_rvo_type(post_json, skip_output_mappings=True)  # skip mappings to redcap output
     assert result['rvo_type_re'] == exp_rvo_type_re
     assert result['rvo_type_le'] == exp_rvo_type_le
     assert result['rvo_type_unk'] == exp_rvo_type_unk

@@ -10,7 +10,18 @@ def build_rvo(data):
     return column_from_variable_binary(data, 'rvo_yesno')
 
 
-def build_rvo_type(data):
+def _rename_rvo_type(val):
+    match val:
+        case RvoType.RVO:
+            return 3
+        case RvoType.CRVO:
+            return 1
+        case RvoType.BRVO:
+            return 2
+
+
+def build_rvo_type(data, *, skip_output_mappings=False):
+    rename_func = None if skip_output_mappings else _rename_rvo_type
     return column_from_variable(
         {
             'rvo_yesno_re': RvoType.UNKNOWN,
@@ -20,6 +31,7 @@ def build_rvo_type(data):
         data,
         transformer_func=lambda x: RvoType(x['kind']),
         renamevar_func=lambda x: f'rvo_type_{x.split("_")[-1]}',
+        rename_func=rename_func,
     )
 
 
