@@ -2,9 +2,9 @@ import json
 
 import pytest
 
-from eye_extractor.common.algo.treatment import STEROID_PAT, TRIAMCINOLONE_PAT, DEXAMETHASONE_PAT
+from eye_extractor.common.algo.treatment import STEROID_PAT, TRIAMCINOLONE_PAT, DEXAMETHASONE_PAT, extract_treatment
 from eye_extractor.headers import Headers
-from eye_extractor.output.ro import build_rvo, build_rvo_type
+from eye_extractor.output.ro import build_rvo, build_rvo_type, build_rvo_treatment
 from eye_extractor.ro.rvo import RVO_PAT, extract_rvo, RvoType, get_rvo_kind
 
 
@@ -85,3 +85,22 @@ def test_rvo_type_extract_and_build(text, headers, exp_rvo_type_re, exp_rvo_type
 ])
 def test_rvo_treatment_patterns(pattern, text, exp):
     assert bool(pattern.search(text)) == exp
+
+
+@pytest.mark.parametrize('text, headers, exp_rvo_treatment_re, exp_rvo_treatment_le, exp_rvo_treatment_unk', [
+    ('', {'PLAN': 'dexamethasone'}, -1, -1, 4),
+    ('', {'PLAN': 'observe'}, -1, -1, 1),
+    ('', {'PLAN': 'laser'}, -1, -1, 2),
+    ('', {'PLAN': 'aflibercept'}, -1, -1, 3),
+])
+def test_rvo_treatment_extract_and_build(text, headers, exp_rvo_treatment_re, exp_rvo_treatment_le, 
+                                         exp_rvo_treatment_unk):
+    pre_json = extract_treatment(text, headers=Headers(headers), lateralities=None)
+    post_json = json.loads(json.dumps(pre_json))
+    result = build_rvo_treatment(post_json)
+    print(post_json)
+    print(result)
+    assert result['rvo_treatment_re'] == exp_rvo_treatment_re
+    assert result['rvo_treatment_le'] == exp_rvo_treatment_le
+    assert result['rvo_treatment_unk'] == exp_rvo_treatment_unk
+
