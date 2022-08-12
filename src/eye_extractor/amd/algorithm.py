@@ -2,7 +2,6 @@ from eye_extractor.amd.amd import get_amd
 from eye_extractor.amd.cnv import extract_choroidalneovasc
 from eye_extractor.amd.drusen import get_drusen
 from eye_extractor.amd.dry import extract_dryamd_severity
-from eye_extractor.amd.fluid import get_fluid
 from eye_extractor.amd.ga import extract_geoatrophy
 from eye_extractor.amd.lasertype import extract_lasertype
 from eye_extractor.amd.ped import extract_ped
@@ -19,7 +18,6 @@ def extract_amd_variables(text, *, headers=None, lateralities=None):
         'drusen': get_drusen(text, headers=headers, lateralities=lateralities),
         'srh': get_subretinal_hemorrhage(text, headers=headers, lateralities=lateralities),
         'pigment': get_pigmentary_changes(text, headers=headers, lateralities=lateralities),
-        'fluid': get_fluid(text, headers=headers, lateralities=lateralities),
         'ped': extract_ped(text, headers=headers, lateralities=lateralities),
         'cnv': extract_choroidalneovasc(text, headers=headers, lateralities=lateralities),
         'scar': extract_subret_fibrous(text, headers=headers, lateralities=lateralities),

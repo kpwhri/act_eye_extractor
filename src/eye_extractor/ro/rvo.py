@@ -1,7 +1,18 @@
+import enum
 import re
+from typing import Match
 
 from eye_extractor.common.negation import is_negated
 from eye_extractor.laterality import build_laterality_table, create_new_variable
+
+
+class RvoType(enum.IntEnum):
+    UNKNOWN = -1
+    NONE = 0
+    RVO = 1
+    BRVO = 2
+    CRVO = 3
+
 
 # RVO, retinal vein occlusion, RvasO (retinal vascular occlusion - can be vein or artery),
 # CRVO (central retinal vein occlusion), BRVO (branch retinal vein occlusion)
@@ -16,7 +27,18 @@ RVO_PAT = re.compile(
 )
 
 
-def get_rvo(text, *, headers=None, lateralities=None):
+def get_rvo_kind(m: Match):
+    """Determine if rvo is branch, central, or unspecified"""
+    target = m.group().lower().strip()
+    kind = RvoType.RVO
+    if target.startswith('b'):
+        kind = RvoType.BRVO
+    elif target.startswith('c'):
+        kind = RvoType.CRVO
+    return kind
+
+
+def extract_rvo(text, *, headers=None, lateralities=None):
     if not lateralities:
         lateralities = build_laterality_table(text)
     data = []
@@ -29,6 +51,7 @@ def get_rvo(text, *, headers=None, lateralities=None):
                 'label': 'no' if negword else 'yes',
                 'negated': negword,
                 'regex': 'RVO_PAT', 'source': 'ALL',
+                'kind': get_rvo_kind(m),
             })
         )
     if headers:

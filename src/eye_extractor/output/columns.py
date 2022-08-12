@@ -79,10 +79,35 @@ OUTPUT_COLUMNS = {
     'drusen_type_le': [],
     'pigmentchanges_le': [is_in_range(-1, 1)],
     'pigmentchanges_re': [is_in_range(-1, 1)],
+
+    ## RO (RVO/RAO)
+    # RVO
     'rvo_yesno_le': [is_in_range(-1, 1)],
     'rvo_yesno_re': [is_in_range(-1, 1)],
+    'rvo_type_re': [is_in_range(-1, 3)],
+    'rvo_type_le': [is_in_range(-1, 3)],
+    'rvo_type_unk': [is_in_range(-1, 3)],
+    'rvo_treatment_re': [is_in_range(-1, 6)],
+    'rvo_treatment_le': [is_in_range(-1, 6)],
+    'rvo_treatment_unk': [is_in_range(-1, 6)],
+    'rvo_antivegf_re': [is_in_range(-1, 3)],
+    'rvo_antivegf_le': [is_in_range(-1, 3)],
+    'rvo_antivegf_unk': [is_in_range(-1, 3)],
+    'rvo_subretfluid_re': [is_in_range(-1, 1)],
+    'rvo_subretfluid_le': [is_in_range(-1, 1)],
+    'rvo_subretfluid_unk': [is_in_range(-1, 1)],
+    'rvo_intraretfluid_re': [is_in_range(-1, 1)],
+    'rvo_intraretfluid_le': [is_in_range(-1, 1)],
+    'rvo_intraretfluid_unk': [is_in_range(-1, 1)],
+    'fluid_rvo_re': [is_in_range(-1, 5)],
+    'fluid_rvo_le': [is_in_range(-1, 5)],
+    'fluid_rvo_unk': [is_in_range(-1, 5)],
+
+    # RAO
     'rao_yesno_le': [is_in_range(-1, 1)],
     'rao_yesno_re': [is_in_range(-1, 1)],
+
+    ## Cataract
     'cataract_yesno_le': [is_in_range(-1, 1)],
     'cataract_yesno_re': [is_in_range(-1, 1)],
     'cataractiol_yesno_le': [is_in_range(-1, 1)],
@@ -207,6 +232,10 @@ OUTPUT_COLUMNS = {
     'glaucoma_tx_re': [is_upper],
     'glaucoma_tx_le': [is_upper],
     'glaucoma_tx_unk': [is_upper],
+    # glaucoma disc pallor: yes/no/unknown
+    'disc_pallor_glaucoma_re': [is_in_range(-1, 1)],
+    'disc_pallor_glaucoma_le': [is_in_range(-1, 1)],
+    'disc_pallor_glaucoma_unk': [is_in_range(-1, 1)],
     # pigmentary epithelial detachment
     'ped_re': [is_in_range(-1, 1)],
     'ped_le': [is_in_range(-1, 1)],
@@ -243,35 +272,25 @@ OUTPUT_COLUMNS = {
     'amd_antivegf_unk': [is_in_range(-1, 5)],
 
     ## DIABETIC RETINOPATHY
-    # diabetic retinopathy
+    # diab_retinop_yesno
     'diab_retinop_yesno_re': [is_in_range(-1, 1)],
     'diab_retinop_yesno_le': [is_in_range(-1, 1)],
-    # retinal microaneurysm
+    # ret_microaneurysm
     'ret_microaneurysm_re': [is_in_range(-1, 1)],
     'ret_microaneurysm_le': [is_in_range(-1, 1)],
-    # cotton wool spot
-    'cottonwspot_re': [is_in_range(-1, 1)],
-    'cottonwspot_le': [is_in_range(-1, 1)],
-    # hard exudates
+    # hardexudates
     'hardexudates_re': [is_in_range(-1, 1)],
     'hardexudates_le': [is_in_range(-1, 1)],
-    # disc edema
+    # disc_edema_dr
     'disc_edema_dr_re': [is_in_range(-1, 1)],
     'disc_edema_dr_le': [is_in_range(-1, 1)],
-    # hemorrhage
+    # hemorrhage_dr
     'hemorrhage_dr_re': [is_in_range(-1, 1)],
     'hemorrhage_dr_le': [is_in_range(-1, 1)],
-    # hemorrhage type
+    # hemorrhage_typ_dr
     'hemorrhage_typ_dr_re': [is_in_range(-1, 6)],
     'hemorrhage_typ_dr_le': [is_in_range(-1, 6)],
     # laser scars
     'dr_laser_scars_re': [is_in_range(-1, 1)],
     'dr_laser_scars_le': [is_in_range(-1, 1)],
 }
-
-
-
-
-
-
-

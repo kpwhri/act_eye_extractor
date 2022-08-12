@@ -23,6 +23,7 @@ def build_glaucoma(data):
     results.update(build_tx_new(data['common']['treatment']))
     results.update(build_exfoliation(curr.get('exfoliation', None)))
     results.update(build_preglaucoma_dx(curr.get('preglaucoma', None)))
+    results.update(build_disc_pallor(curr.get('disc_pallor', None)))
     return results
 
 
@@ -240,4 +241,21 @@ def build_preglaucoma_dx(data):
         compare_func=lambda n, c: c in {
             Preglaucoma.UNKNOWN, Preglaucoma.NONE
         },
+    )
+
+
+def build_disc_pallor(data):
+    """
+    Build disc notch into 1=yes, 0=no, -1=unknown
+    Default comparison is used to only retain greatest (i.e., any yes)
+    :param data:
+    :return:
+    """
+    return column_from_variable(
+        {
+            'disc_pallor_glaucoma_re': -1,
+            'disc_pallor_glaucoma_le': -1,
+            'disc_pallor_glaucoma_unk': -1,
+        },
+        data,
     )

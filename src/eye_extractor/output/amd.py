@@ -1,6 +1,6 @@
 from eye_extractor.amd.cnv import ChoroidalNeoVasc
 from eye_extractor.amd.dry import DrySeverity
-from eye_extractor.amd.fluid import FluidAMD, fluid_prioritization
+from eye_extractor.common.algo.fluid import Fluid, fluid_prioritization, rename_fluid
 from eye_extractor.amd.ga import GeoAtrophy
 from eye_extractor.amd.lasertype import Laser
 from eye_extractor.amd.ped import PigEpiDetach
@@ -21,7 +21,7 @@ def build_amd_variables(data):
     results.update(get_drusen(curr['drusen']))
     results.update(get_subretinal_hemorrhage(curr['srh']))
     results.update(get_pigmentary_changes(curr['pigment']))
-    results.update(get_fluid_from_variable(curr['fluid']))
+    results.update(get_fluid_from_variable(data['common']['fluid']))
     results.update(build_ped(curr['ped']))
     results.update(build_choroidalneovasc(curr['cnv']))
     results.update(build_subret_fibrous(curr['scar']))
@@ -74,17 +74,19 @@ def get_pigmentary_changes(data):
     }, data)
 
 
-def get_fluid_from_variable(data):
+def get_fluid_from_variable(data, *, skip_rename_variable=False):
     return column_from_variable(
         {
-            'fluid_amd_re': FluidAMD.UNKNOWN,
-            'fluid_amd_le': FluidAMD.UNKNOWN,
-            'fluid_amd_unk': FluidAMD.UNKNOWN,
+            'fluid_re': Fluid.UNKNOWN,
+            'fluid_le': Fluid.UNKNOWN,
+            'fluid_unk': Fluid.UNKNOWN,
         },
         data,
-        transformer_func=FluidAMD,
+        transformer_func=Fluid,
         result_func=fluid_prioritization,
         enum_to_str=True,
+        renamevar_func=lambda x: x.replace('fluid', 'fluid_amd'),
+        rename_func=None if skip_rename_variable else rename_fluid
     )
 
 

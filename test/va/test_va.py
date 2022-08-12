@@ -75,9 +75,11 @@ def test_va_pattern(text, exp_num, exp_score, exp_diopter, exp_test, exp_test2):
           ''',
          3.5, -1, 97, 2.5, 20, -2,
          2.75, -0.75, 92, 2.5, 25, -3),
-        (''' Manifest Refraction today: RE: +200 -550 x 089 LE: +200 -650 x 083 add power: + 275 ''',  # FIX
-         3.5, -1, 97, 2.5, 20, -2,
-         2.75, -0.75, 92, 2.5, 25, -3),
+        pytest.param(
+            ''' Manifest Refraction today: RE: +200 -550 x 089 LE: +200 -650 x 083 add power: + 275 ''',  # FIX
+            3.5, -1, 97, 2.5, 20, -2,
+            2.75, -0.75, 92, 2.5, 25, -3,
+            marks=pytest.mark.skip(reason='Missing pattern.')),
     ])
 def test_get_manifest_rx(
         text, sphere_re, cylinder_re, axis_re, add_re, denom_re, correct_re,

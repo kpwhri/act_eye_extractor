@@ -27,12 +27,22 @@ class Treatment(enum.IntEnum):
     # surgery
     SURGERY = 200
     # medicine
+    # - steroiod
+    STEROID = 300
+    TRIAMCINOLONE = 301
+    DEXAMETHASONE = 302
+    IMPLANT = 303
+    # -antivegf
+    ANTIVEGF = 311
+    AFLIBERCEPT = 312  # Eyelea
+    BEVACIZUMAB = 313  # Avastin
+    RANIBIZUMAB = 314  # Lucentis
 
 
 # headers
 PLAN_HEADERS = ('PLAN', 'PLAN COMMENTS', 'COMMENTS')
 GLAUCOMA_HEADERS = ('PLAN', 'PLAN COMMENTS', 'COMMENTS')
-AMD_HEADERS = ('ASSESSMENT', 'IMPRESSION', 'IMP', 'HX', 'PAST', 'ASSESSMENT COMMENTS')
+AMD_HEADERS = ('ASSESSMENT', 'IMPRESSION', 'IMP', 'HX', 'PAST', 'ASSESSMENT COMMENTS', 'PLAN')
 ANTIVEGF_HEADERS = ('SUBJECTIVE', 'CHIEF COMPLAINT', 'HISTORY OF PRESENT ILLNESS')
 
 # regular expressions
@@ -107,11 +117,37 @@ THERMAL_PAT = re.compile(  # verb + med
     re.I
 )
 
+# - steroid for rvo
+STEROID_PAT = re.compile(
+    rf'\b(?:'
+    rf'(?:cortico)?steroids?'
+    rf')\b',
+    re.I
+)
+IMPLANT_PAT = re.compile(
+    rf'\b(?:'
+    rf'implant'
+    rf')\b',
+    re.I
+)
+TRIAMCINOLONE_PAT = re.compile(
+    rf'\b(?:'
+    rf'triamcinolone\s*(?:acetonide)?'
+    rf')\b',
+    re.I
+)
+DEXAMETHASONE_PAT = re.compile(
+    rf'\b(?:'
+    rf'dexamethasone\s*(?:implant)?'
+    rf')\b',
+    re.I
+)
+
 
 def is_treatment_uncertain(m, text):
     return (
-            is_negated(m, text, {'vs', 'or', 'consider'})
-            or is_post_negated(m, text, {'vs', 'or'})
+            is_negated(m, text, {'vs', 'or', 'consider', 'defer', 'option'})
+            or is_post_negated(m, text, {'vs', 'or', 'defer'})
     )
 
 
@@ -135,6 +171,19 @@ def extract_treatment(text, *, headers=None, lateralities=None, target_headers=N
                 ('OBSERVE_PAT', OBSERVE_PAT, Treatment.OBSERVE),
                 ('CONTINUE_RX_PAT', CONTINUE_RX_PAT, Treatment.CONTINUE_RX),
                 ('NEW_MEDICATION_PAT', NEW_MEDICATION_PAT, Treatment.NEW_MEDICATION),
+        ):
+            data.append(result)
+        # laser targets
+        for result in _extract_treatment_section(
+                headers,
+                PLAN_HEADERS,
+                'LASER',
+                ('LASER_PAT', LASER_PAT, Treatment.LASER),
+                ('PHOTODYNAMIC_PAT', PHOTODYNAMIC_PAT, Treatment.PHOTODYNAMIC),
+                ('THERMAL_PAT', THERMAL_PAT, Treatment.THERMAL),
+                ('TRABECULOPLASTY_PAT', TRABECULOPLASTY_PAT, Treatment.TRABECULOPLASTY),
+                ('ALT_PAT', ALT_PAT, Treatment.ALT),
+                ('SLT_PAT', SLT_PAT, Treatment.SLT),
         ):
             data.append(result)
         # glaucoma targets
@@ -163,6 +212,16 @@ def extract_treatment(text, *, headers=None, lateralities=None, target_headers=N
                 AMD_HEADERS,
                 'ANTIVEGF',
                 ('ANTIVEGF_RX', ANTIVEGF_RX, lambda m: ANTIVEGF_TO_ENUM[get_standardized_name(m.group())]),
+        ):
+            data.append(result)
+        for result in _extract_treatment_section(
+                headers,
+                PLAN_HEADERS,
+                'RVO',
+                ('STEROID_PAT', STEROID_PAT, Treatment.STEROID),
+                ('TRIAMCINOLONE_PAT', TRIAMCINOLONE_PAT, Treatment.TRIAMCINOLONE),
+                ('DEXAMETHASONE_PAT', DEXAMETHASONE_PAT, Treatment.DEXAMETHASONE),
+                ('IMPLANT_PAT', IMPLANT_PAT, Treatment.IMPLANT),
         ):
             data.append(result)
     # all text
