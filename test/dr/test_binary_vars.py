@@ -8,6 +8,7 @@ from eye_extractor.output.dr import (
     build_hard_exudates,
     build_hemorrhage,
     build_laser_scars,
+    build_laser_panrentinal,
     build_ret_micro
 )
 
@@ -188,3 +189,27 @@ def test_build_laser_scars(data, exp_dr_laser_scars_re, exp_dr_laser_scars_le, e
     assert result['dr_laser_scars_re'] == exp_dr_laser_scars_re
     assert result['dr_laser_scars_le'] == exp_dr_laser_scars_le
     assert result['dr_laser_scars_unk'] == exp_dr_laser_scars_unk
+
+
+@pytest.mark.parametrize('data, exp_laserpanret_photocoag_re, exp_laserpanret_photocoag_le, '
+                         'exp_laserpanret_photocoag_unk', [
+                             ([], -1, -1, -1),
+                             ([{'laserpanret_photocoag_re': {'value': 1},
+                                'laserpanret_photocoag_le': {'value': 1}}],
+                              1, 1, -1),
+                             ([{'laserpanret_photocoag_re': {'value': 0},
+                                'laserpanret_photocoag_le': {'value': 0}}],
+                              0, 0, -1),
+                             ([{'laserpanret_photocoag_re': {'value': 1}}], 1, -1, -1),
+                             ([{'laserpanret_photocoag_le': {'value': 0}}], -1, 0, -1),
+                             ([{'laserpanret_photocoag_unk': {'value': 1}}], -1, -1, 1),
+                             ([{'laserpanret_photocoag_unk': {'value': 0}}], -1, -1, 0)
+                         ])
+def test_build_laser_panretinal(data,
+                                exp_laserpanret_photocoag_re,
+                                exp_laserpanret_photocoag_le,
+                                exp_laserpanret_photocoag_unk):
+    result = build_laser_panrentinal(data)
+    assert result['laserpanret_photocoag_re'] == exp_laserpanret_photocoag_re
+    assert result['laserpanret_photocoag_le'] == exp_laserpanret_photocoag_le
+    assert result['laserpanret_photocoag_unk'] == exp_laserpanret_photocoag_unk

@@ -275,22 +275,33 @@ OUTPUT_COLUMNS = {
     # diab_retinop_yesno
     'diab_retinop_yesno_re': [is_in_range(-1, 1)],
     'diab_retinop_yesno_le': [is_in_range(-1, 1)],
+    'diab_retinop_yesno_unk': [is_in_range(-1, 1)],
     # ret_microaneurysm
     'ret_microaneurysm_re': [is_in_range(-1, 1)],
     'ret_microaneurysm_le': [is_in_range(-1, 1)],
+    'ret_microaneurysm_unk': [is_in_range(-1, 1)],
     # hardexudates
     'hardexudates_re': [is_in_range(-1, 1)],
     'hardexudates_le': [is_in_range(-1, 1)],
+    'hardexudates_unk': [is_in_range(-1, 1)],
     # disc_edema_dr
     'disc_edema_dr_re': [is_in_range(-1, 1)],
     'disc_edema_dr_le': [is_in_range(-1, 1)],
+    'disc_edema_dr_unk': [is_in_range(-1, 1)],
     # hemorrhage_dr
     'hemorrhage_dr_re': [is_in_range(-1, 1)],
     'hemorrhage_dr_le': [is_in_range(-1, 1)],
+    'hemorrhage_dr_unk': [is_in_range(-1, 1)],
     # hemorrhage_typ_dr
     'hemorrhage_typ_dr_re': [is_in_range(-1, 6)],
     'hemorrhage_typ_dr_le': [is_in_range(-1, 6)],
+    'hemorrhage_typ_dr_unk': [is_in_range(-1, 6)],
     # laser scars
     'dr_laser_scars_re': [is_in_range(-1, 1)],
     'dr_laser_scars_le': [is_in_range(-1, 1)],
+    'dr_laser_scars_unk': [is_in_range(-1, 1)],
+    # laser panretinal photocoagulation scars
+    'laserpanret_photocoag_re': [is_in_range(-1, 1)],
+    'laserpanret_photocoag_le': [is_in_range(-1, 1)],
+    'laserpanret_photocoag_unk': [is_in_range(-1, 1)],
 }

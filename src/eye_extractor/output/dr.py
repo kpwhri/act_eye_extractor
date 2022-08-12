@@ -180,4 +180,5 @@ def build_dr_variables(data):
     results.update(build_hemorrhage(curr['binary_vars']))
     results.update(build_hemorrhage_type(curr['hemorrhage_type']))
     results.update(build_laser_scars(curr['binary_vars']))
+    results.update(build_laser_panrentinal(curr['binary_vars']))
     return results
