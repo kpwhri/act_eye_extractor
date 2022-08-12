@@ -93,6 +93,15 @@ OUTPUT_COLUMNS = {
     'rvo_antivegf_re': [is_in_range(-1, 3)],
     'rvo_antivegf_le': [is_in_range(-1, 3)],
     'rvo_antivegf_unk': [is_in_range(-1, 3)],
+    'rvo_subretfluid_re': [is_in_range(-1, 1)],
+    'rvo_subretfluid_le': [is_in_range(-1, 1)],
+    'rvo_subretfluid_unk': [is_in_range(-1, 1)],
+    'rvo_intraretfluid_re': [is_in_range(-1, 1)],
+    'rvo_intraretfluid_le': [is_in_range(-1, 1)],
+    'rvo_intraretfluid_unk': [is_in_range(-1, 1)],
+    'fluid_rvo_re': [is_in_range(-1, 5)],
+    'fluid_rvo_le': [is_in_range(-1, 5)],
+    'fluid_rvo_unk': [is_in_range(-1, 5)],
 
     # RAO
     'rao_yesno_le': [is_in_range(-1, 1)],

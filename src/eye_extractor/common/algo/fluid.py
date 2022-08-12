@@ -34,6 +34,26 @@ def rename_fluid(var: Fluid):
             return -1
 
 
+def rename_intraretfluid(var: Fluid):
+    match var:
+        case Fluid.INTRARETINAL_FLUID | Fluid.SUB_AND_INTRARETINAL_FLUID:
+            return 1
+        case Fluid.NO_INTRARETINAL_FLUID | Fluid.NO_SUB_AND_INTRARETINAL_FLUID:
+            return 0
+        case _:
+            return -1
+
+
+def rename_subretfluid(var: Fluid):
+    match var:
+        case Fluid.SUBRETINAL_FLUID | Fluid.SUB_AND_INTRARETINAL_FLUID:
+            return 1
+        case Fluid.NO_SUBRETINAL_FLUID | Fluid.NO_SUB_AND_INTRARETINAL_FLUID:
+            return 0
+        case _:
+            return -1
+
+
 def fluid_prioritization(new_value: Fluid, curr_value: Fluid | None):
     if curr_value is None:  # may start as None
         return new_value
