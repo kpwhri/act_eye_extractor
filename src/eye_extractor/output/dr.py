@@ -172,12 +172,12 @@ def build_oct_cme(data):
 def build_dr_variables(data):
     curr = data['dr']
     results = {}
-    results.update(build_dr(curr))
-    results.update(build_ret_micro(curr))
-    results.update(build_cottonwspot(curr))
-    results.update(build_hard_exudates(curr))
-    results.update(build_disc_edema(curr))
-    results.update(build_hemorrhage(curr))
-    results.update(build_hemorrhage_type(curr))
-    results.update(build_laser_scars(curr))
+    results.update(build_dr(curr['binary_vars']))
+    results.update(build_ret_micro(curr['binary_vars']))
+    results.update(build_cottonwspot(curr['binary_vars']))
+    results.update(build_hard_exudates(curr['binary_vars']))
+    results.update(build_disc_edema(curr['binary_vars']))
+    results.update(build_hemorrhage(curr['binary_vars']))
+    results.update(build_hemorrhage_type(curr['hemorrhage_type']))
+    results.update(build_laser_scars(curr['binary_vars']))
     return results

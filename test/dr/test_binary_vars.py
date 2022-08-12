@@ -50,120 +50,141 @@ def test_get_dr_binary(text, exp_value, exp_negword):
     assert variable['negated'] == exp_negword
 
 
-@pytest.mark.parametrize('data, exp_diab_retinop_yesno_re, exp_diab_retinop_yesno_le', [
-    ([], -1, -1),
+@pytest.mark.parametrize('data, exp_diab_retinop_yesno_re, exp_diab_retinop_yesno_le, exp_diab_retinop_yesno_unk', [
+    ([], -1, -1, -1),
     ([{'diab_retinop_yesno_re': {'value': 1},
        'diab_retinop_yesno_le': {'value': 1}}],
-     1, 1),
+     1, 1, -1),
     ([{'diab_retinop_yesno_re': {'value': 0},
        'diab_retinop_yesno_le': {'value': 0}}],
-     0, 0),
-    ([{'diab_retinop_yesno_re': {'value': 1}}], 1, -1),
-    ([{'diab_retinop_yesno_le': {'value': 0}}], -1, 0)
+     0, 0, -1),
+    ([{'diab_retinop_yesno_re': {'value': 1}}], 1, -1, -1),
+    ([{'diab_retinop_yesno_le': {'value': 0}}], -1, 0, -1),
+    ([{'diab_retinop_yesno_unk': {'value': 1}}], -1, -1, 1),
+    ([{'diab_retinop_yesno_unk': {'value': 0}}], -1, -1, 0)
 ])
-def test_build_dr(data, exp_diab_retinop_yesno_re, exp_diab_retinop_yesno_le):
+def test_build_dr(data, exp_diab_retinop_yesno_re, exp_diab_retinop_yesno_le, exp_diab_retinop_yesno_unk):
     result = build_dr(data)
     assert result['diab_retinop_yesno_re'] == exp_diab_retinop_yesno_re
     assert result['diab_retinop_yesno_le'] == exp_diab_retinop_yesno_le
+    assert result['diab_retinop_yesno_unk'] == exp_diab_retinop_yesno_unk
 
 
-@pytest.mark.parametrize('data, exp_ret_microaneurysm_re, exp_ret_microaneurysm_le', [
-    ([], -1, -1),
+@pytest.mark.parametrize('data, exp_ret_microaneurysm_re, exp_ret_microaneurysm_le, exp_ret_microaneurysm_unk', [
+    ([], -1, -1, -1),
     ([{'ret_microaneurysm_re': {'value': 1},
        'ret_microaneurysm_le': {'value': 1}}],
-     1, 1),
+     1, 1, -1),
     ([{'ret_microaneurysm_re': {'value': 0},
        'ret_microaneurysm_le': {'value': 0}}],
-     0, 0),
-    ([{'ret_microaneurysm_re': {'value': 1}}], 1, -1),
-    ([{'ret_microaneurysm_le': {'value': 0}}], -1, 0)
+     0, 0, -1),
+    ([{'ret_microaneurysm_re': {'value': 1}}], 1, -1, -1),
+    ([{'ret_microaneurysm_le': {'value': 0}}], -1, 0, -1),
+    ([{'ret_microaneurysm_unk': {'value': 1}}], -1, -1, 1),
+    ([{'ret_microaneurysm_unk': {'value': 0}}], -1, -1, 0)
 ])
-def test_build_ret_micro(data, exp_ret_microaneurysm_re, exp_ret_microaneurysm_le):
+def test_build_ret_micro(data, exp_ret_microaneurysm_re, exp_ret_microaneurysm_le, exp_ret_microaneurysm_unk):
     result = build_ret_micro(data)
     assert result['ret_microaneurysm_re'] == exp_ret_microaneurysm_re
     assert result['ret_microaneurysm_le'] == exp_ret_microaneurysm_le
+    assert result['ret_microaneurysm_unk'] == exp_ret_microaneurysm_unk
 
 
-@pytest.mark.parametrize('data, exp_cottonwspot_re, exp_cottonwspot_le', [
-    ([], -1, -1),
+@pytest.mark.parametrize('data, exp_cottonwspot_re, exp_cottonwspot_le, exp_cottonwspot_unk', [
+    ([], -1, -1, -1),
     ([{'cottonwspot_re': {'value': 1},
        'cottonwspot_le': {'value': 1}}],
-     1, 1),
+     1, 1, -1),
     ([{'cottonwspot_re': {'value': 0},
        'cottonwspot_le': {'value': 0}}],
-     0, 0),
-    ([{'cottonwspot_re': {'value': 1}}], 1, -1),
-    ([{'cottonwspot_le': {'value': 0}}], -1, 0)
+     0, 0, -1),
+    ([{'cottonwspot_re': {'value': 1}}], 1, -1, -1),
+    ([{'cottonwspot_le': {'value': 0}}], -1, 0, -1),
+    ([{'cottonwspot_unk': {'value': 1}}], -1, -1, 1),
+    ([{'cottonwspot_unk': {'value': 0}}], -1, -1, 0)
 ])
-def test_build_cottonwspot(data, exp_cottonwspot_re, exp_cottonwspot_le):
+def test_build_cottonwspot(data, exp_cottonwspot_re, exp_cottonwspot_le, exp_cottonwspot_unk):
     result = build_cottonwspot(data)
     assert result['cottonwspot_re'] == exp_cottonwspot_re
     assert result['cottonwspot_le'] == exp_cottonwspot_le
+    assert result['cottonwspot_unk'] == exp_cottonwspot_unk
 
 
-@pytest.mark.parametrize('data, exp_hardexudates_re, exp_hardexudates_le', [
-    ([], -1, -1),
+@pytest.mark.parametrize('data, exp_hardexudates_re, exp_hardexudates_le, exp_hardexudates_unk', [
+    ([], -1, -1, -1),
     ([{'hardexudates_re': {'value': 1},
        'hardexudates_le': {'value': 1}}],
-     1, 1),
+     1, 1, -1),
     ([{'hardexudates_re': {'value': 0},
        'hardexudates_le': {'value': 0}}],
-     0, 0),
-    ([{'hardexudates_re': {'value': 1}}], 1, -1),
-    ([{'hardexudates_le': {'value': 0}}], -1, 0)
+     0, 0, -1),
+    ([{'hardexudates_re': {'value': 1}}], 1, -1, -1),
+    ([{'hardexudates_le': {'value': 0}}], -1, 0, -1),
+    ([{'hardexudates_unk': {'value': 1}}], -1, -1, 1),
+    ([{'hardexudates_unk': {'value': 0}}], -1, -1, 0)
 ])
-def test_build_hard_exudates(data, exp_hardexudates_re, exp_hardexudates_le):
+def test_build_hard_exudates(data, exp_hardexudates_re, exp_hardexudates_le, exp_hardexudates_unk):
     result = build_hard_exudates(data)
     assert result['hardexudates_re'] == exp_hardexudates_re
     assert result['hardexudates_le'] == exp_hardexudates_le
+    assert result['hardexudates_unk'] == exp_hardexudates_unk
 
 
-@pytest.mark.parametrize('data, exp_disc_edema_dr_re, exp_disc_edema_dr_le', [
-    ([], -1, -1),
+@pytest.mark.parametrize('data, exp_disc_edema_dr_re, exp_disc_edema_dr_le, exp_disc_edema_dr_unk', [
+    ([], -1, -1, -1),
     ([{'disc_edema_dr_re': {'value': 1},
        'disc_edema_dr_le': {'value': 1}}],
-     1, 1),
+     1, 1, -1),
     ([{'disc_edema_dr_re': {'value': 0},
        'disc_edema_dr_le': {'value': 0}}],
-     0, 0),
-    ([{'disc_edema_dr_re': {'value': 1}}], 1, -1),
-    ([{'disc_edema_dr_le': {'value': 0}}], -1, 0)
+     0, 0, -1),
+    ([{'disc_edema_dr_re': {'value': 1}}], 1, -1, -1),
+    ([{'disc_edema_dr_le': {'value': 0}}], -1, 0, -1),
+    ([{'disc_edema_dr_unk': {'value': 1}}], -1, -1, 1),
+    ([{'disc_edema_dr_unk': {'value': 0}}], -1, -1, 0)
 ])
-def test_build_disc_edema(data, exp_disc_edema_dr_re, exp_disc_edema_dr_le):
+def test_build_disc_edema(data, exp_disc_edema_dr_re, exp_disc_edema_dr_le, exp_disc_edema_dr_unk):
     result = build_disc_edema(data)
     assert result['disc_edema_dr_re'] == exp_disc_edema_dr_re
     assert result['disc_edema_dr_le'] == exp_disc_edema_dr_le
+    assert result['disc_edema_dr_unk'] == exp_disc_edema_dr_unk
 
 
-@pytest.mark.parametrize('data, exp_hemorrhage_dr_re, exp_hemorrhage_dr_le', [
-    ([], -1, -1),
+@pytest.mark.parametrize('data, exp_hemorrhage_dr_re, exp_hemorrhage_dr_le, exp_hemorrhage_dr_unk', [
+    ([], -1, -1, -1),
     ([{'hemorrhage_dr_re': {'value': 1},
        'hemorrhage_dr_le': {'value': 1}}],
-     1, 1),
+     1, 1, -1),
     ([{'hemorrhage_dr_re': {'value': 0},
        'hemorrhage_dr_le': {'value': 0}}],
-     0, 0),
-    ([{'hemorrhage_dr_re': {'value': 1}}], 1, -1),
-    ([{'hemorrhage_dr_le': {'value': 0}}], -1, 0)
+     0, 0, -1),
+    ([{'hemorrhage_dr_re': {'value': 1}}], 1, -1, -1),
+    ([{'hemorrhage_dr_le': {'value': 0}}], -1, 0, -1),
+    ([{'hemorrhage_dr_unk': {'value': 1}}], -1, -1, 1),
+    ([{'hemorrhage_dr_unk': {'value': 0}}], -1, -1, 0)
 ])
-def test_build_hemorrhage(data, exp_hemorrhage_dr_re, exp_hemorrhage_dr_le):
+def test_build_hemorrhage(data, exp_hemorrhage_dr_re, exp_hemorrhage_dr_le, exp_hemorrhage_dr_unk):
     result = build_hemorrhage(data)
     assert result['hemorrhage_dr_re'] == exp_hemorrhage_dr_re
     assert result['hemorrhage_dr_le'] == exp_hemorrhage_dr_le
+    assert result['hemorrhage_dr_unk'] == exp_hemorrhage_dr_unk
 
 
-@pytest.mark.parametrize('data, exp_dr_laser_scars_re, exp_dr_laser_scars_le', [
-    ([], -1, -1),
+@pytest.mark.parametrize('data, exp_dr_laser_scars_re, exp_dr_laser_scars_le, exp_dr_laser_scars_unk', [
+    ([], -1, -1, -1),
     ([{'dr_laser_scars_re': {'value': 1},
        'dr_laser_scars_le': {'value': 1}}],
-     1, 1),
+     1, 1, -1),
     ([{'dr_laser_scars_re': {'value': 0},
        'dr_laser_scars_le': {'value': 0}}],
-     0, 0),
-    ([{'dr_laser_scars_re': {'value': 1}}], 1, -1),
-    ([{'dr_laser_scars_le': {'value': 0}}], -1, 0)
+     0, 0, -1),
+    ([{'dr_laser_scars_re': {'value': 1}}], 1, -1, -1),
+    ([{'dr_laser_scars_le': {'value': 0}}], -1, 0, -1),
+    ([{'dr_laser_scars_unk': {'value': 1}}], -1, -1, 1),
+    ([{'dr_laser_scars_unk': {'value': 0}}], -1, -1, 0)
 ])
-def test_build_laser_scars(data, exp_dr_laser_scars_re, exp_dr_laser_scars_le):
+def test_build_laser_scars(data, exp_dr_laser_scars_re, exp_dr_laser_scars_le, exp_dr_laser_scars_unk):
     result = build_laser_scars(data)
     assert result['dr_laser_scars_re'] == exp_dr_laser_scars_re
     assert result['dr_laser_scars_le'] == exp_dr_laser_scars_le
+    assert result['dr_laser_scars_unk'] == exp_dr_laser_scars_unk
