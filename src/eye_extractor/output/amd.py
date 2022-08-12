@@ -1,6 +1,7 @@
 from eye_extractor.amd.cnv import ChoroidalNeoVasc
 from eye_extractor.amd.dry import DrySeverity
-from eye_extractor.common.algo.fluid import Fluid, fluid_prioritization, rename_fluid
+from eye_extractor.common.algo.fluid import Fluid, fluid_prioritization, rename_fluid, rename_intraretfluid, \
+    rename_subretfluid
 from eye_extractor.amd.ga import GeoAtrophy
 from eye_extractor.amd.lasertype import Laser
 from eye_extractor.amd.ped import PigEpiDetach
@@ -21,7 +22,9 @@ def build_amd_variables(data):
     results.update(get_drusen(curr['drusen']))
     results.update(get_subretinal_hemorrhage(curr['srh']))
     results.update(get_pigmentary_changes(curr['pigment']))
-    results.update(get_fluid_from_variable(data['common']['fluid']))
+    results.update(build_fluid(data['common']['fluid']))
+    results.update(build_subretfluid(data['common']['fluid']))
+    results.update(build_intraretfluid(data['common']['fluid']))
     results.update(build_ped(curr['ped']))
     results.update(build_choroidalneovasc(curr['cnv']))
     results.update(build_subret_fibrous(curr['scar']))
@@ -74,7 +77,8 @@ def get_pigmentary_changes(data):
     }, data)
 
 
-def get_fluid_from_variable(data, *, skip_rename_variable=False):
+def build_fluid(data, *, skip_rename_variable=False):
+    # TODO: check if AMD
     return column_from_variable(
         {
             'fluid_re': Fluid.UNKNOWN,
@@ -87,6 +91,48 @@ def get_fluid_from_variable(data, *, skip_rename_variable=False):
         enum_to_str=True,
         renamevar_func=lambda x: x.replace('fluid', 'fluid_amd'),
         rename_func=None if skip_rename_variable else rename_fluid
+    )
+
+
+def build_intraretfluid(data):
+    # TODO: check if AMD
+    return column_from_variable(
+        {
+            'fluid_re': Fluid.UNKNOWN,
+            'fluid_le': Fluid.UNKNOWN,
+            'fluid_unk': Fluid.UNKNOWN,
+        },
+        data,
+        transformer_func=Fluid,
+        result_func=fluid_prioritization,
+        filter_func=lambda x: x in {
+            Fluid.INTRARETINAL_FLUID, Fluid.NO_INTRARETINAL_FLUID,
+            Fluid.SUB_AND_INTRARETINAL_FLUID, Fluid.NO_SUB_AND_INTRARETINAL_FLUID,
+        },
+        enum_to_str=True,
+        renamevar_func=lambda x: x.replace('fluid', 'amd_intraretfluid'),
+        rename_func=rename_intraretfluid,
+    )
+
+
+def build_subretfluid(data):
+    # TODO: check if AMD
+    return column_from_variable(
+        {
+            'fluid_re': Fluid.UNKNOWN,
+            'fluid_le': Fluid.UNKNOWN,
+            'fluid_unk': Fluid.UNKNOWN,
+        },
+        data,
+        transformer_func=Fluid,
+        result_func=fluid_prioritization,
+        filter_func=lambda x: x in {
+            Fluid.SUBRETINAL_FLUID, Fluid.NO_SUBRETINAL_FLUID,
+            Fluid.SUB_AND_INTRARETINAL_FLUID, Fluid.NO_SUB_AND_INTRARETINAL_FLUID,
+        },
+        enum_to_str=True,
+        renamevar_func=lambda x: x.replace('fluid', 'amd_subretfluid'),
+        rename_func=rename_subretfluid,
     )
 
 
@@ -189,6 +235,7 @@ def build_amd_vitamin(data):
 
 def build_lasertype(data):
     """Laser type for AMD"""
+
     def _compare_lasertype(new, curr):
         match new, curr:
             case _, Laser.UNKNOWN:
@@ -217,6 +264,7 @@ def build_lasertype(data):
 
 def build_lasertype_new(data):
     """Laser type for AMD using treatment algorithm"""
+
     def _compare_lasertype(new, curr):
         match new, curr:
             case _, Treatment.UNKNOWN:
