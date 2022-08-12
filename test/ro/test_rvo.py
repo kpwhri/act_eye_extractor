@@ -15,15 +15,20 @@ def test_rvo_pattern(text):
     assert RVO_PAT.match(text)
 
 
-@pytest.mark.parametrize('text, exp_value, exp_negword', [
-    ('Branch retinal vein occlusion', 1, None),
+@pytest.mark.parametrize('text, exp_value, exp_negword, exp_kind', [
+    ('Branch retinal vein occlusion', 1, None, RvoType.BRVO),
+    ('ASSESSMENT: central retinal vein occlusion', 1, None, RvoType.CRVO),
+    ('no brvo', 0, 'no', RvoType.BRVO),
+    ('has crvo', 1, None, RvoType.CRVO),
+    ('rvo', 1, None, RvoType.RVO),
 ])
-def test_rvo_value(text, exp_value, exp_negword):
+def test_rvo_value(text, exp_value, exp_negword, exp_kind):
     data = extract_rvo(text)
     assert len(data) > 0
     first_variable = list(data[0].values())[0]
     assert first_variable['value'] == exp_value
     assert first_variable['negated'] == exp_negword
+    assert first_variable['kind'] == exp_kind
 
 
 @pytest.mark.parametrize('data, exp_rvo_re, exp_rvo_le', [
