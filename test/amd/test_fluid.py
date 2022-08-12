@@ -2,8 +2,8 @@ import json
 
 import pytest
 
-from eye_extractor.amd.fluid import FLUID_NOS_PAT, SUBRETINAL_FLUID_PAT, INTRARETINAL_FLUID_PAT, get_fluid, \
-    SUB_AND_INTRARETINAL_FLUID_PAT, FluidAMD
+from eye_extractor.common.algo.fluid import FLUID_NOS_PAT, SUBRETINAL_FLUID_PAT, INTRARETINAL_FLUID_PAT, extract_fluid, \
+    SUB_AND_INTRARETINAL_FLUID_PAT
 from eye_extractor.headers import Headers
 from eye_extractor.output.amd import get_fluid_from_variable
 
@@ -68,7 +68,7 @@ def test_intraretinal_fluid_pattern(text, exp):
     ('srf not noted', 10, 'not'),
 ])
 def test_fluid_value_first_variable(text, exp_value, exp_negword):
-    data = get_fluid(text)
+    data = extract_fluid(text)
     assert len(data) > 0
     first_variable = list(data[0].values())[0]
     assert first_variable['value'] == exp_value
@@ -79,7 +79,7 @@ def test_fluid_value_first_variable(text, exp_value, exp_negword):
     ([], 'UNKNOWN', 'UNKNOWN'),
 ])
 def test_fluid_to_column(data, exp_fluid_amd_re, exp_fluid_amd_le):
-    result = get_fluid_from_variable(data)
+    result = get_fluid_from_variable(data, skip_rename_variable=True)
     assert result['fluid_amd_re'] == exp_fluid_amd_re
     assert result['fluid_amd_le'] == exp_fluid_amd_le
 
@@ -88,10 +88,12 @@ def test_fluid_to_column(data, exp_fluid_amd_re, exp_fluid_amd_le):
     ('', {'MACULA': 'subretinal fluid od'}, 'SUBRETINAL FLUID', 'UNKNOWN', 'UNKNOWN'),
     ('', {'MACULA': 'with fluid and exudates'}, 'UNKNOWN', 'UNKNOWN', 'FLUID'),
 ])
-def test_ped_extract_build(text, headers, exp_fluid_re, exp_fluid_le, exp_fluid_unk, ):
-    pre_json = get_fluid(text, headers=Headers(headers))
+def test_fluid_extract_build(text, headers, exp_fluid_re, exp_fluid_le, exp_fluid_unk, ):
+    pre_json = extract_fluid(text, headers=Headers(headers))
     post_json = json.loads(json.dumps(pre_json))
-    result = get_fluid_from_variable(post_json)
+    result = get_fluid_from_variable(post_json, skip_rename_variable=True)
+    print(post_json)
+    print(result)
     assert result['fluid_amd_re'] == exp_fluid_re
     assert result['fluid_amd_le'] == exp_fluid_le
     assert result['fluid_amd_unk'] == exp_fluid_unk

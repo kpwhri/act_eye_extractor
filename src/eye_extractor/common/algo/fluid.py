@@ -6,7 +6,7 @@ from eye_extractor.common.negation import is_negated, is_post_negated
 from eye_extractor.laterality import create_new_variable
 
 
-class FluidAMD(enum.IntEnum):
+class Fluid(enum.IntEnum):
     UNKNOWN = -1
     NO = 0
     FLUID = 1
@@ -18,15 +18,31 @@ class FluidAMD(enum.IntEnum):
     NO_SUB_AND_INTRARETINAL_FLUID = 30
 
 
-def fluid_prioritization(new_value: FluidAMD, curr_value: FluidAMD | None):
+def rename_fluid(var: Fluid):
+    match var:
+        case Fluid.SUBRETINAL_FLUID:
+            return 2
+        case Fluid.INTRARETINAL_FLUID:
+            return 3
+        case Fluid.SUB_AND_INTRARETINAL_FLUID:
+            return 4
+        case Fluid.FLUID:
+            return 5
+        case Fluid.NO | Fluid.NO_INTRARETINAL_FLUID | Fluid.NO_SUBRETINAL_FLUID:
+            return 0
+        case _:
+            return -1
+
+
+def fluid_prioritization(new_value: Fluid, curr_value: Fluid | None):
     if curr_value is None:  # may start as None
         return new_value
     elif curr_value == new_value:
         return curr_value
-    elif {curr_value, new_value} == {FluidAMD.SUBRETINAL_FLUID, FluidAMD.INTRARETINAL_FLUID}:
-        return FluidAMD.SUB_AND_INTRARETINAL_FLUID
-    elif {curr_value, new_value} == {FluidAMD.NO_SUBRETINAL_FLUID, FluidAMD.NO_INTRARETINAL_FLUID}:
-        return FluidAMD.NO_SUB_AND_INTRARETINAL_FLUID
+    elif {curr_value, new_value} == {Fluid.SUBRETINAL_FLUID, Fluid.INTRARETINAL_FLUID}:
+        return Fluid.SUB_AND_INTRARETINAL_FLUID
+    elif {curr_value, new_value} == {Fluid.NO_SUBRETINAL_FLUID, Fluid.NO_INTRARETINAL_FLUID}:
+        return Fluid.NO_SUB_AND_INTRARETINAL_FLUID
     elif curr_value.value in {0, 10, 20, 30, -1} and new_value in {1, 11, 21, 31}:
         # group negatives/positives
         # -1=Unknown fluid is the lowest of the 'no' so it will override negatives in next line
@@ -73,7 +89,7 @@ SUB_AND_INTRARETINAL_FLUID_PAT = re.compile(
 )
 
 
-def get_fluid(text, *, headers=None, lateralities=None):
+def extract_fluid(text, *, headers=None, lateralities=None):
     return run_on_macula(
         macula_func=_get_fluid_in_macula,
         default_func=_get_fluid_in_macula,  # for testing
@@ -88,13 +104,13 @@ def _get_fluid(text, lateralities, source):
     data = []
     for label, pat, positive_value, negative_value, positive_word in [
         ('SUBRETINAL_FLUID_PAT', SUBRETINAL_FLUID_PAT,
-         FluidAMD.SUBRETINAL_FLUID, FluidAMD.NO_SUBRETINAL_FLUID, 'subretinal fluid'
+         Fluid.SUBRETINAL_FLUID, Fluid.NO_SUBRETINAL_FLUID, 'subretinal fluid'
          ),
         ('INTRARETINAL_FLUID_PAT', INTRARETINAL_FLUID_PAT,
-         FluidAMD.INTRARETINAL_FLUID, FluidAMD.NO_INTRARETINAL_FLUID, 'intraretinal fluid'
+         Fluid.INTRARETINAL_FLUID, Fluid.NO_INTRARETINAL_FLUID, 'intraretinal fluid'
          ),
         ('SUB_AND_INTRARETINAL_FLUID_PAT', SUB_AND_INTRARETINAL_FLUID_PAT,
-         FluidAMD.SUB_AND_INTRARETINAL_FLUID, FluidAMD.NO_SUB_AND_INTRARETINAL_FLUID, 'sub and intraretinal fluid'
+         Fluid.SUB_AND_INTRARETINAL_FLUID, Fluid.NO_SUB_AND_INTRARETINAL_FLUID, 'sub and intraretinal fluid'
          ),
     ]:
         for m in pat.finditer(text):
@@ -103,7 +119,7 @@ def _get_fluid(text, lateralities, source):
                     or is_post_negated(m, text, {'not'}, word_window=3)
             )
             data.append(
-                create_new_variable(text, m, lateralities, 'fluid_amd', {
+                create_new_variable(text, m, lateralities, 'fluid', {
                     'value': negative_value if negword else positive_value,
                     'term': m.group(),
                     'label': 'no' if negword else positive_word,
@@ -124,8 +140,8 @@ def _get_fluid_in_macula(text, lateralities, source):
                 or is_post_negated(m, text, {'not'}, word_window=3)
         )
         data.append(
-            create_new_variable(text, m, lateralities, 'fluid_amd', {
-                'value': FluidAMD.NO if negword else FluidAMD.FLUID,
+            create_new_variable(text, m, lateralities, 'fluid', {
+                'value': Fluid.NO if negword else Fluid.FLUID,
                 'term': m.group(),
                 'label': 'no' if negword else 'yes',
                 'negated': negword,
