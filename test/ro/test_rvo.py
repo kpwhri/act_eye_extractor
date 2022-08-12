@@ -1,6 +1,9 @@
+import json
+
 import pytest
 
-from eye_extractor.output.ro import build_rvo
+from eye_extractor.headers import Headers
+from eye_extractor.output.ro import build_rvo, build_rvo_type
 from eye_extractor.ro.rvo import RVO_PAT, extract_rvo, RvoType, get_rvo_kind
 
 
@@ -56,3 +59,19 @@ def test_rvo_type(text, exp):
     m = RVO_PAT.search(text)
     kind = get_rvo_kind(m)
     assert kind == exp
+
+
+@pytest.mark.parametrize('text, headers, exp_rvo_type_re, exp_rvo_type_le, exp_rvo_type_unk', [
+    ('Branch retinal vein occlusion RE', {}, RvoType.BRVO, RvoType.UNKNOWN, RvoType.UNKNOWN),
+    ('ASSESSMENT: central retinal vein occlusion', {}, RvoType.UNKNOWN, RvoType.UNKNOWN, RvoType.CRVO),
+    ('no brvo', {}, RvoType.UNKNOWN, RvoType.UNKNOWN, RvoType.BRVO),
+    (' rvo', {}, RvoType.UNKNOWN, RvoType.UNKNOWN, RvoType.RVO),
+    ('has crvo', {}, RvoType.UNKNOWN, RvoType.UNKNOWN, RvoType.CRVO),
+])
+def test_rvo_type_extract_and_build(text, headers, exp_rvo_type_re, exp_rvo_type_le, exp_rvo_type_unk):
+    pre_json = extract_rvo(text, headers=Headers(headers), lateralities=None)
+    post_json = json.loads(json.dumps(pre_json))
+    result = build_rvo_type(post_json)
+    assert result['rvo_type_re'] == exp_rvo_type_re
+    assert result['rvo_type_le'] == exp_rvo_type_le
+    assert result['rvo_type_unk'] == exp_rvo_type_unk
