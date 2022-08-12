@@ -9,6 +9,9 @@ from eye_extractor.output.dr import (
     build_hemorrhage,
     build_laser_scars,
     build_laser_panrentinal,
+    build_neovasc,
+    build_nva,
+    build_nvi,
     build_ret_micro
 )
 
@@ -213,3 +216,63 @@ def test_build_laser_panretinal(data,
     assert result['laserpanret_photocoag_re'] == exp_laserpanret_photocoag_re
     assert result['laserpanret_photocoag_le'] == exp_laserpanret_photocoag_le
     assert result['laserpanret_photocoag_unk'] == exp_laserpanret_photocoag_unk
+
+
+@pytest.mark.parametrize('data, exp_neovasc_yesno_re, exp_neovasc_yesno_le, exp_neovasc_yesno_unk', [
+    ([], -1, -1, -1),
+    ([{'neovasc_yesno_re': {'value': 1},
+       'neovasc_yesno_le': {'value': 1}}],
+     1, 1, -1),
+    ([{'neovasc_yesno_re': {'value': 0},
+       'neovasc_yesno_le': {'value': 0}}],
+     0, 0, -1),
+    ([{'neovasc_yesno_re': {'value': 1}}], 1, -1, -1),
+    ([{'neovasc_yesno_le': {'value': 0}}], -1, 0, -1),
+    ([{'neovasc_yesno_unk': {'value': 1}}], -1, -1, 1),
+    ([{'neovasc_yesno_unk': {'value': 0}}], -1, -1, 0)
+])
+def test_build_neovasc(data, exp_neovasc_yesno_re, exp_neovasc_yesno_le, exp_neovasc_yesno_unk):
+    result = build_neovasc(data)
+    assert result['neovasc_yesno_re'] == exp_neovasc_yesno_re
+    assert result['neovasc_yesno_le'] == exp_neovasc_yesno_le
+    assert result['neovasc_yesno_unk'] == exp_neovasc_yesno_unk
+
+
+@pytest.mark.parametrize('data, exp_nva_yesno_re, exp_nva_yesno_le, exp_nva_yesno_unk', [
+    ([], -1, -1, -1),
+    ([{'nva_yesno_re': {'value': 1},
+       'nva_yesno_le': {'value': 1}}],
+     1, 1, -1),
+    ([{'nva_yesno_re': {'value': 0},
+       'nva_yesno_le': {'value': 0}}],
+     0, 0, -1),
+    ([{'nva_yesno_re': {'value': 1}}], 1, -1, -1),
+    ([{'nva_yesno_le': {'value': 0}}], -1, 0, -1),
+    ([{'nva_yesno_unk': {'value': 1}}], -1, -1, 1),
+    ([{'nva_yesno_unk': {'value': 0}}], -1, -1, 0)
+])
+def test_build_nva(data, exp_nva_yesno_re, exp_nva_yesno_le, exp_nva_yesno_unk):
+    result = build_nva(data)
+    assert result['nva_yesno_re'] == exp_nva_yesno_re
+    assert result['nva_yesno_le'] == exp_nva_yesno_le
+    assert result['nva_yesno_unk'] == exp_nva_yesno_unk
+
+
+@pytest.mark.parametrize('data, exp_nvi_yesno_re, exp_nvi_yesno_le, exp_nvi_yesno_unk', [
+    ([], -1, -1, -1),
+    ([{'nvi_yesno_re': {'value': 1},
+       'nvi_yesno_le': {'value': 1}}],
+     1, 1, -1),
+    ([{'nvi_yesno_re': {'value': 0},
+       'nvi_yesno_le': {'value': 0}}],
+     0, 0, -1),
+    ([{'nvi_yesno_re': {'value': 1}}], 1, -1, -1),
+    ([{'nvi_yesno_le': {'value': 0}}], -1, 0, -1),
+    ([{'nvi_yesno_unk': {'value': 1}}], -1, -1, 1),
+    ([{'nvi_yesno_unk': {'value': 0}}], -1, -1, 0)
+])
+def test_build_nvi(data, exp_nvi_yesno_re, exp_nvi_yesno_le, exp_nvi_yesno_unk):
+    result = build_nvi(data)
+    assert result['nvi_yesno_re'] == exp_nvi_yesno_re
+    assert result['nvi_yesno_le'] == exp_nvi_yesno_le
+    assert result['nvi_yesno_unk'] == exp_nvi_yesno_unk

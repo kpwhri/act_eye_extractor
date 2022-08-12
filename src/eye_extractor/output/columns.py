@@ -304,4 +304,16 @@ OUTPUT_COLUMNS = {
     'laserpanret_photocoag_re': [is_in_range(-1, 1)],
     'laserpanret_photocoag_le': [is_in_range(-1, 1)],
     'laserpanret_photocoag_unk': [is_in_range(-1, 1)],
+    # neovascularization
+    'neovasc_yesno_re': [is_in_range(-1, 1)],
+    'neovasc_yesno_le': [is_in_range(-1, 1)],
+    'neovasc_yesno_unk': [is_in_range(-1, 1)],
+    # neovascularization of angle
+    'nva_yesno_re': [is_in_range(-1, 1)],
+    'nva_yesno_le': [is_in_range(-1, 1)],
+    'nva_yesno_unk': [is_in_range(-1, 1)],
+    # neovascularization of iris
+    'nvi_yesno_re': [is_in_range(-1, 1)],
+    'nvi_yesno_le': [is_in_range(-1, 1)],
+    'nvi_yesno_unk': [is_in_range(-1, 1)],
 }
