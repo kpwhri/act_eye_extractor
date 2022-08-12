@@ -84,15 +84,15 @@ OUTPUT_COLUMNS = {
     # RVO
     'rvo_yesno_le': [is_in_range(-1, 1)],
     'rvo_yesno_re': [is_in_range(-1, 1)],
-    'rvo_type_re': [is_in_range(-1, 6)],
-    'rvo_type_le': [is_in_range(-1, 6)],
-    'rvo_type_unk': [is_in_range(-1, 6)],
+    'rvo_type_re': [is_in_range(-1, 3)],
+    'rvo_type_le': [is_in_range(-1, 3)],
+    'rvo_type_unk': [is_in_range(-1, 3)],
     'rvo_treatment_re': [is_in_range(-1, 6)],
     'rvo_treatment_le': [is_in_range(-1, 6)],
     'rvo_treatment_unk': [is_in_range(-1, 6)],
-    'rvo_antivegf_re': [is_in_range(-1, 6)],
-    'rvo_antivegf_le': [is_in_range(-1, 6)],
-    'rvo_antivegf_unk': [is_in_range(-1, 6)],
+    'rvo_antivegf_re': [is_in_range(-1, 3)],
+    'rvo_antivegf_le': [is_in_range(-1, 3)],
+    'rvo_antivegf_unk': [is_in_range(-1, 3)],
 
     # RAO
     'rao_yesno_le': [is_in_range(-1, 1)],

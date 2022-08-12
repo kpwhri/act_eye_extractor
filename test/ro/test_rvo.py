@@ -98,8 +98,6 @@ def test_rvo_treatment_extract_and_build(text, headers, exp_rvo_treatment_re, ex
     pre_json = extract_treatment(text, headers=Headers(headers), lateralities=None)
     post_json = json.loads(json.dumps(pre_json))
     result = build_rvo_treatment(post_json)
-    print(post_json)
-    print(result)
     assert result['rvo_treatment_re'] == exp_rvo_treatment_re
     assert result['rvo_treatment_le'] == exp_rvo_treatment_le
     assert result['rvo_treatment_unk'] == exp_rvo_treatment_unk

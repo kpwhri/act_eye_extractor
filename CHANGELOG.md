@@ -20,6 +20,9 @@ Types of changes:
 ### Added
 - Glaucoma disc pallor for `disc_pallor_glaucoma_re`, `disc_pallor_glaucoma_le`, `disc_pallor_glaucoma_unk`
   - YES/NO/UNKNOWN
+- RVO type
+- RVO treatment
+- RVO antivegf
 
 ## v20220808
 
