@@ -27,6 +27,10 @@ class Treatment(enum.IntEnum):
     # surgery
     SURGERY = 200
     # medicine
+    # - steroiod
+    STEROID = 300
+    TRIAMCINOLONE = 301
+    DEXAMETHASONE = 302
 
 
 # headers
@@ -103,6 +107,26 @@ PHOTODYNAMIC_PAT = re.compile(  # verb + med
 THERMAL_PAT = re.compile(  # verb + med
     rf'\b(?:'
     rf'thermal(?:\W*laser)?'
+    rf')\b',
+    re.I
+)
+
+# - steroid for rvo
+STEROID_PAT = re.compile(
+    rf'\b(?:'
+    rf'(?:cortico)?steroids?'
+    rf')\b',
+    re.I
+)
+TRIAMCINOLONE_PAT = re.compile(
+    rf'\b(?:'
+    rf'triamcinolone\s*(?:acetonide)?'
+    rf')\b',
+    re.I
+)
+DEXAMETHASONE_PAT = re.compile(
+    rf'\b(?:'
+    rf'dexamethasone\s*(?:implant)?'
     rf')\b',
     re.I
 )

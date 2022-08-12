@@ -2,6 +2,7 @@ import json
 
 import pytest
 
+from eye_extractor.common.algo.treatment import STEROID_PAT, TRIAMCINOLONE_PAT, DEXAMETHASONE_PAT
 from eye_extractor.headers import Headers
 from eye_extractor.output.ro import build_rvo, build_rvo_type
 from eye_extractor.ro.rvo import RVO_PAT, extract_rvo, RvoType, get_rvo_kind
@@ -75,3 +76,12 @@ def test_rvo_type_extract_and_build(text, headers, exp_rvo_type_re, exp_rvo_type
     assert result['rvo_type_re'] == exp_rvo_type_re
     assert result['rvo_type_le'] == exp_rvo_type_le
     assert result['rvo_type_unk'] == exp_rvo_type_unk
+
+
+@pytest.mark.parametrize('pattern, text, exp', [
+    (STEROID_PAT, 'steroids', True),
+    (TRIAMCINOLONE_PAT, 'triamcinolone acetonide', True),
+    (DEXAMETHASONE_PAT, 'dexamethasone implant', True),
+])
+def test_rvo_treatment_patterns(pattern, text, exp):
+    assert bool(pattern.search(text)) == exp
