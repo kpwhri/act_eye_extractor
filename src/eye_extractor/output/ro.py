@@ -43,7 +43,6 @@ def build_rvo_type(data, *, skip_output_mappings=False):
 
 def _rename_rvo_treatment(val: IntEnum):
     # convert to output values
-    print(val, val.value)
     match val:
         case val if 300 <= val.value <= 309:
             return 4  # steroids
