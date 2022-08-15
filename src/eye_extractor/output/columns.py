@@ -276,6 +276,10 @@ OUTPUT_COLUMNS = {
     'amd_antivegf_re': [is_in_range(-1, 5)],
     'amd_antivegf_le': [is_in_range(-1, 5)],
     'amd_antivegf_unk': [is_in_range(-1, 5)],
+    # intra retinal fluid
+    'amd_intraretfluid_re': [is_in_range(-1, 5)],
+    'amd_intraretfluid_le': [is_in_range(-1, 5)],
+    'amd_intraretfluid_unk': [is_in_range(-1, 5)],
 
     ## DIABETIC RETINOPATHY
     # diab_retinop_yesno
