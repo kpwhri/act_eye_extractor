@@ -1,4 +1,4 @@
-from eye_extractor.dr.diabetic_retinopathy import HemorrhageType
+from eye_extractor.dr.hemorrhage_type import HemorrhageType
 from eye_extractor.output.variable import column_from_variable, column_from_variable_binary
 
 
@@ -10,7 +10,7 @@ def build_ret_micro(data):
     return column_from_variable_binary(data, 'ret_microaneurysm')
 
 
-def build_cotton_wspot(data):
+def build_cottonwspot(data):
     return column_from_variable_binary(data, 'cottonwspot')
 
 
@@ -172,10 +172,19 @@ def build_oct_cme(data):
 def build_dr_variables(data):
     curr = data['dr']
     results = {}
-    results.update(build_dr(curr))
-    results.update(build_ret_micro(curr))
-    results.update(build_hard_exudates(curr))
-    results.update(build_disc_edema(curr))
-    results.update(build_hemorrhage(curr))
-    results.update(build_hemorrhage_type(curr))
+    results.update(build_dr(curr['binary_vars']))
+    results.update(build_ret_micro(curr['binary_vars']))
+    results.update(build_cottonwspot(curr['binary_vars']))
+    results.update(build_hard_exudates(curr['binary_vars']))
+    results.update(build_disc_edema(curr['binary_vars']))
+    results.update(build_hemorrhage(curr['binary_vars']))
+    results.update(build_hemorrhage_type(curr['hemorrhage_type']))
+    results.update(build_laser_scars(curr['binary_vars']))
+    results.update(build_laser_panrentinal(curr['binary_vars']))
+    results.update(build_neovasc(curr['binary_vars']))
+    results.update(build_nva(curr['binary_vars']))
+    results.update(build_nvi(curr['binary_vars']))
+    results.update(build_edema(curr['binary_vars']))
+    results.update(build_sig_edema(curr['binary_vars']))
+    results.update(build_oct_cme(curr['binary_vars']))
     return results
