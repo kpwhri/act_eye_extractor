@@ -89,6 +89,9 @@ def _validate_columns_in_row_or(column_dict, data, *, strict=False, id_col=None)
     """OR the various columns -- only one must match"""
     for col, val in data.items():
         curr_errors = []
+        if col not in column_dict:
+            logger.warning(f'Missing column: {col}. Add to output list in `columns.py`.')
+            continue
         for validator in column_dict[col]:
             try:
                 validator(val, id_col)

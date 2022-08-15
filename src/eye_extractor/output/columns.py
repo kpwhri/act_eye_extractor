@@ -88,8 +88,9 @@ OUTPUT_COLUMNS = {
 
     ## RO (RVO/RAO)
     # RVO
-    'rvo_yesno_le': [is_in_range(-1, 1)],
     'rvo_yesno_re': [is_in_range(-1, 1)],
+    'rvo_yesno_le': [is_in_range(-1, 1)],
+    'rvo_yesno_unk': [is_in_range(-1, 1)],
     'rvo_type_re': [is_in_range(-1, 3)],
     'rvo_type_le': [is_in_range(-1, 3)],
     'rvo_type_unk': [is_in_range(-1, 3)],
@@ -112,12 +113,14 @@ OUTPUT_COLUMNS = {
     # RAO
     'rao_yesno_le': [is_in_range(-1, 1)],
     'rao_yesno_re': [is_in_range(-1, 1)],
+    'rao_yesno_unk': [is_in_range(-1, 1)],
 
     ## Cataract
-    'cataract_yesno_le': [is_in_range(-1, 1)],
     'cataract_yesno_re': [is_in_range(-1, 1)],
-    'cataractiol_yesno_le': [is_in_range(-1, 1)],
+    'cataract_yesno_le': [is_in_range(-1, 1)],
     'cataractiol_yesno_re': [is_in_range(-1, 1)],
+    'cataractiol_yesno_le': [is_in_range(-1, 1)],
+    'cataractiol_yesno_unk': [is_in_range(-1, 1)],
     'cataractsurg_ioltype_re': [],
     'cataractsurg_ioltype_le': [],
     'cataractsurg_iolpower_re': [],
