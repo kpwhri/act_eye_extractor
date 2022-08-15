@@ -17,12 +17,16 @@ Types of changes:
 
 ## [Unreleased]
 
+
+## v20220815
+
 ### Added
 - Glaucoma disc pallor for `disc_pallor_glaucoma_re`, `disc_pallor_glaucoma_le`, `disc_pallor_glaucoma_unk`
   - YES/NO/UNKNOWN
 - RVO type
 - RVO treatment
 - RVO antivegf
+- Fluid for AMD and RVO
 
 ## v20220808
 
