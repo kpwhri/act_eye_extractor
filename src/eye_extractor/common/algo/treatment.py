@@ -142,6 +142,15 @@ DEXAMETHASONE_PAT = re.compile(
     rf')\b',
     re.I
 )
+OTHER_STEROID_PAT = re.compile(
+    rf'\b(?:'
+    rf'fluocinolone\s*(?:acetonide)?'
+    rf'|retisert'
+    rf'|illuvien'
+    rf'|yutiq'
+    rf')\b',
+    re.I
+)
 
 
 def is_treatment_uncertain(m, text):
