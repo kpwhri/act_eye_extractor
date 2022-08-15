@@ -24,6 +24,7 @@ def _rename_rvo_type(val):
             return 1
         case RvoType.BRVO:
             return 2
+    return val.value
 
 
 def build_rvo_type(data, *, skip_output_mappings=False):
