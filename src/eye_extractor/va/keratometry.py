@@ -34,7 +34,7 @@ AXIAL_PAT = re.compile(axial_pat, re.I)
 def get_by_lat(m, groupname, target_lat, lat1):
     res = m.group(f'{groupname}{1 if lat1 == target_lat else 2}')
     if not res:
-        return 0.0
+        return -1.0
     else:
         return float(res)
 
@@ -92,26 +92,27 @@ def _extract_keratometry(sect_name, sect_text):
             )
             os_axis = get_by_lat(m, 'second_axis', Laterality.OS, lat1)
             yield {'keratometry': {
-                    'keratometry_flatcurve_re': min(od_measures),
-                    'keratometry_steepcurve_re': max(od_measures),
-                    'keratometry_flataxis_re': (
-                        od_axis if od_measures[0] > od_measures[1] else (od_axis + 90) % 180
-                    ),
-                    'keratometry_steepaxis_re': (
-                        od_axis if od_measures[0] < od_measures[1] else (od_axis + 90) % 180
-                    ),
-                    'keratometry_flatcurve_le': min(os_measures),
-                    'keratometry_steepcurve_le': max(os_measures),
-                    'keratometry_flataxis_le': (
-                        os_axis if os_measures[0] > os_measures[1] else (os_axis + 90) % 180
-                    ),
-                    'keratometry_steepaxis_le': (
-                        os_axis if os_measures[0] < os_measures[1] else (os_axis + 90) % 180
-                    ),
-                    'ax_length_re': float(gd.get('al_od', -1.0)),
-                    'ax_length_le': float(gd.get('al_os', -1.0)),
-                    'term': m.group(),
-                    'regex': pat_label,
-                    'source': sect_name,
-                    'date': date,
-                }}
+                'keratometry_flatcurve_re': min(od_measures),
+                'keratometry_steepcurve_re': max(od_measures),
+                'keratometry_flataxis_re': calc_axis(od_measures, od_axis, is_flat=True),
+                'keratometry_steepaxis_re': calc_axis(od_measures, od_axis, is_flat=False),
+                'keratometry_flatcurve_le': min(os_measures),
+                'keratometry_steepcurve_le': max(os_measures),
+                'keratometry_flataxis_le': calc_axis(os_measures, os_axis, is_flat=True),
+                'keratometry_steepaxis_le': calc_axis(os_measures, os_axis, is_flat=False),
+                'ax_length_re': float(gd.get('al_od', -1.0)),
+                'ax_length_le': float(gd.get('al_os', -1.0)),
+                'term': m.group(),
+                'regex': pat_label,
+                'source': sect_name,
+                'date': date,
+            }}
+
+
+def calc_axis(measures, axis, *, is_flat):
+    if axis == -1:
+        return -1
+    elif is_flat:
+        return axis if measures[0] > measures[1] else (axis + 90) % 180
+    else:  # is steep
+        return axis if measures[0] < measures[1] else (axis + 90) % 180
