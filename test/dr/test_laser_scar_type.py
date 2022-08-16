@@ -1,11 +1,11 @@
 import pytest
 
-from eye_extractor.dr.laser_scar_type as lst
-from eye_extractor.output.dr import build_laser_scar_type
+from eye_extractor.dr import laser_scar_type as lst
+# from eye_extractor.output.dr import build_laser_scar_type
 
 _pattern_cases = [
-    (lst.PANRETINAL_PAT, 'panretinal laser scars', True),
     (lst.PANRETINAL_PAT, 'PRP scars', True),
+    (lst.PANRETINAL_PAT, 'PRP marks visible', True),
     (lst.FOCAL_PAT, 'focal laser scars', True),
     (lst.FOCAL_PAT, 'focal tx scars', True),
     (lst.GRID_PAT, 'focal (grid) scars', True),
@@ -26,6 +26,6 @@ def _get_pattern_cases():
 
 
 @pytest.mark.parametrize('pat, text, exp', _get_pattern_cases())
-def test_treatment_patterns_for_lasertype(pat, text, exp):
+def test_laser_scar_type_patterns(pat, text, exp):
     m = pat.search(text)
     assert bool(m) == exp

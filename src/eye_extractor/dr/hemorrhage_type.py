@@ -6,13 +6,13 @@ from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 
 class HemorrhageType(enum.IntEnum):
-    UNKNOWN = 0
-    NONE = 1
-    INTRARETINAL = 2
-    DOT_BLOT = 3
-    PRERETINAL = 4
-    VITREOUS = 5
-    SUBRETINAL = 6
+    UNKNOWN = -1
+    NONE = 0
+    INTRARETINAL = 1
+    DOT_BLOT = 2
+    PRERETINAL = 3
+    VITREOUS = 4
+    SUBRETINAL = 5
 
 
 INTRARETINAL_PAT = re.compile(
