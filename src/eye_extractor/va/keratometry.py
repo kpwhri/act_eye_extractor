@@ -5,12 +5,10 @@ from eye_extractor.laterality import laterality_pattern, lat_lookup, Laterality
 
 _km_curve = r'(?P<gen_curve#>\d{1,2}(?:\.\d{1,2})?)'
 _km_axis = r'(?P<gen_axis#>\d{1,3})'
-_km = fr'{_km_curve}\s*(?:x\s*{_km_axis})?'
+_km = fr'{_km_curve}\s*(?:[x@]\s*{_km_axis})?'
 keratometry_pat = rf'(?P<lat#>{laterality_pattern}):\s*{_km.replace("gen", "first")}\W*{_km.replace("gen", "second")}'
 axial_pat = r'(?:iol master|ascans)\W+(?P<al_od>\d{1,2}(?:\.\d{1,2})?)\W+(?P<al_os>\d{1,2}(?:\.\d{1,2})?)'
 
-KERATOMETRY_PAT = re.compile(keratometry_pat.replace('#', ''), re.I)
-AXIAL_PAT = re.compile(axial_pat, re.I)
 
 KERA_AX_PAT = re.compile(
     rf'{keratometry_pat.replace("#", "1")}\W*'
@@ -18,6 +16,14 @@ KERA_AX_PAT = re.compile(
     rf'{axial_pat}',
     re.I
 )
+
+KERATOMETRY_PAT = re.compile(
+    rf'{keratometry_pat.replace("#", "1")}\W*'
+    rf'{keratometry_pat.replace("#", "2")}\W*',
+    re.I
+)
+
+AXIAL_PAT = re.compile(axial_pat, re.I)
 
 
 def get_by_lat(m, groupname, target_lat, lat1):
@@ -47,8 +53,10 @@ def extract_keratometry(text, *, headers=None, lateralities=None):
             has_date_after = False
             for pat_label, pat in [
                 ('KERA_AX_PAT', KERA_AX_PAT),
+                ('KERATOMETRY_PAT', KERATOMETRY_PAT),
             ]:
                 for m in pat.finditer(sect_text):
+                    gd = m.groupdict()
                     date = None
                     if not has_date_after:  # don't look before if date already found after
                         if date := parse_date_before(m, sect_text):  # check before first
@@ -86,8 +94,8 @@ def extract_keratometry(text, *, headers=None, lateralities=None):
                             'keratometry_steepaxis_le': (
                                 os_axis if os_measures[0] < os_measures[1] else (os_axis + 90) % 180
                             ),
-                            'ax_length_re': float(m.group('al_od')),
-                            'ax_length_le': float(m.group('al_os')),
+                            'ax_length_re': float(gd.get('al_od', -1.0)),
+                            'ax_length_le': float(gd.get('al_os', -1.0)),
                             'term': m.group(),
                             'regex': pat_label,
                             'source': sect_name,
