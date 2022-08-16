@@ -107,6 +107,7 @@ def _extract_keratometry(sect_name, sect_text):
                 'source': sect_name,
                 'date': date,
             }}
+    # TODO: add just AXIAL pattern
 
 
 def calc_axis(measures, axis, *, is_flat):
