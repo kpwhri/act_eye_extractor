@@ -71,8 +71,8 @@ def simplify_lateralities(lats):
         return Laterality.UNKNOWN
 
 
-def lat_lookup(m):
-    return LATERALITY[m.group().upper().strip().strip(':').strip()]
+def lat_lookup(m, *, group=0):
+    return LATERALITY[m.group(group).upper().strip().strip(':').strip()]
 
 
 def build_laterality_table(text):
