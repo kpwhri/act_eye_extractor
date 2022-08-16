@@ -20,6 +20,6 @@ def build_keratometry(data):
     for datum in data:
         for key, result in datum.items():
             for var in outvars:
-                if results[var] == -1 and result.get(var, None):
+                if results[var] == -1 and result.get(var, None) is not None:
                     results[var] = result[var]
     return results

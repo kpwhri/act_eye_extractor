@@ -26,6 +26,9 @@ def test_keratometry_patterns(pat, text, exp):
         ('', {'KERATOMETRY': 'OD: 39.00/41.50 x 060  OS: 38.00/41.00 x 125  Ascans: 24.20, 23.80'},
          39.00, 38.00, 41.50, 41.00, 150, 35, 60, 125, 24.20, 23.80
          ),
+        ('', {'KERATOMETRY': 'OD:45.00/44.00x180  OS:44.40/43.90   Ascans: 25.60, 26.21'},
+         44.00, 43.90, 45.00, 44.40, 180, 0, 90, 90, 25.60, 26.21
+         ),
     ])
 def test_extract_keratometry(
         text, headers, keratometry_flatcurve_re, keratometry_flatcurve_le,

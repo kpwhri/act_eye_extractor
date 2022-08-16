@@ -21,7 +21,11 @@ KERA_AX_PAT = re.compile(
 
 
 def get_by_lat(m, groupname, target_lat, lat1):
-    return float(m.group(f'{groupname}{1 if lat1 == target_lat else 2}'))
+    res = m.group(f'{groupname}{1 if lat1 == target_lat else 2}')
+    if not res:
+        return 0.0
+    else:
+        return float(res)
 
 
 def extract_keratometry(text, *, headers=None, lateralities=None):
