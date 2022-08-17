@@ -17,6 +17,9 @@ Types of changes:
 
 ## [Unreleased]
 
+### Added
+- RNFL values (from text, not scans)
+- Keratometry
 
 ## v20220815
 
