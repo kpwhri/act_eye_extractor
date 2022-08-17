@@ -5,15 +5,6 @@ from eye_extractor.common.negation import is_negated
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 
-class LaserScarType(enum.IntEnum):
-    UNKNOWN = -1
-    NONE = 0
-    MACULAR = 1
-    PANRETINAL = 2
-    FOCAL = 3
-    GRID = 4
-
-
 MACULAR_PAT = re.compile(
         r'\b('
         r'((macula(r)?)|MACULA:)(\W*\w+){0,3}\W*(laser\W*)?scars'

@@ -70,16 +70,20 @@ def build_laser_scars(data):
     return column_from_variable_binary(data, 'dr_laser_scars')
 
 
-# def build_laser_scar_type(data):
-#     return column_from_variable({
-#             f'venbeading_re': -1,
-#             f'venbeading_le': -1,
-#         },
-#         data)
-
-
 def build_laser_panrentinal(data):
     return column_from_variable_binary(data, 'laserpanret_photocoag')
+
+
+def build_focal_laser_scar_type(data):
+    return column_from_variable_binary(data, 'focal_dr_laser_scar_type')
+
+
+def build_grid_laser_scar_type(data):
+    return column_from_variable_binary(data, 'grid_dr_laser_scar_type')
+
+
+def build_macular_laser_scar_type(data):
+    return column_from_variable_binary(data, 'macular_dr_laser_scar_type')
 
 
 def build_neovasc(data):

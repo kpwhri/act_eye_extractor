@@ -65,13 +65,6 @@ DIABETIC_RETINOPATHY_PATS = [
         r')\b',
         re.I
     )),
-    ('dr_laser_scar_type', re.compile(
-        r'\b('
-        r'(pan\W?retinal|focal|grid|macula)(\W*\w+){0,3}\W*(laser\W*)?scars'
-        r'|(laser\W*)?scars(\W*\w+){0,3}\W*(pan\W?retinal|focal|grid|macula)'
-        r')\b',
-        re.I
-    )),
     ('laserpanret_photocoag', re.compile(
         r'\b('
         r'prp|laser panretinal photo\W?coagulation|scatter photo\W?coagulation'

@@ -1,9 +1,13 @@
+import json
 import pytest
 
 from eye_extractor.dr import laser_scar_type as lst
-# from eye_extractor.headers import Headers
-# from eye_extractor.output.dr import build_laser_scar_type
-
+from eye_extractor.headers import Headers
+from eye_extractor.output.dr import (
+    build_focal_laser_scar_type,
+    build_grid_laser_scar_type,
+    build_macular_laser_scar_type
+)
 
 # Test pattern.
 _pattern_cases = [
@@ -49,48 +53,49 @@ _macular_extract_and_build_cases = [
 ]
 
 
-# @pytest.mark.parametrize('text, headers, exp_dr_laser_scar_type_re, exp_dr_laser_scar_type_le, '
-#                          'exp_dr_laser_scar_type_unk',
-#                          _extract_and_build_cases)
-# def test_laser_scar_type_extract_and_build(text,
-#                                            headers,
-#                                            exp_dr_laser_scar_type_re,
-#                                            exp_dr_laser_scar_type_le,
-#                                            exp_dr_laser_scar_type_unk):
-#     pre_json = tx.extract_treatment(text, headers=Headers(headers), lateralities=None)
-#     post_json = json.loads(json.dumps(pre_json))
-#     result = build_lasertype_new(post_json)
-#     assert result['dr_laser_scar_type_re'] == exp_dr_laser_scar_type_re
-#     assert result['dr_laser_scar_type_le'] == exp_dr_laser_scar_type_le
-#     assert result['dr_laser_scar_type_unk'] == exp_dr_laser_scar_type_unk
-
-# @pytest.mark.parametrize('text, headers, exp_dr_laser_scar_type_re, exp_dr_laser_scar_type_le, '
-#                          'exp_dr_laser_scar_type_unk',
-#                          _extract_and_build_cases)
-# def test_laser_scar_type_extract_and_build(text,
-#                                            headers,
-#                                            exp_dr_laser_scar_type_re,
-#                                            exp_dr_laser_scar_type_le,
-#                                            exp_dr_laser_scar_type_unk):
-#     pre_json = tx.extract_treatment(text, headers=Headers(headers), lateralities=None)
-#     post_json = json.loads(json.dumps(pre_json))
-#     result = build_lasertype_new(post_json)
-#     assert result['dr_laser_scar_type_re'] == exp_dr_laser_scar_type_re
-#     assert result['dr_laser_scar_type_le'] == exp_dr_laser_scar_type_le
-#     assert result['dr_laser_scar_type_unk'] == exp_dr_laser_scar_type_unk
+@pytest.mark.parametrize('text, headers, exp_focal_dr_laser_scar_type_re, exp_focal_dr_laser_scar_type_le, '
+                         'exp_focal_dr_laser_scar_type_unk',
+                         _focal_extract_and_build_cases)
+def test_focal_laser_scar_type_extract_and_build(text,
+                                                 headers,
+                                                 exp_focal_dr_laser_scar_type_re,
+                                                 exp_focal_dr_laser_scar_type_le,
+                                                 exp_focal_dr_laser_scar_type_unk):
+    pre_json = lst.get_laser_scar_type(text, headers=Headers(headers))
+    post_json = json.loads(json.dumps(pre_json))
+    result = build_focal_laser_scar_type(post_json)
+    assert result['focal_dr_laser_scar_type_re'] == exp_focal_dr_laser_scar_type_re
+    assert result['focal_dr_laser_scar_type_le'] == exp_focal_dr_laser_scar_type_le
+    assert result['focal_dr_laser_scar_type_unk'] == exp_focal_dr_laser_scar_type_unk
 
 
-# @pytest.mark.parametrize('text, headers, exp_dr_laser_scar_type_re, exp_dr_laser_scar_type_le, '
-#                          'exp_dr_laser_scar_type_unk',
-#                          _extract_and_build_cases)
-# def test_laser_scar_type_extract_and_build(text,
-#                                            headers,
-#                                            exp_dr_laser_scar_type_re,
-#                                            exp_dr_laser_scar_type_le,
-#                                            exp_dr_laser_scar_type_unk):
-#     pre_json = tx.extract_treatment(text, headers=Headers(headers), lateralities=None)
-#     post_json = json.loads(json.dumps(pre_json))
-#     result = build_lasertype_new(post_json)
-#     assert result['dr_laser_scar_type_re'] == exp_dr_laser_scar_type_re
-#     assert result['dr_laser_scar_type_le'] == exp_dr_laser_scar_type_le
-#     assert result['dr_laser_scar_type_unk'] == exp_dr_laser_scar_type_unk
+@pytest.mark.parametrize('text, headers, exp_grid_dr_laser_scar_type_re, exp_grid_dr_laser_scar_type_le, '
+                         'exp_grid_dr_laser_scar_type_unk',
+                         _grid_extract_and_build_cases)
+def test_grid_laser_scar_type_extract_and_build(text,
+                                                headers,
+                                                exp_grid_dr_laser_scar_type_re,
+                                                exp_grid_dr_laser_scar_type_le,
+                                                exp_grid_dr_laser_scar_type_unk):
+    pre_json = lst.get_laser_scar_type(text, headers=Headers(headers))
+    post_json = json.loads(json.dumps(pre_json))
+    result = build_grid_laser_scar_type(post_json)
+    assert result['grid_dr_laser_scar_type_re'] == exp_grid_dr_laser_scar_type_re
+    assert result['grid_dr_laser_scar_type_le'] == exp_grid_dr_laser_scar_type_le
+    assert result['grid_dr_laser_scar_type_unk'] == exp_grid_dr_laser_scar_type_unk
+
+
+@pytest.mark.parametrize('text, headers, exp_macular_dr_laser_scar_type_re, exp_macular_dr_laser_scar_type_le, '
+                         'exp_macular_dr_laser_scar_type_unk',
+                         _macular_extract_and_build_cases)
+def test_macular_laser_scar_type_extract_and_build(text,
+                                                   headers,
+                                                   exp_macular_dr_laser_scar_type_re,
+                                                   exp_macular_dr_laser_scar_type_le,
+                                                   exp_macular_dr_laser_scar_type_unk):
+    pre_json = lst.get_laser_scar_type(text, headers=Headers(headers))
+    post_json = json.loads(json.dumps(pre_json))
+    result = build_macular_laser_scar_type(post_json)
+    assert result['macular_dr_laser_scar_type_re'] == exp_macular_dr_laser_scar_type_re
+    assert result['macular_dr_laser_scar_type_le'] == exp_macular_dr_laser_scar_type_le
+    assert result['macular_dr_laser_scar_type_unk'] == exp_macular_dr_laser_scar_type_unk
