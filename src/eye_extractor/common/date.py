@@ -75,11 +75,17 @@ def parse_date(text):
         return None  # date wasn't required in this string
 
 
-def parse_date_before(m: Match, text, *, characters=20):
+def date_as_string(dt):
+    return dt.strftime('%Y-%m-%d')
+
+
+def parse_date_before(m: Match, text, *, characters=20, as_string=False):
     """Look for date after a particular match"""
-    return parse_date(text[max(0, m.start() - characters): m.start()])
+    dt = parse_date(text[max(0, m.start() - characters): m.start()])
+    return date_as_string(dt) if as_string else dt
 
 
-def parse_date_after(m: Match, text, *, characters=20):
+def parse_date_after(m: Match, text, *, characters=20, as_string=False):
     """Look for date before a regex match"""
-    return parse_date(text[m.end(): m.end() + characters])
+    dt = parse_date(text[m.end(): m.end() + characters])
+    return date_as_string(dt) if as_string else dt

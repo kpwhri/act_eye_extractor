@@ -29,7 +29,7 @@ def extract_rnfl_values(text, *, headers=None, lateralities=None):
     data = []
     for header_match in TABLE_HEADER_PAT.finditer(text):
         result = {}
-        result['date'] = parse_date_before(header_match, text)
+        result['date'] = parse_date_before(header_match, text, as_string=True)
         end = header_match.end()
         for _ in range(2):
             if m := TABLE_ROW_PAT.search(text[end:end + 75]):
@@ -37,7 +37,7 @@ def extract_rnfl_values(text, *, headers=None, lateralities=None):
                     result.update(_unpack_matches(m, 're'))
                 elif lat_lookup(m, group='lat') == Laterality.OS:
                     result.update(_unpack_matches(m, 'le'))
-                end = m.end()
+                end += m.end()
             else:
                 break
         data.append(result)
@@ -47,7 +47,7 @@ def extract_rnfl_values(text, *, headers=None, lateralities=None):
 def _unpack_matches(m, lat_string):
     def if_matches(label):
         _val = m.group(label)
-        return int(_val) if VALUE_PAT.match(_val) else -1
+        return int(_val.strip('gry')) if VALUE_PAT.match(_val) else -1
     return {
         f'rnfloct_temporal_sup_{lat_string}': if_matches('sup'),
         f'rnfloct_temporal_inf_{lat_string}': if_matches('inf'),
