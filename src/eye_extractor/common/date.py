@@ -76,7 +76,7 @@ def parse_date(text):
 
 
 def date_as_string(dt):
-    return dt.strftime('%Y-%m-%d')
+    return dt.strftime('%Y-%m-%d') if dt is not None else None
 
 
 def parse_date_before(m: Match, text, *, characters=20, as_string=False):
