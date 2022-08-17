@@ -51,7 +51,7 @@ def extract_lasertype(text, *, headers=None, lateralities=None):
     if headers:
         for sect_name, sect_text in headers.iterate(
                 'ASSESSMENT', 'IMPRESSION', 'IMP', 'HX', 'PAST', 'ASSESSMENT COMMENTS'
-        ):  # TODO: other sections?
+        ):
             for pat_label, pat, value in [
                 ('LASER_PAT', LASER_PAT, Laser.LASER),
                 ('PHOTODYNAMIC_PAT', PHOTODYNAMIC_PAT, Laser.PHOTODYNAMIC),
