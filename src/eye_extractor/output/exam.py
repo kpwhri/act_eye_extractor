@@ -43,7 +43,11 @@ def build_rnfl(data, note_date):
     skip_values = False
     found_thinning = False
     # start with most recent values
-    for d in sorted([d | {'date': d['date'] or note_date} for d in data], key=lambda x: x['date'], reverse=True):
+    for d in sorted(
+            [d | {'date': d.get('date', None) or note_date} for d in data],
+            key=lambda x: x['date'],
+            reverse=True
+    ):
         if found_values_counter > 4:
             skip_values = True
         for k, v in d.items():

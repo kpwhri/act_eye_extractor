@@ -68,6 +68,7 @@ def extract_rnfl_values(text, *, headers=None, lateralities=None):
         if (has_thinning := is_thinning(match, text)) > -1:
             result = {}
             create_variable(result, text, match, lateralities, 'rnfloct_thinning', has_thinning)
+            data.append(result)
     return data
 
 

@@ -25,17 +25,19 @@ def test_rnfl_patterns(pat, text, exp):
     'rnfloct_nasal_inf_re, rnfloct_nasal_inf_le, '
     'rnfloct_nasal_re, rnfloct_nasal_le, '
     'rnfloct_nasal_sup_re, rnfloct_nasal_sup_le, '
-    'rnfloct_thinning_re, rnfloct_thinning_le', [
+    'rnfloct_thinning_re, rnfloct_thinning_le, rnfloct_thinning_unk', [
         ('5-11-1912 RNFL Sup Inf Nas Temp Global OD 107g 138g 90g 75g 103g OS 123g 108g 194g N/q 117g', {},
-         103, 117, 107, 123, 75, -1, 138, 108, -1, -1, 90, 194, -1, -1, -1, -1),
+         103, 117, 107, 123, 75, -1, 138, 108, -1, -1, 90, 194, -1, -1, -1, -1, -1),
         ('RNFL Sup Inf Nas Temp Global OD 93y 79r 55g 70g 75y stable OS 76r 92y 56g 58g 70r Thinning inf rim', {},
-         75, 70, 93, 76, 70, 58, 79, 92, -1, -1, 55, 56, -1, -1, -1, 1),
+         75, 70, 93, 76, 70, 58, 79, 92, -1, -1, 55, 56, -1, -1, -1, 1, -1),
+        ('RNFL no thinning', {},
+         -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0),
 ])
 def test_rnfl_extract_build(text, headers, rnfloct_globalscore_re, rnfloct_globalscore_le, rnfloct_temporal_sup_re,
                             rnfloct_temporal_sup_le, rnfloct_temporal_re, rnfloct_temporal_le, rnfloct_temporal_inf_re,
                             rnfloct_temporal_inf_le, rnfloct_nasal_inf_re, rnfloct_nasal_inf_le, rnfloct_nasal_re,
                             rnfloct_nasal_le, rnfloct_nasal_sup_re, rnfloct_nasal_sup_le, rnfloct_thinning_re,
-                            rnfloct_thinning_le):
+                            rnfloct_thinning_le, rnfloct_thinning_unk):
     pre_json = extract_rnfl_values(text, headers=headers)
     post_json = json.loads(json.dumps(pre_json))
     result = build_rnfl(post_json, note_date=datetime.datetime(2020, 1, 1))
@@ -55,3 +57,4 @@ def test_rnfl_extract_build(text, headers, rnfloct_globalscore_re, rnfloct_globa
     assert result.get('rnfloct_nasal_sup_le', -1) == rnfloct_nasal_sup_le
     assert result.get('rnfloct_thinning_re', -1) == rnfloct_thinning_re
     assert result.get('rnfloct_thinning_le', -1) == rnfloct_thinning_le
+    assert result.get('rnfloct_thinning_unk', -1) == rnfloct_thinning_unk
