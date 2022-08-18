@@ -13,6 +13,7 @@ from eye_extractor.output.dr import (
 _pattern_cases = [
     (lst.FOCAL_PAT, 'focal laser scars', True),
     (lst.FOCAL_PAT, 'focal tx scars', True),
+    (lst.FOCAL_PAT, 'Focal scars', True),
     (lst.GRID_PAT, 'focal (grid) scars', True),
     (lst.GRID_PAT, 'grid laser scars', True),
     (lst.MACULAR_PAT, 'macular scars', True),
