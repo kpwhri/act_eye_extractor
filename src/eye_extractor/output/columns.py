@@ -341,4 +341,8 @@ OUTPUT_COLUMNS = {
     'oct_centralmac_re': [is_in_range(-1, 1)],
     'oct_centralmac_le': [is_in_range(-1, 1)],
     'oct_centralmac_unk': [is_in_range(-1, 1)],
+    # Laser scar types
+    'focal_dr_laser_scar_type_re': [is_in_range(-1, 1)],
+    'focal_dr_laser_scar_type_le': [is_in_range(-1, 1)],
+    'focal_dr_laser_scar_type_unk': [is_in_range(-1, 1)],
 }
