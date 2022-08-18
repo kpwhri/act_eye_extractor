@@ -185,6 +185,8 @@ OUTPUT_COLUMNS = {
     'rnfloct_thinning_re': [is_in_range(30, 180)],
     'rnfloct_thinning_le': [is_in_range(30, 180)],
     'rnfloct_thinning_unk': [is_in_range(30, 180)],
+    'macularoct_thickness_re': [is_in_range(150, 1000)],
+    'macularoct_thickness_le': [is_in_range(150, 1000)],
     #
     'intraocular_lens_re': [],
     'intraocular_lens_le': [],

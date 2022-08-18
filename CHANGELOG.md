@@ -20,6 +20,8 @@ Types of changes:
 ### Added
 - RNFL values (from text, not scans)
 - Keratometry
+- CMT from Macula OCT
+- Diabetic retinopathy variables
 
 ## v20220815
 
