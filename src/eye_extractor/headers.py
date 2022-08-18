@@ -11,11 +11,14 @@ HEADER_PAT = re.compile(  # built in reverse, always looks for semicolon
     r":(\s?[A-Z'/]+)+"
 )
 
+Section = str
+SectionText = str
+
 
 # TODO: have headers store laterality state
 # TODO: have headers store text hierarchically MACULA: djfslkdj OD: drusen -> MACULA: 'd... OD: drusen'
 class Headers(UserDict):
-    def iterate(self, *headers: str):
+    def iterate(self, *headers: Section) -> tuple[Section, SectionText]:
         for header in headers:
             if text := self.data.get(header, None):
                 yield header, text
