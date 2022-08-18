@@ -88,5 +88,5 @@ def build_cmt(data, note_date):
         data,
         transformer_func=lambda x: (x['value'], x.get('date', None) or note_date),  # unpack date and value
         compare_func=lambda n, c: c == -1 or c[0] == -1 or n[1] > c[1],  # compare by date
-        rename_func=lambda x: x[0],  # remove date and just keep value
+        rename_func=lambda x: -1 if x == -1 else x[0],  # remove date and just keep value
     )
