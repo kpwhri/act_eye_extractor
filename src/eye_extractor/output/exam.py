@@ -1,8 +1,12 @@
+from eye_extractor.output.variable import column_from_variable
+
+
 def build_exam(data):
     results = {}
     curr = data['exam']
     results.update(build_cup_disc_ratio(curr['cd_ratio']))
-    results.update(build_rnfl(curr['rnfl'], data['note_date']))
+    results.update(build_rnfl(curr['rnfl'], data['date']))
+    results.update(build_cmt(curr['cmt'], data['date']))
     return results
 
 
@@ -68,3 +72,21 @@ def build_rnfl(data, note_date):
             return results
 
     return results
+
+
+def build_cmt(data, note_date):
+    """
+
+    :param data:
+    :return:
+    """
+    return column_from_variable(
+        {
+            'macularoct_thickness_re': -1,
+            'macularoct_thickness_le': -1,
+        },
+        data,
+        transformer_func=lambda x: (x['value'], x.get('date', None) or note_date),  # unpack date and value
+        compare_func=lambda n, c: c == -1 or c[0] == -1 or n[1] > c[1],  # compare by date
+        rename_func=lambda x: x[0],  # remove date and just keep value
+    )

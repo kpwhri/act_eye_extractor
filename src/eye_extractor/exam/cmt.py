@@ -19,7 +19,7 @@ def extract_cmt(text, *, headers: Headers = None, lateralities=None):
         for section_name, section_text in headers.iterate('OCT MAC', 'OCT MACULA'):
             for m in CMT_PAT.finditer(section_text):
                 date = parse_date_before(m, section_text, as_string=True)
-                data.append({'macularoct_thicknessk_re': {
+                data.append({'macularoct_thickness_re': {
                     'value': int(m.group('od_value')),
                     'date': date,
                     'term': m.group(),
