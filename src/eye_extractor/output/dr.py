@@ -1,3 +1,4 @@
+from eye_extractor.dr.dr_type import DrType
 from eye_extractor.dr.hemorrhage_type import HemorrhageType
 from eye_extractor.output.variable import column_from_variable, column_from_variable_binary
 
@@ -114,12 +115,13 @@ def build_nvi(data):
 #         data)
 
 
-# def build_dr_type(data):
-#     return column_from_variable({
-#             f'venbeading_re': -1,
-#             f'venbeading_le': -1,
-#         },
-#         data)
+def build_dr_type(data):
+    return column_from_variable({
+            f'diabretinop_type_re': DrType.UNKNOWN,
+            f'diabretinop_type_le': DrType.UNKNOWN,
+            f'diabretinop_type_unk': DrType.UNKNOWN,
+        },
+        data)
 
 
 # def build_npdr(data):

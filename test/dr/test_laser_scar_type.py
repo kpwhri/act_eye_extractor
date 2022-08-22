@@ -54,7 +54,6 @@ _macular_extract_and_build_cases = [
 ]
 
 
-# TODO: Pass failing tests
 @pytest.mark.parametrize('text, headers, exp_focal_dr_laser_scar_type_re, exp_focal_dr_laser_scar_type_le, '
                          'exp_focal_dr_laser_scar_type_unk',
                          _focal_extract_and_build_cases)
@@ -87,7 +86,6 @@ def test_grid_laser_scar_type_extract_and_build(text,
     assert result['grid_dr_laser_scar_type_unk'] == exp_grid_dr_laser_scar_type_unk
 
 
-# TODO: Pass failing tests
 @pytest.mark.parametrize('text, headers, exp_macular_dr_laser_scar_type_re, exp_macular_dr_laser_scar_type_le, '
                          'exp_macular_dr_laser_scar_type_unk',
                          _macular_extract_and_build_cases)
