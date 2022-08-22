@@ -7,7 +7,7 @@ _pattern_cases = [
     (drt.NPDR_PAT, 'NPDR', True),
     (drt.NPDR_PAT, 'non-proliferative diabetic retinopathy', True),
     (drt.NPDR_PAT, 'Nonproliferative diabetic retinopathy', True),
-    (drt.NPDR_PAT, 'NONPROLIFERATIVE DIABETIC RETINOPAHTY', True),
+    (drt.NPDR_PAT, 'NONPROLIFERATIVE DIABETIC RETINOPATHY', True),
     (drt.PDR_PAT, 'PDR', True),
     (drt.PDR_PAT, 'Proliferative Diabetic Retinopathy', True),
     (drt.PDR_PAT, 'proliferative diabetic retinopathy', True),
