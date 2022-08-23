@@ -345,4 +345,8 @@ OUTPUT_COLUMNS = {
     'focal_dr_laser_scar_type_re': [is_in_range(-1, 1)],
     'focal_dr_laser_scar_type_le': [is_in_range(-1, 1)],
     'focal_dr_laser_scar_type_unk': [is_in_range(-1, 1)],
+    # Diabetic retinopathy type
+    'diabretinop_type_re': [is_in_range(-1, 2)],
+    'diabretinop_type_le': [is_in_range(-1, 2)],
+    'diabretinop_type_unk': [is_in_range(-1, 2)],
 }

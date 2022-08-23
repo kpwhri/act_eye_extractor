@@ -193,6 +193,7 @@ def build_dr_variables(data):
     results.update(build_neovasc(curr['binary_vars']))
     results.update(build_nva(curr['binary_vars']))
     results.update(build_nvi(curr['binary_vars']))
+    results.update(build_dr_type(curr['dr_type']))
     results.update(build_edema(curr['binary_vars']))
     results.update(build_sig_edema(curr['binary_vars']))
     results.update(build_oct_cme(curr['binary_vars']))
