@@ -35,7 +35,7 @@ def test_dr_type_patterns(pat, text, exp):
 
 # Test extract and build.
 _dr_type_extract_and_build_cases = [
-    ('Type II DM with mild - moderate ou', {}, DrType.NPDR, DrType.NPDR, DrType.UNKNOWN),
+    ('Type II DM with mild - moderate NPDR ou', {}, DrType.NPDR, DrType.NPDR, DrType.UNKNOWN),
     ('DM w/out NPDR OU', {}, DrType.NONE, DrType.NONE, DrType.UNKNOWN),
     ('no NPDR', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.NONE),
     ('MODERATE NONPROLIFERATIVE DIABETIC RETINOPATHY OD', {}, DrType.NPDR, DrType.UNKNOWN, DrType.UNKNOWN),
