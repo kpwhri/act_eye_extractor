@@ -142,7 +142,7 @@ def process_data(data, *, add_columns=None):
         'encid': data['enc_id'],
         'is_training': data['train'],
     }
-    data['date'] = datetime.datetime.strptime(data['note_date'], '%Y-%m-%d')
+    data['date'] = datetime.datetime.strptime(data['note_date'], '%Y-%m-%d %H:%M:%S')
     for col in add_columns or []:
         result[col] = data[col]
     result.update(get_va(data['va']))
