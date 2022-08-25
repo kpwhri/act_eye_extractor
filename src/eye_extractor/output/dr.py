@@ -1,4 +1,5 @@
 from eye_extractor.common.algo.fluid import Fluid, fluid_prioritization, rename_fluid
+from eye_extractor.common.drug.antivegf import AntiVegf, rename_antivegf
 from eye_extractor.dr.dr_type import DrType
 from eye_extractor.dr.hemorrhage_type import HemorrhageType
 from eye_extractor.output.variable import column_from_variable, column_from_variable_binary
@@ -61,7 +62,7 @@ def build_hemorrhage_type(data):
 
 
 def build_fluid(data, *, skip_rename_variable=False):
-    # TODO: check if RVO | DR
+    # TODO: check if DR
     return column_from_variable(
         {
             'fluid_re': Fluid.UNKNOWN,
@@ -178,12 +179,22 @@ def build_oct_cme(data):
 #         data)
 
 
-# def build_edema_antivegf
-#     return column_from_variable({
-#             f'venbeading_re': -1,
-#             f'venbeading_le': -1,
-#         },
-#         data)
+def build_dmacedema_antivegf(data):
+    # TODO: check is RVO
+    return column_from_variable(
+        {
+            'tx_re': AntiVegf.UNKNOWN,
+            'tx_le': AntiVegf.UNKNOWN,
+            'tx_unk': AntiVegf.UNKNOWN,
+        },
+        data,
+        renamevar_func=lambda x: f'dmacedema_antivegf_{x.split("_")[-1]}',
+        rename_func=rename_antivegf,
+        filter_func=lambda x: x.get('category', None) in {'ANTIVEGF'},
+        transformer_func=AntiVegf,
+        enum_to_str=False,
+    )
+
 
 def build_dr_variables(data):
     curr = data['dr']

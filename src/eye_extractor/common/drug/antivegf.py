@@ -19,6 +19,7 @@ ANTIVEGF_TO_ENUM = {
     'avastin': AntiVegf.BEVACIZUMAB,
     'ranibuzumab': AntiVegf.RANIBIZUMAB,
     'lucentis': AntiVegf.RANIBIZUMAB,
+    'anti-vegf': AntiVegf.YES
 }
 
 ANTIVEGF_PAT = build_pattern_from_dict(ANTIVEGF_TO_ENUM)
