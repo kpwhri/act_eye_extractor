@@ -53,12 +53,6 @@ DIABETIC_RETINOPATHY_PATS = [
         r')\b',
         re.I
     )),
-    ('fluid_dr', re.compile(
-        r'\b('
-        r'dr|irf|srf|fluid'
-        r')\b',
-        re.I
-    )),
     ('dr_laser_scars', re.compile(
         r'\b('
         r'laser scars?'
@@ -100,12 +94,6 @@ DIABETIC_RETINOPATHY_PATS = [
     ('nve_yesno', re.compile(
         r'\b('
         r'nve|neovascularization elsewhere'
-        r')\b',
-        re.I
-    )),
-    ('diabretinop_type', re.compile(
-        r'\b('
-        r'npdr|nonproliferative diabetic retinopathy|PDR|proliferative diabetic retinopathy'
         r')\b',
         re.I
     )),

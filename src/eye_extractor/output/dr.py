@@ -1,3 +1,4 @@
+from eye_extractor.common.algo.fluid import Fluid, fluid_prioritization, rename_fluid
 from eye_extractor.dr.dr_type import DrType
 from eye_extractor.dr.hemorrhage_type import HemorrhageType
 from eye_extractor.output.variable import column_from_variable, column_from_variable_binary
@@ -59,12 +60,21 @@ def build_hemorrhage_type(data):
 #         data)
 
 
-# def build_fluid(data):
-#     return column_from_variable({
-#             f'venbeading_re': -1,
-#             f'venbeading_le': -1,
-#         },
-#         data)
+def build_fluid(data, *, skip_rename_variable=False):
+    # TODO: check if RVO | DR
+    return column_from_variable(
+        {
+            'fluid_re': Fluid.UNKNOWN,
+            'fluid_le': Fluid.UNKNOWN,
+            'fluid_unk': Fluid.UNKNOWN,
+        },
+        data,
+        transformer_func=Fluid,
+        result_func=fluid_prioritization,
+        enum_to_str=True,
+        renamevar_func=lambda x: x.replace('fluid', 'fluid_dr'),
+        rename_func=None if skip_rename_variable else rename_fluid
+    )
 
 
 def build_laser_scars(data):
@@ -185,6 +195,7 @@ def build_dr_variables(data):
     results.update(build_disc_edema(curr['binary_vars']))
     results.update(build_hemorrhage(curr['binary_vars']))
     results.update(build_hemorrhage_type(curr['hemorrhage_type']))
+    results.update(build_fluid(data['common']['treatment']))
     results.update(build_laser_scars(curr['binary_vars']))
     results.update(build_laser_panrentinal(curr['binary_vars']))
     results.update(build_focal_laser_scar_type(curr['laser_scar_type']))

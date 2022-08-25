@@ -53,7 +53,7 @@ def test_build_hemorrhage_type(data, exp_hemorrhage_typ_dr_re, exp_hemorrhage_ty
     ('swelling and intraretinal hemorrhage', 0, 0, HemorrhageType.INTRARETINAL.value),
     ('dot blot hemorrhage near inferior margin of GA', 0, 0, HemorrhageType.DOT_BLOT.value),
 ])
-def test_get_hemorrhage_type_extract_and_build(text, hemorrhage_type_dr_re, hemorrhage_type_dr_le,
+def test_hemorrhage_type_extract_and_build(text, hemorrhage_type_dr_re, hemorrhage_type_dr_le,
                                                hemorrhage_type_dr_unk):
     data = get_hemorrhage_type(text)
     result = build_hemorrhage_type(data)
