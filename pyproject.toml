@@ -17,7 +17,7 @@ requires = [
 ]
 keywords = ['nlp', 'eye', 'ophthalmology', 'optometry']
 requires-python = '>=3.10'
-readme = 'README.rst'
+readme = 'README.md'
 classifiers = [
     'License :: OSI Approved :: MIT License',
     'Development Status :: 1 - Planning',
