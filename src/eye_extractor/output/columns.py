@@ -353,11 +353,15 @@ OUTPUT_COLUMNS = {
     'fluid_dr_re': [is_in_range(-1, 5)],
     'fluid_dr_le': [is_in_range(-1, 5)],
     'fluid_dr_unk': [is_in_range(-1, 5)],
+    # Diabetic macular edema treatment
+    'dmacedema_tx_re': [is_in_range(-1, 5)],
+    'dmacedema_tx_le': [is_in_range(-1, 5)],
+    'dmacedema_tx_unk': [is_in_range(-1, 5)],
     # Anti-VEGF diabetic macular edema
     'dmacedema_antivegf_re': [is_in_range(-1, 4)],
     'dmacedema_antivegf_le': [is_in_range(-1, 4)],
     'dmacedema_antivegf_unk': [is_in_range(-1, 4)],
-    # Treatment
+    # Diabetic retinopathy treatment
     'drtreatment_re': [is_in_range(-1, 6)],
     'drtreatment_le': [is_in_range(-1, 6)],
     'drtreatment_unk': [is_in_range(-1, 6)],

@@ -227,7 +227,7 @@ def build_dme_tx(data):
         },
         data,
         renamevar_func=lambda x: f'dmacedema_tx_{x.split("_")[-1]}',
-        rename_func=_rename_dr_tx,
+        rename_func=_rename_dme_tx,
         filter_func=lambda x: x.get('category', None) in {'DR', 'ALL', 'LASER', 'ANTIVEGF'},
         transformer_func=Treatment,
         enum_to_str=False,
@@ -275,5 +275,6 @@ def build_dr_variables(data):
     results.update(build_edema(curr['binary_vars']))
     results.update(build_sig_edema(curr['binary_vars']))
     results.update(build_oct_cme(curr['binary_vars']))
+    results.update(build_dme_tx(data['common']['treatment']))
     results.update(build_dmacedema_antivegf[data['common']['treatment']])
     return results

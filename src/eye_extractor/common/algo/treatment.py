@@ -49,6 +49,7 @@ PLAN_HEADERS = ('PLAN', 'PLAN COMMENTS', 'COMMENTS')
 GLAUCOMA_HEADERS = ('PLAN', 'PLAN COMMENTS', 'COMMENTS')
 AMD_HEADERS = ('ASSESSMENT', 'IMPRESSION', 'IMP', 'HX', 'PAST', 'ASSESSMENT COMMENTS', 'PLAN')
 ANTIVEGF_HEADERS = ('SUBJECTIVE', 'CHIEF COMPLAINT', 'HISTORY OF PRESENT ILLNESS')
+DR_HEADERS = ['MACULA']
 
 # regular expressions
 medrx = rf'(?:med(?:ication?)?s?|rx|{ALL_DRUG_PAT})'
@@ -168,9 +169,29 @@ PRP_PAT = re.compile(
 )
 FOCAL_PAT = re.compile(
     rf'\b(?:'
-    rf'focal(?:\W*laser)?'
-    rf'|(?:laser)?\W*focal'
+    rf'focal(\W*\w+){0,3}(?:\W*laser)?'
+    rf'|(?:laser)?(\W*\w+){0,3}\W*focal'
     rf')\b',
+    re.I
+)
+GRID_PAT = re.compile(
+    r'\b('
+    r'grid(\W*\w+){0,3}\W*(laser\W*)?'
+    r'|(laser\W*)?(\W*\w+){0,3}\W*grid'
+    r')\b',
+    re.I
+)
+MACULAR_PAT = re.compile(
+    r'\b('
+    r'((macula(r)?)|MACULA:)(\W*\w+){0,3}\W*(laser\W*)?'
+    r'|(laser\W*)?(\W*\w+){0,3}\W*macula(r)?'
+    r')\b',
+    re.I
+)
+MACULAR_HEADER_PAT = re.compile(
+    r'\b('
+    r'laser'
+    r')\b',
     re.I
 )
 
@@ -264,7 +285,16 @@ def extract_treatment(text, *, headers=None, lateralities=None, target_headers=N
             'DR',
             ('PRP_PAT', PRP_PAT, Treatment.PRP),
             ('FOCAL_PAT', FOCAL_PAT, Treatment.FOCAL),
+            ('GRID_PAT', GRID_PAT, Treatment.GRID),
+            ('MACULAR_PAT', MACULAR_PAT, Treatment.MACULAR),
             ('SURGERY_PAT', SURGERY_PAT, Treatment.SURGERY),
+        ):
+            data.append(result)
+        for result in _extract_treatment_section(
+            headers,
+            DR_HEADERS,
+            'DR',
+            ('MACULAR_HEADER_PAT', MACULAR_HEADER_PAT, Treatment.MACULAR),
         ):
             data.append(result)
     # all text
@@ -276,9 +306,19 @@ def extract_treatment(text, *, headers=None, lateralities=None, target_headers=N
         ('ANTIVEGF_RX',
          re.compile(fr'(s/p)?\W*(?P<term>{ANTIVEGF_PAT})', re.I),
          lambda m: ANTIVEGF_TO_ENUM[get_standardized_name(m.group('term'))]
-         )
+         ),
     ):
         data.append(result)
+    for result in _extract_treatment(
+        'ALL',
+        text,
+        lateralities,
+        'DR',
+        ('GRID_PAT', GRID_PAT, Treatment.GRID),
+        ('MACULAR_PAT', MACULAR_PAT, Treatment.MACULAR),
+    ):
+        data.append(result)
+
     return data
 
 

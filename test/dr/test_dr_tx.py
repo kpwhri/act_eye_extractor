@@ -31,7 +31,7 @@ def test_dr_tx_patterns(pat, text, exp):
     ('injection of Avastin (Bevacizumab)', {}, -1, -1, 3),
     ('', {'PLAN': 'surgery'}, -1, -1, 4),
     ('', {'PLAN': 'focal laser'}, -1, -1, 6),
-    ('', {'PLAN': 'laser'}, -1, -1, 5)
+    ('', {'PLAN': 'laser'}, -1, -1, 5),
 ])
 def test_dr_treatment_extract_and_build(text, headers, exp_drtreatment_re, exp_drtreatment_le, exp_drtreatment_unk):
     pre_json = extract_treatment(text, headers=Headers(headers), lateralities=None)

@@ -135,12 +135,6 @@ DIABETIC_RETINOPATHY_PATS = [
         r')\b',
         re.I
     )),
-    ('dmacedema_tx', re.compile(
-        r'\b('
-        r'focal laser|grid laser|laser focal|laser grid|intravitreal Injections?|anti-VEGF|PDT|photodynamic therapy'
-        r')\b',
-        re.I
-    )),
 ]
 
 
