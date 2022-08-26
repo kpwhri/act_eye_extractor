@@ -251,6 +251,18 @@ def build_dmacedema_antivegf(data):
     )
 
 
+def build_cmt_value(data):
+    # TODO: check if DME
+    return column_from_variable(
+        {
+            'dmacedema_cmt_re': -1,
+            'dmacedema_cmt_le': -1,
+            'dmacedema_cmt_unk': -1,
+        },
+        data
+    )
+
+
 def build_dr_variables(data):
     curr = data['dr']
     results = {}
@@ -277,4 +289,5 @@ def build_dr_variables(data):
     results.update(build_oct_cme(curr['binary_vars']))
     results.update(build_dme_tx(data['common']['treatment']))
     results.update(build_dmacedema_antivegf[data['common']['treatment']])
+    results.update(build_cmt_value(curr['cmt_value']))
     return results

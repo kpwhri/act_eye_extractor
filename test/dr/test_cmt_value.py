@@ -1,16 +1,15 @@
 import json
 import pytest
 
-from eye_extractor.dr.cmt_value import CMT_VALUE_PAT
+from eye_extractor.dr.cmt_value import CMT_VALUE_PAT, get_cmt_value
+from eye_extractor.output.dr import build_cmt_value
 
 # Test pattern.
 _pattern_cases = [
     (CMT_VALUE_PAT, 'CMT 244', True),
     (CMT_VALUE_PAT, 'Central macular thickness: 234 um', True),
-    (CMT_VALUE_PAT, 'CMT OD: 265 OS: 224', True),
-    (CMT_VALUE_PAT, 'CMT OD:300 possible epiretinal membrane OS:294 mild epiretinal membrane', True),
-    (CMT_VALUE_PAT, 'OD: mild moderate irregularity, no edema, CMT 290; OS: moderate retinal irregularity , no edema, '
-                    'mild epiretinal membrane , CMT 282', True)
+    (CMT_VALUE_PAT, 'CMT OD: 265', True),
+    (CMT_VALUE_PAT, 'OS:300', True),
 ]
 
 
@@ -25,29 +24,31 @@ def test_cmt_value_patterns(pat, text, exp):
 
 
 # Test extract and build.
-# _dr_type_extract_and_build_cases = [
-#     ('Type II DM with mild - moderate NPDR ou', {}, DrType.NPDR, DrType.NPDR, DrType.UNKNOWN),
-#     ('DM w/out NPDR OU', {}, DrType.NONE, DrType.NONE, DrType.UNKNOWN),
-#     ('no NPDR', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.NONE),
-#     ('MODERATE NONPROLIFERATIVE DIABETIC RETINOPATHY OD', {}, DrType.NPDR, DrType.UNKNOWN, DrType.UNKNOWN),
-#     ('proliferative Diabetic Retinopathy: YES, MILD OU', {}, DrType.PDR, DrType.PDR, DrType.UNKNOWN),
-#     ('Proliferative diabetic retinopathy OS', {}, DrType.UNKNOWN, DrType.PDR, DrType.UNKNOWN),
-#     ('Hx of pdr od', {}, DrType.PDR, DrType.UNKNOWN, DrType.UNKNOWN),
-#     ('Uncontrolled Proliferative Diabetic Retinopathy', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.PDR),
-# ]
+_cmt_value_extract_and_build_cases = [
+    ('OD: erm, CMT 291; OS: erm, CMT 280', {}, 291, 280, -1),
+    ('OD CMT 329; +ERM,  OS CMT 465; +ERM;', {}, 329, 465, -1),
+    ('CMT OD: 219', {}, 219, -1, -1),
+    ('CMT OD:265 OS:224', {}, 265, 224, -1),
+    ('OS: REMAINS DRY CMT 244', {}, -1, 244, -1),
+    ('CMT OD:300 possible epiretinal membrane OS:294 mild epiretinal membrane',
+     {}, 300, 294, -1),
+    ('OD: mild moderate irregularity, no edema, CMT 290; OS: moderate retinal irregularity , no edema, '
+     'mild epiretinal membrane , CMT 282',
+     {}, 290, 282, -1),
+    ('Central macular thickness: 234 um', {}, -1, -1, 234)
+]
 
 
-# @pytest.mark.parametrize('text, headers, exp_diabretinop_type_re, exp_diabretinop_type_le, '
-#                          'exp_diabretinop_type_unk',
-#                          _dr_type_extract_and_build_cases)
-# def test_dr_type_extract_and_build(text,
-#                                    headers,
-#                                    exp_diabretinop_type_re,
-#                                    exp_diabretinop_type_le,
-#                                    exp_diabretinop_type_unk):
-#     pre_json = get_dr_type(text)
-#     post_json = json.loads(json.dumps(pre_json))
-#     result = build_dr_type(post_json)
-#     assert result['diabretinop_type_re'] == exp_diabretinop_type_re
-#     assert result['diabretinop_type_le'] == exp_diabretinop_type_le
-#     assert result['diabretinop_type_unk'] == exp_diabretinop_type_unk
+@pytest.mark.parametrize('text, headers, exp_dmacedema_cmt_re, exp_dmacedema_cmt_le, exp_dmacedema_cmt_unk',
+                         _cmt_value_extract_and_build_cases)
+def test_dr_type_extract_and_build(text,
+                                   headers,
+                                   exp_dmacedema_cmt_re,
+                                   exp_dmacedema_cmt_le,
+                                   exp_dmacedema_cmt_unk):
+    pre_json = get_cmt_value(text)
+    post_json = json.loads(json.dumps(pre_json))
+    result = build_cmt_value(post_json)
+    assert result['dmacedema_cmt_re'] == exp_dmacedema_cmt_re
+    assert result['dmacedema_cmt_le'] == exp_dmacedema_cmt_le
+    assert result['dmacedema_cmt_unk'] == exp_dmacedema_cmt_unk

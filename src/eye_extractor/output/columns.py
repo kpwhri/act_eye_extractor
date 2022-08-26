@@ -365,4 +365,8 @@ OUTPUT_COLUMNS = {
     'drtreatment_re': [is_in_range(-1, 6)],
     'drtreatment_le': [is_in_range(-1, 6)],
     'drtreatment_unk': [is_in_range(-1, 6)],
+    # Diabetic macular edema CMT value
+    'dmacedema_cmt_re': [is_in_range(-1, 1000)],
+    'dmacedema_cmt_le': [is_in_range(-1, 1000)],
+    'dmacedema_cmt_unk': [is_in_range(-1, 1000)],
 }
