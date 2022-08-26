@@ -43,8 +43,7 @@ from eye_extractor.output.dr import (
     ('Patient presents with: Diabetic macular edema E11.311', 1, None),
     ('No CSME', 0, 'no'),
     ('OD: erm, CMT 291; OS: erm, CMT 280 No change', 1, None),
-    ('Intravitreal injection of Avastin (Bevacizumab) of your left eye', 1, None),
-    ('TRIAMCINOLONE ACETONIDE 0.1 % TOPICAL CREAM', 1, None)
+    ('Intravitreal injection of Avastin (Bevacizumab) of your left eye', 1, None)
 ])
 def test_get_dr_binary(text, exp_value, exp_negword):
     data = get_dr_binary(text)

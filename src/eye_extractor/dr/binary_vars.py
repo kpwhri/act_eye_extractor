@@ -141,12 +141,6 @@ DIABETIC_RETINOPATHY_PATS = [
         r')\b',
         re.I
     )),
-    ('dmacedema_antivegf', re.compile(
-        r'\b('
-        r'anti-VEGF|intravitreal anti-VEG|bevacizumab|ranibizumab|aflibercept|triamcinolone'
-        r')\b',
-        re.I
-    )),
 ]
 
 

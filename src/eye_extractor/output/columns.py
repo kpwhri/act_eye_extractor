@@ -350,7 +350,11 @@ OUTPUT_COLUMNS = {
     'diabretinop_type_le': [is_in_range(-1, 2)],
     'diabretinop_type_unk': [is_in_range(-1, 2)],
     # Presence of fluid
-    'fluid_dr_re': [is_in_range(-1, 30)],
-    'fluid_dr_le': [is_in_range(-1, 30)],
-    'fluid_dr_unk': [is_in_range(-1, 30)],
+    'fluid_dr_re': [is_in_range(-1, 5)],
+    'fluid_dr_le': [is_in_range(-1, 5)],
+    'fluid_dr_unk': [is_in_range(-1, 5)],
+    # Anti-VEGF diabetic macular edema
+    'dmacedema_antivegf_re': [is_in_range(-1, 4)],
+    'dmacedema_antivegf_le': [is_in_range(-1, 4)],
+    'dmacedema_antivegf_unk': [is_in_range(-1, 4)],
 }
