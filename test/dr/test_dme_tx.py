@@ -18,7 +18,7 @@ def _get_pattern_cases():
 
 
 @pytest.mark.parametrize('pat, text, exp', _get_pattern_cases())
-def test_dr_tx_patterns(pat, text, exp):
+def test_dme_tx_patterns(pat, text, exp):
     m = pat.search(text)
     assert bool(m) == exp
 
