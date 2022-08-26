@@ -357,4 +357,8 @@ OUTPUT_COLUMNS = {
     'dmacedema_antivegf_re': [is_in_range(-1, 4)],
     'dmacedema_antivegf_le': [is_in_range(-1, 4)],
     'dmacedema_antivegf_unk': [is_in_range(-1, 4)],
+    # Treatment
+    'drtreatment_re': [is_in_range(-1, 6)],
+    'drtreatment_le': [is_in_range(-1, 6)],
+    'drtreatment_unk': [is_in_range(-1, 6)],
 }
