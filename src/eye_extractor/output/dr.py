@@ -1,4 +1,7 @@
+from enum import IntEnum
+
 from eye_extractor.common.algo.fluid import Fluid, fluid_prioritization, rename_fluid
+from eye_extractor.common.algo.treatment import Treatment
 from eye_extractor.common.drug.antivegf import AntiVegf, rename_antivegf
 from eye_extractor.dr.dr_type import DrType
 from eye_extractor.dr.hemorrhage_type import HemorrhageType
@@ -151,12 +154,39 @@ def build_dr_type(data):
 #         data)
 
 
-# def build_dr_tx(data):
-#     return column_from_variable({
-#             f'venbeading_re': -1,
-#             f'venbeading_le': -1,
-#         },
-#         data)
+def _rename_dr_treatment(val: IntEnum):
+    # convert to output values
+    match val:
+        case Treatment.FOCAL:
+            return 6
+        case Treatment.SURGERY:
+            return 4  # surgery
+        case val if 311 <= val.value <= 319:
+            return 3  # antivegf
+        case Treatment.PRP:
+            return 2
+        case Treatment.OBSERVE:
+            return 1  # observe
+        case val if val.value > 0:
+            return 5  # other
+    return val.value
+
+
+def build_dr_treatment(data):
+    # TODO: check if DR
+    return column_from_variable(
+        {
+            'tx_re': Treatment.UNKNOWN,
+            'tx_le': Treatment.UNKNOWN,
+            'tx_unk': Treatment.UNKNOWN,
+        },
+        data,
+        renamevar_func=lambda x: f'drtreatment_{x.split("_")[-1]}',
+        rename_func=_rename_dr_treatment,
+        filter_func=lambda x: x.get('category', None) in {'DR', 'ALL', 'LASER', 'ANTIVEGF'},
+        transformer_func=Treatment,
+        enum_to_str=False,
+    )
 
 
 def build_edema(data):
