@@ -154,7 +154,7 @@ def build_dr_type(data):
 #         data)
 
 
-def _rename_dr_treatment(val: IntEnum):
+def _rename_dr_tx(val: IntEnum):
     # convert to output values
     match val:
         case Treatment.FOCAL:
@@ -162,7 +162,7 @@ def _rename_dr_treatment(val: IntEnum):
         case Treatment.SURGERY:
             return 4  # surgery
         case val if 311 <= val.value <= 319:
-            return 3  # antivegf
+            return 3  # injections
         case Treatment.PRP:
             return 2
         case Treatment.OBSERVE:
@@ -172,7 +172,7 @@ def _rename_dr_treatment(val: IntEnum):
     return val.value
 
 
-def build_dr_treatment(data):
+def build_dr_tx(data):
     # TODO: check if DR
     return column_from_variable(
         {
@@ -182,7 +182,7 @@ def build_dr_treatment(data):
         },
         data,
         renamevar_func=lambda x: f'drtreatment_{x.split("_")[-1]}',
-        rename_func=_rename_dr_treatment,
+        rename_func=_rename_dr_tx,
         filter_func=lambda x: x.get('category', None) in {'DR', 'ALL', 'LASER', 'ANTIVEGF'},
         transformer_func=Treatment,
         enum_to_str=False,
@@ -201,16 +201,41 @@ def build_oct_cme(data):
     return column_from_variable_binary(data, 'oct_centralmac')
 
 
-# def build_edema_tx(data):
-#     return column_from_variable({
-#             f'venbeading_re': -1,
-#             f'venbeading_le': -1,
-#         },
-#         data)
+def _rename_dme_tx(val: IntEnum):
+    # convert to output values
+    match val:
+        case val if 311 <= val.value <= 319:
+            return 4  # injections
+        case val if 121 <= val.value <= 123:
+            return 2  # focal, grid, macular
+        case Treatment.PHOTODYNAMIC:
+            return 2  # photodynamic therapy
+        case Treatment.OBSERVE:
+            return 1  # observe
+        case val if val.value > 0:
+            return 5  # other
+    return val.value
+
+
+def build_dme_tx(data):
+    # TODO: check if DME
+    return column_from_variable(
+        {
+            'tx_re': Treatment.UNKNOWN,
+            'tx_le': Treatment.UNKNOWN,
+            'tx_unk': Treatment.UNKNOWN,
+        },
+        data,
+        renamevar_func=lambda x: f'dmacedema_tx_{x.split("_")[-1]}',
+        rename_func=_rename_dr_tx,
+        filter_func=lambda x: x.get('category', None) in {'DR', 'ALL', 'LASER', 'ANTIVEGF'},
+        transformer_func=Treatment,
+        enum_to_str=False,
+    )
 
 
 def build_dmacedema_antivegf(data):
-    # TODO: check is RVO
+    # TODO: check if DME
     return column_from_variable(
         {
             'tx_re': AntiVegf.UNKNOWN,
@@ -246,7 +271,7 @@ def build_dr_variables(data):
     results.update(build_nva(curr['binary_vars']))
     results.update(build_nvi(curr['binary_vars']))
     results.update(build_dr_type(curr['dr_type']))
-    results.update(build_dr_treatment(data['common']['treatment']))
+    results.update(build_dr_tx(data['common']['treatment']))
     results.update(build_edema(curr['binary_vars']))
     results.update(build_sig_edema(curr['binary_vars']))
     results.update(build_oct_cme(curr['binary_vars']))

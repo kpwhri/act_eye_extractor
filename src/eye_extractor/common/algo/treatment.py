@@ -27,6 +27,8 @@ class Treatment(enum.IntEnum):
     # - dr 120s
     PRP = 120
     FOCAL = 121
+    GRID = 122
+    MACULAR = 123
     # surgery
     SURGERY = 200
     # medicine
@@ -164,7 +166,6 @@ PRP_PAT = re.compile(
     rf')\b',
     re.I
 )
-
 FOCAL_PAT = re.compile(
     rf'\b(?:'
     rf'focal(?:\W*laser)?'

@@ -3,7 +3,7 @@ import pytest
 
 from eye_extractor.common.algo.treatment import extract_treatment, FOCAL_PAT, PRP_PAT
 from eye_extractor.headers import Headers
-from eye_extractor.output.dr import build_dr_treatment
+from eye_extractor.output.dr import build_dr_tx
 
 # Test pattern.
 _pattern_cases = [
@@ -24,6 +24,7 @@ def test_dr_tx_patterns(pat, text, exp):
     assert bool(m) == exp
 
 
+# Test extract and build.
 @pytest.mark.parametrize('text, headers, exp_drtreatment_re, exp_drtreatment_le, exp_drtreatment_unk', [
     ('', {'PLAN': 'observe'}, -1, -1, 1),
     ('', {'PLAN': 'PRP Laser OU'}, 2, 2, -1),
@@ -35,7 +36,7 @@ def test_dr_tx_patterns(pat, text, exp):
 def test_dr_treatment_extract_and_build(text, headers, exp_drtreatment_re, exp_drtreatment_le, exp_drtreatment_unk):
     pre_json = extract_treatment(text, headers=Headers(headers), lateralities=None)
     post_json = json.loads(json.dumps(pre_json))
-    result = build_dr_treatment(post_json)
+    result = build_dr_tx(post_json)
     assert result['drtreatment_re'] == exp_drtreatment_re
     assert result['drtreatment_le'] == exp_drtreatment_le
     assert result['drtreatment_unk'] == exp_drtreatment_unk
