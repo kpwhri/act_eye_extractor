@@ -25,9 +25,8 @@ def test_antivegf_patterns(pat, text, exp):
 
 @pytest.mark.parametrize('text, headers, builder, prefix, exp_antivegf_re, exp_antivegf_le, exp_antivegf_unk', [
     ('s/p aflibercept', None, build_amd_antivegf, 'amd_', -1, -1, 2),
-    # pytest.param('anti-VEGF intravitreal injection', None, build_dmacedema_antivegf, 'dmacedema_', -1, -1, 4,
-    #              marks=pytest.mark.skip(reason="Failure to extract 'anti-vegf' from `ANTIVEGF_TO_ENUM`")),
-    # ('Intravitreal injection of Avastin (Bevacizumab)', None, build_dmacedema_antivegf, 'dmacedema_', -1, -1, 1),
+    ('anti-VEGF intravitreal injection', None, build_dmacedema_antivegf, 'dmacedema_', -1, -1, 4),
+    ('Intravitreal injection of Avastin (Bevacizumab)', None, build_dmacedema_antivegf, 'dmacedema_', -1, -1, 1),
 ])
 def test_antivegf_extract_and_build(text, headers, builder, prefix, exp_antivegf_re, exp_antivegf_le, exp_antivegf_unk):
     pre_json = extract_treatment(text, headers=Headers(headers), lateralities=None)

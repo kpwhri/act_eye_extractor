@@ -237,7 +237,7 @@ def extract_treatment(text, *, headers=None, lateralities=None, target_headers=N
     for result in _extract_treatment(
             'ALL', text, lateralities, 'ANTIVEGF',
             ('ANTIVEGF_RX',
-             re.compile(fr's/p\W*(?P<term>{ANTIVEGF_PAT})', re.I),
+             re.compile(fr'(s/p)?\W*(?P<term>{ANTIVEGF_PAT})', re.I),
              lambda m: ANTIVEGF_TO_ENUM[get_standardized_name(m.group('term'))]
              )
     ):
