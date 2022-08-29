@@ -47,10 +47,10 @@ def build_hemorrhage(data):
 
 def build_hemorrhage_type(data):
     return column_from_variable({
-            f'hemorrhage_typ_dr_re': HemorrhageType.UNKNOWN,
-            f'hemorrhage_typ_dr_le': HemorrhageType.UNKNOWN,
-            f'hemorrhage_typ_dr_unk': HemorrhageType.UNKNOWN,
-        },
+        f'hemorrhage_typ_dr_re': HemorrhageType.UNKNOWN,
+        f'hemorrhage_typ_dr_le': HemorrhageType.UNKNOWN,
+        f'hemorrhage_typ_dr_unk': HemorrhageType.UNKNOWN,
+    },
         data,
         transformer_func=HemorrhageType
     )
@@ -113,28 +113,20 @@ def build_nvi(data):
     return column_from_variable_binary(data, 'nvi_yesno')
 
 
-# def build_nvd(data):
-#     return column_from_variable({
-#             f'venbeading_re': -1,
-#             f'venbeading_le': -1,
-#         },
-#         data)
+def build_nvd(data):
+    return column_from_variable_binary(data, 'nvd_yesno')
 
 
-# def build_nve(data):
-#     return column_from_variable({
-#             f'venbeading_re': -1,
-#             f'venbeading_le': -1,
-#         },
-#         data)
+def build_nve(data):
+    return column_from_variable_binary(data, 'nve_yesno')
 
 
 def build_dr_type(data):
     return column_from_variable({
-            f'diabretinop_type_re': DrType.UNKNOWN,
-            f'diabretinop_type_le': DrType.UNKNOWN,
-            f'diabretinop_type_unk': DrType.UNKNOWN,
-        },
+        f'diabretinop_type_re': DrType.UNKNOWN,
+        f'diabretinop_type_le': DrType.UNKNOWN,
+        f'diabretinop_type_unk': DrType.UNKNOWN,
+    },
         data)
 
 
@@ -282,6 +274,8 @@ def build_dr_variables(data):
     results.update(build_neovasc(curr['binary_vars']))
     results.update(build_nva(curr['binary_vars']))
     results.update(build_nvi(curr['binary_vars']))
+    results.update(build_nvd(curr['binary_vars']))
+    results.update(build_nve(curr['binary_vars']))
     results.update(build_dr_type(curr['dr_type']))
     results.update(build_dr_tx(data['common']['treatment']))
     results.update(build_edema(curr['binary_vars']))

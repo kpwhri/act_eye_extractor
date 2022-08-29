@@ -15,7 +15,7 @@ from eye_extractor.output.dr import (
     build_nvi,
     build_oct_cme,
     build_ret_micro,
-    build_sig_edema
+    build_sig_edema, build_nvd, build_nve
 )
 
 
@@ -37,6 +37,11 @@ from eye_extractor.output.dr import (
     ('Dilated OD M/N- c/d 0.5 OU, macula clear, laser scars around atrophic hole', 1, None),
     ('Hx of BRVO OD with PRP', 1, None),
     ('Corneal neovascularization, unspecified.', 1, None),
+    ('no NVD OD', 0, 'no'),
+    ('Normal blood cells without NVD', 0, 'without'),
+    ('No d/b hemes, CWS or NVE OU', 0, 'no'),
+    ('without NVD, NVE', 0, 'without'),
+    ('no NVE Disc 0.45', 0, 'no'),
     ('IRIS: Normal Appearance, neg Rubeosis, OU', 0, 'neg'),
     ('Mild nonproliferative diabetic retinopathy (362.04)', 1, None),
     ('Plan for surgery: Pars Plana Vitrectomy with Membrane Peel left eye.', 1, None),
@@ -275,6 +280,46 @@ def test_build_nvi(data, exp_nvi_yesno_re, exp_nvi_yesno_le, exp_nvi_yesno_unk):
     assert result['nvi_yesno_re'] == exp_nvi_yesno_re
     assert result['nvi_yesno_le'] == exp_nvi_yesno_le
     assert result['nvi_yesno_unk'] == exp_nvi_yesno_unk
+
+
+@pytest.mark.parametrize('data, exp_nvd_yesno_re, exp_nvd_yesno_le, exp_nvd_yesno_unk', [
+    ([], -1, -1, -1),
+    ([{'nvd_yesno_re': {'value': 1},
+       'nvd_yesno_le': {'value': 1}}],
+     1, 1, -1),
+    ([{'nvd_yesno_re': {'value': 0},
+       'nvd_yesno_le': {'value': 0}}],
+     0, 0, -1),
+    ([{'nvd_yesno_re': {'value': 1}}], 1, -1, -1),
+    ([{'nvd_yesno_le': {'value': 0}}], -1, 0, -1),
+    ([{'nvd_yesno_unk': {'value': 1}}], -1, -1, 1),
+    ([{'nvd_yesno_unk': {'value': 0}}], -1, -1, 0)
+])
+def test_build_nvd(data, exp_nvd_yesno_re, exp_nvd_yesno_le, exp_nvd_yesno_unk):
+    result = build_nvd(data)
+    assert result['nvd_yesno_re'] == exp_nvd_yesno_re
+    assert result['nvd_yesno_le'] == exp_nvd_yesno_le
+    assert result['nvd_yesno_unk'] == exp_nvd_yesno_unk
+
+
+@pytest.mark.parametrize('data, exp_nve_yesno_re, exp_nve_yesno_le, exp_nve_yesno_unk', [
+    ([], -1, -1, -1),
+    ([{'nve_yesno_re': {'value': 1},
+       'nve_yesno_le': {'value': 1}}],
+     1, 1, -1),
+    ([{'nve_yesno_re': {'value': 0},
+       'nve_yesno_le': {'value': 0}}],
+     0, 0, -1),
+    ([{'nve_yesno_re': {'value': 1}}], 1, -1, -1),
+    ([{'nve_yesno_le': {'value': 0}}], -1, 0, -1),
+    ([{'nve_yesno_unk': {'value': 1}}], -1, -1, 1),
+    ([{'nve_yesno_unk': {'value': 0}}], -1, -1, 0)
+])
+def test_build_nve(data, exp_nve_yesno_re, exp_nve_yesno_le, exp_nve_yesno_unk):
+    result = build_nve(data)
+    assert result['nve_yesno_re'] == exp_nve_yesno_re
+    assert result['nve_yesno_le'] == exp_nve_yesno_le
+    assert result['nve_yesno_unk'] == exp_nve_yesno_unk
 
 
 @pytest.mark.parametrize('data, exp_dmacedema_yesno_re, exp_dmacedema_yesno_le, exp_dmacedema_yesno_unk', [

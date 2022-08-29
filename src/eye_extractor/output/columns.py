@@ -329,6 +329,14 @@ OUTPUT_COLUMNS = {
     'nvi_yesno_re': [is_in_range(-1, 1)],
     'nvi_yesno_le': [is_in_range(-1, 1)],
     'nvi_yesno_unk': [is_in_range(-1, 1)],
+    # neovascularization of disc
+    'nvd_yesno_re': [is_in_range(-1, 1)],
+    'nvd_yesno_le': [is_in_range(-1, 1)],
+    'nvd_yesno_unk': [is_in_range(-1, 1)],
+    # neovascularization elsewhere
+    'nve_yesno_re': [is_in_range(-1, 1)],
+    'nve_yesno_le': [is_in_range(-1, 1)],
+    'nve_yesno_unk': [is_in_range(-1, 1)],
     # diabetic macular edema
     'dmacedema_yesno_re': [is_in_range(-1, 1)],
     'dmacedema_yesno_le': [is_in_range(-1, 1)],
