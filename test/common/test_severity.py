@@ -2,15 +2,16 @@ import json
 import pytest
 
 from eye_extractor.common.severity import (
-    FOUR_QUADRANT,
+    extract_severity,
     MILD_PAT,
     MODERATE_PAT,
-    ONE_QUADRANT,
+    Q1_PAT,
+    Q2_PAT,
+    Q3_PAT,
+    Q4_PAT,
     SEVERE_PAT,
     Severity,
     SEVERITY_PAT,
-    THREE_QUADRANT,
-    TWO_QUADRANT,
 )
 
 # Test pattern.
@@ -23,10 +24,10 @@ _pattern_cases = [
     (SEVERITY_PAT, 'severity=2Q', True),
     (SEVERITY_PAT, 'severity=3Q', True),
     (SEVERITY_PAT, 'severity=4Q', True),
-    (ONE_QUADRANT, 'inferior quadrant', True),
-    (TWO_QUADRANT, 'temporal and inferior quadrant', True),
-    (THREE_QUADRANT, 'temporal, inferior and nasal quadrants', True),
-    (FOUR_QUADRANT, 'all quadrants', True),
+    (Q1_PAT, 'inferior quadrant', True),
+    (Q2_PAT, 'temporal and inferior quadrant', True),
+    (Q3_PAT, 'temporal, inferior and nasal quadrants', True),
+    (Q4_PAT, 'all quadrants', True),
 ]
 
 
@@ -56,6 +57,6 @@ _dr_severity_extract_cases = [
 @pytest.mark.parametrize('text, labels',
                          _dr_severity_extract_cases)
 def test_extract_severity(text, labels):
-    severities = extact_severity(text)
+    severities = extract_severity(text)
     for i, sev in enumerate(severities):
         assert sev == labels[i]

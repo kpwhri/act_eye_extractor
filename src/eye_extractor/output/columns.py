@@ -397,4 +397,12 @@ OUTPUT_COLUMNS = {
     'dmacedema_cmt_re': [is_in_range(-1, 1000)],
     'dmacedema_cmt_le': [is_in_range(-1, 1000)],
     'dmacedema_cmt_unk': [is_in_range(-1, 1000)],
+    # Non-proliferative DR severity
+    'nonprolifdr_re': [is_in_range(-1, 7)],
+    'nonprolifdr_le': [is_in_range(-1, 7)],
+    'nonprolifdr_unk': [is_in_range(-1, 7)],
+    # Proliferative DR severity
+    'prolifdr_re': [is_in_range(-1, 7)],
+    'prolifdr_le': [is_in_range(-1, 7)],
+    'prolifdr_unk': [is_in_range(-1, 7)],
 }

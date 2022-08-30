@@ -97,20 +97,6 @@ DIABETIC_RETINOPATHY_PATS = [
         r')\b',
         re.I
     )),
-    ('nonprolifdr', re.compile(
-        r'\b('
-        r'(No|mild|moderate|severe|very severe)\W*'
-        r'(NPDR|background diabetic retinopathy|BDR|non\W?proliferative DR)'
-        r')\b',
-        re.I
-    )),
-    ('prolifdr', re.compile(
-        r'\b('
-        r'(No|mild|moderate|severe|very severe)\W*'
-        r'(PDR|proliferative diabetic retinopathy|proliferative DR)'
-        r')\b',
-        re.I
-    )),
     ('drtreatment', re.compile(
         r'\b('
         r'PRP|pan retinal photocoagulation|Pars plana vitrectomy'

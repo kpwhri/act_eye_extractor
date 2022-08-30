@@ -3,6 +3,7 @@ from enum import IntEnum
 from eye_extractor.common.algo.fluid import Fluid, fluid_prioritization, rename_fluid
 from eye_extractor.common.algo.treatment import Treatment
 from eye_extractor.common.drug.antivegf import AntiVegf, rename_antivegf
+from eye_extractor.common.severity import Severity
 from eye_extractor.dr.dr_type import DrType
 from eye_extractor.dr.hemorrhage_type import HemorrhageType
 from eye_extractor.output.variable import column_from_variable, column_from_variable_binary
@@ -130,20 +131,22 @@ def build_dr_type(data):
         data)
 
 
-# def build_npdr(data):
-#     return column_from_variable({
-#             f'venbeading_re': -1,
-#             f'venbeading_le': -1,
-#         },
-#         data)
+def build_npdr_severity(data):
+    return column_from_variable({
+            f'nonprolifdr_re': Severity.UNKNOWN,
+            f'nonprolifdr_le': Severity.UNKNOWN,
+            f'nonprolifdr_unk': Severity.UNKNOWN,
+        },
+        data)
 
 
-# def build_pdr(data):
-#     return column_from_variable({
-#             f'venbeading_re': -1,
-#             f'venbeading_le': -1,
-#         },
-#         data)
+def build_pdr_severity(data):
+    return column_from_variable({
+            f'prolifdr_re': Severity.UNKNOWN,
+            f'prolifdr_le': Severity.UNKNOWN,
+            f'prolifdr_unk': Severity.UNKNOWN,
+        },
+        data)
 
 
 def _rename_dr_tx(val: IntEnum):
@@ -277,6 +280,8 @@ def build_dr_variables(data):
     results.update(build_nvd(curr['binary_vars']))
     results.update(build_nve(curr['binary_vars']))
     results.update(build_dr_type(curr['dr_type']))
+    results.update(build_npdr_severity(curr['dr_type']))
+    results.update(build_pdr_severity(curr['dr_type']))
     results.update(build_dr_tx(data['common']['treatment']))
     results.update(build_edema(curr['binary_vars']))
     results.update(build_sig_edema(curr['binary_vars']))

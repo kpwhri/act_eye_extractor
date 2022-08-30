@@ -7,6 +7,7 @@ from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 class Severity(enum.IntEnum):
     UNKNOWN = -1
+    NONE = 0
     Q1 = 1
     Q2 = 2
     Q3 = 3
@@ -39,36 +40,68 @@ SEVERE_PAT = re.compile(
 
 SEVERITY_PAT = re.compile(
     r'\b('
-    r'severity=(?P<q_value>\dQ)'
+    r'severity=(?P<q_value>\dq)'
     r')\b',
     re.I
 )
 
-ONE_QUADRANT = re.compile(
+Q1_PAT = re.compile(
     r'\b('
     r'\w+\s+quadrant'
     r')\b',
     re.I
 )
 
-TWO_QUADRANT = re.compile(
+Q2_PAT = re.compile(
     r'\b('
     r'\w+(\s+and|,)\s+\w+\s+quadrant(s)?'
     r')\b',
     re.I
 )
 
-THREE_QUADRANT = re.compile(
+Q3_PAT = re.compile(
     r'\b('
     r'\w+\s*,\s+\w+(\s+and|,)\s+\w+\s+quadrant(s)?'
     r')\b',
     re.I
 )
 
-FOUR_QUADRANT = re.compile(
+Q4_PAT = re.compile(
     r'\b('
     r'all\s+quadrant(s)?'
     r')\b',
     re.I
 )
+
+
+SEVERITY_PATS = [
+    (SEVERE_PAT, Severity.SEVERE),
+    (MODERATE_PAT, Severity.MODERATE),
+    (MILD_PAT, Severity.MILD),
+    (Q4_PAT, Severity.Q4),
+    (Q3_PAT, Severity.Q3),
+    (Q2_PAT, Severity.Q2),
+    (Q1_PAT, Severity.Q1),
+]
+
+
+def extract_severity(text: str) -> list[Severity]:
+    sevs = []
+    for m in SEVERITY_PAT.finditer(text):
+        match m:
+            case '1q':
+                sevs.append(Severity.Q1)
+            case '2q':
+                sevs.append(Severity.Q2)
+            case '3q':
+                sevs.append(Severity.Q3)
+            case '4q':
+                sevs.append(Severity.Q4)
+
+    for pat, severity in SEVERITY_PATS:
+        for _ in pat.finditer(text):
+            sevs.append(severity)
+
+    return sevs
+
 
