@@ -47,11 +47,16 @@ def test_build_hemorrhage_type(data, exp_hemorrhage_typ_dr_re, exp_hemorrhage_ty
 
 
 @pytest.mark.parametrize('text, hemorrhage_type_dr_re, hemorrhage_type_dr_le, hemorrhage_type_dr_unk', [
-    ('Acute left retinal tear with small vitreous hemorrhage', 0, HemorrhageType.VITREOUS, 0),
-    ('OD: preretinal hemorrhage extending from temporal periphery', HemorrhageType.PRERETINAL, 0, 0),
-    ('subretinal hemorrhage from his macular degeneration', 0, 0, HemorrhageType.SUBRETINAL),
-    ('swelling and intraretinal hemorrhage', 0, 0, HemorrhageType.INTRARETINAL),
-    ('dot blot hemorrhage near inferior margin of GA', 0, 0, HemorrhageType.DOT_BLOT),
+    ('Acute left retinal tear with small vitreous hemorrhage',
+     HemorrhageType.UNKNOWN, HemorrhageType.VITREOUS, HemorrhageType.UNKNOWN),
+    ('OD: preretinal hemorrhage extending from temporal periphery',
+     HemorrhageType.PRERETINAL, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
+    ('subretinal hemorrhage from his macular degeneration',
+     HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.SUBRETINAL),
+    ('swelling and intraretinal hemorrhage',
+     HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.INTRARETINAL),
+    ('dot blot hemorrhage near inferior margin of GA',
+     HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.DOT_BLOT),
 ])
 def test_hemorrhage_type_extract_and_build(text, hemorrhage_type_dr_re, hemorrhage_type_dr_le,
                                            hemorrhage_type_dr_unk):
