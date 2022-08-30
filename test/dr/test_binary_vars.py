@@ -15,7 +15,7 @@ from eye_extractor.output.dr import (
     build_nvi,
     build_oct_cme,
     build_ret_micro,
-    build_sig_edema
+    build_sig_edema, build_nvd, build_nve
 )
 
 
@@ -31,22 +31,23 @@ from eye_extractor.output.dr import (
     ('OU   No Microaneurysms/hemes, cotton-wool spots, exudates, IRMA, Venous beading, NVE', 0, 'no'),
     ('OD: area of IRMA just nasal to disc,', 1, None),
     ('also has small area of IRMA right eye', 1, None),
-    ('increased IRF - Avastin OS', 1, None),
     ('PERIPHERAL RETINA: Laser scars OD, Laser scars versus cobblestone OS', 1, None),
     pytest.param('Central macular thickness: 234 um, No SRF, few focal scars', 1, None,
                  marks=pytest.mark.skip(reason="Unhandled instance of negation.")),
     ('Dilated OD M/N- c/d 0.5 OU, macula clear, laser scars around atrophic hole', 1, None),
     ('Hx of BRVO OD with PRP', 1, None),
     ('Corneal neovascularization, unspecified.', 1, None),
+    ('no NVD OD', 0, 'no'),
+    ('Normal blood cells without NVD', 0, 'without'),
+    ('No d/b hemes, CWS or NVE OU', 0, 'no'),
+    ('without NVD, NVE', 0, 'without'),
+    ('no NVE Disc 0.45', 0, 'no'),
     ('IRIS: Normal Appearance, neg Rubeosis, OU', 0, 'neg'),
     ('Mild nonproliferative diabetic retinopathy (362.04)', 1, None),
-    ('PI OS NO PDR active', 0, 'no'),
     ('Plan for surgery: Pars Plana Vitrectomy with Membrane Peel left eye.', 1, None),
     ('Patient presents with: Diabetic macular edema E11.311', 1, None),
     ('No CSME', 0, 'no'),
     ('OD: erm, CMT 291; OS: erm, CMT 280 No change', 1, None),
-    ('Intravitreal injection of Avastin (Bevacizumab) of your left eye', 1, None),
-    ('TRIAMCINOLONE ACETONIDE 0.1 % TOPICAL CREAM', 1, None)
 ])
 def test_get_dr_binary(text, exp_value, exp_negword):
     data = get_dr_binary(text)
@@ -279,6 +280,46 @@ def test_build_nvi(data, exp_nvi_yesno_re, exp_nvi_yesno_le, exp_nvi_yesno_unk):
     assert result['nvi_yesno_re'] == exp_nvi_yesno_re
     assert result['nvi_yesno_le'] == exp_nvi_yesno_le
     assert result['nvi_yesno_unk'] == exp_nvi_yesno_unk
+
+
+@pytest.mark.parametrize('data, exp_nvd_yesno_re, exp_nvd_yesno_le, exp_nvd_yesno_unk', [
+    ([], -1, -1, -1),
+    ([{'nvd_yesno_re': {'value': 1},
+       'nvd_yesno_le': {'value': 1}}],
+     1, 1, -1),
+    ([{'nvd_yesno_re': {'value': 0},
+       'nvd_yesno_le': {'value': 0}}],
+     0, 0, -1),
+    ([{'nvd_yesno_re': {'value': 1}}], 1, -1, -1),
+    ([{'nvd_yesno_le': {'value': 0}}], -1, 0, -1),
+    ([{'nvd_yesno_unk': {'value': 1}}], -1, -1, 1),
+    ([{'nvd_yesno_unk': {'value': 0}}], -1, -1, 0)
+])
+def test_build_nvd(data, exp_nvd_yesno_re, exp_nvd_yesno_le, exp_nvd_yesno_unk):
+    result = build_nvd(data)
+    assert result['nvd_yesno_re'] == exp_nvd_yesno_re
+    assert result['nvd_yesno_le'] == exp_nvd_yesno_le
+    assert result['nvd_yesno_unk'] == exp_nvd_yesno_unk
+
+
+@pytest.mark.parametrize('data, exp_nve_yesno_re, exp_nve_yesno_le, exp_nve_yesno_unk', [
+    ([], -1, -1, -1),
+    ([{'nve_yesno_re': {'value': 1},
+       'nve_yesno_le': {'value': 1}}],
+     1, 1, -1),
+    ([{'nve_yesno_re': {'value': 0},
+       'nve_yesno_le': {'value': 0}}],
+     0, 0, -1),
+    ([{'nve_yesno_re': {'value': 1}}], 1, -1, -1),
+    ([{'nve_yesno_le': {'value': 0}}], -1, 0, -1),
+    ([{'nve_yesno_unk': {'value': 1}}], -1, -1, 1),
+    ([{'nve_yesno_unk': {'value': 0}}], -1, -1, 0)
+])
+def test_build_nve(data, exp_nve_yesno_re, exp_nve_yesno_le, exp_nve_yesno_unk):
+    result = build_nve(data)
+    assert result['nve_yesno_re'] == exp_nve_yesno_re
+    assert result['nve_yesno_le'] == exp_nve_yesno_le
+    assert result['nve_yesno_unk'] == exp_nve_yesno_unk
 
 
 @pytest.mark.parametrize('data, exp_dmacedema_yesno_re, exp_dmacedema_yesno_le, exp_dmacedema_yesno_unk', [

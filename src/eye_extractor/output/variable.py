@@ -131,7 +131,7 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
         enumclass = transformer_func
         transformer_func = lambda n: enumclass(n['value'] if isinstance(n, dict) else n)
     if filter_func is None:  # inclusion criteria
-        filter_func = lambda n: n
+        filter_func = lambda n: True
     if convert_func is None:  # if using different names (want different output name)
         convert_func = lambda n: n
     if sideeffect_func is None:  # side effects when variable is updated

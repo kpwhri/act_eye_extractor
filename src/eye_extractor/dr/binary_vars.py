@@ -53,22 +53,9 @@ DIABETIC_RETINOPATHY_PATS = [
         r')\b',
         re.I
     )),
-    ('fluid_dr', re.compile(
-        r'\b('
-        r'dr|irf|srf|fluid'
-        r')\b',
-        re.I
-    )),
     ('dr_laser_scars', re.compile(
         r'\b('
         r'laser scars?'
-        r')\b',
-        re.I
-    )),
-    ('dr_laser_scar_type', re.compile(
-        r'\b('
-        r'(pan\W?retinal|focal|grid|macula)(\W*\w+){0,3}\W*(laser\W*)?scars'
-        r'|(laser\W*)?scars(\W*\w+){0,3}\W*(pan\W?retinal|focal|grid|macula)'
         r')\b',
         re.I
     )),
@@ -110,12 +97,6 @@ DIABETIC_RETINOPATHY_PATS = [
         r')\b',
         re.I
     )),
-    ('diabretinop_type', re.compile(
-        r'\b('
-        r'npdr|nonproliferative diabetic retinopathy|PDR|proliferative diabetic retinopathy'
-        r')\b',
-        re.I
-    )),
     ('nonprolifdr', re.compile(
         r'\b('
         r'(No|mild|moderate|severe|very severe)\W*'
@@ -151,18 +132,6 @@ DIABETIC_RETINOPATHY_PATS = [
     ('oct_centralmac', re.compile(
         r'\b('
         r'CMT|central macular thickness|macular thickness|thickness of macula'
-        r')\b',
-        re.I
-    )),
-    ('dmacedema_tx', re.compile(
-        r'\b('
-        r'focal laser|grid laser|laser focal|laser grid|intravitreal Injections?|anti-VEGF|PDT|photodynamic therapy'
-        r')\b',
-        re.I
-    )),
-    ('dmacedema_antivegf', re.compile(
-        r'\b('
-        r'anti-VEGF|intravitreal anti-VEG|bevacizumab|ranibizumab|aflibercept|triamcinolone'
         r')\b',
         re.I
     )),
