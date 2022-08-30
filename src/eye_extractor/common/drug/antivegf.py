@@ -20,7 +20,8 @@ ANTIVEGF_TO_ENUM = {
     'ranibizumab': AntiVegf.RANIBIZUMAB,
     'ranibuzumab': AntiVegf.RANIBIZUMAB,
     'lucentis': AntiVegf.RANIBIZUMAB,
-    'anti vegf': AntiVegf.YES  # '-' is removed by `common.drug.shared.get_standardized_name` before lookup
+    'anti vegf': AntiVegf.YES,  # '-' is removed by `common.drug.shared.get_standardized_name` before lookup
+    'antivegf': AntiVegf.YES,
 }
 
 ANTIVEGF_PAT = build_pattern_from_dict(ANTIVEGF_TO_ENUM)
