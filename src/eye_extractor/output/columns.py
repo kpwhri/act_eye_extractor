@@ -349,6 +349,14 @@ OUTPUT_COLUMNS = {
     'nvi_yesno_re': [is_in_range(-1, 1)],
     'nvi_yesno_le': [is_in_range(-1, 1)],
     'nvi_yesno_unk': [is_in_range(-1, 1)],
+    # neovascularization of disc
+    'nvd_yesno_re': [is_in_range(-1, 1)],
+    'nvd_yesno_le': [is_in_range(-1, 1)],
+    'nvd_yesno_unk': [is_in_range(-1, 1)],
+    # neovascularization elsewhere
+    'nve_yesno_re': [is_in_range(-1, 1)],
+    'nve_yesno_le': [is_in_range(-1, 1)],
+    'nve_yesno_unk': [is_in_range(-1, 1)],
     # diabetic macular edema
     'dmacedema_yesno_re': [is_in_range(-1, 1)],
     'dmacedema_yesno_le': [is_in_range(-1, 1)],
@@ -361,4 +369,32 @@ OUTPUT_COLUMNS = {
     'oct_centralmac_re': [is_in_range(-1, 1)],
     'oct_centralmac_le': [is_in_range(-1, 1)],
     'oct_centralmac_unk': [is_in_range(-1, 1)],
+    # Laser scar types
+    'focal_dr_laser_scar_type_re': [is_in_range(-1, 1)],
+    'focal_dr_laser_scar_type_le': [is_in_range(-1, 1)],
+    'focal_dr_laser_scar_type_unk': [is_in_range(-1, 1)],
+    # Diabetic retinopathy type
+    'diabretinop_type_re': [is_in_range(-1, 2)],
+    'diabretinop_type_le': [is_in_range(-1, 2)],
+    'diabretinop_type_unk': [is_in_range(-1, 2)],
+    # Presence of fluid
+    'fluid_dr_re': [is_in_range(-1, 5)],
+    'fluid_dr_le': [is_in_range(-1, 5)],
+    'fluid_dr_unk': [is_in_range(-1, 5)],
+    # Diabetic macular edema treatment
+    'dmacedema_tx_re': [is_in_range(-1, 5)],
+    'dmacedema_tx_le': [is_in_range(-1, 5)],
+    'dmacedema_tx_unk': [is_in_range(-1, 5)],
+    # Anti-VEGF diabetic macular edema
+    'dmacedema_antivegf_re': [is_in_range(-1, 4)],
+    'dmacedema_antivegf_le': [is_in_range(-1, 4)],
+    'dmacedema_antivegf_unk': [is_in_range(-1, 4)],
+    # Diabetic retinopathy treatment
+    'drtreatment_re': [is_in_range(-1, 6)],
+    'drtreatment_le': [is_in_range(-1, 6)],
+    'drtreatment_unk': [is_in_range(-1, 6)],
+    # Diabetic macular edema CMT value
+    'dmacedema_cmt_re': [is_in_range(-1, 1000)],
+    'dmacedema_cmt_le': [is_in_range(-1, 1000)],
+    'dmacedema_cmt_unk': [is_in_range(-1, 1000)],
 }

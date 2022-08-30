@@ -1,3 +1,5 @@
+import json
+
 import pytest
 
 from eye_extractor.dr.hemorrhage_type import get_hemorrhage_type, HemorrhageType
@@ -22,21 +24,21 @@ def test_get_hemorrhage_type(text, exp_value, exp_negword):
 
 @pytest.mark.parametrize('data, exp_hemorrhage_typ_dr_re, exp_hemorrhage_typ_dr_le', [
     ([], HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
-    ([{'hemorrhage_typ_dr_re': 1}],
+    ([{'hemorrhage_typ_dr_re': 0}],
      HemorrhageType.NONE, HemorrhageType.UNKNOWN),
-    ([{'hemorrhage_typ_dr_re': 2,
-       'hemorrhage_typ_dr_le': 2}],
+    ([{'hemorrhage_typ_dr_re': 1,
+       'hemorrhage_typ_dr_le': 1}],
      HemorrhageType.INTRARETINAL,
      HemorrhageType.INTRARETINAL),
-    ([{'hemorrhage_typ_dr_re': 3,
-      'hemorrhage_typ_dr_le': 4}],
+    ([{'hemorrhage_typ_dr_re': 2,
+       'hemorrhage_typ_dr_le': 3}],
      HemorrhageType.DOT_BLOT,
      HemorrhageType.PRERETINAL),
-    ([{'hemorrhage_typ_dr_le': 5}],
+    ([{'hemorrhage_typ_dr_le': 4}],
      HemorrhageType.UNKNOWN,
      HemorrhageType.VITREOUS),
-    ([{'hemorrhage_typ_dr_re': 1,
-       'hemorrhage_typ_dr_le': 6}],
+    ([{'hemorrhage_typ_dr_re': 0,
+       'hemorrhage_typ_dr_le': 5}],
      HemorrhageType.NONE,
      HemorrhageType.SUBRETINAL)
 ])
@@ -47,15 +49,21 @@ def test_build_hemorrhage_type(data, exp_hemorrhage_typ_dr_re, exp_hemorrhage_ty
 
 
 @pytest.mark.parametrize('text, hemorrhage_type_dr_re, hemorrhage_type_dr_le, hemorrhage_type_dr_unk', [
-    ('Acute left retinal tear with small vitreous hemorrhage', 0, HemorrhageType.VITREOUS.value, 0),
-    ('OD: preretinal hemorrhage extending from temporal periphery', HemorrhageType.PRERETINAL.value, 0, 0),
-    ('subretinal hemorrhage from his macular degeneration', 0, 0, HemorrhageType.SUBRETINAL.value),
-    ('swelling and intraretinal hemorrhage', 0, 0, HemorrhageType.INTRARETINAL.value),
-    ('dot blot hemorrhage near inferior margin of GA', 0, 0, HemorrhageType.DOT_BLOT.value),
+    ('Acute left retinal tear with small vitreous hemorrhage',
+     HemorrhageType.UNKNOWN, HemorrhageType.VITREOUS, HemorrhageType.UNKNOWN),
+    ('OD: preretinal hemorrhage extending from temporal periphery',
+     HemorrhageType.PRERETINAL, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
+    ('subretinal hemorrhage from his macular degeneration',
+     HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.SUBRETINAL),
+    ('swelling and intraretinal hemorrhage',
+     HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.INTRARETINAL),
+    ('dot blot hemorrhage near inferior margin of GA',
+     HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.DOT_BLOT),
 ])
-def test_get_hemorrhage_type_extract_and_build(text, hemorrhage_type_dr_re, hemorrhage_type_dr_le,
-                                               hemorrhage_type_dr_unk):
+def test_hemorrhage_type_extract_and_build(text, hemorrhage_type_dr_re, hemorrhage_type_dr_le,
+                                           hemorrhage_type_dr_unk):
     data = get_hemorrhage_type(text)
+    data = json.loads(json.dumps(data))  # simulate write to/reading from file
     result = build_hemorrhage_type(data)
 
     assert result['hemorrhage_typ_dr_re'] == hemorrhage_type_dr_re

@@ -17,8 +17,10 @@ ANTIVEGF_TO_ENUM = {
     'eyelea': AntiVegf.AFLIBERCEPT,
     'bevacizumab': AntiVegf.BEVACIZUMAB,
     'avastin': AntiVegf.BEVACIZUMAB,
+    'ranibizumab': AntiVegf.RANIBIZUMAB,
     'ranibuzumab': AntiVegf.RANIBIZUMAB,
     'lucentis': AntiVegf.RANIBIZUMAB,
+    'anti vegf': AntiVegf.YES  # '-' is removed by `common.drug.shared.get_standardized_name` before lookup
 }
 
 ANTIVEGF_PAT = build_pattern_from_dict(ANTIVEGF_TO_ENUM)
