@@ -169,8 +169,8 @@ PRP_PAT = re.compile(
 )
 FOCAL_PAT = re.compile(
     rf'\b(?:'
-    rf'focal(\W*\w+){0,3}(?:\W*laser)?'
-    rf'|(?:laser)?(\W*\w+){0,3}\W*focal'
+    rf'focal(\W*\w+){{0,3}}(?:\W*laser)?'
+    rf'|(?:laser)?(\W*\w+){{0,3}}\W*focal'
     rf')\b',
     re.I
 )
