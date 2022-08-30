@@ -1,3 +1,5 @@
+import json
+
 import pytest
 
 from eye_extractor.dr.hemorrhage_type import get_hemorrhage_type, HemorrhageType
@@ -61,6 +63,7 @@ def test_build_hemorrhage_type(data, exp_hemorrhage_typ_dr_re, exp_hemorrhage_ty
 def test_hemorrhage_type_extract_and_build(text, hemorrhage_type_dr_re, hemorrhage_type_dr_le,
                                            hemorrhage_type_dr_unk):
     data = get_hemorrhage_type(text)
+    data = json.loads(json.dumps(data))  # simulate write to/reading from file
     result = build_hemorrhage_type(data)
 
     assert result['hemorrhage_typ_dr_re'] == hemorrhage_type_dr_re
