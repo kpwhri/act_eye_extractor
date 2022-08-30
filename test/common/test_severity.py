@@ -1,14 +1,31 @@
 import json
 import pytest
 
+from eye_extractor.common.severity import (
+    FOUR_QUADRANT,
+    MILD_PAT,
+    MODERATE_PAT,
+    ONE_QUADRANT,
+    SEVERE_PAT,
+    SEVERITY_PAT,
+    THREE_QUADRANT,
+    TWO_QUADRANT,
+)
 
 # Test pattern.
 _pattern_cases = [
-    # (NPDR_PAT, 'NPDR', True),
-    # (NPDR_PAT, 'non-proliferative diabetic retinopathy', True),
-    # (NPDR_PAT, 'Nonproliferative diabetic retinopathy', True),
-    # (NPDR_PAT, 'Non proliferative diabetic retinopathy', True),
-    # (NPDR_PAT, 'NONPROLIFERATIVE DIABETIC RETINOPATHY', True),
+    (MILD_PAT, 'mild', True),
+    (MODERATE_PAT, 'moderate', True),
+    (SEVERE_PAT, 'severe', True),
+    (SEVERE_PAT, 'very severe', True),
+    (SEVERITY_PAT, 'severity=1Q', True),
+    (SEVERITY_PAT, 'severity=2Q', True),
+    (SEVERITY_PAT, 'severity=3Q', True),
+    (SEVERITY_PAT, 'severity=4Q', True),
+    (ONE_QUADRANT, 'inferior quadrant', True),
+    (TWO_QUADRANT, 'temporal and inferior quadrant', True),
+    (THREE_QUADRANT, 'temporal, inferior and nasal quadrants', True),
+    (FOUR_QUADRANT, 'all quadrants', True),
 ]
 
 
