@@ -15,6 +15,7 @@ from eye_extractor.output.dr import build_dmacedema_antivegf
     (ANTIVEGF_RX, 'bevacizumab', True),
     (ANTIVEGF_RX, 'avastin', True),
     (ANTIVEGF_RX, 'ranibuzumab', True),
+    (ANTIVEGF_RX, 'ranibizumab', True),
     (ANTIVEGF_RX, 'lucentis', True),
     (ANTIVEGF_RX, 'anti-vegf', True)
 ])

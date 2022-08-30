@@ -18,6 +18,7 @@ ANTIVEGF_TO_ENUM = {
     'bevacizumab': AntiVegf.BEVACIZUMAB,
     'avastin': AntiVegf.BEVACIZUMAB,
     'ranibizumab': AntiVegf.RANIBIZUMAB,
+    'ranibuzumab': AntiVegf.RANIBIZUMAB,
     'lucentis': AntiVegf.RANIBIZUMAB,
     'anti vegf': AntiVegf.YES  # '-' is removed by `common.drug.shared.get_standardized_name` before lookup
 }
