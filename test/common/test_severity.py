@@ -7,6 +7,7 @@ from eye_extractor.common.severity import (
     MODERATE_PAT,
     ONE_QUADRANT,
     SEVERE_PAT,
+    Severity,
     SEVERITY_PAT,
     THREE_QUADRANT,
     TWO_QUADRANT,
@@ -37,3 +38,24 @@ def _get_pattern_cases():
 def test_severity_patterns(pat, text, exp):
     m = pat.search(text)
     assert bool(m) == exp
+
+
+# Test extract and build.
+_dr_severity_extract_cases = [
+    ('very mild', [Severity.MILD]),
+    ('mild - moderate', [Severity.MODERATE, Severity.MILD]),
+    ('moderate', [Severity.MODERATE]),
+    ('very severe', [Severity.SEVERE]),
+    ('heme severity=3Q', [Severity.Q3]),
+    ('heme temporal and inferior quadrant', [Severity.Q2, Severity.Q1]),
+    ('IRMA nasal quadrant', [Severity.Q1]),
+    ('heme in all quadrants', [Severity.Q4])
+]
+
+
+@pytest.mark.parametrize('text, labels',
+                         _dr_severity_extract_cases)
+def test_extract_severity(text, labels):
+    severities = extact_severity(text)
+    for i, sev in enumerate(severities):
+        assert sev == labels[i]

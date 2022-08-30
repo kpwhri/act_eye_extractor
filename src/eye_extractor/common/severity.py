@@ -7,7 +7,6 @@ from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 class Severity(enum.IntEnum):
     UNKNOWN = -1
-    NONE = 0
     Q1 = 1
     Q2 = 2
     Q3 = 3
@@ -33,7 +32,7 @@ MODERATE_PAT = re.compile(
 
 SEVERE_PAT = re.compile(
     r'\b('
-    r'(very\s+)?severe'
+    r'severe'
     r')\b',
     re.I
 )
