@@ -1,4 +1,3 @@
-import enum
 import re
 
 from eye_extractor.common.negation import is_negated
