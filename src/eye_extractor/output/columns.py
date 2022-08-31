@@ -405,4 +405,12 @@ OUTPUT_COLUMNS = {
     'prolifdr_re': [is_in_range(-1, 7)],
     'prolifdr_le': [is_in_range(-1, 7)],
     'prolifdr_unk': [is_in_range(-1, 7)],
+    # Intraretinal hemorrhage severity
+    'intraretinal_hem_re': [is_in_range(-1, 7)],
+    'intraretinal_hem_le': [is_in_range(-1, 7)],
+    'intraretinal_hem_unk': [is_in_range(-1, 7)],
+    # Dot blot hemorrhage severity
+    'dotblot_hem_re': [is_in_range(-1, 7)],
+    'dotblot_hem_le': [is_in_range(-1, 7)],
+    'dotblot_hem_unk': [is_in_range(-1, 7)],
 }

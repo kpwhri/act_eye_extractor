@@ -293,6 +293,8 @@ def build_dr_variables(data):
     results.update(build_disc_edema(curr['binary_vars']))
     results.update(build_hemorrhage(curr['binary_vars']))
     results.update(build_hemorrhage_type(curr['hemorrhage_type']))
+    results.update(build_intraretinal_severity(curr['hemorrhage_type']))
+    results.update(build_dot_blot_severity(curr['hemorrhage_type']))
     results.update(build_fluid(data['common']['treatment']))
     results.update(build_laser_scars(curr['binary_vars']))
     results.update(build_laser_panrentinal(curr['binary_vars']))
