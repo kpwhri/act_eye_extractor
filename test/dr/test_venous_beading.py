@@ -24,13 +24,13 @@ def test_ven_beading_patterns(pat, text, exp):
 
 # Test extract and build.
 _ven_beading_extract_and_build_cases = [
+    ('venous beading ou', {}, 'MILD', 'MILD', 'UNKNOWN'),
     ('mild VB OU', {}, 'MILD', 'MILD', 'UNKNOWN'),
     ('Mild - moderate venous beading OD', {}, 'MODERATE', 'UNKNOWN', 'UNKNOWN'),
     ('no venous beading ou', {}, 'NONE', 'NONE', 'UNKNOWN'),
     ('moderate VB OS', {}, 'UNKNOWN', 'MODERATE', 'UNKNOWN'),
     ('severe venous beading', {}, 'UNKNOWN', 'UNKNOWN', 'SEVERE'),
     ('VB severity=3Q OS', {}, 'UNKNOWN', 'Q3', 'UNKNOWN'),
-    # TODO: `get_laterality_for_term` returning unknown instead of OD
     ('venous beading temporal and inferior quadrant OD', {}, 'Q2', 'UNKNOWN', 'UNKNOWN'),
     ('nasal quadrant, VB', {}, 'UNKNOWN', 'UNKNOWN', 'Q1'),
     ('VB in all quadrants ou', {}, 'Q4', 'Q4', 'UNKNOWN'),

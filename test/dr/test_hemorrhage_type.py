@@ -79,7 +79,6 @@ _intraretinal_severity_extract_and_build_cases = [
     ('moderate intraretinal heme OS', {}, 'UNKNOWN', 'MODERATE', 'UNKNOWN'),
     ('severe intraretinal hemorrhage', {}, 'UNKNOWN', 'UNKNOWN', 'SEVERE'),
     ('intraretinal heme severity=3Q OS', {}, 'UNKNOWN', 'Q3', 'UNKNOWN'),
-    # TODO: `get_laterality_for_term` returning unknown instead of OD
     ('intraretinal hemorrhage temporal and inferior quadrant OD', {}, 'Q2', 'UNKNOWN', 'UNKNOWN'),
     ('nasal quadrant, hemorrhage intraretinal', {}, 'UNKNOWN', 'UNKNOWN', 'Q1'),
     ('intraretinal heme in all quadrants ou', {}, 'Q4', 'Q4', 'UNKNOWN'),
@@ -92,7 +91,6 @@ _dot_blot_severity_extract_and_build_cases = [
     ('moderate dot blot heme OS', {}, 'UNKNOWN', 'MODERATE', 'UNKNOWN'),
     ('severe dot blot hemorrhage', {}, 'UNKNOWN', 'UNKNOWN', 'SEVERE'),
     ('dot blot heme severity=3Q OS', {}, 'UNKNOWN', 'Q3', 'UNKNOWN'),
-    # TODO: `get_laterality_for_term` returning unknown instead of OD
     ('dot blot hemorrhage temporal and inferior quadrant OD', {}, 'Q2', 'UNKNOWN', 'UNKNOWN'),
     ('nasal quadrant, hemorrhage dot blot', {}, 'UNKNOWN', 'UNKNOWN', 'Q1'),
     ('dot blot heme in all quadrants ou', {}, 'Q4', 'Q4', 'UNKNOWN'),
