@@ -14,13 +14,48 @@ VEN_BEADING_PAT = re.compile(
 
 
 def get_ven_beading(text: str, *, headers=None, lateralities=None) -> list:
-    # if not lateralities:
-    #     lateralities = build_laterality_table(text)
-    # data = []
-    # for new_var in _get_hemorrhage_type(text, lateralities, 'ALL'):
-    #     data.append(new_var)
-    # if headers:
-    #     pass
-    #
-    # return data
-    pass
+    if not lateralities:
+        lateralities = build_laterality_table(text)
+    data = []
+    for new_var in _get_ven_beading(text, lateralities, 'ALL'):
+        data.append(new_var)
+    if headers:
+        pass
+
+    return data
+
+
+def _get_ven_beading(text: str, lateralities, source: str) -> dict:
+    for m in VEN_BEADING_PAT.finditer(text):
+        negwords = {'no', 'or', 'neg', 'without', 'w/out', '(-)'}
+        negated = is_negated(m, text, negwords, word_window=3)
+        context = f'{text[max(0, m.start() - 100): m.start()]} {text[m.end():min(len(text), m.end() + 100)]}'
+        severities = extract_severity(context)
+        if severities:
+            for sev in severities:
+                yield create_new_variable(text, m, lateralities, 'venbeading', {
+                    'value': sev,
+                    'term': m.group(),
+                    'label': 'Venous beading',
+                    'negated': negated,
+                    'regex': 'VEN_BEADING_PAT',
+                    'source': source,
+                })
+        elif negated:
+            yield create_new_variable(text, m, lateralities, 'venbeading', {
+                'value': Severity.NONE,
+                'term': m.group(),
+                'label': 'No venous beading',
+                'negated': negated,
+                'regex': 'VEN_BEADING_PAT',
+                'source': source,
+            })
+        else:  # Affirmative without severity quantifier.
+            yield create_new_variable(text, m, lateralities, 'venbeading', {
+                'value': Severity.MILD,
+                'term': m.group(),
+                'label': 'Venous beading',
+                'negated': negated,
+                'regex': 'VEN_BEADING_PAT',
+                'source': source,
+            })

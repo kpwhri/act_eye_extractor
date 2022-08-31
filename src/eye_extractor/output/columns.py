@@ -413,4 +413,8 @@ OUTPUT_COLUMNS = {
     'dotblot_hem_re': [is_in_range(-1, 7)],
     'dotblot_hem_le': [is_in_range(-1, 7)],
     'dotblot_hem_unk': [is_in_range(-1, 7)],
+    # Venous beading severity
+    'venbeading_re': [is_in_range(-1, 7)],
+    'venbeading_le': [is_in_range(-1, 7)],
+    'venbeading_unk': [is_in_range(-1, 7)],
 }

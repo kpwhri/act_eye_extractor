@@ -291,6 +291,7 @@ def build_dr_variables(data):
     results.update(build_cottonwspot(curr['binary_vars']))
     results.update(build_hard_exudates(curr['binary_vars']))
     results.update(build_disc_edema(curr['binary_vars']))
+    results.update(build_ven_beading(curr['venous_beading']))
     results.update(build_hemorrhage(curr['binary_vars']))
     results.update(build_hemorrhage_type(curr['hemorrhage_type']))
     results.update(build_intraretinal_severity(curr['hemorrhage_type']))
