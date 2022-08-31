@@ -25,18 +25,17 @@ def build_hard_exudates(data):
     return column_from_variable_binary(data, 'hardexudates')
 
 
-# Categorical variable
-# def build_ven_beading(data):
-#     return column_from_variable(
-#         {
-#             f'venbeading_re': -1,
-#             f'venbeading_le': -1,
-#         },
-#         data,
-#         transformer_func=lambda n: n['severity'],
-#         filter_func=lambda n: n['value'] in {ctype.value for ctype in cataracttypes},
-#         convert_func=lambda n: f'cataract_type_{n[-2:]}',
-#     )
+def build_ven_beading(data):
+    return column_from_variable(
+        {
+            f'venbeading_re': Severity.UNKNOWN,
+            f'venbeading_le': Severity.UNKNOWN,
+            f'venbeading_unk': Severity.UNKNOWN
+        },
+        data,
+        transformer_func=Severity,
+        enum_to_str=True)
+
 
 def build_disc_edema(data):
     return column_from_variable_binary(data, 'disc_edema_dr')
