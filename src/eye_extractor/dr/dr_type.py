@@ -51,7 +51,7 @@ def _get_dr_type(text: str, lateralities, source: str) -> dict:
         for m in pat.finditer(text):
             negwords = {'no', 'or', 'neg', 'without', 'w/out', '(-)'}
             negated = is_negated(m, text, negwords, word_window=3)
-            context = f'{text[max(0, m.start() - 100): m.start()]} {text[m.end():min(len(text) - 1, m.end() + 100)]}'
+            context = f'{text[max(0, m.start() - 100): m.start()]} {text[m.end():min(len(text), m.end() + 100)]}'
             severities = extract_severity(context)
             if severities:
                 for sev in severities:

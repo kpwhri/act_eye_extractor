@@ -1,9 +1,6 @@
 import enum
 import re
 
-from eye_extractor.common.negation import is_negated
-from eye_extractor.laterality import build_laterality_table, create_new_variable
-
 
 class Severity(enum.IntEnum):
     UNKNOWN = -1
@@ -88,7 +85,7 @@ SEVERITY_PATS = [
 def extract_severity(text: str) -> list[Severity]:
     sevs = []
     for m in SEVERITY_PAT.finditer(text):
-        match m:
+        match m.group('q_value').lower():
             case '1q':
                 sevs.append(Severity.Q1)
             case '2q':

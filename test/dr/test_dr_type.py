@@ -49,19 +49,19 @@ _dr_type_extract_and_build_cases = [
 ]
 
 _npdr_severity_extract_and_build_cases = [
-    ('mild BDR OU', {}, Severity.MILD, Severity.MILD, Severity.UNKNOWN),
-    ('Mild - moderate non-proliferative DR OD', {}, Severity.MODERATE, Severity.UNKNOWN, Severity.UNKNOWN),
-    ('no NPDR ou', {}, Severity.NONE, Severity.NONE, Severity.UNKNOWN),
-    ('moderate background diabetic retinopathy OS', {}, Severity.UNKNOWN, Severity.MODERATE, Severity.UNKNOWN),
-    ('severe NPDR', {}, Severity.UNKNOWN, Severity.UNKNOWN, Severity.SEVERE)
+    ('mild BDR OU', {}, 'MILD', 'MILD', 'UNKNOWN'),
+    ('Mild - moderate non-proliferative DR OD', {}, 'MODERATE', 'UNKNOWN', 'UNKNOWN'),
+    ('no NPDR ou', {}, 'NONE', 'NONE', 'UNKNOWN'),
+    ('moderate background diabetic retinopathy OS', {}, 'UNKNOWN', 'MODERATE', 'UNKNOWN'),
+    ('severe NPDR', {}, 'UNKNOWN', 'UNKNOWN', 'SEVERE')
 ]
 
 _pdr_severity_extract_and_build_cases = [
-    ('mild PDR OU', {}, Severity.MILD, Severity.MILD, Severity.UNKNOWN),
-    ('Mild - moderate proliferative DR OD', {}, Severity.MODERATE, Severity.UNKNOWN, Severity.UNKNOWN),
-    ('no PDR ou', {}, Severity.NONE, Severity.NONE, Severity.UNKNOWN),
-    ('moderate proliferative diabetic retinopathy OS', {}, Severity.UNKNOWN, Severity.MODERATE, Severity.UNKNOWN),
-    ('severe proliferative DR', {}, Severity.UNKNOWN, Severity.UNKNOWN, Severity.SEVERE)
+    ('mild PDR OU', {}, 'MILD', 'MILD', 'UNKNOWN'),
+    ('Mild - moderate proliferative DR OD', {}, 'MODERATE', 'UNKNOWN', 'UNKNOWN'),
+    ('no PDR ou', {}, 'NONE', 'NONE', 'UNKNOWN'),
+    ('moderate proliferative diabetic retinopathy OS', {}, 'UNKNOWN', 'MODERATE', 'UNKNOWN'),
+    ('severe proliferative DR', {}, 'UNKNOWN', 'UNKNOWN', 'SEVERE')
 ]
 
 

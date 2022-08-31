@@ -57,6 +57,28 @@ def build_hemorrhage_type(data):
     )
 
 
+def build_intraretinal_severity(data):
+    return column_from_variable({
+            f'intraretinal_hem_re': Severity.UNKNOWN,
+            f'intraretinal_hem_le': Severity.UNKNOWN,
+            f'intraretinal_hem_unk': Severity.UNKNOWN,
+        },
+        data,
+        transformer_func=Severity,
+        enum_to_str=True)
+
+
+def build_dot_blot_severity(data):
+    return column_from_variable({
+            f'dotblot_hem_re': Severity.UNKNOWN,
+            f'dotblot_hem_le': Severity.UNKNOWN,
+            f'dotblot_hem_unk': Severity.UNKNOWN,
+        },
+        data,
+        transformer_func=Severity,
+        enum_to_str=True)
+
+
 # def build_irma(data):
 #     return column_from_variable({
 #             f'venbeading_re': -1,
@@ -137,7 +159,9 @@ def build_npdr_severity(data):
             f'nonprolifdr_le': Severity.UNKNOWN,
             f'nonprolifdr_unk': Severity.UNKNOWN,
         },
-        data)
+        data,
+        transformer_func=Severity,
+        enum_to_str=True)
 
 
 def build_pdr_severity(data):
@@ -146,7 +170,9 @@ def build_pdr_severity(data):
             f'prolifdr_le': Severity.UNKNOWN,
             f'prolifdr_unk': Severity.UNKNOWN,
         },
-        data)
+        data,
+        transformer_func=Severity,
+        enum_to_str=True)
 
 
 def _rename_dr_tx(val: IntEnum):
