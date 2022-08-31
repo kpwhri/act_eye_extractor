@@ -1,8 +1,8 @@
 import json
 import pytest
 
-from eye_extractor.dr.irma import IRMA_PAT
-# from eye_extractor.output.dr import build_irma
+from eye_extractor.dr.irma import get_irma, IRMA_PAT
+from eye_extractor.output.dr import build_irma
 
 # Test pattern.
 _pattern_cases = [
@@ -36,16 +36,16 @@ _irma_extract_and_build_cases = [
 ]
 
 
-# @pytest.mark.parametrize('text, headers, exp_venbeading_re, exp_venbeading_le, exp_venbeading_unk',
-#                          _ven_beading_extract_and_build_cases)
-# def test_ven_beading_extract_and_build(text,
-#                                        headers,
-#                                        exp_venbeading_re,
-#                                        exp_venbeading_le,
-#                                        exp_venbeading_unk):
-#     pre_json = get_ven_beading(text)
-#     post_json = json.loads(json.dumps(pre_json))
-#     result = build_ven_beading(post_json)
-#     assert result['venbeading_re'] == exp_venbeading_re
-#     assert result['venbeading_le'] == exp_venbeading_le
-#     assert result['venbeading_unk'] == exp_venbeading_unk
+@pytest.mark.parametrize('text, headers, exp_irma_re, exp_irma_le, exp_irma_unk',
+                         _irma_extract_and_build_cases)
+def test_ven_beading_extract_and_build(text,
+                                       headers,
+                                       exp_irma_re,
+                                       exp_irma_le,
+                                       exp_irma_unk):
+    pre_json = get_irma(text)
+    post_json = json.loads(json.dumps(pre_json))
+    result = build_irma(post_json)
+    assert result['irma_re'] == exp_irma_re
+    assert result['irma_le'] == exp_irma_le
+    assert result['irma_unk'] == exp_irma_unk

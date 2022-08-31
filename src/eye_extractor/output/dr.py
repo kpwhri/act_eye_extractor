@@ -78,12 +78,15 @@ def build_dot_blot_severity(data):
         enum_to_str=True)
 
 
-# def build_irma(data):
-#     return column_from_variable({
-#             f'venbeading_re': -1,
-#             f'venbeading_le': -1,
-#         },
-#         data)
+def build_irma(data):
+    return column_from_variable({
+            f'irma_re': Severity.UNKNOWN,
+            f'irma_le': Severity.UNKNOWN,
+            f'irma_unk': Severity.UNKNOWN,
+        },
+        data,
+        transformer_func=Severity,
+        enum_to_str=True)
 
 
 def build_fluid(data, *, skip_rename_variable=False):
@@ -296,6 +299,7 @@ def build_dr_variables(data):
     results.update(build_hemorrhage_type(curr['hemorrhage_type']))
     results.update(build_intraretinal_severity(curr['hemorrhage_type']))
     results.update(build_dot_blot_severity(curr['hemorrhage_type']))
+    results.update(build_irma(curr['irma']))
     results.update(build_fluid(data['common']['treatment']))
     results.update(build_laser_scars(curr['binary_vars']))
     results.update(build_laser_panrentinal(curr['binary_vars']))

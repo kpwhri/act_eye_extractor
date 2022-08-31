@@ -417,4 +417,8 @@ OUTPUT_COLUMNS = {
     'venbeading_re': [is_in_range(-1, 7)],
     'venbeading_le': [is_in_range(-1, 7)],
     'venbeading_unk': [is_in_range(-1, 7)],
+    # Intraretinal microvascular abnormality
+    'irma_re': [is_in_range(-1, 7)],
+    'irma_le': [is_in_range(-1, 7)],
+    'irma_unk': [is_in_range(-1, 7)],
 }
