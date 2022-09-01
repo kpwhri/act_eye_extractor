@@ -17,6 +17,8 @@ Types of changes:
 
 ## [Unreleased]
 
+## v20220829
+- Additional DR variables, including severity
 
 ## v20220822
 
