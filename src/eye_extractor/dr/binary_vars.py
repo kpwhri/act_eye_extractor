@@ -29,12 +29,6 @@ DIABETIC_RETINOPATHY_PATS = [
         r')\b',
         re.I
     )),
-    ('venbeading', re.compile(
-            r'\b('
-            r'venous beadings?|vbs?'
-            r')\b',
-            re.I
-    )),
     ('disc_edema_DR', re.compile(
         r'\b('
         r'disc edema'
@@ -44,12 +38,6 @@ DIABETIC_RETINOPATHY_PATS = [
     ('hemorrhage_dr', re.compile(
         r'\b('
         r'hemorrhage'
-        r')\b',
-        re.I
-    )),
-    ('irma', re.compile(
-        r'\b('
-        r'irma|intraretinal microvascular abnormality'
         r')\b',
         re.I
     )),
@@ -94,20 +82,6 @@ DIABETIC_RETINOPATHY_PATS = [
     ('nve_yesno', re.compile(
         r'\b('
         r'nve|neovascularization elsewhere'
-        r')\b',
-        re.I
-    )),
-    ('nonprolifdr', re.compile(
-        r'\b('
-        r'(No|mild|moderate|severe|very severe)\W*'
-        r'(NPDR|background diabetic retinopathy|BDR|non\W?proliferative DR)'
-        r')\b',
-        re.I
-    )),
-    ('prolifdr', re.compile(
-        r'\b('
-        r'(No|mild|moderate|severe|very severe)\W*'
-        r'(PDR|proliferative diabetic retinopathy|proliferative DR)'
         r')\b',
         re.I
     )),

@@ -228,16 +228,18 @@ class LateralityLocator:
     def get_by_index(self, match_start, text):
         prev_section_lat = self.get_previous_section(match_start, text)
         prev_lat, next_lat = self.get_previous_next_non_section(match_start, text)
-        if prev_section_lat and (prev_section_dist := self.distance(match_start, prev_section_lat)) < 100:
-            if prev_lat and (prev_dist := self.distance(match_start, prev_lat)) < 100:
+        next_max = 60
+        prev_max = 100
+        if prev_section_lat and (prev_section_dist := self.distance(match_start, prev_section_lat)) < prev_max:
+            if prev_lat and (prev_dist := self.distance(match_start, prev_lat)) < prev_max:
                 prev_commas = self.contains_before(match_start, text, prev_lat, ',')
-                if next_lat and (next_dist := self.distance(match_start, prev_lat)) < 50:
+                if next_lat and (next_dist := self.distance(match_start, prev_lat)) < next_max:
                     next_commas = self.contains_after(match_start, text, next_lat, ',')
                     if next_commas == prev_commas:
                         return prev_lat.laterality if prev_dist < next_dist else next_lat.laterality
                     return prev_lat.laterality if prev_commas < next_commas else next_lat.laterality
                 return prev_lat.laterality
-            elif next_lat and (next_dist := self.distance(match_start, next_lat)) < 50:
+            elif next_lat and (next_dist := self.distance(match_start, next_lat)) < next_max:
                 next_commas = self.contains_after(match_start, text, next_lat, ',')
                 prev_section_commas = self.contains_before(match_start, text, prev_section_lat, ',')
                 if next_commas == prev_section_commas:
@@ -245,15 +247,15 @@ class LateralityLocator:
                 return prev_section_lat.laterality if prev_section_commas < next_commas else next_lat.laterality
             return prev_section_lat.laterality
         else:
-            if prev_lat and (prev_dist := self.distance(match_start, prev_lat)) < 100:
+            if prev_lat and (prev_dist := self.distance(match_start, prev_lat)) < prev_max:
                 prev_commas = self.contains_before(match_start, text, prev_lat, ',')
-                if next_lat and (next_dist := self.distance(match_start, prev_lat)) < 50:
+                if next_lat and (next_dist := self.distance(match_start, prev_lat)) < next_max:
                     next_commas = self.contains_after(match_start, text, next_lat, ',')
                     if next_commas == prev_commas:
                         return prev_lat.laterality if prev_dist < next_dist else next_lat.laterality
                     return prev_lat.laterality if prev_commas < next_commas else next_lat.laterality
                 return prev_lat.laterality
-            elif next_lat and (next_dist := self.distance(match_start, next_lat)) < 50:
+            elif next_lat and (next_dist := self.distance(match_start, next_lat)) < next_max:
                 return next_lat.laterality
         return Laterality.UNKNOWN
 

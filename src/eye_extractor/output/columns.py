@@ -397,4 +397,28 @@ OUTPUT_COLUMNS = {
     'dmacedema_cmt_re': [is_in_range(-1, 1000)],
     'dmacedema_cmt_le': [is_in_range(-1, 1000)],
     'dmacedema_cmt_unk': [is_in_range(-1, 1000)],
+    # Non-proliferative DR severity
+    'nonprolifdr_re': [is_in_range(-1, 7)],
+    'nonprolifdr_le': [is_in_range(-1, 7)],
+    'nonprolifdr_unk': [is_in_range(-1, 7)],
+    # Proliferative DR severity
+    'prolifdr_re': [is_in_range(-1, 7)],
+    'prolifdr_le': [is_in_range(-1, 7)],
+    'prolifdr_unk': [is_in_range(-1, 7)],
+    # Intraretinal hemorrhage severity
+    'intraretinal_hem_re': [is_in_range(-1, 7)],
+    'intraretinal_hem_le': [is_in_range(-1, 7)],
+    'intraretinal_hem_unk': [is_in_range(-1, 7)],
+    # Dot blot hemorrhage severity
+    'dotblot_hem_re': [is_in_range(-1, 7)],
+    'dotblot_hem_le': [is_in_range(-1, 7)],
+    'dotblot_hem_unk': [is_in_range(-1, 7)],
+    # Venous beading severity
+    'venbeading_re': [is_in_range(-1, 7)],
+    'venbeading_le': [is_in_range(-1, 7)],
+    'venbeading_unk': [is_in_range(-1, 7)],
+    # Intraretinal microvascular abnormality
+    'irma_re': [is_in_range(-1, 7)],
+    'irma_le': [is_in_range(-1, 7)],
+    'irma_unk': [is_in_range(-1, 7)],
 }

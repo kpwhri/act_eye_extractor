@@ -6,7 +6,7 @@ from eye_extractor.headers import Headers
 from eye_extractor.output.dr import build_fluid
 
 
-# Patterns tested in 'amd/test_dr_fluid.py'
+# Patterns tested in 'amd/test_fluid.py'
 
 
 @pytest.mark.parametrize('text, headers, exp_fluid_re, exp_fluid_le, exp_fluid_unk', [
@@ -16,7 +16,7 @@ from eye_extractor.output.dr import build_fluid
     ('No heme or fluid od', {}, 'NO', 'UNKNOWN', 'UNKNOWN'),
     ('no IRF OU', {}, 'NO INTRARETINAL FLUID', 'NO INTRARETINAL FLUID', 'UNKNOWN')
 ])
-def test_fluid_extract_and_build(text, headers, exp_fluid_re, exp_fluid_le, exp_fluid_unk, ):
+def test_dr_fluid_extract_and_build(text, headers, exp_fluid_re, exp_fluid_le, exp_fluid_unk, ):
     pre_json = extract_fluid(text, headers=Headers(headers))
     post_json = json.loads(json.dumps(pre_json))
     result = build_fluid(post_json, skip_rename_variable=True)

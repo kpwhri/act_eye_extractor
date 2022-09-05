@@ -8,6 +8,7 @@ from eye_extractor.laterality import Laterality, get_laterality_by_index, build_
     ('IOL OD: 1+ PCO IOL OS: tr pco', 23, Laterality.OS),
     ('PCIOL od, ac iol os', 0, Laterality.OD),
     ('PCIOL od, ac iol os', 10, Laterality.OS),
+    ('dot blot hemorrhage temporal and inferior quadrant OD', 0, Laterality.OD),
 ])
 def test_laterality_by_index(text, start_index, exp):
     latloc = build_laterality_table(text)

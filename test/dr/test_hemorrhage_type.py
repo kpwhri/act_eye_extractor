@@ -3,7 +3,7 @@ import json
 import pytest
 
 from eye_extractor.dr.hemorrhage_type import get_hemorrhage_type, HemorrhageType
-from eye_extractor.output.dr import build_hemorrhage_type
+from eye_extractor.output.dr import build_dot_blot_severity, build_hemorrhage_type, build_intraretinal_severity
 
 
 @pytest.mark.parametrize('text, exp_value, exp_negword', [
@@ -69,3 +69,61 @@ def test_hemorrhage_type_extract_and_build(text, hemorrhage_type_dr_re, hemorrha
     assert result['hemorrhage_typ_dr_re'] == hemorrhage_type_dr_re
     assert result['hemorrhage_typ_dr_le'] == hemorrhage_type_dr_le
     assert result['hemorrhage_typ_dr_unk'] == hemorrhage_type_dr_unk
+
+
+# Test severity
+_intraretinal_severity_extract_and_build_cases = [
+    ('mild intraretinal hemorrhage OU', {}, 'MILD', 'MILD', 'UNKNOWN'),
+    ('Mild - moderate intraretinal heme OD', {}, 'MODERATE', 'UNKNOWN', 'UNKNOWN'),
+    ('no intraretinal hemorrhage ou', {}, 'NONE', 'NONE', 'UNKNOWN'),
+    ('moderate intraretinal heme OS', {}, 'UNKNOWN', 'MODERATE', 'UNKNOWN'),
+    ('severe intraretinal hemorrhage', {}, 'UNKNOWN', 'UNKNOWN', 'SEVERE'),
+    ('intraretinal heme severity=3Q OS', {}, 'UNKNOWN', 'Q3', 'UNKNOWN'),
+    ('intraretinal hemorrhage temporal and inferior quadrant OD', {}, 'Q2', 'UNKNOWN', 'UNKNOWN'),
+    ('nasal quadrant, hemorrhage intraretinal', {}, 'UNKNOWN', 'UNKNOWN', 'Q1'),
+    ('intraretinal heme in all quadrants ou', {}, 'Q4', 'Q4', 'UNKNOWN'),
+]
+
+_dot_blot_severity_extract_and_build_cases = [
+    ('mild dot blot hemorrhage OU', {}, 'MILD', 'MILD', 'UNKNOWN'),
+    ('Mild - moderate dot blot heme OD', {}, 'MODERATE', 'UNKNOWN', 'UNKNOWN'),
+    ('no dot blot hemorrhage ou', {}, 'NONE', 'NONE', 'UNKNOWN'),
+    ('moderate dot blot heme OS', {}, 'UNKNOWN', 'MODERATE', 'UNKNOWN'),
+    ('severe dot blot hemorrhage', {}, 'UNKNOWN', 'UNKNOWN', 'SEVERE'),
+    ('dot blot heme severity=3Q OS', {}, 'UNKNOWN', 'Q3', 'UNKNOWN'),
+    ('dot blot hemorrhage temporal and inferior quadrant OD', {}, 'Q2', 'UNKNOWN', 'UNKNOWN'),
+    ('nasal quadrant, hemorrhage dot blot', {}, 'UNKNOWN', 'UNKNOWN', 'Q1'),
+    ('dot blot heme in all quadrants ou', {}, 'Q4', 'Q4', 'UNKNOWN'),
+]
+
+
+@pytest.mark.parametrize('text, headers, exp_intraretinal_hem_re, exp_intraretinal_hem_le, '
+                         'exp_intraretinal_hem_unk',
+                         _intraretinal_severity_extract_and_build_cases)
+def test_intraretinal_severity_extract_and_build(text,
+                                                 headers,
+                                                 exp_intraretinal_hem_re,
+                                                 exp_intraretinal_hem_le,
+                                                 exp_intraretinal_hem_unk):
+    pre_json = get_hemorrhage_type(text)
+    post_json = json.loads(json.dumps(pre_json))
+    result = build_intraretinal_severity(post_json)
+    assert result['intraretinal_hem_re'] == exp_intraretinal_hem_re
+    assert result['intraretinal_hem_le'] == exp_intraretinal_hem_le
+    assert result['intraretinal_hem_unk'] == exp_intraretinal_hem_unk
+
+
+@pytest.mark.parametrize('text, headers, exp_dotblot_hem_re, exp_dotblot_hem_le, '
+                         'exp_dotblot_hem_unk',
+                         _dot_blot_severity_extract_and_build_cases)
+def test_dot_blot_severity_extract_and_build(text,
+                                             headers,
+                                             exp_dotblot_hem_re,
+                                             exp_dotblot_hem_le,
+                                             exp_dotblot_hem_unk):
+    pre_json = get_hemorrhage_type(text)
+    post_json = json.loads(json.dumps(pre_json))
+    result = build_dot_blot_severity(post_json)
+    assert result['dotblot_hem_re'] == exp_dotblot_hem_re
+    assert result['dotblot_hem_le'] == exp_dotblot_hem_le
+    assert result['dotblot_hem_unk'] == exp_dotblot_hem_unk
