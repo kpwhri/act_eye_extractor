@@ -33,6 +33,7 @@ _irma_extract_and_build_cases = [
     ('IRMA temporal and inferior quadrant OD', {}, 'Q2', 'UNKNOWN', 'UNKNOWN'),
     ('nasal quadrant, IRMA', {}, 'UNKNOWN', 'UNKNOWN', 'Q1'),
     ('IRMA in all quadrants ou', {}, 'Q4', 'Q4', 'UNKNOWN'),
+    ('has small area of IRMA right eye', {}, 'MILD', 'UNKNOWN', 'UNKNOWN'),
 ]
 
 
