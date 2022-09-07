@@ -54,7 +54,7 @@ def _extract_wetamd_severity(text, lateralities, source):
                 'term': m.group(),
                 'label': 'no' if negword else 'yes',
                 'negated': negword,
-                'regex': 'wet_PAT',
+                'regex': 'WET_PAT',
                 'source': source,
             })
         )
@@ -71,7 +71,7 @@ def _extract_wetamd_severity_all(text, lateralities, source):
                 'term': m.group(),
                 'label': 'no' if negword else 'yes',
                 'negated': negword,
-                'regex': 'wet_AMD_PAT',
+                'regex': 'WET_AMD_PAT',
                 'source': source,
             })
         )
