@@ -286,6 +286,14 @@ def build_cmt_value(data):
     )
 
 
+def build_peripheral_heme(data):
+    return column_from_variable_binary(data, 'peripheral_heme')
+
+
+def build_prp_laser_scar(data):
+    return column_from_variable_binary(data, 'prp_laser_scar')
+
+
 def build_dr_variables(data):
     curr = data['dr']
     results = {}
