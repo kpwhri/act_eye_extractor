@@ -329,4 +329,6 @@ def build_dr_variables(data):
     results.update(build_dme_tx(data['common']['treatment']))
     results.update(build_dmacedema_antivegf[data['common']['treatment']])
     results.update(build_cmt_value(curr['cmt_value']))
+    results.update(build_peripheral_heme(curr['peripheral']))
+    results.update(build_prp_laser_scar(curr['peripheral']))
     return results

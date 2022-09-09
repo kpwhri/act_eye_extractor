@@ -421,4 +421,12 @@ OUTPUT_COLUMNS = {
     'irma_re': [is_in_range(-1, 7)],
     'irma_le': [is_in_range(-1, 7)],
     'irma_unk': [is_in_range(-1, 7)],
+    # Peripheral hemorrhage noted
+    'peripheral_heme_re': [is_in_range(-1, 1)],
+    'peripheral_heme_le': [is_in_range(-1, 1)],
+    'peripheral_heme_unk': [is_in_range(-1, 1)],
+    # PRP laser scars noted
+    'prp_laser_scar_re': [is_in_range(-1, 1)],
+    'prp_laser_scar_le': [is_in_range(-1, 1)],
+    'prp_laser_scar_unk': [is_in_range(-1, 1)],
 }
