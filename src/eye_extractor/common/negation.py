@@ -1,20 +1,19 @@
 import re
 from typing import Match
 
-import typing.re
-
 from eye_extractor.common.string import replace_punctuation
 
 
 def is_negated(m: Match, text: str, terms: set[str],
                *, word_window: int = 2, char_window: int = 0,
-               skip_regex: typing.re.Match = None,
+               skip_regex: Match = None,
                boundary_chars=':', skip_n_boundary_chars=0, lowercase_text=True):
     """Look back from match for specified terms. Stop at `boundary_chars`.
 
     :param skip_n_boundary_chars: stop after N boundary chars;
         if set to 1, will stop when it runs into the second `boundary_chars`
     :param lowercase_text: force lowercase text
+    :param skip_regex:
     :param boundary_chars:
     :param m:
     :param text:
