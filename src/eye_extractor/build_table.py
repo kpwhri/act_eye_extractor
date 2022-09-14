@@ -14,7 +14,7 @@ from eye_extractor.output.amd import build_amd_variables
 from eye_extractor.output.cataract import build_cataract_variables
 from eye_extractor.output.cataract_surgery import build_cataract_surgery_variables
 from eye_extractor.output.columns import OUTPUT_COLUMNS
-from eye_extractor.output.dr import build_dr
+from eye_extractor.output.dr import build_dr_variables
 from eye_extractor.output.exam import build_exam
 from eye_extractor.output.glaucoma import build_glaucoma
 from eye_extractor.output.iop import build_iop
@@ -156,7 +156,7 @@ def process_data(data, *, add_columns=None):
     result.update(build_cataract_surgery_variables(data))
     result.update(build_history(data['history']))
     result.update(build_exam(data))
-    result.update(build_dr(data))
+    result.update(build_dr_variables(data))
     return result
 
 
