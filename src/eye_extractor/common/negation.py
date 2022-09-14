@@ -1,7 +1,10 @@
 import re
-from typing import Match
+from typing import Match, Set
 
 from eye_extractor.common.string import replace_punctuation
+
+
+NEGWORDS: Set = {'no', 'or', 'neg', 'without', 'w/out', '(-)'}
 
 
 def is_negated(m: Match, text: str, terms: set[str],
@@ -30,7 +33,7 @@ def is_negated(m: Match, text: str, terms: set[str],
 
 def has_before(end_idx: int, text: str, terms: set[str],
                *, word_window: int = 2, char_window: int = 0,
-               skip_regex: typing.re.Match = None,
+               skip_regex: Match = None,
                boundary_chars=':', skip_n_boundary_chars=0, lowercase_text=True):
     if not char_window:
         char_window = word_window * 10
@@ -51,7 +54,7 @@ def has_before(end_idx: int, text: str, terms: set[str],
 
 def is_post_negated(m: Match, text: str, terms: set[str],
                     *, word_window: int = 2, char_window: int = 0,
-                    skip_n_boundary_chars=1, skip_regex: typing.re.Match = None,
+                    skip_n_boundary_chars=1, skip_regex: Match = None,
                     boundary_chars=':', lowercase_text=True):
     """
 
@@ -76,7 +79,7 @@ def is_post_negated(m: Match, text: str, terms: set[str],
 
 def has_after(start_idx: int, text: str, terms: set[str],
               *, word_window: int = 2, char_window: int = 0,
-              skip_n_boundary_chars=1, skip_regex: typing.re.Match = None,
+              skip_n_boundary_chars=1, skip_regex: Match = None,
               boundary_chars=':', lowercase_text=True):
     """
 
