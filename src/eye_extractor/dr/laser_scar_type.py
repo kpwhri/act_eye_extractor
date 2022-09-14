@@ -1,6 +1,6 @@
 import re
 
-from eye_extractor.common.negation import is_negated
+from eye_extractor.common.negation import is_negated, NEGWORDS
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 FOCAL_PAT = re.compile(
@@ -57,7 +57,7 @@ def _get_laser_scar_type(text: str, lateralities, source: str) -> dict:
         ('MACULAR_PAT', MACULAR_PAT, 'macular_dr_laser_scar_type'),
     ]:
         for m in pat.finditer(text):
-            negword = is_negated(m, text, {'no', 'or', 'neg', 'without'}, word_window=3)
+            negword = is_negated(m, text, NEGWORDS, word_window=3)
             yield create_new_variable(text, m, lateralities, variable, {
                 'value': 0 if negword else 1,
                 'term': m.group(),
@@ -70,7 +70,7 @@ def _get_laser_scar_type(text: str, lateralities, source: str) -> dict:
 
 def _get_lsr_macular_header(text: str, lateralities) -> dict:
     for m in MACULAR_HEADER_PAT.finditer(text):
-        negword = is_negated(m, text, {'no', 'or', 'neg', 'without'}, word_window=3)
+        negword = is_negated(m, text, NEGWORDS, word_window=3)
         yield create_new_variable(text, m, lateralities, 'macular_dr_laser_scar_type', {
             'value': 0 if negword else 1,
             'term': m.group(),

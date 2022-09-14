@@ -1,6 +1,6 @@
 import re
 
-from eye_extractor.common.negation import is_negated
+from eye_extractor.common.negation import is_negated, NEGWORDS
 from eye_extractor.common.severity import extract_severity, Severity
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
@@ -26,8 +26,7 @@ def get_irma(text: str, *, headers=None, lateralities=None) -> list:
 
 def _get_irma(text: str, lateralities, source: str) -> dict:
     for m in IRMA_PAT.finditer(text):
-        negwords = {'no', 'or', 'neg', 'without', 'w/out', '(-)'}
-        negated = is_negated(m, text, negwords, word_window=3)
+        negated = is_negated(m, text, NEGWORDS, word_window=3)
         context = f'{text[max(0, m.start() - 100): m.start()]} {text[m.end():min(len(text), m.end() + 100)]}'
         severities = extract_severity(context)
         if severities:
