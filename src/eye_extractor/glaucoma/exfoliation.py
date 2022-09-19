@@ -4,7 +4,7 @@ Exfoliation, but not glaucoma.
 import enum
 import re
 
-from eye_extractor.common.negation import has_before, has_after, is_negated
+from eye_extractor.common.negation import has_before, has_after, is_negated, NEGWORDS
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 
@@ -38,7 +38,7 @@ def extract_exfoliation(text, *, headers=None, lateralities=None):
         elif has_after(m.end(), text, {'glauc', 'gl', 'glaucoma'},
                        word_window=3):
             continue
-        negword = is_negated(m, text, {'no', 'or', 'without'})
+        negword = is_negated(m, text, NEGWORDS)
         data.append(
             create_new_variable(text, m, lateralities, 'exfoliation', {
                 'value': Exfoliation.NO if negword else Exfoliation.YES,

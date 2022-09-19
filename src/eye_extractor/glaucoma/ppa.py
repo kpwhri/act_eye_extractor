@@ -7,7 +7,7 @@ Peripapillary atrophy (PPA)
 """
 import re
 
-from eye_extractor.common.negation import is_negated
+from eye_extractor.common.negation import is_negated, NEGWORDS
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 PPA_PAT = re.compile(
@@ -30,7 +30,7 @@ def extract_ppa(text, *, headers=None, lateralities=None):
     data = []
 
     for m in PPA_PAT.finditer(text):
-        negword = is_negated(m, text, {'no', 'or', 'without', 'not'}, boundary_chars=';:')
+        negword = is_negated(m, text, NEGWORDS, boundary_chars=';:')
         data.append(
             create_new_variable(text, m, lateralities, 'ppa', {
                 'value': 0 if negword else 1,

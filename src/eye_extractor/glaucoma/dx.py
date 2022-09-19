@@ -1,7 +1,7 @@
 import enum
 import re
 
-from eye_extractor.common.negation import has_before, is_negated, has_after
+from eye_extractor.common.negation import has_before, is_negated, has_after, NEGWORDS
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 
@@ -202,7 +202,7 @@ def extract_glaucoma_dx(text, *, headers=None, lateralities=None):
                 pass
             else:
                 continue  # no mention of glaucoma/syndrome
-            negword = is_negated(m, text, {'no', 'or', 'without'})
+            negword = is_negated(m, text, NEGWORDS)
             data.append(
                 create_new_variable(text, m, lateralities, 'glaucoma_type', {
                     'value': GlaucomaType.NONE if negword else value,
@@ -224,7 +224,7 @@ def extract_glaucoma_dx(text, *, headers=None, lateralities=None):
                     (CUPPING_PAT, 'CUPPING_PAT', GlaucomaDx.CUPPING),
                 ]:
                     for m in pat.finditer(section_text):
-                        negword = is_negated(m, section_text, {'no', 'or', 'without'})
+                        negword = is_negated(m, section_text, NEGWORDS)
                         data.append(
                             create_new_variable(section_text, m, section_lateralities, 'glaucoma_dx', {
                                 'value': 0 if negword else value,
@@ -238,7 +238,7 @@ def extract_glaucoma_dx(text, *, headers=None, lateralities=None):
     for m in SUSPECT_PAT.finditer(text):
         if not has_before(m.start(), text, {'glaucoma'}, word_window=5, skip_n_boundary_chars=1):
             continue  # TODO: exclude family history
-        negword = is_negated(m, text, {'no', 'or', 'without'})
+        negword = is_negated(m, text, NEGWORDS)
         data.append(
             create_new_variable(text, m, lateralities, 'glaucoma_dx', {
                 'value': 0 if negword else GlaucomaDx.SUSPECT,
