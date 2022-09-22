@@ -63,10 +63,10 @@ def find_drusen(text, lateralities):
     data = {}
     for m in DRUSEN_PAT.finditer(text):
         create_variable(data, text, m, lateralities, 'drusen_size', {
-            'value': 4, 'term': m.group(), 'label': 'unknown', 'source': 'MACULA',
+            'value': 4, 'term': m.group(), 'label': 'yes', 'source': 'MACULA',
         })
         create_variable(data, text, m, lateralities, 'drusen_type', {
-            'value': 4, 'term': m.group(), 'label': 'unknown', 'source': 'MACULA',
+            'value': 4, 'term': m.group(), 'label': 'yes', 'source': 'MACULA',
         })
     for m in NO_DRUSEN_PAT.finditer(text):
         create_variable(data, text, m, lateralities, 'drusen_size', {
