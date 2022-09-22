@@ -68,6 +68,7 @@ OUTPUT_COLUMNS = {
     'amd_le': [is_int],
     'subretinal_hem_re': [],
     'subretinal_hem_le': [],
+    'subretinal_hem_unk': [],
     'fluid_amd_re': [is_in_range(-1, 5)],
     'fluid_amd_le': [is_in_range(-1, 5)],
     'fluid_amd_unk': [is_in_range(-1, 5)],
@@ -85,6 +86,7 @@ OUTPUT_COLUMNS = {
     'drusen_type_le': [],
     'pigmentchanges_le': [is_in_range(-1, 1)],
     'pigmentchanges_re': [is_in_range(-1, 1)],
+    'pigmentchanges_unk': [is_in_range(-1, 1)],
 
     ## RO (RVO/RAO)
     # RVO
@@ -421,4 +423,14 @@ OUTPUT_COLUMNS = {
     'irma_re': [is_in_range(-1, 7)],
     'irma_le': [is_in_range(-1, 7)],
     'irma_unk': [is_in_range(-1, 7)],
+    # missing dr
+    'grid_dr_laser_scar_type_re': [],
+    'grid_dr_laser_scar_type_le': [],
+    'grid_dr_laser_scar_type_unk': [],
+    'macular_dr_laser_scar_type_re': [],
+    'macular_dr_laser_scar_type_le': [],
+    'macular_dr_laser_scar_type_unk': [],
+    'cottonwspot_re': [],
+    'cottonwspot_le': [],
+    'cottonwspot_unk': [],
 }

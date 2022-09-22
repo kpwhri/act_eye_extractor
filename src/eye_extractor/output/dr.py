@@ -319,6 +319,6 @@ def build_dr_variables(data):
     results.update(build_sig_edema(curr['binary_vars']))
     results.update(build_oct_cme(curr['binary_vars']))
     results.update(build_dme_tx(data['common']['treatment']))
-    results.update(build_dmacedema_antivegf[data['common']['treatment']])
+    results.update(build_dmacedema_antivegf(data['common']['treatment']))
     results.update(build_cmt_value(curr['cmt_value']))
     return results
