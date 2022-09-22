@@ -66,9 +66,7 @@ def get_drusen(data):
         'drusen_type_unk': 'UNKNOWN',
     }
     for k, v in data.items():
-        if results[k] != 'UNKNOWN':  # only take the first
-            continue
-        results[k] = v['label'].upper()
+        results[k] = v['label'].upper()  # the last one is most specific, so overwrite
     return results
 
 

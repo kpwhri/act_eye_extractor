@@ -55,7 +55,8 @@ def get_drusen(text, *, headers=None, lateralities=None):
 
 def find_drusen(text, lateralities):
     """
-    Designed so that subsequent variables can overwrite earlier ones
+    Designed so that subsequent variables can overwrite earlier ones.
+    In the build step, only the final element will be retained, so starting with the most general.
     :param text:
     :param lateralities:
     :return:
