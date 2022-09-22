@@ -67,6 +67,7 @@ def get_subretinal_hemorrhage(data):
     return column_from_variable({
         'subretinal_hem_re': -1,
         'subretinal_hem_le': -1,
+        'subretinal_hem_unk': -1,
     }, data)
 
 
@@ -74,6 +75,7 @@ def get_pigmentary_changes(data):
     return column_from_variable({
         'pigmentchanges_re': -1,
         'pigmentchanges_le': -1,
+        'pigmentchanges_unk': -1,
     }, data)
 
 
