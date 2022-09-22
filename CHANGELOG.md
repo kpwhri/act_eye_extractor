@@ -18,11 +18,15 @@ Types of changes:
 ## [Unreleased]
 
 ## v20220921
+
+### Fixed
 - Fixed DR variables in output
 - Added `_unk` laterality to subretinal heme and pigment
 - Renamed `UNKNOWN`/`YES`/`blank` for `drusen_type` and `drusen_size`
 
 ## v20220829
+
+### Added
 - Additional DR variables, including severity
 
 ## v20220822
