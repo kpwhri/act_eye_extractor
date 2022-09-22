@@ -57,8 +57,17 @@ def get_amd(data):
 
 
 def get_drusen(data):
-    results = {}
+    results = {
+        'drusen_size_le': 'UNKNOWN',
+        'drusen_size_re': 'UNKNOWN',
+        'drusen_size_unk': 'UNKNOWN',
+        'drusen_type_le': 'UNKNOWN',
+        'drusen_type_re': 'UNKNOWN',
+        'drusen_type_unk': 'UNKNOWN',
+    }
     for k, v in data.items():
+        if results[k] != 'UNKNOWN':  # only take the first
+            continue
         results[k] = v['label'].upper()
     return results
 
