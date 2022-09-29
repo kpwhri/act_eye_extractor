@@ -5,7 +5,7 @@ import pytest
 
 from eye_extractor.build_table import get_va
 from eye_extractor.history.common import update_history_from_key
-from eye_extractor.va.extractor2 import vacc_numbercorrect_le, extract_va, VA_PATTERN
+from eye_extractor.va.extractor2 import vacc_numbercorrect_le, extract_va, VA_PATTERN, clean_punc
 from eye_extractor.va.pattern import VA
 from eye_extractor.va.rx import get_manifest_rx, BCV_PAT
 
@@ -141,3 +141,13 @@ def test_va_ni(text, exp_length, exps):
     for val, field1, field2 in exps:
         assert val == va_dict.get(field1, None)
         assert val == va_dict.get(field2, None)
+
+
+@pytest.mark.parametrize('text, exp', [
+    ('¶»»»OS: +3.00-0.75x085 VA: 20/30- VA OU: 20/30  ¶»»»»ADD:+2.50 20/30- @ 16 inches  ¶»»',
+     '    OS: +3.00-0.75x085 VA: 20/30- VA OU: 20/30       ADD:+2.50 20/30- @ 16 inches     '),
+])
+def test_clean_punc(text, exp):
+    assert exp == clean_punc(text)
+
+

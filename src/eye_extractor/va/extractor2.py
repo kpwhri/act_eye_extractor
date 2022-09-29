@@ -126,7 +126,7 @@ def get_keywords_in_range(keywords, word_start, end_context):
         if is_stopword:
             continue
         if start_idx > word_start and (
-                len(labels) > 1 or labels[0] not in (VisualAcuity.CORRECTED, VisualAcuity.UNCORRECTED)):
+            len(labels) > 1 or labels[0] not in (VisualAcuity.CORRECTED, VisualAcuity.UNCORRECTED)):
             continue  # only allow correction after the score
         for label in labels:
             if label not in results and label not in not_list:
@@ -219,8 +219,13 @@ def extract_va_precise(text):
     return rows, text
 
 
-def extract_va(text):
-    # TODO: Remove pilcrows and other frivolous punctuation.
+def clean_punc(text: str, pat: str = r'[¶»]') -> str:
+    """Removes unnecessary punctuation from text."""
+    return re.sub(pat, ' ', text)
+
+
+def extract_va(text) -> dict:
+    text = clean_punc(text)
     rows, text = extract_va_precise(text)
     # TODO: Add function for missing VA values.
     yield rows
