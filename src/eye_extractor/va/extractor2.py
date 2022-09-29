@@ -223,7 +223,7 @@ def extract_va(text):
     # TODO: Remove pilcrows and other frivolous punctuation.
     rows, text = extract_va_precise(text)
     # TODO: Add function for missing VA values.
-    yield from rows
+    yield rows
     # find other terms
     keywords = get_keywords_stopwords(text)
     lateralities = [(m.group(), m.start(), lat_lookup(m)) for m in LATERALITY_PATTERN.finditer(text)]
