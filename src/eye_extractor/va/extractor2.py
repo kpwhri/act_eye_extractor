@@ -4,8 +4,9 @@ Approach:
 2. Find the laterality
 3. Find other classification
 """
-import re
 import enum
+import re
+from typing import Generator
 
 from loguru import logger
 
@@ -187,7 +188,7 @@ def handle_test_from_groups(groupdict):
     logger.info(f'Not handled exam: {test}')
 
 
-def get_elements_from_line(m, metadata):
+def get_elements_from_line(m, metadata: list) -> list[dict]:
     d = m.groupdict()
     shared = d.get('shared', dict())
     lst = []
@@ -210,7 +211,7 @@ def get_number_correct(sign, diopter):
     return ''
 
 
-def extract_va_precise(text):
+def extract_va_precise(text: str) -> tuple[list, str]:
     rows = []
     for va_pat in (VA_LINE_GROUPED, VA_LINE_CC, VA_LINE_SC):
         for m in va_pat.pattern.finditer(text):
@@ -224,10 +225,11 @@ def clean_punc(text: str, pat: str = r'[¶»]') -> str:
     return re.sub(pat, ' ', text)
 
 
-def extract_va(text) -> dict:
+def extract_va(text: str) -> Generator[dict, None, None]:
     text = clean_punc(text)
     rows, text = extract_va_precise(text)
     # TODO: Add function for missing VA values.
+    # rows, text = extract_va_extra(text)
     yield rows
     # find other terms
     keywords = get_keywords_stopwords(text)
