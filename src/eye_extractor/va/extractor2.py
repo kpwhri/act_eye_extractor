@@ -230,7 +230,7 @@ def extract_va(text: str) -> Generator[dict, None, None]:
     rows, text = extract_va_precise(text)
     # TODO: Add function for missing VA values.
     # rows, text = extract_va_extra(text)
-    yield rows
+    yield from rows
     # find other terms
     keywords = get_keywords_stopwords(text)
     lateralities = [(m.group(), m.start(), lat_lookup(m)) for m in LATERALITY_PATTERN.finditer(text)]
