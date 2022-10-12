@@ -10,7 +10,7 @@ from eye_extractor.laterality import create_new_variable
 class WetSeverity(enum.IntEnum):
     UNKNOWN = -1
     NO = 0
-    UNSPECIFIED = 1
+    YES = 1
     ACTIVE = 11  # TODO: unable to find any examples in the text
     INACTIVE = 12
 
@@ -50,7 +50,7 @@ def _extract_wetamd_severity(text, lateralities, source):
         negword = is_negated(m, text, {'no', 'or', 'without', 'non'})
         data.append(
             create_new_variable(text, m, lateralities, 'wetamd_severity', {
-                'value': WetSeverity.NO if negword else WetSeverity.UNSPECIFIED,
+                'value': WetSeverity.NO if negword else WetSeverity.YES,
                 'term': m.group(),
                 'label': 'no' if negword else 'yes',
                 'negated': negword,
@@ -67,7 +67,7 @@ def _extract_wetamd_severity_all(text, lateralities, source):
         negword = is_negated(m, text, {'no', 'or', 'without'})
         data.append(
             create_new_variable(text, m, lateralities, 'wetamd_severity', {
-                'value': WetSeverity.NO if negword else WetSeverity.UNSPECIFIED,
+                'value': WetSeverity.NO if negword else WetSeverity.YES,
                 'term': m.group(),
                 'label': 'no' if negword else 'yes',
                 'negated': negword,

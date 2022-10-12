@@ -12,7 +12,7 @@ from eye_extractor.common.algo.treatment import Treatment
 from eye_extractor.common.drug.antivegf import rename_antivegf, AntiVegf
 from eye_extractor.output.laterality import laterality_from_int
 from eye_extractor.laterality import Laterality
-from eye_extractor.output.variable import column_from_variable
+from eye_extractor.output.variable import column_from_variable, update_column
 
 
 def build_amd_variables(data):
@@ -20,17 +20,27 @@ def build_amd_variables(data):
     results = {}
     results.update(get_amd(curr['amd']))
     results.update(get_drusen(curr['drusen']))
-    results.update(get_subretinal_hemorrhage(curr['srh']))
+    srh = get_subretinal_hemorrhage(curr['srh'])
+    results.update(srh)
     results.update(get_pigmentary_changes(curr['pigment']))
-    results.update(build_fluid(data['common']['fluid']))
+    fluid = build_fluid(data['common']['fluid'])
+    results.update(fluid)
     results.update(build_subretfluid(data['common']['fluid']))
     results.update(build_intraretfluid(data['common']['fluid']))
     results.update(build_ped(curr['ped']))
-    results.update(build_choroidalneovasc(curr['cnv']))
+    cnv = build_choroidalneovasc(curr['cnv'])
+    results.update(cnv)
     results.update(build_subret_fibrous(curr['scar']))
     results.update(build_geoatrophy(curr['ga']))
     results.update(build_dryamd_severity(curr['dry']))
-    results.update(build_wetamd_severity(curr['wet']))
+    results.update(build_wetamd_severity(
+        curr['wet'],
+        cnv_result=cnv,
+        srh_result=srh,
+        is_amd=None,
+        is_dr=None,
+        fluid_result=fluid,
+    ))
     results.update(build_amd_vitamin(curr['vitamin']))
     # results.update(build_lasertype(curr['lasertype']))
     results.update(build_lasertype_new(data['common']['treatment']))
@@ -216,9 +226,10 @@ def build_dryamd_severity(data):
     )
 
 
-def build_wetamd_severity(data):
+def build_wetamd_severity(data, *, cnv_result=None, srh_result=None,
+                          is_amd=None, is_dr=None, fluid_result=None):
     """Build wet amd severity"""
-    return column_from_variable(
+    result = column_from_variable(
         {
             'wetamd_severity_re': WetSeverity.UNKNOWN,
             'wetamd_severity_le': WetSeverity.UNKNOWN,
@@ -228,6 +239,24 @@ def build_wetamd_severity(data):
         transformer_func=WetSeverity,
         enum_to_str=True,
     )
+    return augment_wetamd_severity(result, cnv_result=cnv_result, srh_result=srh_result,
+                                   is_amd=is_amd, is_dr=is_dr, fluid_result=fluid_result)
+
+
+def augment_wetamd_severity(result, *, cnv_result=None, srh_result=None,
+                            is_amd=None, is_dr=None, fluid_result=None):
+    result = update_column(result, cnv_result, [
+        (ChoroidalNeoVasc, 'UNKNOWN', 'YES'),
+    ])
+    if is_amd and not is_dr:
+        result = update_column(result, srh_result, [
+            (1, 'UNKNOWN', 'YES'),
+        ])
+        result = update_column(result, fluid_result, [
+            ({Fluid.SUBRETINAL_FLUID, Fluid.INTRARETINAL_FLUID, Fluid.SUB_AND_INTRARETINAL_FLUID},
+             'UNKNOWN', 'YES')
+        ])
+    return result
 
 
 def build_amd_vitamin(data):

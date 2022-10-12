@@ -159,3 +159,36 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
 
 def column_from_variable_binary(data, label):
     return column_from_variable({f'{label}_le': -1, f'{label}_re': -1, f'{label}_unk': -1}, data)
+
+
+def update_column(target_data: dict, other_data: dict, conditions: list):
+    """
+    Update column (i.e., result from `columns_from_variable`) based on another column.
+    :param: target_data: column info to update
+    :param: other_data: column info to use for updating
+    :param: conditions: function(target_data, other_data's value, var in target_data to update) -> new value
+    :return:
+    """
+    if not other_data:  # ensure exists (often initialized to None)
+        return target_data
+    varname = '_'.join(list(target_data.keys())[0].split('_')[:-1])
+    for k, v in other_data.items():
+        suffix = k.split('_')[-1]
+        curr_varname = f'{varname}_{suffix}'
+        for other_value_condition, target_value_condition, result in conditions:
+            if (
+                    _isin(v, other_value_condition)  # check if other data value is in expected condition
+                    and _isin(target_value_condition, target_data[curr_varname], True)  # target value can be updated
+            ):
+                target_data[curr_varname] = result
+    return target_data
+
+
+def _isin(el, lst, empty_lst_returns=False):
+    if lst is None:
+        return empty_lst_returns
+    if isinstance(lst, (set, list)):
+        if len(lst) == 0:
+            return empty_lst_returns
+        return el in lst
+    return el == lst
