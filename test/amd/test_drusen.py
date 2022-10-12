@@ -6,7 +6,7 @@ from eye_extractor.laterality import build_laterality_table
 
 @pytest.mark.parametrize('text, exp_size_le, exp_size_re, exp_type_le, exp_type_re', [
     ('WNL OU', None, None, None, None),
-    ('drusen and RPE drop out OU', 'unknown', 'unknown', 'unknown', 'unknown'),
+    ('drusen and RPE drop out OU', 'yes', 'yes', 'yes', 'yes'),
 ])
 def test_drusen(text, exp_size_le, exp_size_re, exp_type_le, exp_type_re):
     lats = build_laterality_table(text)
