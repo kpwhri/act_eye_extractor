@@ -212,9 +212,9 @@ def build_geoatrophy(data):
     )
 
 
-def build_dryamd_severity(data):
+def build_dryamd_severity(data, *, ga_result=None):
     """Build dry amd severity"""
-    return column_from_variable(
+    result = column_from_variable(
         {
             'dryamd_severity_re': DrySeverity.UNKNOWN,
             'dryamd_severity_le': DrySeverity.UNKNOWN,
@@ -224,6 +224,14 @@ def build_dryamd_severity(data):
         transformer_func=DrySeverity,
         enum_to_str=True,
     )
+    return augment_dryamd_severity(result, ga_result=ga_result)
+
+
+def augment_dryamd_severity(result, *, ga_result=None):
+    result = update_column(result, ga_result, [
+        (GeoAtrophy.YES, 'UNKNOWN', 'YES'),
+    ])
+    return result
 
 
 def build_wetamd_severity(data, *, cnv_result=None, srh_result=None,
@@ -246,7 +254,7 @@ def build_wetamd_severity(data, *, cnv_result=None, srh_result=None,
 def augment_wetamd_severity(result, *, cnv_result=None, srh_result=None,
                             is_amd=None, is_dr=None, fluid_result=None):
     result = update_column(result, cnv_result, [
-        (ChoroidalNeoVasc, 'UNKNOWN', 'YES'),
+        (ChoroidalNeoVasc.YES, 'UNKNOWN', 'YES'),
     ])
     if is_amd and not is_dr:
         result = update_column(result, srh_result, [
