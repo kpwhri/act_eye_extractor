@@ -20,6 +20,7 @@ Types of changes:
 ### Changed
 - Wet/dry AMD variable 'UNSPECIFIED' to 'YES'
 - Wet/dry AMD variables use other relevant variables to update final results
+- Expanded fluid to include macular edema
 
 ## v20220921
 
