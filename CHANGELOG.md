@@ -17,6 +17,10 @@ Types of changes:
 
 ## [Unreleased]
 
+### Changed
+- Wet/dry AMD variable 'UNSPECIFIED' to 'YES'
+- Wet/dry AMD variables use other relevant variables to update final results
+
 ## v20220921
 
 ### Fixed
