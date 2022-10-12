@@ -21,6 +21,7 @@ Types of changes:
 - Wet/dry AMD variable 'UNSPECIFIED' to 'YES'
 - Wet/dry AMD variables use other relevant variables to update final results
 - Expanded fluid to include macular edema
+- Expanded definition of pigment changes
 
 ## v20220921
 
