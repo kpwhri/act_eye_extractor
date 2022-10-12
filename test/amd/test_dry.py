@@ -18,9 +18,10 @@ def test_dry_patterns(pat, text, exp):
 
 
 @pytest.mark.parametrize('text, headers, exp_dryamd_severity_re, exp_dryamd_severity_le, exp_dryamd_severity_unk', [
-    ('', {'MACULA': 'dry'}, 'UNKNOWN', 'UNKNOWN', 'UNSPECIFIED'),
-    ('', {'ASSESSMENT': 'atrophy od'}, 'UNSPECIFIED', 'UNKNOWN', 'UNKNOWN'),
-    ('atrophic armd', None, 'UNKNOWN', 'UNKNOWN', 'UNSPECIFIED'),
+    ('', {'MACULA': 'dry'}, 'UNKNOWN', 'UNKNOWN', 'YES'),
+    ('', {'ASSESSMENT': 'atrophy od'}, 'YES', 'UNKNOWN', 'UNKNOWN'),
+    ('atrophic armd', None, 'UNKNOWN', 'UNKNOWN', 'YES'),
+    ('OD: non-exudative senile AMD', None, 'YES', 'UNKNOWN', 'UNKNOWN'),
 ])
 def test_dry_extract_build(text, headers, exp_dryamd_severity_re, exp_dryamd_severity_le, exp_dryamd_severity_unk):
     pre_json = extract_dryamd_severity(text, headers=Headers(headers))

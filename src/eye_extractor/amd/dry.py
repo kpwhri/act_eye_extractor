@@ -9,7 +9,7 @@ from eye_extractor.laterality import create_new_variable
 class DrySeverity(enum.IntEnum):
     UNKNOWN = -1
     NO = 0
-    UNSPECIFIED = 1
+    YES = 1
     L1 = 11  # TODO: unable to find any examples in the text
     L2 = 12
     L3 = 13
@@ -18,11 +18,12 @@ class DrySeverity(enum.IntEnum):
 
 amd = r'(?:ar?md|macul\w+\W*degen\w*)'
 dry = r'(?:dry|atroph\w*|nnv|non\W*(?:exudat|neovascul)\w+)'
+between = r'(?:senile)?'
 
 DRY_AMD_PAT = re.compile(
     rf'\b(?:'
-    rf'{dry}\W*{amd}'
-    rf'|{amd}\W*{dry}'
+    rf'{dry}\W*{between}\W*{amd}'
+    rf'|{amd}\W*{between}\W*{dry}'
     rf')\b',
     re.I
 )
@@ -51,7 +52,7 @@ def _extract_dryamd_severity(text, lateralities, source):
         negword = is_negated(m, text, {'no', 'or', 'without'})
         data.append(
             create_new_variable(text, m, lateralities, 'dryamd_severity', {
-                'value': DrySeverity.NO if negword else DrySeverity.UNSPECIFIED,
+                'value': DrySeverity.NO if negword else DrySeverity.YES,
                 'term': m.group(),
                 'label': 'no' if negword else 'yes',
                 'negated': negword,
@@ -68,7 +69,7 @@ def _extract_dryamd_severity_all(text, lateralities, source):
         negword = is_negated(m, text, {'no', 'or', 'without'})
         data.append(
             create_new_variable(text, m, lateralities, 'dryamd_severity', {
-                'value': DrySeverity.NO if negword else DrySeverity.UNSPECIFIED,
+                'value': DrySeverity.NO if negword else DrySeverity.YES,
                 'term': m.group(),
                 'label': 'no' if negword else 'yes',
                 'negated': negword,
