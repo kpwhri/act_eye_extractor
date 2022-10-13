@@ -45,10 +45,10 @@ class Treatment(enum.IntEnum):
 
 
 # headers
-PLAN_HEADERS = ('PLAN', 'PLAN COMMENTS', 'COMMENTS')
-GLAUCOMA_HEADERS = ('PLAN', 'PLAN COMMENTS', 'COMMENTS')
-AMD_HEADERS = ('ASSESSMENT', 'IMPRESSION', 'IMP', 'HX', 'PAST', 'ASSESSMENT COMMENTS', 'PLAN')
-ANTIVEGF_HEADERS = ('SUBJECTIVE', 'CHIEF COMPLAINT', 'HISTORY OF PRESENT ILLNESS')
+PLAN_HEADERS = ('PLAN', 'PLAN_COMMENTS', 'COMMENTS')
+GLAUCOMA_HEADERS = ('PLAN', 'PLAN_COMMENTS', 'COMMENTS')
+AMD_HEADERS = ('ASSESSMENT', 'IMPRESSION', 'IMP', 'HX', 'PAST', 'ASSESSMENT_COMMENTS', 'PLAN')
+ANTIVEGF_HEADERS = ('SUBJECTIVE', 'CHIEF_COMPLAINT', 'HISTORY_PRESENT_ILLNESS')
 DR_HEADERS = ['MACULA']
 
 # regular expressions
@@ -280,42 +280,42 @@ def extract_treatment(text, *, headers=None, lateralities=None, target_headers=N
             data.append(result)
         # dr targets
         for result in _extract_treatment_section(
-            headers,
-            PLAN_HEADERS,
-            'DR',
-            ('PRP_PAT', PRP_PAT, Treatment.PRP),
-            ('FOCAL_PAT', FOCAL_PAT, Treatment.FOCAL),
-            ('GRID_PAT', GRID_PAT, Treatment.GRID),
-            ('MACULAR_PAT', MACULAR_PAT, Treatment.MACULAR),
-            ('SURGERY_PAT', SURGERY_PAT, Treatment.SURGERY),
+                headers,
+                PLAN_HEADERS,
+                'DR',
+                ('PRP_PAT', PRP_PAT, Treatment.PRP),
+                ('FOCAL_PAT', FOCAL_PAT, Treatment.FOCAL),
+                ('GRID_PAT', GRID_PAT, Treatment.GRID),
+                ('MACULAR_PAT', MACULAR_PAT, Treatment.MACULAR),
+                ('SURGERY_PAT', SURGERY_PAT, Treatment.SURGERY),
         ):
             data.append(result)
         for result in _extract_treatment_section(
-            headers,
-            DR_HEADERS,
-            'DR',
-            ('MACULAR_HEADER_PAT', MACULAR_HEADER_PAT, Treatment.MACULAR),
+                headers,
+                DR_HEADERS,
+                'DR',
+                ('MACULAR_HEADER_PAT', MACULAR_HEADER_PAT, Treatment.MACULAR),
         ):
             data.append(result)
     # all text
     for result in _extract_treatment(
-        'ALL',
-        text,
-        lateralities,
-        'ANTIVEGF',
-        ('ANTIVEGF_RX',
-         re.compile(fr'(s/p)?\W*(?P<term>{ANTIVEGF_PAT})', re.I),
-         lambda m: ANTIVEGF_TO_ENUM[get_standardized_name(m.group('term'))]
-         ),
+            'ALL',
+            text,
+            lateralities,
+            'ANTIVEGF',
+            ('ANTIVEGF_RX',
+             re.compile(fr'(s/p)?\W*(?P<term>{ANTIVEGF_PAT})', re.I),
+             lambda m: ANTIVEGF_TO_ENUM[get_standardized_name(m.group('term'))]
+             ),
     ):
         data.append(result)
     for result in _extract_treatment(
-        'ALL',
-        text,
-        lateralities,
-        'DR',
-        ('GRID_PAT', GRID_PAT, Treatment.GRID),
-        ('MACULAR_PAT', MACULAR_PAT, Treatment.MACULAR),
+            'ALL',
+            text,
+            lateralities,
+            'DR',
+            ('GRID_PAT', GRID_PAT, Treatment.GRID),
+            ('MACULAR_PAT', MACULAR_PAT, Treatment.MACULAR),
     ):
         data.append(result)
 

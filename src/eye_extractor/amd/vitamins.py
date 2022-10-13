@@ -37,7 +37,7 @@ def extract_amd_vitamin(text, *, headers=None, lateralities=None):
     data = []
     if headers:
         for sect_name, sect_text in headers.iterate(
-                'CURRENT EYE MEDICATIONS', 'EYE MEDICATIONS', 'MEDICATIONS', 'PLAN',
+                'CURRENT_EYE_MEDICATIONS', 'EYE_MEDICATIONS', 'MEDICATIONS', 'PLAN',
         ):  # TODO: other sections?
             for m in VITAMIN_PAT.finditer(sect_text):
                 negword = is_negated(m, sect_text, {'no', 'not', 'or', 'without'})

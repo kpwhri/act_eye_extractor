@@ -30,7 +30,7 @@ CMT_PAT_LE = re.compile(
 def extract_cmt(text, *, headers: Headers = None, lateralities=None):
     data = []
     if headers:
-        for section_name, section_text in headers.iterate('OCT MAC', 'OCT MACULA'):
+        for section_name, section_text in headers.iterate('OCT_MAC', 'OCT_MACULA', 'MACULA'):
             for m in CMT_PAT.finditer(section_text):
                 date = parse_date_before(m, section_text, as_string=True)
                 data.append({'macularoct_thickness_re': {
