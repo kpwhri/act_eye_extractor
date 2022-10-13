@@ -8,6 +8,7 @@ from loguru import logger
 from eye_extractor.amd.algorithm import extract_amd_variables
 from eye_extractor.cataract.algorithm import extract_cataract
 from eye_extractor.cataract.cataract_surgery import get_cataract_surgery
+from eye_extractor.common.noteinfo import extract_note_level_info
 from eye_extractor.dr.diabetic_retinopathy import extract_dr_variables
 from eye_extractor.common.algo.extract import extract_common_algorithms
 from eye_extractor.exam.algorithm import get_exam
@@ -29,6 +30,8 @@ def extract_all(text: str, *, data: dict = None, sections: dict = None):
     lateralities = build_laterality_table(text)
     if data is None:
         data = {}
+    data['note'] = extract_note_level_info(text, headers=sections, lateralities=lateralities)
+    lateralities.default_laterality = data['note']['default_lat']
     data['va'] = list(extract_va(text))
     data['iop'] = list(get_iop(text))
     data['amd'] = extract_amd_variables(text, headers=sections, lateralities=lateralities)

@@ -173,11 +173,12 @@ class LatLocation:
 
 class LateralityLocator:
 
-    def __init__(self, lateralities: list[LatLocation] = None):
+    def __init__(self, lateralities: list[LatLocation] = None, *, default_laterality=Laterality.UNKNOWN):
         if lateralities:
             self.lateralities = SortedList(lateralities, key=lambda x: x[1])
         else:
             self.lateralities = SortedList([], key=lambda x: x[1])
+        self.default_laterality = default_laterality
 
     def add_laterality(self, laterality: LatLocation):
         self.lateralities.add(laterality)
@@ -257,7 +258,7 @@ class LateralityLocator:
                 return prev_lat.laterality
             elif next_lat and (next_dist := self.distance(match_start, next_lat)) < next_max:
                 return next_lat.laterality
-        return Laterality.UNKNOWN
+        return self.default_laterality
 
     def __iter__(self):
         return iter(self.lateralities)
