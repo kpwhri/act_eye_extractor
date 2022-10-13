@@ -25,6 +25,7 @@ Types of changes:
 
 ### Added
 - Added loading sections from file
+- Increased synonyms for drusen severity
 
 ## v20220921
 

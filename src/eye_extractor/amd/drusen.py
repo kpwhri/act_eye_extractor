@@ -26,6 +26,7 @@ INTERMEDIATE_DRUSEN_PAT = re.compile(
 LARGE_DRUSEN_PAT = re.compile(
     r'('
     r'dense'
+    r'|extensive'
     r'|large'
     r'|heavy'
     r'|big'
