@@ -18,6 +18,10 @@ SectionText = str
 # TODO: have headers store laterality state
 # TODO: have headers store text hierarchically MACULA: djfslkdj OD: drusen -> MACULA: 'd... OD: drusen'
 class Headers(UserDict):
+    def __init__(self, initialdict):
+        super().__init__(initialdict)
+        self.data = {x.replace(' ', '_').upper(): y for x, y in self.data.items()}
+
     def iterate(self, *headers: Section) -> tuple[Section, SectionText]:
         for header in headers:
             if text := self.data.get(header, None):
