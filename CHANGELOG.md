@@ -23,6 +23,9 @@ Types of changes:
 - Expanded fluid to include macular edema
 - Expanded definition of pigment changes
 
+### Added
+- Added loading sections from file
+
 ## v20220921
 
 ### Fixed
