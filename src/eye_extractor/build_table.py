@@ -134,15 +134,15 @@ def get_manifest(data):
     return {}
 
 
-def process_data(data, *, add_columns=None):
+def process_data(data, *, add_columns=None, date_column='note_date'):
     result = {
         'docid': data['note_id'],
         'studyid': data['studyid'],
-        'date': data['pe_contact_date'],
+        'date': data[date_column],
         'encid': data['enc_id'],
         'is_training': data['train'],
     }
-    data['date'] = datetime.datetime.strptime(data['note_date'], '%Y-%m-%d %H:%M:%S')
+    data['date'] = datetime.datetime.strptime(data[date_column], '%Y-%m-%d %H:%M:%S')
     for col in add_columns or []:
         result[col] = data[col]
     result.update(get_va(data['va']))
@@ -163,10 +163,13 @@ def process_data(data, *, add_columns=None):
 @click.command()
 @click.argument('jsonl_file', type=click.Path(exists=True, path_type=pathlib.Path))
 @click.argument('outdir', type=click.Path(file_okay=False, path_type=pathlib.Path))
+@click.argument('--date-column', default='note_date')
 @click.option('--add-column', 'add_columns', multiple=True, help='Additional columns to include in output.')
-def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path, add_columns=None):
+def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path, date_column='note_date', add_columns=None):
     """
 
+    :param date_column: name of date column to use (defaults to 'note_date')
+    :param add_columns:
     :param jsonl_file: if file, read that file; if directory, run all
     :param outdir:
     :return:
@@ -188,7 +191,7 @@ def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path, add_columns=None
                     writer.writeheader()
                 for line in fh:
                     data = json.loads(line.strip())
-                    result = process_data(data, add_columns=add_columns)
+                    result = process_data(data, add_columns=add_columns, date_column=date_column)
                     validate_columns_in_row(OUTPUT_COLUMNS, result, id_col='studyid')
                     writer.writerow(result)
 
