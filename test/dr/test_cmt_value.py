@@ -41,11 +41,11 @@ _cmt_value_extract_and_build_cases = [
 
 @pytest.mark.parametrize('text, headers, exp_dmacedema_cmt_re, exp_dmacedema_cmt_le, exp_dmacedema_cmt_unk',
                          _cmt_value_extract_and_build_cases)
-def test_dr_type_extract_and_build(text,
-                                   headers,
-                                   exp_dmacedema_cmt_re,
-                                   exp_dmacedema_cmt_le,
-                                   exp_dmacedema_cmt_unk):
+def test_cmt_value_extract_and_build(text,
+                                     headers,
+                                     exp_dmacedema_cmt_re,
+                                     exp_dmacedema_cmt_le,
+                                     exp_dmacedema_cmt_unk):
     pre_json = get_cmt_value(text)
     post_json = json.loads(json.dumps(pre_json))
     result = build_cmt_value(post_json)
