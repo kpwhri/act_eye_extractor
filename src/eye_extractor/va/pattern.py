@@ -20,8 +20,8 @@ VA = (r'('
 OD = r'(O\W*D|R(ight)?\W*E(ye)?)'
 OS = r'(O\W*S|L(eft)?\W*E(ye)?)'
 PH = r'(P\W*H|Pinhole)'
-CC = r'(C\W*C|with glasses|specs|with correction)'
-SC = r'(S\W*C|without glasses|uncorrected|without correction)'
+CC = r'(va\'s\s*)?(C\W*C|with glasses|(with\s*)?specs|specs|with correction)'
+SC = r'(S\W*C|without glasses|uncorrected|without correction|unaided)'
 PREVIOUS = r'(?P<previous>(Last|past|previous)\W+)?'
 
 VaPattern = namedtuple('VaPattern', 'pattern metadata')

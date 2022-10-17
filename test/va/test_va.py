@@ -3,10 +3,10 @@ import re
 
 import pytest
 
-from eye_extractor.build_table import get_va
+from eye_extractor.build_table import build_va
 from eye_extractor.history.common import update_history_from_key
 from eye_extractor.va.extractor2 import vacc_numbercorrect_le, extract_va, VA_PATTERN, clean_punc
-from eye_extractor.va.pattern import VA
+from eye_extractor.va.pattern import VA, VA_LINE_CC, VA_LINE_SC, VA_LINE_GROUPED
 from eye_extractor.va.rx import get_manifest_rx, BCV_PAT
 
 
@@ -31,7 +31,7 @@ def test_vacc_le(text, exp):
     ('20/ 70', '20', '70', None, None, None, None),
     ('20/CF2', None, None, None, 'CF', None, None),
 ])
-def test_va_pattern_matches(text, exp_num, exp_score, exp_diopter, exp_test, exp_test2, exp_test3):
+def test_va_pattern_precise(text, exp_num, exp_score, exp_diopter, exp_test, exp_test2, exp_test3):
     pat = re.compile(VA.replace("##", "_0"), re.I)
     m = pat.match(text)
     assert m is not None
@@ -65,6 +65,34 @@ def test_va_pattern(text, exp_num, exp_score, exp_sign, exp_diopter, exp_test, e
     assert m.group('test2') == exp_test2
 
 
+@pytest.mark.parametrize('text, exp', [
+    ("¶Visual Acuity: ', 'Snellen', \" ¶Va's with specs ¶OD:20/50-1 ¶OS:20/35-2", True),
+])
+def test_va_line_cc_pattern(text, exp):
+    text = clean_punc(text)
+    m = VA_LINE_CC.pattern.search(text)
+    assert bool(m) == exp
+
+
+@pytest.mark.parametrize('text, exp', [
+    ("¶Visual Acuity: ', 'Snellen', \" ¶Unaided ¶OD:20/50-2 ¶OS:20/70-2", True),
+])
+def test_va_line_cc_pattern(text, exp):
+    text = clean_punc(text)
+    m = VA_LINE_SC.pattern.search(text)
+    assert bool(m) == exp
+
+
+# @pytest.mark.parametrize('text, exp', [
+#     ("¶Visual Acuity: ', 'Snellen', \" ¶Unaided ¶OD:20/50-2 ¶OS:20/70-2 ¶Va's with specs ¶OD:20/45-1 ¶OS:20/35-2",
+#      True),
+# ])
+# def test_va_line_grouped_pattern(text, exp):
+#     text = clean_punc(text)
+#     m = VA_LINE_GROUPED.pattern.search(text)
+#     assert bool(m) == exp
+
+
 @pytest.mark.parametrize(
     'text, sphere_re, cylinder_re, axis_re, add_re, denom_re, correct_re, '
     'sphere_le, cylinder_le, axis_le, add_le, denom_le, correct_le',
@@ -93,8 +121,8 @@ def test_va_pattern(text, exp_num, exp_score, exp_sign, exp_diopter, exp_test, e
             marks=pytest.mark.skip(reason='Missing pattern.')),
     ])
 def test_get_manifest_rx(
-        text, sphere_re, cylinder_re, axis_re, add_re, denom_re, correct_re,
-        sphere_le, cylinder_le, axis_le, add_le, denom_le, correct_le):
+    text, sphere_re, cylinder_re, axis_re, add_re, denom_re, correct_re,
+    sphere_le, cylinder_le, axis_le, add_le, denom_le, correct_le):
     results = list(get_manifest_rx(text))
     if not results:
         raise ValueError('Pattern not found.')
@@ -123,6 +151,30 @@ def test_bcv_pat():
     assert m.group('os_correct') is None
 
 
+_va_extract_and_build_cases = [
+    ("¶Visual Acuity: ', 'Snellen', \" ¶Unaided ¶OD:20/50-2 ¶OS:20/70-2 ¶Va's with specs ¶OD:20/45-1 ¶OS:20/35-2",
+     4,
+     [(50, 'vasc_denominator_re'),
+      (70, 'vasc_denominator_le'),
+      (45, 'vacc_denominator_re'),
+      (35, 'vacc_denominator_le')]
+     ),
+]
+
+
+# @pytest.mark.parametrize('text, exp_length, exps', _va_extract_and_build_cases)
+# def test_va_extract_and_build(text, exp_length, exps):
+#     result = list(extract_va(text))
+#     assert len(result) == exp_length
+#     post_json = json.loads(json.dumps(result))
+#     assert len(post_json) == exp_length
+#     print(post_json)
+#     va_dict = build_va(post_json)
+#     print(va_dict)
+#     for val, field in exps:
+#         assert val == va_dict.get(field, None)
+
+
 @pytest.mark.parametrize('text, exp_length, exps', [
     ('Previous Visual acuity: Snellen    CC: OD: 20/HM 3\' PH: OD: 20/NI     OS: 20/80-2+1 PH: OS: 20/NI',
      4, [
@@ -147,7 +199,7 @@ def test_va_ni(text, exp_length, exps):
     post_json = json.loads(json.dumps(result))
     assert len(post_json) == exp_length
     print(post_json)
-    va_dict = get_va(post_json)
+    va_dict = build_va(post_json)
     print(va_dict)
     for val, field1, field2 in exps:
         assert val == va_dict.get(field1, None)
@@ -160,5 +212,3 @@ def test_va_ni(text, exp_length, exps):
 ])
 def test_clean_punc(text, exp):
     assert exp == clean_punc(text)
-
-

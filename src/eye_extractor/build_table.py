@@ -107,7 +107,7 @@ def parse_va_test(row, prev_denom, results, *, no_improvement=False):
         prev_denom[lat] = (test.upper(), distance, False)
 
 
-def get_va(data):
+def build_va(data):
     results = {}
     prev_denom = {}
     for row in data:
@@ -145,7 +145,7 @@ def process_data(data, *, add_columns=None):
     data['date'] = datetime.datetime.strptime(data['note_date'], '%Y-%m-%d %H:%M:%S')
     for col in add_columns or []:
         result[col] = data[col]
-    result.update(get_va(data['va']))
+    result.update(build_va(data['va']))
     result.update(build_iop(data['iop']))
     result.update(get_manifest(data['manifestrx']))
     result.update(build_amd_variables(data))
