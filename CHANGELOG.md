@@ -17,6 +17,16 @@ Types of changes:
 
 ## [Unreleased]
 
+### Changed
+- Wet/dry AMD variable 'UNSPECIFIED' to 'YES'
+- Wet/dry AMD variables use other relevant variables to update final results
+- Expanded fluid to include macular edema
+- Expanded definition of pigment changes
+
+### Added
+- Added loading sections from file
+- Increased synonyms for drusen severity
+
 ## v20220921
 
 ### Fixed

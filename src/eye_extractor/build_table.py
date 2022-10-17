@@ -138,7 +138,7 @@ def process_data(data, *, add_columns=None):
     result = {
         'docid': data['note_id'],
         'studyid': data['studyid'],
-        'date': data['note_date'],
+        'date': data['pe_contact_date'],
         'encid': data['enc_id'],
         'is_training': data['train'],
     }

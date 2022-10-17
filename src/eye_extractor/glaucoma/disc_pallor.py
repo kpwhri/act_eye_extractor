@@ -34,7 +34,7 @@ def extract_disc_pallor(text, *, headers=None, lateralities=None):
     data = []
     if headers:
         for sect_name, sect_text in headers.iterate(
-                'OPTIC NERVE', 'C/D'
+                'OPTIC_NERVE', 'C/D'
         ):
             for pat_label, pat, value in [
                 ('DISC_PALLOR_PAT', DISC_PALLOR_PAT, DiscPallor.YES),

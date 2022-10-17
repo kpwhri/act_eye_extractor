@@ -76,10 +76,18 @@ def fluid_prioritization(new_value: Fluid, curr_value: Fluid | None):
 srf = r'sr\s*f(?:luids?)?'
 irf = r'ir\s*f(?:luids?)?'
 
+MACULAR_EDEMA_PAT = re.compile(
+    rf'\b(?:'
+    rf'macular edema'
+    rf')\b',
+    re.IGNORECASE
+)
+
 FLUID_NOS_PAT = re.compile(
-    rf'(?:'
+    rf'\b(?:'
     rf'fluid'
-    rf')',
+    rf'|edema'
+    rf')\b',
     re.IGNORECASE
 )
 
@@ -123,6 +131,7 @@ def extract_fluid(text, *, headers=None, lateralities=None):
 def _get_fluid(text, lateralities, source):
     data = []
     for label, pat, positive_value, negative_value, positive_word in [
+        ('MACULAR_EDEMA', MACULAR_EDEMA_PAT, Fluid.FLUID, Fluid.NO, 'macular edema'),
         ('SUBRETINAL_FLUID_PAT', SUBRETINAL_FLUID_PAT,
          Fluid.SUBRETINAL_FLUID, Fluid.NO_SUBRETINAL_FLUID, 'subretinal fluid'
          ),
@@ -134,6 +143,8 @@ def _get_fluid(text, lateralities, source):
          ),
     ]:
         for m in pat.finditer(text):
+            if is_negated(m, text, {'corneal'}):  # non-macular
+                continue
             negword = (
                     is_negated(m, text, {'no', 'or', 'without'}, word_window=4)
                     or is_post_negated(m, text, {'not'}, word_window=3)
@@ -155,8 +166,10 @@ def _get_fluid(text, lateralities, source):
 def _get_fluid_in_macula(text, lateralities, source):
     data = []
     for m in FLUID_NOS_PAT.finditer(text):
+        if is_negated(m, text, {'corneal'}):  # non-macular
+            continue
         negword = (
-                is_negated(m, text, {'no', 'or', 'without'}, word_window=4)
+                is_negated(m, text, {'no', 'or', 'without', 'corneal'}, word_window=4)
                 or is_post_negated(m, text, {'not'}, word_window=3)
         )
         data.append(

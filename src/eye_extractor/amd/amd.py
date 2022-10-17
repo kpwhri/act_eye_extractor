@@ -1,10 +1,10 @@
 import re
 
-from eye_extractor.laterality import LATERALITY_PATTERN, laterality_finder, Laterality
+from eye_extractor.laterality import laterality_finder, Laterality
 
 AMD_RX = re.compile(
     r'('
-    r'\bamd\b'
+    r'\bar?md\b'
     r'|(age\Wrelated )?macular degener\w+'
     r'|macular\s+degener\w+'
     r')',
