@@ -68,8 +68,8 @@ STOPWORDS_PATTERN = re.compile(
 
 VA_PATTERN = re.compile(
     r'(?:\s|^|~|:)(?P<numerator>20|3E|E)/\s*(?P<score>(?:\d+|NT|NA))\s*(?P<sign>[+|-])*\s*(?P<diopter>\d)*'
-    r'|(?:20/\s*)?(?P<test>HM|CF|LP|NLP)(?:\W+(?:@|at|x)?\s*'
-    r'(?P<distance>\d+)\s*(?P<distance_metric>\'|"|in|ft|feet)'
+    r'|(?:20/\s*)?(?P<test>HM|CF|LP|NLP)(?:(\W+(?:@|at|x))?\s*'
+    r'(?P<distance>\d+)\s*(?P<distance_metric>\'|"|in|ft|feet)?'
     r'(?P<test2>HM|CF|LP|NLP)?'
     r'|$)',
     re.I
@@ -201,6 +201,7 @@ def get_elements_from_line(m, metadata: list) -> list[dict]:
     return lst
 
 
+# TODO: Delete following function, seems unused.
 def get_number_correct(sign, diopter):
     if sign and diopter:
         return f'{sign}{diopter}'
@@ -228,8 +229,6 @@ def clean_punc(text: str, pat: str = r'[¶»]') -> str:
 def extract_va(text: str) -> Generator[dict, None, None]:
     text = clean_punc(text)
     rows, text = extract_va_precise(text)
-    # TODO: Add function for missing VA values.
-    # rows, text = extract_va_extra(text)
     yield from rows
     # find other terms
     keywords = get_keywords_stopwords(text)

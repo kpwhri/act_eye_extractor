@@ -25,6 +25,11 @@ def test_vacc_le(text, exp):
     ('20/40+1', '20', '40', '+1', None, None, None),
     ('20/hm at 3ft', None, None, None, 'hm', None, None),
     ('20/HM 3\'', None, None, None, 'HM', None, None),
+    ('20/30+2', '20', '30', '+2', None, None, None),
+    ('20/100-1', '20', '100', '-1', None, None, None),
+    ('20/ HM', None, None, None, None, None, 'HM'),
+    ('20/ 70', '20', '70', None, None, None, None),
+    ('20/CF2', None, None, None, 'CF', None, None),
 ])
 def test_va_pattern_matches(text, exp_num, exp_score, exp_diopter, exp_test, exp_test2, exp_test3):
     pat = re.compile(VA.replace("##", "_0"), re.I)
@@ -39,16 +44,22 @@ def test_va_pattern_matches(text, exp_num, exp_score, exp_diopter, exp_test, exp
     assert m.group('test3_0') == exp_test3, m.groupdict()
 
 
-@pytest.mark.parametrize('text, exp_num, exp_score, exp_diopter, exp_test, exp_test2', [
-    ('20/20', '20', '20', None, None, None),
-    ('20/40+1', '20', '40', '1', None, None),
-    ('20/hm at 3ft', None, None, None, 'hm', None),
-    ('20/HM', None, None, None, 'HM', None),
+@pytest.mark.parametrize('text, exp_num, exp_score, exp_sign, exp_diopter, exp_test, exp_test2', [
+    ('20/20', '20', '20', None, None, None, None),
+    ('20/40+1', '20', '40', '+', '1', None, None),
+    ('20/hm at 3ft', None, None, None, None, 'hm', None),
+    ('20/HM', None, None, None, None, 'HM', None),
+    ('20/30+2', '20', '30', '+', '2', None, None),
+    ('20/100-1', '20', '100', '-', '1', None, None),
+    ('20/ HM', None, None, None, None, 'HM', None),
+    ('20/ 70', '20', '70', None, None, None, None),
+    ('20/CF2', None, None, None, None, 'CF', None),
 ])
-def test_va_pattern(text, exp_num, exp_score, exp_diopter, exp_test, exp_test2):
+def test_va_pattern(text, exp_num, exp_score, exp_sign, exp_diopter, exp_test, exp_test2):
     m = VA_PATTERN.search(text)
     assert m.group('numerator') == exp_num
     assert m.group('score') == exp_score
+    assert m.group('sign') == exp_sign
     assert m.group('diopter') == exp_diopter
     assert m.group('test') == exp_test
     assert m.group('test2') == exp_test2
