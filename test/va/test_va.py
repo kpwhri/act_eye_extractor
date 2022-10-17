@@ -30,6 +30,7 @@ def test_vacc_le(text, exp):
     ('20/ HM', None, None, None, None, None, 'HM'),
     ('20/ 70', '20', '70', None, None, None, None),
     ('20/CF2', None, None, None, 'CF', None, None),
+    ('NLP', None, None, None, None, None, 'NLP'),
 ])
 def test_va_pattern_precise(text, exp_num, exp_score, exp_diopter, exp_test, exp_test2, exp_test3):
     pat = re.compile(VA.replace("##", "_0"), re.I)
@@ -67,6 +68,8 @@ def test_va_pattern(text, exp_num, exp_score, exp_sign, exp_diopter, exp_test, e
 
 @pytest.mark.parametrize('text, exp', [
     ("¶Visual Acuity: ', 'Snellen', \" ¶Va's with specs ¶OD:20/50-1 ¶OS:20/35-2", True),
+    ("¶VISUAL ACUITY: ', 'Snellen', \" ¶CC:  ¶OD:20/HM  ¶OS:20/CF 3-4 feet", True),
+    ("¶Visual Acuity: ', 'Snellen', ' ¶CC  OD NLP           ¶CC  OS 20/400  PH NI", True),
 ])
 def test_va_line_cc_pattern(text, exp):
     text = clean_punc(text)
@@ -77,7 +80,7 @@ def test_va_line_cc_pattern(text, exp):
 @pytest.mark.parametrize('text, exp', [
     ("¶Visual Acuity: ', 'Snellen', \" ¶Unaided ¶OD:20/50-2 ¶OS:20/70-2", True),
 ])
-def test_va_line_cc_pattern(text, exp):
+def test_va_line_sc_pattern(text, exp):
     text = clean_punc(text)
     m = VA_LINE_SC.pattern.search(text)
     assert bool(m) == exp
@@ -159,6 +162,7 @@ _va_extract_and_build_cases = [
       (45, 'vacc_denominator_re'),
       (35, 'vacc_denominator_le')]
      ),
+    # TODO: Add more cases based off tests for VA_LINE_CC, VA_LINE_SC, VA_LINE_GROUPED
 ]
 
 

@@ -11,7 +11,7 @@ VA = (r'('
       r'(?P<test2##>HM|CF|LP|NLP)?'
       r')'  # close paren: distance
       r'|'
-      r'20/\s*(?P<test3##>HM|CF|LP|NLP)'
+      r'(20/\s*)?(?P<test3##>HM|CF|LP|NLP)'
       r'|'
       r'(20/\D*|ni|na|nt|no improvement|)'
       r'|'
