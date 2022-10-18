@@ -34,6 +34,7 @@ def build_ven_beading(data):
         },
         data,
         transformer_func=Severity,
+        enum_to_str=True,
     )
 
 
@@ -64,6 +65,7 @@ def build_intraretinal_severity(data):
         },
         data,
         transformer_func=Severity,
+        enum_to_str=True,
     )
 
 
@@ -75,6 +77,7 @@ def build_dot_blot_severity(data):
         },
         data,
         transformer_func=Severity,
+        enum_to_str=True,
     )
 
 
@@ -85,7 +88,8 @@ def build_irma(data):
             f'irma_unk': Severity.UNKNOWN,
         },
         data,
-        transformer_func=Severity
+        transformer_func=Severity,
+        enum_to_str=True,
     )
 
 
@@ -100,6 +104,7 @@ def build_fluid(data, *, skip_rename_variable=False):
         data,
         transformer_func=Fluid,
         result_func=fluid_prioritization,
+        enum_to_str=True,
         renamevar_func=lambda x: x.replace('fluid', 'fluid_dr'),
         rename_func=None if skip_rename_variable else rename_fluid,
     )
@@ -161,6 +166,7 @@ def build_npdr_severity(data):
             f'nonprolifdr_unk': Severity.UNKNOWN,
         },
         data,
+        enum_to_str=True,
         transformer_func=Severity,
     )
 
@@ -172,6 +178,7 @@ def build_pdr_severity(data):
             f'prolifdr_unk': Severity.UNKNOWN,
         },
         data,
+        enum_to_str=True,
         transformer_func=Severity,
     )
 
@@ -205,6 +212,7 @@ def build_dr_tx(data):
         data,
         renamevar_func=lambda x: f'drtreatment_{x.split("_")[-1]}',
         rename_func=_rename_dr_tx,
+        enum_to_str=True,
         filter_func=lambda x: x.get('category', None) in {'DR', 'ALL', 'LASER', 'ANTIVEGF'},
         transformer_func=Treatment,
     )

@@ -26,6 +26,7 @@ Types of changes:
 ### Added
 - Added loading sections from file
 - Increased synonyms for drusen severity
+- Created check to ensure strings are in an enum
 
 ### Fixed
 - Fluid variable had several issues
