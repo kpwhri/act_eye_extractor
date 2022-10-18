@@ -78,9 +78,9 @@ OUTPUT_COLUMNS = {
     'amd_subretfluid_re': [is_in_range(-1, 1)],
     'amd_subretfluid_le': [is_in_range(-1, 1)],
     'amd_subretfluid_unk': [is_in_range(-1, 1)],
-    'amd_intrarettfluid_re': [is_in_range(-1, 1)],
-    'amd_intrarettfluid_le': [is_in_range(-1, 1)],
-    'amd_intrarettfluid_unk': [is_in_range(-1, 1)],
+    'amd_intraretfluid_re': [is_in_range(-1, 1)],
+    'amd_intraretfluid_le': [is_in_range(-1, 1)],
+    'amd_intraretfluid_unk': [is_in_range(-1, 1)],
     'drusen_size_re': [],
     'drusen_type_re': [],
     'drusen_size_unk': [],
@@ -304,10 +304,6 @@ OUTPUT_COLUMNS = {
     'amd_antivegf_re': [is_in_range(-1, 5)],
     'amd_antivegf_le': [is_in_range(-1, 5)],
     'amd_antivegf_unk': [is_in_range(-1, 5)],
-    # intra retinal fluid
-    'amd_intraretfluid_re': [is_in_range(-1, 5)],
-    'amd_intraretfluid_le': [is_in_range(-1, 5)],
-    'amd_intraretfluid_unk': [is_in_range(-1, 5)],
 
     ## DIABETIC RETINOPATHY
     # diab_retinop_yesno
