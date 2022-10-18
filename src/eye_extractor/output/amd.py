@@ -17,16 +17,17 @@ from eye_extractor.output.variable import column_from_variable, update_column
 
 def build_amd_variables(data):
     curr = data['amd']
+    note = data['note']
     results = {}
     results.update(get_amd(curr['amd']))
     results.update(get_drusen(curr['drusen']))
     srh = get_subretinal_hemorrhage(curr['srh'])
     results.update(srh)
     results.update(get_pigmentary_changes(curr['pigment']))
-    fluid = build_fluid(data['common']['fluid'])
+    fluid = build_fluid(data['common']['fluid'], is_amd=note['is_amd'])
     results.update(fluid)
-    results.update(build_subretfluid(data['common']['fluid']))
-    results.update(build_intraretfluid(data['common']['fluid']))
+    results.update(build_subretfluid(data['common']['fluid'], is_amd=note['is_amd']))
+    results.update(build_intraretfluid(data['common']['fluid'], is_amd=note['is_amd']))
     results.update(build_ped(curr['ped']))
     cnv = build_choroidalneovasc(curr['cnv'])
     results.update(cnv)
@@ -37,14 +38,14 @@ def build_amd_variables(data):
         curr['wet'],
         cnv_result=cnv,
         srh_result=srh,
-        is_amd=None,
-        is_dr=None,
+        is_amd=note['is_amd'],
+        is_dr=note['is_dr'],
         fluid_result=fluid,
     ))
     results.update(build_amd_vitamin(curr['vitamin']))
     # results.update(build_lasertype(curr['lasertype']))
-    results.update(build_lasertype_new(data['common']['treatment']))
-    results.update(build_amd_antivegf(data['common']['treatment']))
+    results.update(build_lasertype_new(data['common']['treatment'], is_amd=note['is_amd']))
+    results.update(build_amd_antivegf(data['common']['treatment'], is_amd=note['is_amd']))
     return results
 
 
@@ -96,14 +97,16 @@ def get_pigmentary_changes(data):
     }, data)
 
 
-def build_fluid(data, *, skip_rename_variable=False):
-    # TODO: check if AMD
+def build_fluid(data, *, is_amd=None, skip_rename_variable=False):
+    default = {
+        'fluid_re': Fluid.UNKNOWN,
+        'fluid_le': Fluid.UNKNOWN,
+        'fluid_unk': Fluid.UNKNOWN,
+    }
+    if is_amd is False:
+        return default
     return column_from_variable(
-        {
-            'fluid_re': Fluid.UNKNOWN,
-            'fluid_le': Fluid.UNKNOWN,
-            'fluid_unk': Fluid.UNKNOWN,
-        },
+        default,
         data,
         transformer_func=Fluid,
         result_func=fluid_prioritization,
@@ -113,14 +116,16 @@ def build_fluid(data, *, skip_rename_variable=False):
     )
 
 
-def build_intraretfluid(data):
-    # TODO: check if AMD
+def build_intraretfluid(data, *, is_amd=None):
+    default = {
+        'fluid_re': Fluid.UNKNOWN,
+        'fluid_le': Fluid.UNKNOWN,
+        'fluid_unk': Fluid.UNKNOWN,
+    }
+    if is_amd is False:
+        return default
     return column_from_variable(
-        {
-            'fluid_re': Fluid.UNKNOWN,
-            'fluid_le': Fluid.UNKNOWN,
-            'fluid_unk': Fluid.UNKNOWN,
-        },
+        default,
         data,
         transformer_func=Fluid,
         result_func=fluid_prioritization,
@@ -134,14 +139,16 @@ def build_intraretfluid(data):
     )
 
 
-def build_subretfluid(data):
-    # TODO: check if AMD
+def build_subretfluid(data, *, is_amd=None):
+    default = {
+        'fluid_re': Fluid.UNKNOWN,
+        'fluid_le': Fluid.UNKNOWN,
+        'fluid_unk': Fluid.UNKNOWN,
+    }
+    if is_amd is False:
+        return default
     return column_from_variable(
-        {
-            'fluid_re': Fluid.UNKNOWN,
-            'fluid_le': Fluid.UNKNOWN,
-            'fluid_unk': Fluid.UNKNOWN,
-        },
+        default,
         data,
         transformer_func=Fluid,
         result_func=fluid_prioritization,
@@ -308,7 +315,7 @@ def build_lasertype(data):
     )
 
 
-def build_lasertype_new(data):
+def build_lasertype_new(data, *, is_amd=None):
     """Laser type for AMD using treatment algorithm"""
 
     def _compare_lasertype(new, curr):
@@ -334,12 +341,15 @@ def build_lasertype_new(data):
                 return 3
         return val.value
 
+    default = {
+        'tx_re': Treatment.UNKNOWN,
+        'tx_le': Treatment.UNKNOWN,
+        'tx_unk': Treatment.UNKNOWN,
+    }
+    if is_amd is False:
+        return default
     return column_from_variable(
-        {
-            'tx_re': Treatment.UNKNOWN,
-            'tx_le': Treatment.UNKNOWN,
-            'tx_unk': Treatment.UNKNOWN,
-        },
+        default,
         data,
         renamevar_func=lambda x: f'amd_lasertype_{x.split("_")[-1]}',
         rename_func=_rename_lasertype,
@@ -350,15 +360,17 @@ def build_lasertype_new(data):
     )
 
 
-def build_amd_antivegf(data):
-    # TODO: check is AMD
+def build_amd_antivegf(data, *, is_amd=None):
+    default = {
+        'tx_re': AntiVegf.UNKNOWN,
+        'tx_le': AntiVegf.UNKNOWN,
+        'tx_unk': AntiVegf.UNKNOWN,
+    }
+    if is_amd is False:
+        return default
 
     return column_from_variable(
-        {
-            'tx_re': AntiVegf.UNKNOWN,
-            'tx_le': AntiVegf.UNKNOWN,
-            'tx_unk': AntiVegf.UNKNOWN,
-        },
+        default,
         data,
         renamevar_func=lambda x: f'amd_antivegf_{x.split("_")[-1]}',
         rename_func=rename_antivegf,
