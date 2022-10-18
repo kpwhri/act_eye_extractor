@@ -53,7 +53,7 @@ def process_data(data, *, add_columns=None, date_column='note_date'):
 @click.command()
 @click.argument('jsonl_file', type=click.Path(exists=True, path_type=pathlib.Path))
 @click.argument('outdir', type=click.Path(file_okay=False, path_type=pathlib.Path))
-@click.argument('--date-column', default='note_date')
+@click.option('--date-column', default='note_date')
 @click.option('--add-column', 'add_columns', multiple=True, help='Additional columns to include in output.')
 def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path, date_column='note_date', add_columns=None):
     """
@@ -64,9 +64,9 @@ def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path, date_column='not
     :param outdir:
     :return:
     """
-    now = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+    start_time = datetime.datetime.now()
     outdir.mkdir(parents=True, exist_ok=True)
-    outpath = outdir / f'variables_{now}.csv'
+    outpath = outdir / f'variables_{start_time:%Y%m%d_%H%M%S}.csv'
     for col in add_columns or []:
         OUTPUT_COLUMNS[col] = []
     if jsonl_file.is_dir():
@@ -84,6 +84,8 @@ def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path, date_column='not
                     result = process_data(data, add_columns=add_columns, date_column=date_column)
                     validate_columns_in_row(OUTPUT_COLUMNS, result, id_col='studyid')
                     writer.writerow(result)
+    duration = datetime.datetime.now() - start_time
+    logger.info(f'Total run time: {duration}')
 
 
 if __name__ == '__main__':

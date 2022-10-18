@@ -65,14 +65,16 @@ def extract_variables(directories: tuple[pathlib.Path], outdir: pathlib.Path = N
     if outdir is None:
         outdir = pathlib.Path('out')
     outdir.mkdir(parents=True, exist_ok=True)
-    now = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
-    with open(outdir / f'eye_extractor_{now}.jsonl', 'w', encoding='utf8') as out:
+    start_time = datetime.datetime.now()
+    with open(outdir / f'eye_extractor_{start_time:%Y%m%d_%H%M%S}.jsonl', 'w', encoding='utf8') as out:
         if filelist is not None:
             for line in extract_variables_from_filelist(filelist):
                 out.write(json.dumps(line, default=str) + '\n')
         else:
             for line in extract_variables_from_directories(*directories):
                 out.write(json.dumps(line, default=str) + '\n')
+    duration = datetime.datetime.now() - start_time
+    logger.info(f'Total run time: {duration}')
 
 
 def _read_json_file(path, *, encoding='utf8'):
