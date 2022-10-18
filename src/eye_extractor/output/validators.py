@@ -74,6 +74,38 @@ def contains(*choices):
     return _contains
 
 
+def is_string_in_enum(*enums):
+    """Check for elementst converted using `enum_to_string` argument in `column_to_variable`
+
+    enums: IntEnum elements
+    """
+    def _is_string_in_enum(val, *error_messages):
+        for enum in enums:
+            for item in enum:
+                if val == item.name.replace('_', ' '):
+                    return True
+        raise ValidatorError(
+            f'Value {val} not in enum names for {", ".join(str(x) for x in enums)}: {", ".join(error_messages)}'
+        )
+    return _is_string_in_enum
+
+
+def is_int_in_enum(*enums):
+    """Check for elementst converted using `enum_to_string` argument in `column_to_variable`
+
+    enums: IntEnum elements
+    """
+    def _is_int_in_enum(val, *error_messages):
+        for enum in enums:
+            for item in enum:
+                if val == item.value:
+                    return True
+        raise ValidatorError(
+            f'Value {val} not in enum values for {", ".join(str(x) for x in enums)}: {", ".join(error_messages)}'
+        )
+    return _is_int_in_enum
+
+
 def validate_columns_in_row(column_dict, data, *, strict=False, id_col=None, logical_or=True):
     if id_col:
         id_col = str(data[id_col])
