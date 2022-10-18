@@ -27,6 +27,9 @@ Types of changes:
 - Added loading sections from file
 - Increased synonyms for drusen severity
 
+### Fixed
+- Fluid variable had several issues
+
 ## v20220921
 
 ### Fixed

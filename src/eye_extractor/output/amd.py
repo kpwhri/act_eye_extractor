@@ -141,11 +141,10 @@ def build_intraretfluid(data, *, is_amd=None):
         data,
         transformer_func=Fluid,
         result_func=fluid_prioritization,
-        filter_func=lambda x: x in {
-            Fluid.INTRARETINAL_FLUID, Fluid.NO_INTRARETINAL_FLUID,
-            Fluid.SUB_AND_INTRARETINAL_FLUID, Fluid.NO_SUB_AND_INTRARETINAL_FLUID,
+        filter_func=lambda x: x['value'] in {
+            Fluid.INTRARETINAL_FLUID.value, Fluid.NO_INTRARETINAL_FLUID.value,
+            Fluid.SUB_AND_INTRARETINAL_FLUID.value, Fluid.NO_SUB_AND_INTRARETINAL_FLUID.value,
         },
-        enum_to_str=True,
         renamevar_func=lambda x: x.replace('fluid', 'amd_intraretfluid'),
         rename_func=rename_intraretfluid,
     )
@@ -164,11 +163,10 @@ def build_subretfluid(data, *, is_amd=None):
         data,
         transformer_func=Fluid,
         result_func=fluid_prioritization,
-        filter_func=lambda x: x in {
-            Fluid.SUBRETINAL_FLUID, Fluid.NO_SUBRETINAL_FLUID,
-            Fluid.SUB_AND_INTRARETINAL_FLUID, Fluid.NO_SUB_AND_INTRARETINAL_FLUID,
+        filter_func=lambda x: x['value'] in {
+            Fluid.SUBRETINAL_FLUID.value, Fluid.NO_SUBRETINAL_FLUID.value,
+            Fluid.SUB_AND_INTRARETINAL_FLUID.value, Fluid.NO_SUB_AND_INTRARETINAL_FLUID.value,
         },
-        enum_to_str=True,
         renamevar_func=lambda x: x.replace('fluid', 'amd_subretfluid'),
         rename_func=rename_subretfluid,
     )
