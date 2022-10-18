@@ -10,6 +10,7 @@ import click
 from loguru import logger
 
 from eye_extractor.builders.build_history import build_history
+from eye_extractor.laterality import Laterality
 from eye_extractor.output.amd import build_amd_variables
 from eye_extractor.output.cataract import build_cataract_variables
 from eye_extractor.output.cataract_surgery import build_cataract_surgery_variables
@@ -33,6 +34,7 @@ def process_data(data, *, add_columns=None, date_column='note_date'):
         'is_training': data['train'],
     }
     data['date'] = datetime.datetime.strptime(data[date_column], '%Y-%m-%d %H:%M:%S')
+    data['note']['default_lat'] = Laterality(data['note']['default_lat'])
     for col in add_columns or []:
         result[col] = data[col]
     result.update(get_va(data['va']))

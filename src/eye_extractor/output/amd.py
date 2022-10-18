@@ -19,7 +19,7 @@ def build_amd_variables(data):
     curr = data['amd']
     note = data['note']
     results = {}
-    results.update(get_amd(curr['amd']))
+    results.update(get_amd(curr['amd'], is_amd=note['is_amd'], lat=note['default_lat']))
     results.update(get_drusen(curr['drusen']))
     srh = get_subretinal_hemorrhage(curr['srh'])
     results.update(srh)
@@ -49,21 +49,33 @@ def build_amd_variables(data):
     return results
 
 
-def get_amd(data):
+def get_amd(data, *, is_amd=None, lat=Laterality.UNKNOWN):
+    def _update_amd(new, old):
+        if new == 1 or old == 1:
+            return 1
+        elif old == 8:
+            return new
+        return old
+
     results = {
         'amd_re': 8,
         'amd_le': 8,
     }
+    if is_amd:
+        if lat in {Laterality.OD, Laterality.OU}:
+            results['amd_re'] = 1
+        if lat in {Laterality.OU, Laterality.OU}:
+            results['amd_le'] = 1
     for item in data:
         laterality = laterality_from_int(item['laterality'])
         if {Laterality.OS, Laterality.OU} & {laterality}:
-            results['amd_le'] = min(1, results['amd_le'])
+            results['amd_le'] = _update_amd(1, results['amd_le'])
         elif laterality:  # any mention
-            results['amd_le'] = min(0, results['amd_le'])
+            results['amd_le'] = _update_amd(0, results['amd_le'])
         if {Laterality.OD, Laterality.OU} & {laterality}:
-            results['amd_re'] = min(1, results['amd_re'])
+            results['amd_re'] = _update_amd(1, results['amd_re'])
         elif laterality:  # any mention
-            results['amd_re'] = min(0, results['amd_re'])
+            results['amd_re'] = _update_amd(0, results['amd_re'])
     return results
 
 
