@@ -166,17 +166,17 @@ _va_extract_and_build_cases = [
 ]
 
 
-# @pytest.mark.parametrize('text, exp_length, exps', _va_extract_and_build_cases)
-# def test_va_extract_and_build(text, exp_length, exps):
-#     result = list(extract_va(text))
-#     assert len(result) == exp_length
-#     post_json = json.loads(json.dumps(result))
-#     assert len(post_json) == exp_length
-#     print(post_json)
-#     va_dict = build_va(post_json)
-#     print(va_dict)
-#     for val, field in exps:
-#         assert val == va_dict.get(field, None)
+@pytest.mark.parametrize('text, exp_length, exps', _va_extract_and_build_cases)
+def test_va_extract_and_build(text, exp_length, exps):
+    result = list(extract_va(text))
+    assert len(result) == exp_length
+    post_json = json.loads(json.dumps(result))
+    assert len(post_json) == exp_length
+    print(post_json)
+    va_dict = build_va(post_json)
+    print(va_dict)
+    for val, field in exps:
+        assert val == va_dict.get(field, None)
 
 
 @pytest.mark.parametrize('text, exp_length, exps', [

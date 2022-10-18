@@ -78,10 +78,10 @@ VA_LINE_SC = VaPattern(
 VA_LINE_SC_CC = VaPattern(
     re.compile(
         rf'{VA_MENTION}'
-        rf'{SC}\W+({OD}\W+)?{VA.replace("##", "_2")}\W+'
-        rf'({SC}\W+)?({OS}\W+)?{VA.replace("##", "_3")}\W+'
-        rf'{CC}\W+({OD}\W+)?{VA.replace("##", "_0")}\W+'
-        rf'({CC}\W+)?({OS}\W+)?{VA.replace("##", "_1")}\W+'
+        rf'{SC}\W+({OD}\W+)?{VA.replace("##", "_0")}\W+'
+        rf'({SC}\W+)?({OS}\W+)?{VA.replace("##", "_1")}\W+'
+        rf'{CC}\W+({OD}\W+)?{VA.replace("##", "_2")}\W+'
+        rf'({CC}\W+)?({OS}\W+)?{VA.replace("##", "_3")}\W+'
         , re.I
     ),
     [MD_OD_SC, MD_OS_SC, MD_OD_CC, MD_OS_CC]
