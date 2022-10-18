@@ -11,7 +11,7 @@ from typing import Generator
 from loguru import logger
 
 from eye_extractor.laterality import Laterality, LATERALITY, LATERALITY_PATTERN, lat_lookup
-from eye_extractor.va.pattern import VA_LINE_CC, VA_LINE_SC, VA_LINE_GROUPED
+from eye_extractor.va.pattern import VA_LINE_CC, VA_LINE_SC, VA_LINE_GROUPED, VA_LINE_SC_CC
 
 
 class VisualAcuity(enum.Enum):
@@ -214,7 +214,7 @@ def get_number_correct(sign, diopter):
 
 def extract_va_precise(text: str) -> tuple[list, str]:
     rows = []
-    for va_pat in (VA_LINE_GROUPED, VA_LINE_CC, VA_LINE_SC):
+    for va_pat in (VA_LINE_GROUPED, VA_LINE_SC_CC, VA_LINE_CC, VA_LINE_SC):
         for m in va_pat.pattern.finditer(text):
             rows += get_elements_from_line(m, va_pat.metadata)
         text = va_pat.pattern.sub(' ', text)

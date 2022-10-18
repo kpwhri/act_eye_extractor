@@ -6,7 +6,7 @@ import pytest
 from eye_extractor.build_table import build_va
 from eye_extractor.history.common import update_history_from_key
 from eye_extractor.va.extractor2 import vacc_numbercorrect_le, extract_va, VA_PATTERN, clean_punc
-from eye_extractor.va.pattern import VA, VA_LINE_CC, VA_LINE_SC, VA_LINE_GROUPED
+from eye_extractor.va.pattern import VA, VA_LINE_CC, VA_LINE_SC, VA_LINE_SC_CC
 from eye_extractor.va.rx import get_manifest_rx, BCV_PAT
 
 
@@ -86,14 +86,14 @@ def test_va_line_sc_pattern(text, exp):
     assert bool(m) == exp
 
 
-# @pytest.mark.parametrize('text, exp', [
-#     ("¶Visual Acuity: ', 'Snellen', \" ¶Unaided ¶OD:20/50-2 ¶OS:20/70-2 ¶Va's with specs ¶OD:20/45-1 ¶OS:20/35-2",
-#      True),
-# ])
-# def test_va_line_grouped_pattern(text, exp):
-#     text = clean_punc(text)
-#     m = VA_LINE_GROUPED.pattern.search(text)
-#     assert bool(m) == exp
+@pytest.mark.parametrize('text, exp', [
+    ("¶Visual Acuity: ', 'Snellen', \" ¶Unaided ¶OD:20/50-2 ¶OS:20/70-2 ¶Va's with specs ¶OD:20/45-1 ¶OS:20/35-2",
+     True),
+])
+def test_va_line_sc_cc(text, exp):
+    text = clean_punc(text)
+    m = VA_LINE_SC_CC.pattern.search(text)
+    assert bool(m) == exp
 
 
 @pytest.mark.parametrize(
