@@ -10,6 +10,7 @@ from eye_extractor.amd.scar import extract_subret_fibrous
 from eye_extractor.amd.srh import get_subretinal_hemorrhage
 from eye_extractor.amd.vitamins import extract_amd_vitamin
 from eye_extractor.amd.wet import extract_wetamd_severity
+from eye_extractor.common.algo.fluid import extract_fluid
 
 
 def extract_amd_variables(text, *, headers=None, lateralities=None):
@@ -26,4 +27,5 @@ def extract_amd_variables(text, *, headers=None, lateralities=None):
         'wet': extract_wetamd_severity(text, headers=headers, lateralities=lateralities),
         'vitamin': extract_amd_vitamin(text, headers=headers, lateralities=lateralities),
         'lasertype': extract_lasertype(text, headers=headers, lateralities=lateralities),
+        'fluid': extract_fluid(text, headers=headers, lateralities=lateralities),
     }
