@@ -20,6 +20,7 @@ from eye_extractor.output.exam import build_exam
 from eye_extractor.output.glaucoma import build_glaucoma
 from eye_extractor.output.iop import build_iop
 from eye_extractor.output.ro import build_ro_variables
+from eye_extractor.output.shared import build_shared_variables
 from eye_extractor.output.uveitis import build_uveitis_variables
 from eye_extractor.output.va import get_va, get_manifest
 from eye_extractor.output.validators import validate_columns_in_row
@@ -37,6 +38,7 @@ def process_data(data, *, add_columns=None, date_column='note_date'):
     data['note']['default_lat'] = Laterality(data['note']['default_lat'])
     for col in add_columns or []:
         result[col] = data[col]
+    result.update(build_shared_variables(data))
     result.update(get_va(data['va']))
     result.update(build_iop(data['iop']))
     result.update(get_manifest(data['manifestrx']))

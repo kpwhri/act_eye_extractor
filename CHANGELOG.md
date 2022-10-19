@@ -17,6 +17,8 @@ Types of changes:
 
 ## [Unreleased]
 
+### Added
+- Generalized fluid algorithm (independent of algorithm)
 
 ## v20221018
 

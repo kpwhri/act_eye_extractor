@@ -1,4 +1,4 @@
-from eye_extractor.output.shared import parse_date_or_none
+from eye_extractor.output.date_utils import parse_date_or_none
 from eye_extractor.output.variable import column_from_variable
 
 
