@@ -100,6 +100,7 @@ def test_va_line_sc_pattern(text, exp):
 
 @pytest.mark.parametrize('text, exp', [
     ("VISUAL ACUITY:  ¶SC  OD 20/70  PH 20/30-2 ¶", True),
+    ("VISUAL ACUITY:  ¶SC  OD  20/30+2 ¶", True),
 ])
 def test_va_line_sc_od_pattern(text, exp):
     text = clean_punc(text)
@@ -109,6 +110,7 @@ def test_va_line_sc_od_pattern(text, exp):
 
 @pytest.mark.parametrize('text, exp', [
     ("VISUAL ACUITY:  ¶SC  OS 20/70  PH 20/30-2 ¶", True),
+    ("VISUAL ACUITY:  ¶SC: OS:  20/25-1 ¶", True),
 ])
 def test_va_line_sc_os_pattern(text, exp):
     text = clean_punc(text)
@@ -128,10 +130,22 @@ _va_extract_and_build_cases = [
      2,
      [(70, 'vasc_denominator_le'),
       (30, 'vaph_denominator_le'),
-      (-2, 'vaph_numbercorrect_le'),
-      ]
+      (-2, 'vaph_numbercorrect_le')]
      ),
-    # TODO: Add more cases.
+    ("Visual Acuity: Snellen ¶CC  OD ENUCLEATED           ¶CC  OS 20/30+2  PH NI       ¶  ¶",
+     4,
+     [(None, 'vacc_denominator_re'),
+      (30, 'vacc_denominator_le'),
+      (2, 'vacc_numbercorrect_le'),
+      (None, 'vaph_denominator_re'),
+      (None, 'vaph_denominator_le')]
+     ),
+    ("VISUAL ACUITY: Snellen ¶CC:  ¶OD:20/HM  ¶OS:20/CF 3-4 feet",
+     4,
+     [('HM', 'vacc_letters_re'),
+      ('CF', 'vacc_letters_le'),
+      ('3-4', 'vacc_distance_le')]
+     ),
 ]
 
 
