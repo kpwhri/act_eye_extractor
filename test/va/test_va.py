@@ -6,7 +6,7 @@ import pytest
 from eye_extractor.build_table import build_va
 from eye_extractor.history.common import update_history_from_key
 from eye_extractor.va.extractor2 import vacc_numbercorrect_le, extract_va, VA_PATTERN, clean_punc
-from eye_extractor.va.pattern import VA, VA_LINE_CC, VA_LINE_SC, VA_LINE_SC_CC
+from eye_extractor.va.pattern import VA, VA_LINE_CC, VA_LINE_SC, VA_LINE_SC_CC, VA_LINE_SC_OD, VA_LINE_SC_OS
 from eye_extractor.va.rx import get_manifest_rx, BCV_PAT
 
 
@@ -55,6 +55,7 @@ def test_va_pattern_precise(text, exp_num, exp_score, exp_diopter, exp_test, exp
     ('20/ HM', None, None, None, None, 'HM', None),
     ('20/ 70', '20', '70', None, None, None, None),
     ('20/CF2', None, None, None, None, 'CF', None),
+    ('NLP', None, None, None, None, 'NLP', None)
 ])
 def test_va_pattern(text, exp_num, exp_score, exp_sign, exp_diopter, exp_test, exp_test2):
     m = VA_PATTERN.search(text)
@@ -67,9 +68,20 @@ def test_va_pattern(text, exp_num, exp_score, exp_sign, exp_diopter, exp_test, e
 
 
 @pytest.mark.parametrize('text, exp', [
-    ("¶Visual Acuity: ', 'Snellen', \" ¶Va's with specs ¶OD:20/50-1 ¶OS:20/35-2", True),
-    ("¶VISUAL ACUITY: ', 'Snellen', \" ¶CC:  ¶OD:20/HM  ¶OS:20/CF 3-4 feet", True),
-    ("¶Visual Acuity: ', 'Snellen', ' ¶CC  OD NLP           ¶CC  OS 20/400  PH NI", True),
+    ("¶Visual Acuity: ', 'Snellen', \" ¶Unaided ¶OD:20/50-2 ¶OS:20/70-2 ¶Va's with specs ¶OD:20/45-1 ¶OS:20/35-2",
+     True),
+])
+def test_va_line_sc_cc_pattern(text, exp):
+    text = clean_punc(text)
+    m = VA_LINE_SC_CC.pattern.search(text)
+    assert bool(m) == exp
+
+
+@pytest.mark.parametrize('text, exp', [
+    ("¶Visual Acuity: Snellen ¶Va's with specs ¶OD:20/50-1 ¶OS:20/35-2", True),
+    ("¶VISUAL ACUITY: Snellen ¶CC:  ¶OD:20/HM  ¶OS:20/CF 3-4 feet", True),
+    ("¶Visual Acuity: Snellen ¶CC  OD NLP           ¶CC  OS 20/400  PH NI", True),
+    ("VISUAL ACUITY - BEST CORRECTED: ¶OD: 20/25 ¶OS: 20/40", True),
 ])
 def test_va_line_cc_pattern(text, exp):
     text = clean_punc(text)
@@ -87,13 +99,53 @@ def test_va_line_sc_pattern(text, exp):
 
 
 @pytest.mark.parametrize('text, exp', [
-    ("¶Visual Acuity: ', 'Snellen', \" ¶Unaided ¶OD:20/50-2 ¶OS:20/70-2 ¶Va's with specs ¶OD:20/45-1 ¶OS:20/35-2",
-     True),
+    ("VISUAL ACUITY:  ¶SC  OD 20/70  PH 20/30-2 ¶", True),
 ])
-def test_va_line_sc_cc(text, exp):
+def test_va_line_sc_od_pattern(text, exp):
     text = clean_punc(text)
-    m = VA_LINE_SC_CC.pattern.search(text)
+    m = VA_LINE_SC_OD.pattern.search(text)
     assert bool(m) == exp
+
+
+@pytest.mark.parametrize('text, exp', [
+    ("VISUAL ACUITY:  ¶SC  OS 20/70  PH 20/30-2 ¶", True),
+])
+def test_va_line_sc_os_pattern(text, exp):
+    text = clean_punc(text)
+    m = VA_LINE_SC_OS.pattern.search(text)
+    assert bool(m) == exp
+
+
+_va_extract_and_build_cases = [
+    ("¶Visual Acuity: ', 'Snellen', \" ¶Unaided ¶OD:20/50-2 ¶OS:20/70-2 ¶Va's with specs ¶OD:20/45-1 ¶OS:20/35-2",
+     4,
+     [(50, 'vasc_denominator_re'),
+      (70, 'vasc_denominator_le'),
+      (45, 'vacc_denominator_re'),
+      (35, 'vacc_denominator_le')]
+     ),
+    ("VISUAL ACUITY:  ¶SC  OS 20/70  PH 20/30-2 ¶",
+     2,
+     [(70, 'vasc_denominator_le'),
+      (30, 'vaph_denominator_le'),
+      (-2, 'vaph_numbercorrect_le'),
+      ]
+     ),
+    # TODO: Add more cases.
+]
+
+
+@pytest.mark.parametrize('text, exp_length, exps', _va_extract_and_build_cases)
+def test_va_extract_and_build(text, exp_length, exps):
+    result = list(extract_va(text))
+    assert len(result) == exp_length
+    post_json = json.loads(json.dumps(result))
+    assert len(post_json) == exp_length
+    print(post_json)
+    va_dict = build_va(post_json)
+    print(va_dict)
+    for val, field in exps:
+        assert val == va_dict.get(field, None)
 
 
 @pytest.mark.parametrize(
@@ -152,31 +204,6 @@ def test_bcv_pat():
     assert m.group('od_correct') == '-2'
     assert m.group('os_denominator') == '40'
     assert m.group('os_correct') is None
-
-
-_va_extract_and_build_cases = [
-    ("¶Visual Acuity: ', 'Snellen', \" ¶Unaided ¶OD:20/50-2 ¶OS:20/70-2 ¶Va's with specs ¶OD:20/45-1 ¶OS:20/35-2",
-     4,
-     [(50, 'vasc_denominator_re'),
-      (70, 'vasc_denominator_le'),
-      (45, 'vacc_denominator_re'),
-      (35, 'vacc_denominator_le')]
-     ),
-    # TODO: Add more cases based off tests for VA_LINE_CC, VA_LINE_SC, VA_LINE_GROUPED
-]
-
-
-@pytest.mark.parametrize('text, exp_length, exps', _va_extract_and_build_cases)
-def test_va_extract_and_build(text, exp_length, exps):
-    result = list(extract_va(text))
-    assert len(result) == exp_length
-    post_json = json.loads(json.dumps(result))
-    assert len(post_json) == exp_length
-    print(post_json)
-    va_dict = build_va(post_json)
-    print(va_dict)
-    for val, field in exps:
-        assert val == va_dict.get(field, None)
 
 
 @pytest.mark.parametrize('text, exp_length, exps', [
