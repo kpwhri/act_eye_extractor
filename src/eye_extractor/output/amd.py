@@ -1,7 +1,6 @@
 from eye_extractor.amd.cnv import ChoroidalNeoVasc
 from eye_extractor.amd.dry import DrySeverity
-from eye_extractor.common.algo.fluid import Fluid, fluid_prioritization, rename_fluid, rename_intraretfluid, \
-    rename_subretfluid
+from eye_extractor.common.algo.fluid import Fluid
 from eye_extractor.amd.ga import GeoAtrophy
 from eye_extractor.amd.lasertype import Laser
 from eye_extractor.amd.ped import PigEpiDetach
