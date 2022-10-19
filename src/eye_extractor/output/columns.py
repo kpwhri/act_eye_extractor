@@ -91,6 +91,18 @@ OUTPUT_COLUMNS = {
     'pigmentchanges_re': [is_in_range(-1, 1)],
     'pigmentchanges_unk': [is_in_range(-1, 1)],
 
+    ## General Vars
+    # Fluid
+    'fluid_re': [is_in_range(-1, 5)],
+    'fluid_le': [is_in_range(-1, 5)],
+    'fluid_unk': [is_in_range(-1, 5)],
+    'subretfluid_re': [is_in_range(-1, 1)],
+    'subretfluid_le': [is_in_range(-1, 1)],
+    'subretfluid_unk': [is_in_range(-1, 1)],
+    'intraretfluid_re': [is_in_range(-1, 1)],
+    'intraretfluid_le': [is_in_range(-1, 1)],
+    'intraretfluid_unk': [is_in_range(-1, 1)],
+
     ## RO (RVO/RAO)
     # RVO
     'rvo_yesno_re': [is_in_range(-1, 1)],

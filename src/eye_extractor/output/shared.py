@@ -14,12 +14,16 @@ def build_shared_variables(data):
     return results
 
 
-def build_fluid(data, *, skip_rename_variable=False, rename_var='fluid'):
-    default = {
+def get_default_fluid_result():
+    return {
         'fluid_re': Fluid.UNKNOWN,
         'fluid_le': Fluid.UNKNOWN,
         'fluid_unk': Fluid.UNKNOWN,
     }
+
+
+def build_fluid(data, *, skip_rename_variable=False, rename_var='fluid'):
+    default = get_default_fluid_result()
     return column_from_variable(
         default,
         data,
@@ -32,11 +36,7 @@ def build_fluid(data, *, skip_rename_variable=False, rename_var='fluid'):
 
 
 def build_intraretfluid(data, *, rename_var='intraretfluid'):
-    default = {
-        'fluid_re': Fluid.UNKNOWN,
-        'fluid_le': Fluid.UNKNOWN,
-        'fluid_unk': Fluid.UNKNOWN,
-    }
+    default = get_default_fluid_result()
     return column_from_variable(
         default,
         data,
@@ -52,11 +52,7 @@ def build_intraretfluid(data, *, rename_var='intraretfluid'):
 
 
 def build_subretfluid(data, *, rename_var='subretfluid'):
-    default = {
-        'fluid_re': Fluid.UNKNOWN,
-        'fluid_le': Fluid.UNKNOWN,
-        'fluid_unk': Fluid.UNKNOWN,
-    }
+    default = get_default_fluid_result()
     return column_from_variable(
         default,
         data,

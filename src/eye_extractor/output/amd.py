@@ -12,6 +12,7 @@ from eye_extractor.common.algo.treatment import Treatment
 from eye_extractor.common.drug.antivegf import rename_antivegf, AntiVegf
 from eye_extractor.output.laterality import laterality_from_int
 from eye_extractor.laterality import Laterality
+from eye_extractor.output.shared import get_default_fluid_result, build_subretfluid, build_intraretfluid, build_fluid
 from eye_extractor.output.variable import column_from_variable, update_column
 
 
@@ -24,10 +25,10 @@ def build_amd_variables(data):
     srh = get_subretinal_hemorrhage(curr['srh'])
     results.update(srh)
     results.update(get_pigmentary_changes(curr['pigment']))
-    fluid = build_fluid(data['common']['fluid'], is_amd=note['is_amd'])
+    fluid = build_fluid_amd(data['common']['fluid'], is_amd=note['is_amd'])
     results.update(fluid)
-    results.update(build_subretfluid(data['common']['fluid'], is_amd=note['is_amd']))
-    results.update(build_intraretfluid(data['common']['fluid'], is_amd=note['is_amd']))
+    results.update(build_subretfluid_amd(data['common']['fluid'], is_amd=note['is_amd']))
+    results.update(build_intraretfluid_amd(data['common']['fluid'], is_amd=note['is_amd']))
     results.update(build_ped(curr['ped']))
     cnv = build_choroidalneovasc(curr['cnv'])
     results.update(cnv)
@@ -109,67 +110,22 @@ def get_pigmentary_changes(data):
     }, data)
 
 
-def build_fluid(data, *, is_amd=None, skip_rename_variable=False):
-    default = {
-        'fluid_re': Fluid.UNKNOWN,
-        'fluid_le': Fluid.UNKNOWN,
-        'fluid_unk': Fluid.UNKNOWN,
-    }
+def build_fluid_amd(data, *, is_amd=None, skip_rename_variable=False):
     if is_amd is False:
-        return default
-    return column_from_variable(
-        default,
-        data,
-        transformer_func=Fluid,
-        result_func=fluid_prioritization,
-        enum_to_str=True,
-        renamevar_func=lambda x: x.replace('fluid', 'fluid_amd'),
-        rename_func=None if skip_rename_variable else rename_fluid
-    )
+        return get_default_fluid_result()
+    return build_fluid(data, rename_var='fluid_amd', skip_rename_variable=skip_rename_variable)
 
 
-def build_intraretfluid(data, *, is_amd=None):
-    default = {
-        'fluid_re': Fluid.UNKNOWN,
-        'fluid_le': Fluid.UNKNOWN,
-        'fluid_unk': Fluid.UNKNOWN,
-    }
+def build_intraretfluid_amd(data, *, is_amd=None):
     if is_amd is False:
-        return default
-    return column_from_variable(
-        default,
-        data,
-        transformer_func=Fluid,
-        result_func=fluid_prioritization,
-        filter_func=lambda x: x['value'] in {
-            Fluid.INTRARETINAL_FLUID.value, Fluid.NO_INTRARETINAL_FLUID.value,
-            Fluid.SUB_AND_INTRARETINAL_FLUID.value, Fluid.NO_SUB_AND_INTRARETINAL_FLUID.value,
-        },
-        renamevar_func=lambda x: x.replace('fluid', 'amd_intraretfluid'),
-        rename_func=rename_intraretfluid,
-    )
+        return get_default_fluid_result()
+    return build_intraretfluid(data, rename_var='amd_intraretfluid')
 
 
-def build_subretfluid(data, *, is_amd=None):
-    default = {
-        'fluid_re': Fluid.UNKNOWN,
-        'fluid_le': Fluid.UNKNOWN,
-        'fluid_unk': Fluid.UNKNOWN,
-    }
+def build_subretfluid_amd(data, *, is_amd=None):
     if is_amd is False:
-        return default
-    return column_from_variable(
-        default,
-        data,
-        transformer_func=Fluid,
-        result_func=fluid_prioritization,
-        filter_func=lambda x: x['value'] in {
-            Fluid.SUBRETINAL_FLUID.value, Fluid.NO_SUBRETINAL_FLUID.value,
-            Fluid.SUB_AND_INTRARETINAL_FLUID.value, Fluid.NO_SUB_AND_INTRARETINAL_FLUID.value,
-        },
-        renamevar_func=lambda x: x.replace('fluid', 'amd_subretfluid'),
-        rename_func=rename_subretfluid,
-    )
+        return get_default_fluid_result()
+    return build_subretfluid(data, rename_var='amd_subretfluid')
 
 
 def build_ped(data):
