@@ -167,6 +167,16 @@ def sum_diopter(diopter):
     return start
 
 
+def average_distance(dist: str) -> float:
+    if dist:
+        if re.search('-', dist):
+            vals = [float(x) for x in dist.split('-')]
+            return sum(vals) / len(vals)
+        else:
+            return float(dist)
+
+
+
 def handle_test_from_groups(groupdict):
     """
     G
@@ -182,7 +192,7 @@ def handle_test_from_groups(groupdict):
         }
     elif test.upper() in {'CF', 'HM', 'LP', 'NLP'}:
         return {
-            'distance': groupdict['distance'],
+            'distance': average_distance(groupdict['distance']),
             'distance_metric': groupdict['distance_metric'],
             'test': test,
         }

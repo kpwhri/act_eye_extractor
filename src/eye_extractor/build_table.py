@@ -92,10 +92,6 @@ def parse_va_test(row, prev_denom, results, *, no_improvement=False):
     exam = row['exam']
     test = row.get('test', None)  # None if no improvement
     distance = row.get('distance', None)  # None if no improvement
-    try:
-        distance = int(distance)
-    except Exception as e:
-        logger.info(f'Distance {distance} cannot be converted to int in {row.get("text", "")}.')
     laterality = laterality_from_int(row['laterality'])
     for lat in laterality_iter(laterality_from_int(laterality)):
         if no_improvement:

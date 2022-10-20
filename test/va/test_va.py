@@ -92,6 +92,7 @@ def test_va_line_cc_pattern(text, exp):
 @pytest.mark.parametrize('text, exp', [
     ("¶Visual Acuity: ', 'Snellen', \" ¶Unaided ¶OD:20/50-2 ¶OS:20/70-2", True),
     ("VISUAL  ACUITY:  Snellen           ¶without correction:     ¶R eye: 20/NLP   ¶L eye: 20/HM @ 1", True),
+    ("Visual acuity:  Snellen  ¶SC: OD: 20/cf @ 2'  ¶       OS: 20/cf @ 4'", True),
 ])
 def test_va_line_sc_pattern(text, exp):
     text = clean_punc(text)
@@ -120,6 +121,13 @@ def test_va_line_sc_os_pattern(text, exp):
 
 
 _va_extract_and_build_cases = [
+    ("VISUAL ACUITY: Snellen ¶CC:  ¶OD:20/HM  ¶OS:20/CF 3-4 feet",
+     4,
+     [('HM', 'vacc_letters_re'),
+      ('CF', 'vacc_letters_le'),
+      (3.5, 'vacc_distance_le')
+      ]
+     ),
     ("¶Visual Acuity: ', 'Snellen', \" ¶Unaided ¶OD:20/50-2 ¶OS:20/70-2 ¶Va's with specs ¶OD:20/45-1 ¶OS:20/35-2",
      4,
      [(50, 'vasc_denominator_re'),
@@ -141,13 +149,6 @@ _va_extract_and_build_cases = [
       (None, 'vaph_denominator_re'),
       (None, 'vaph_denominator_le')]
      ),
-    ("VISUAL ACUITY: Snellen ¶CC:  ¶OD:20/HM  ¶OS:20/CF 3-4 feet",
-     4,
-     [('HM', 'vacc_letters_re'),
-      ('CF', 'vacc_letters_le'),
-      ('3-4', 'vacc_distance_le')
-      ]
-     ),
     ("Visual Acuity: Snellen ¶CC  OD NLP           ¶CC  OS 20/400  PH NI",
      4,
      [('NLP', 'vacc_letters_re'),
@@ -160,6 +161,13 @@ _va_extract_and_build_cases = [
      4,
      [('NLP', 'vasc_letters_re'),
       ('HM', 'vasc_letters_le')]
+     ),
+    ("Visual acuity:  Snellen  ¶SC: OD: 20/cf @ 2'  ¶       OS: 20/cf @ 4'",
+     4,
+     [('CF', 'vasc_letters_re'),
+      (2.0, 'vasc_distance_re'),
+      ('CF', 'vasc_letters_le'),
+      (4.0, 'vasc_distance_le')]
      ),
 ]
 
@@ -239,7 +247,7 @@ def test_bcv_pat():
     ('Previous Visual acuity: Snellen    CC: OD: 20/HM 3\' PH: OD: 20/NI     OS: 20/80-2+1 PH: OS: 20/NI',
      4, [
          ('HM', 'vacc_letters_re', 'vaph_letters_re'),
-         (3, 'vacc_distance_re', 'vaph_distance_re'),
+         (3.0, 'vacc_distance_re', 'vaph_distance_re'),
      ]
      ),
     ('VISUAL ACUITY:    Snellen CC:   OD: 20/40   PH: OD: 20/NI   OS: 20/20   PH: OS: 20/',
