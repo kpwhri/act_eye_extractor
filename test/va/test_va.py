@@ -81,7 +81,7 @@ def test_va_line_sc_cc_pattern(text, exp):
     ("¶Visual Acuity: Snellen ¶Va's with specs ¶OD:20/50-1 ¶OS:20/35-2", True),
     ("¶VISUAL ACUITY: Snellen ¶CC:  ¶OD:20/HM  ¶OS:20/CF 3-4 feet", True),
     ("¶Visual Acuity: Snellen ¶CC  OD NLP           ¶CC  OS 20/400  PH NI", True),
-    ("VISUAL ACUITY - BEST CORRECTED: ¶OD: 20/25 ¶OS: 20/40", True),
+    ("VISUAL ACUITY - BEST CORRECTED: ¶OD: 20/35 ¶OS: 20/50", True),
 ])
 def test_va_line_cc_pattern(text, exp):
     text = clean_punc(text)
@@ -91,6 +91,7 @@ def test_va_line_cc_pattern(text, exp):
 
 @pytest.mark.parametrize('text, exp', [
     ("¶Visual Acuity: ', 'Snellen', \" ¶Unaided ¶OD:20/50-2 ¶OS:20/70-2", True),
+    ("VISUAL  ACUITY:  Snellen           ¶without correction:     ¶R eye: 20/NLP   ¶L eye: 20/HM @ 1", True),
 ])
 def test_va_line_sc_pattern(text, exp):
     text = clean_punc(text)
@@ -126,16 +127,16 @@ _va_extract_and_build_cases = [
       (45, 'vacc_denominator_re'),
       (35, 'vacc_denominator_le')]
      ),
-    ("VISUAL ACUITY:  ¶SC  OS 20/70  PH 20/30-2 ¶",
+    ("VISUAL ACUITY:  ¶SC  OS 20/80  PH 20/30-2 ¶",
      2,
-     [(70, 'vasc_denominator_le'),
+     [(80, 'vasc_denominator_le'),
       (30, 'vaph_denominator_le'),
       (-2, 'vaph_numbercorrect_le')]
      ),
-    ("Visual Acuity: Snellen ¶CC  OD ENUCLEATED           ¶CC  OS 20/30+2  PH NI       ¶  ¶",
+    ("Visual Acuity: Snellen ¶CC  OD ENUCLEATED           ¶CC  OS 20/40+2  PH NI       ¶  ¶",
      4,
      [(None, 'vacc_denominator_re'),
-      (30, 'vacc_denominator_le'),
+      (40, 'vacc_denominator_le'),
       (2, 'vacc_numbercorrect_le'),
       (None, 'vaph_denominator_re'),
       (None, 'vaph_denominator_le')]
@@ -144,7 +145,21 @@ _va_extract_and_build_cases = [
      4,
      [('HM', 'vacc_letters_re'),
       ('CF', 'vacc_letters_le'),
-      ('3-4', 'vacc_distance_le')]
+      ('3-4', 'vacc_distance_le')
+      ]
+     ),
+    ("Visual Acuity: Snellen ¶CC  OD NLP           ¶CC  OS 20/400  PH NI",
+     4,
+     [('NLP', 'vacc_letters_re'),
+      (400, 'vacc_denominator_le'),
+      (0, 'vacc_numbercorrect_le'),
+      (None, 'vaph_denominator_re'),
+      (None, 'vaph_denominator_le')]
+     ),
+    ("VISUAL  ACUITY:  Snellen           ¶without correction:     ¶R eye: 20/NLP   ¶L eye: 20/HM @ 1",
+     4,
+     [('NLP', 'vasc_letters_re'),
+      ('HM', 'vasc_letters_le')]
      ),
 ]
 
