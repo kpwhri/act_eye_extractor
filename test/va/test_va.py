@@ -169,6 +169,12 @@ _va_extract_and_build_cases = [
       ('CF', 'vasc_letters_le'),
       (4.0, 'vasc_distance_le')]
      ),
+    ("VISUAL  ACUITY:  Snellen           ¶sc:      ¶R eye: 20/NLP   ¶L eye: 20/HM @ 1",
+     4,
+     [('NLP', 'vasc_letters_re'),
+      ('HM', 'vasc_letters_le'),
+      (1.0, 'vasc_distance_le')]
+     ),
 ]
 
 
