@@ -4,6 +4,8 @@ from typing import Match, Optional
 
 from sortedcontainers import SortedList
 
+from eye_extractor.common.date import parse_nearest_date_to_line_start
+
 
 class Laterality(enum.IntEnum):
     OD = 1  # right
@@ -118,6 +120,10 @@ def get_immediate_next_or_prev_laterality_from_table(table, index, *, max_skips=
 
 
 def create_variable(data, text, match, lateralities, variable, value, *, known_laterality=None):
+    # dates: this will probably significantly increase processing time
+    if isinstance(value, dict) and 'date' not in value:  # skip if alternative way of finding date
+        value['date'] = parse_nearest_date_to_line_start(match.start(), text)
+    # laterality
     lat = known_laterality or get_laterality_for_term(
         lateralities or build_laterality_table(text),
         match,
@@ -128,6 +134,7 @@ def create_variable(data, text, match, lateralities, variable, value, *, known_l
 
 def create_new_variable(text, match, lateralities, variable, value, *, known_laterality=None):
     data = {}
+    # assign 'value' to each of the lateralities, suffixing '_re', '_le', '_unk'
     create_variable(data, text, match, lateralities, variable, value,
                     known_laterality=known_laterality)
     return data
