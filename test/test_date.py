@@ -3,13 +3,14 @@ import re
 
 import pytest
 
-from eye_extractor.common.date import parse_date, parse_date_after, parse_date_before
+from eye_extractor.common.date import parse_date, parse_date_after, parse_date_before, parse_all_dates
 
 
 @pytest.mark.parametrize('text, exp', [
     ('27 jan 2022', datetime.date(2022, 1, 27)),
     ('01/27/2022', datetime.date(2022, 1, 27)),
     ('january 2022', datetime.date(2022, 1, 17)),  # default day is '17'
+    ('22 january 2022', datetime.date(2022, 1, 22)),  # default day is '17'
     ('2020', datetime.date(2020, 2, 17)),  # default day is '17'
 ])
 def test_parse_date(text, exp):
@@ -38,3 +39,11 @@ def test_parse_date_before(pattern, text, exp):
     assert m is not None
     dt = parse_date_before(m, text)
     assert dt == exp
+
+
+@pytest.mark.parametrize('text, exp', [
+    ('04/16/2012 that 22 january 2022', [datetime.date(2012, 4, 16), datetime.date(2022, 1, 22)]),
+])
+def test_parse_all_dates(text, exp):
+    dates = parse_all_dates(text)
+    assert [x[1] for x in dates] == exp
