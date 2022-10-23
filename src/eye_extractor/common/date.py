@@ -125,7 +125,10 @@ def parse_date_after(m: Match, text, *, characters=20, as_string=False):
 
 def parse_nearest_date_to_line_start(start, text, *, line_start_chars=LINE_START_CHARACTERS):
     """Get most recent date in current line."""
-    line = get_previous_text_to_newline(start, text, line_start_chars=line_start_chars)
+    if line_start_chars:
+        line = get_previous_text_to_newline(start, text, line_start_chars=line_start_chars)
+    else:
+        line = text
     dates = parse_all_dates(line)
     if dates:
         return dates[-1][1]  # return most recent date
