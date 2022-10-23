@@ -3,7 +3,8 @@ import re
 
 import pytest
 
-from eye_extractor.common.date import parse_date, parse_date_after, parse_date_before, parse_all_dates
+from eye_extractor.common.date import parse_date, parse_date_after, parse_date_before, parse_all_dates, \
+    parse_nearest_date_to_line_start
 
 
 @pytest.mark.parametrize('text, exp', [
@@ -47,3 +48,14 @@ def test_parse_date_before(pattern, text, exp):
 def test_parse_all_dates(text, exp):
     dates = parse_all_dates(text)
     assert [x[1] for x in dates] == exp
+
+
+@pytest.mark.parametrize('start, text, exp_date', [
+    (-1, '04/16/2012 this 04/17/2012 that', datetime.date(2012, 4, 17)),
+    (-1, '04/16/2012\nthat', None),
+    (-1, '04/16/2012¶that', None),
+    (-1, '¶04/16/2012 ldkfj kdfj dkjf', datetime.date(2012, 4, 16)),
+])
+def test_previous_date_in_line(start, text, exp_date):
+    date = parse_nearest_date_to_line_start(start, text)
+    assert date == exp_date
