@@ -52,6 +52,7 @@ def test_parse_all_dates(text, exp):
 
 @pytest.mark.parametrize('start, text, exp_date', [
     (-1, '04/16/2012 this 04/17/2012 that', datetime.date(2012, 4, 17)),
+    (-1, '12/5/2010 not dry 10/4/2022 dry', datetime.date(2022, 10, 4)),
     (-1, '04/16/2012\nthat', None),
     (-1, '04/16/2012¶that', None),
     (-1, '¶04/16/2012 ldkfj kdfj dkjf', datetime.date(2012, 4, 16)),

@@ -184,7 +184,7 @@ def build_geoatrophy(data):
     )
 
 
-def build_dryamd_severity(data, *, ga_result=None):
+def build_dryamd_severity(data, *, ga_result=None, note_date=None,):
     """Build dry amd severity"""
     result = column_from_variable(
         {
@@ -193,6 +193,7 @@ def build_dryamd_severity(data, *, ga_result=None):
             'dryamd_severity_unk': DrySeverity.UNKNOWN,
         },
         data,
+        restrict_date=note_date,
         transformer_func=DrySeverity,
         enum_to_str=True,
     )

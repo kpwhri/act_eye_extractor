@@ -89,14 +89,24 @@ When checking to see if the default (IolLens.UNKNOWN) should be updated, we can 
             rename_func=lambda x: x.name.lower(),
 
 """
+import datetime
 import enum
 from enum import Enum
+
+
+def _has_valid_date(restrict_date, value, *, offset=2):
+    """require date within 2 days of note ('restrict') date"""
+    if restrict_date is None or not isinstance(value, dict):
+        return True
+    if 'date' in value:
+        return abs((value['date'] - restrict_date).days) <= 2
+    return True
 
 
 def column_from_variable(results, data, *, compare_func=None, transformer_func=None,
                          result_func=None, convert_func=None, filter_func=None,
                          rename_func=None, sideeffect_func=None, renamevar_func=None,
-                         enum_to_str=False):
+                         enum_to_str=False, restrict_date: datetime.date = None):
     """
     Assuming values that can be graded according to a comparator functions,
         converts the results of `create_new_variable` into only that with the
@@ -118,6 +128,7 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
     :param results: initial values
     :param data: dict-like (read from json)
     :param compare_func: given two results X and Y, return True if X is better than Y
+    :param restrict_date: if 'date' included in value, require to be near this
     :return:
     """
     if compare_func is None:
@@ -149,6 +160,8 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
             if target_varname not in row:
                 continue
             if not filter_func(row[target_varname]):  # apply inclusion criteria in filter func
+                continue
+            if not _has_valid_date(restrict_date, row[target_varname]):
                 continue
             new_value = transformer_func(row[target_varname])  # what should the new value be?
             if compare_func(new_value, curr_value):  # should the value be updated?
