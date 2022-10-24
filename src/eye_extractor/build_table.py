@@ -34,7 +34,7 @@ def process_data(data, *, add_columns=None, date_column='note_date'):
         'encid': data['enc_id'],
         'is_training': data['train'],
     }
-    data['date'] = datetime.datetime.strptime(data[date_column], '%Y-%m-%d %H:%M:%S')
+    data['date'] = datetime.datetime.strptime(data[date_column], '%Y-%m-%d %H:%M:%S').date()
     data['note']['default_lat'] = Laterality(data['note']['default_lat'])
     for col in add_columns or []:
         result[col] = data[col]

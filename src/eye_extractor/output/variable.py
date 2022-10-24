@@ -94,13 +94,34 @@ import enum
 from enum import Enum
 
 
-def _has_valid_date(restrict_date, value, *, offset=2):
+def has_valid_date(restrict_date, value, *, offset=2):
     """require date within 2 days of note ('restrict') date"""
     if restrict_date is None or not isinstance(value, dict):
         return True
     if 'date' in value:
-        return abs((value['date'] - restrict_date).days) <= 2
+        return abs((value['date'] - restrict_date).days) <= offset
     return True
+
+
+def column_from_variable_abbr(result_abbr, init_value, data, *, compare_func=None, transformer_func=None,
+                              result_func=None, convert_func=None, filter_func=None,
+                              rename_func=None, sideeffect_func=None, renamevar_func=None,
+                              enum_to_str=False, restrict_date: datetime.date = None):
+    """Build result dictionary with result_abbreviation and initial value"""
+    return column_from_variable(
+        {f'{result_abbr}_{suffix}': init_value for suffix in ('re', 'le', 'unk')},
+        data,
+        compare_func=compare_func,
+        transformer_func=transformer_func,
+        result_func=result_func,
+        convert_func=convert_func,
+        filter_func=filter_func,
+        rename_func=rename_func,
+        sideeffect_func=sideeffect_func,
+        renamevar_func=renamevar_func,
+        enum_to_str=enum_to_str,
+        restrict_date=restrict_date,
+    )
 
 
 def column_from_variable(results, data, *, compare_func=None, transformer_func=None,
@@ -161,7 +182,7 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
                 continue
             if not filter_func(row[target_varname]):  # apply inclusion criteria in filter func
                 continue
-            if not _has_valid_date(restrict_date, row[target_varname]):
+            if not has_valid_date(restrict_date, row[target_varname]):
                 continue
             new_value = transformer_func(row[target_varname])  # what should the new value be?
             if compare_func(new_value, curr_value):  # should the value be updated?

@@ -3,7 +3,7 @@
 """
 from eye_extractor.common.algo.fluid import Fluid, rename_intraretfluid, fluid_prioritization, rename_subretfluid, \
     rename_fluid
-from eye_extractor.output.variable import column_from_variable
+from eye_extractor.output.variable import column_from_variable_abbr
 
 
 def build_shared_variables(data):
@@ -22,11 +22,12 @@ def get_default_fluid_result():
     }
 
 
-def build_fluid(data, *, skip_rename_variable=False, rename_var='fluid'):
-    default = get_default_fluid_result()
-    return column_from_variable(
-        default,
+def build_fluid(data, *, skip_rename_variable=False, rename_var='fluid',
+                note_date=None):
+    return column_from_variable_abbr(
+        'fluid', Fluid.UNKNOWN,
         data,
+        restrict_date=note_date,
         transformer_func=Fluid,
         result_func=fluid_prioritization,
         enum_to_str=True,
@@ -35,11 +36,11 @@ def build_fluid(data, *, skip_rename_variable=False, rename_var='fluid'):
     )
 
 
-def build_intraretfluid(data, *, rename_var='intraretfluid'):
-    default = get_default_fluid_result()
-    return column_from_variable(
-        default,
+def build_intraretfluid(data, *, rename_var='intraretfluid', note_date=None):
+    return column_from_variable_abbr(
+        'fluid', Fluid.UNKNOWN,
         data,
+        restrict_date=note_date,
         transformer_func=Fluid,
         result_func=fluid_prioritization,
         filter_func=lambda x: x['value'] in {
@@ -51,11 +52,11 @@ def build_intraretfluid(data, *, rename_var='intraretfluid'):
     )
 
 
-def build_subretfluid(data, *, rename_var='subretfluid'):
-    default = get_default_fluid_result()
-    return column_from_variable(
-        default,
+def build_subretfluid(data, *, rename_var='subretfluid', note_date=None):
+    return column_from_variable_abbr(
+        'fluid', Fluid.UNKNOWN,
         data,
+        restrict_date=note_date,
         transformer_func=Fluid,
         result_func=fluid_prioritization,
         filter_func=lambda x: x['value'] in {
