@@ -7,102 +7,82 @@ from eye_extractor.common.severity import Severity
 from eye_extractor.dr.dr_type import DrType
 from eye_extractor.dr.hemorrhage_type import HemorrhageType
 from eye_extractor.output.labels import DRTreatment
-from eye_extractor.output.variable import column_from_variable, column_from_variable_binary
+from eye_extractor.output.variable import column_from_variable, column_from_variable_binary, column_from_variable_abbr
 
 
-def build_dr(data):
-    return column_from_variable_binary(data, 'diab_retinop_yesno')
+def build_dr(data, *, note_date=None):
+    return column_from_variable_binary(data, 'diab_retinop_yesno', restrict_date=note_date)
 
 
-def build_ret_micro(data):
-    return column_from_variable_binary(data, 'ret_microaneurysm')
+def build_ret_micro(data, *, note_date=None):
+    return column_from_variable_binary(data, 'ret_microaneurysm', restrict_date=note_date)
 
 
-def build_cottonwspot(data):
-    return column_from_variable_binary(data, 'cottonwspot')
+def build_cottonwspot(data, *, note_date=None):
+    return column_from_variable_binary(data, 'cottonwspot', restrict_date=note_date)
 
 
-def build_hard_exudates(data):
-    return column_from_variable_binary(data, 'hardexudates')
+def build_hard_exudates(data, *, note_date=None):
+    return column_from_variable_binary(data, 'hardexudates', restrict_date=note_date)
 
 
-def build_ven_beading(data):
-    return column_from_variable(
-        {
-            f'venbeading_re': Severity.UNKNOWN,
-            f'venbeading_le': Severity.UNKNOWN,
-            f'venbeading_unk': Severity.UNKNOWN
-        },
-        data,
+def build_ven_beading(data, *, note_date=None):
+    return column_from_variable_abbr(
+        'venbeading', Severity.UNKNOWN, data,
+        restrict_date=note_date,
         transformer_func=Severity,
         enum_to_str=True,
     )
 
 
-def build_disc_edema(data):
-    return column_from_variable_binary(data, 'disc_edema_dr')
+def build_disc_edema(data, *, note_date=None):
+    return column_from_variable_binary(data, 'disc_edema_dr', restrict_date=note_date)
 
 
-def build_hemorrhage(data):
-    return column_from_variable_binary(data, 'hemorrhage_dr')
+def build_hemorrhage(data, *, note_date=None):
+    return column_from_variable_binary(data, 'hemorrhage_dr', restrict_date=note_date)
 
 
-def build_hemorrhage_type(data):
-    return column_from_variable({
-        f'hemorrhage_typ_dr_re': HemorrhageType.UNKNOWN,
-        f'hemorrhage_typ_dr_le': HemorrhageType.UNKNOWN,
-        f'hemorrhage_typ_dr_unk': HemorrhageType.UNKNOWN,
-    },
-        data,
+def build_hemorrhage_type(data, *, note_date=None):
+    return column_from_variable_abbr(
+        'hemorrhage_typ_dr', HemorrhageType.UNKNOWN, data,
+        restrict_date=note_date,
         transformer_func=HemorrhageType
     )
 
 
-def build_intraretinal_severity(data):
-    return column_from_variable({
-            f'intraretinal_hem_re': Severity.UNKNOWN,
-            f'intraretinal_hem_le': Severity.UNKNOWN,
-            f'intraretinal_hem_unk': Severity.UNKNOWN,
-        },
-        data,
+def build_intraretinal_severity(data, *, note_date=None):
+    return column_from_variable_abbr(
+        'intraretinal_hem', Severity.UNKNOWN, data,
+        restrict_date=note_date,
         transformer_func=Severity,
         enum_to_str=True,
     )
 
 
-def build_dot_blot_severity(data):
-    return column_from_variable({
-            f'dotblot_hem_re': Severity.UNKNOWN,
-            f'dotblot_hem_le': Severity.UNKNOWN,
-            f'dotblot_hem_unk': Severity.UNKNOWN,
-        },
-        data,
+def build_dot_blot_severity(data, *, note_date=None):
+    return column_from_variable_abbr(
+        'dotblot_hem', Severity.UNKNOWN, data,
+        restrict_date=note_date,
         transformer_func=Severity,
         enum_to_str=True,
     )
 
 
-def build_irma(data):
-    return column_from_variable({
-            f'irma_re': Severity.UNKNOWN,
-            f'irma_le': Severity.UNKNOWN,
-            f'irma_unk': Severity.UNKNOWN,
-        },
-        data,
+def build_irma(data, *, note_date=None):
+    return column_from_variable_abbr(
+        'irma', Severity.UNKNOWN, data,
+        restrict_date=note_date,
         transformer_func=Severity,
         enum_to_str=True,
     )
 
 
-def build_fluid(data, *, skip_rename_variable=False):
+def build_fluid(data, *, skip_rename_variable=False, note_date=None):
     # TODO: check if DR
-    return column_from_variable(
-        {
-            'fluid_re': Fluid.UNKNOWN,
-            'fluid_le': Fluid.UNKNOWN,
-            'fluid_unk': Fluid.UNKNOWN,
-        },
-        data,
+    return column_from_variable_abbr(
+        'fluid', Fluid.UNKNOWN, data,
+        restrict_date=note_date,
         transformer_func=Fluid,
         result_func=fluid_prioritization,
         enum_to_str=True,
@@ -111,74 +91,66 @@ def build_fluid(data, *, skip_rename_variable=False):
     )
 
 
-def build_laser_scars(data):
-    return column_from_variable_binary(data, 'dr_laser_scars')
+def build_laser_scars(data, *, note_date=None):
+    return column_from_variable_binary(data, 'dr_laser_scars', restrict_date=note_date)
 
 
-def build_laser_panrentinal(data):
-    return column_from_variable_binary(data, 'laserpanret_photocoag')
+def build_laser_panrentinal(data, *, note_date=None):
+    return column_from_variable_binary(data, 'laserpanret_photocoag', restrict_date=note_date)
 
 
-def build_focal_laser_scar_type(data):
-    return column_from_variable_binary(data, 'focal_dr_laser_scar_type')
+def build_focal_laser_scar_type(data, *, note_date=None):
+    return column_from_variable_binary(data, 'focal_dr_laser_scar_type', restrict_date=note_date)
 
 
-def build_grid_laser_scar_type(data):
-    return column_from_variable_binary(data, 'grid_dr_laser_scar_type')
+def build_grid_laser_scar_type(data, *, note_date=None):
+    return column_from_variable_binary(data, 'grid_dr_laser_scar_type', restrict_date=note_date)
 
 
-def build_macular_laser_scar_type(data):
-    return column_from_variable_binary(data, 'macular_dr_laser_scar_type')
+def build_macular_laser_scar_type(data, *, note_date=None):
+    return column_from_variable_binary(data, 'macular_dr_laser_scar_type', restrict_date=note_date)
 
 
-def build_neovasc(data):
-    return column_from_variable_binary(data, 'neovasc_yesno')
+def build_neovasc(data, *, note_date=None):
+    return column_from_variable_binary(data, 'neovasc_yesno', restrict_date=note_date)
 
 
-def build_nva(data):
-    return column_from_variable_binary(data, 'nva_yesno')
+def build_nva(data, *, note_date=None):
+    return column_from_variable_binary(data, 'nva_yesno', restrict_date=note_date)
 
 
-def build_nvi(data):
-    return column_from_variable_binary(data, 'nvi_yesno')
+def build_nvi(data, *, note_date=None):
+    return column_from_variable_binary(data, 'nvi_yesno', restrict_date=note_date)
 
 
-def build_nvd(data):
-    return column_from_variable_binary(data, 'nvd_yesno')
+def build_nvd(data, *, note_date=None):
+    return column_from_variable_binary(data, 'nvd_yesno', restrict_date=note_date)
 
 
-def build_nve(data):
-    return column_from_variable_binary(data, 'nve_yesno')
+def build_nve(data, *, note_date=None):
+    return column_from_variable_binary(data, 'nve_yesno', restrict_date=note_date)
 
 
-def build_dr_type(data):
-    return column_from_variable({
-        f'diabretinop_type_re': DrType.UNKNOWN,
-        f'diabretinop_type_le': DrType.UNKNOWN,
-        f'diabretinop_type_unk': DrType.UNKNOWN,
-    },
-        data)
+def build_dr_type(data, *, note_date=None):
+    return column_from_variable_abbr(
+        'diabretinop_type', DrType.UNKNOWN, data,
+        restrict_date=note_date,
+    )
 
 
-def build_npdr_severity(data):
-    return column_from_variable({
-            f'nonprolifdr_re': Severity.UNKNOWN,
-            f'nonprolifdr_le': Severity.UNKNOWN,
-            f'nonprolifdr_unk': Severity.UNKNOWN,
-        },
-        data,
+def build_npdr_severity(data, *, note_date=None):
+    return column_from_variable_abbr(
+        'nonprolifdr', Severity.UNKNOWN, data,
+        restrict_date=note_date,
         enum_to_str=True,
         transformer_func=Severity,
     )
 
 
-def build_pdr_severity(data):
-    return column_from_variable({
-            f'prolifdr_re': Severity.UNKNOWN,
-            f'prolifdr_le': Severity.UNKNOWN,
-            f'prolifdr_unk': Severity.UNKNOWN,
-        },
-        data,
+def build_pdr_severity(data, *, note_date=None):
+    return column_from_variable_abbr(
+        'prolifdr', Severity.UNKNOWN, data,
+        restrict_date=note_date,
         enum_to_str=True,
         transformer_func=Severity,
     )
@@ -202,15 +174,11 @@ def _rename_dr_tx(val: IntEnum):
     return val.value
 
 
-def build_dr_tx(data):
+def build_dr_tx(data, *, note_date=None):
     # TODO: check if DR
-    return column_from_variable(
-        {
-            'tx_re': Treatment.UNKNOWN,
-            'tx_le': Treatment.UNKNOWN,
-            'tx_unk': Treatment.UNKNOWN,
-        },
-        data,
+    return column_from_variable_abbr(
+        'tx', Treatment.UNKNOWN, data,
+        restrict_date=note_date,
         renamevar_func=lambda x: f'drtreatment_{x.split("_")[-1]}',
         rename_func=_rename_dr_tx,
         enum_to_str=True,
@@ -219,16 +187,16 @@ def build_dr_tx(data):
     )
 
 
-def build_edema(data):
-    return column_from_variable_binary(data, 'dmacedema_yesno')
+def build_edema(data, *, note_date=None):
+    return column_from_variable_binary(data, 'dmacedema_yesno', restrict_date=note_date)
 
 
-def build_sig_edema(data):
-    return column_from_variable_binary(data, 'dmacedema_clinsignif')
+def build_sig_edema(data, *, note_date=None):
+    return column_from_variable_binary(data, 'dmacedema_clinsignif', restrict_date=note_date)
 
 
-def build_oct_cme(data):
-    return column_from_variable_binary(data, 'oct_centralmac')
+def build_oct_cme(data, *, note_date=None):
+    return column_from_variable_binary(data, 'oct_centralmac', restrict_date=note_date)
 
 
 def _rename_dme_tx(val: IntEnum):
@@ -247,15 +215,11 @@ def _rename_dme_tx(val: IntEnum):
     return val.value
 
 
-def build_dme_tx(data):
+def build_dme_tx(data, *, note_date=None):
     # TODO: check if DME
-    return column_from_variable(
-        {
-            'tx_re': Treatment.UNKNOWN,
-            'tx_le': Treatment.UNKNOWN,
-            'tx_unk': Treatment.UNKNOWN,
-        },
-        data,
+    return column_from_variable_abbr(
+        'tx', Treatment.UNKNOWN, data,
+        restrict_date=note_date,
         renamevar_func=lambda x: f'dmacedema_tx_{x.split("_")[-1]}',
         rename_func=_rename_dme_tx,
         filter_func=lambda x: x.get('category', None) in {'DR', 'ALL', 'LASER', 'ANTIVEGF'},
@@ -264,15 +228,11 @@ def build_dme_tx(data):
     )
 
 
-def build_dmacedema_antivegf(data):
+def build_dmacedema_antivegf(data, *, note_date=None):
     # TODO: check if DME
-    return column_from_variable(
-        {
-            'tx_re': AntiVegf.UNKNOWN,
-            'tx_le': AntiVegf.UNKNOWN,
-            'tx_unk': AntiVegf.UNKNOWN,
-        },
-        data,
+    return column_from_variable_abbr(
+        'tx', AntiVegf.UNKNOWN, data,
+        restrict_date=note_date,
         renamevar_func=lambda x: f'dmacedema_antivegf_{x.split("_")[-1]}',
         rename_func=rename_antivegf,
         filter_func=lambda x: x.get('category', None) in {'ANTIVEGF'},
@@ -281,51 +241,48 @@ def build_dmacedema_antivegf(data):
     )
 
 
-def build_cmt_value(data):
+def build_cmt_value(data, *, note_date=None):
     # TODO: check if DME
-    return column_from_variable(
-        {
-            'dmacedema_cmt_re': -1,
-            'dmacedema_cmt_le': -1,
-            'dmacedema_cmt_unk': -1,
-        },
-        data
+    return column_from_variable_abbr(
+        'dmacedema_cmt', -1, data,
+        restrict_date=note_date,
     )
 
 
 def build_dr_variables(data):
     curr = data['dr']
+    note = data['note']
     results = {}
-    results.update(build_dr(curr['binary_vars']))
-    results.update(build_ret_micro(curr['binary_vars']))
-    results.update(build_cottonwspot(curr['binary_vars']))
-    results.update(build_hard_exudates(curr['binary_vars']))
-    results.update(build_disc_edema(curr['binary_vars']))
-    results.update(build_ven_beading(curr['venous_beading']))
-    results.update(build_hemorrhage(curr['binary_vars']))
-    results.update(build_hemorrhage_type(curr['hemorrhage_type']))
-    results.update(build_intraretinal_severity(curr['hemorrhage_type']))
-    results.update(build_dot_blot_severity(curr['hemorrhage_type']))
-    results.update(build_irma(curr['irma']))
-    results.update(build_fluid(data['common']['treatment']))
-    results.update(build_laser_scars(curr['binary_vars']))
-    results.update(build_laser_panrentinal(curr['binary_vars']))
-    results.update(build_focal_laser_scar_type(curr['laser_scar_type']))
-    results.update(build_grid_laser_scar_type(curr['laser_scar_type']))
-    results.update(build_macular_laser_scar_type(curr['laser_scar_type']))
-    results.update(build_neovasc(curr['binary_vars']))
-    results.update(build_nva(curr['binary_vars']))
-    results.update(build_nvi(curr['binary_vars']))
-    results.update(build_nvd(curr['binary_vars']))
-    results.update(build_nve(curr['binary_vars']))
-    results.update(build_dr_type(curr['dr_type']))
-    results.update(build_npdr_severity(curr['dr_type']))
-    results.update(build_pdr_severity(curr['dr_type']))
-    results.update(build_dr_tx(data['common']['treatment']))
-    results.update(build_edema(curr['binary_vars']))
-    results.update(build_sig_edema(curr['binary_vars']))
-    results.update(build_oct_cme(curr['binary_vars']))
-    results.update(build_dme_tx(data['common']['treatment']))
-    results.update(build_dmacedema_antivegf(data['common']['treatment']))
-    results.update(build_cmt_value(curr['cmt_value']))
+    results.update(build_dr(curr['binary_vars'], note_date=note['date']))
+    results.update(build_ret_micro(curr['binary_vars'], note_date=note['date']))
+    results.update(build_cottonwspot(curr['binary_vars'], note_date=note['date']))
+    results.update(build_hard_exudates(curr['binary_vars'], note_date=note['date']))
+    results.update(build_disc_edema(curr['binary_vars'], note_date=note['date']))
+    results.update(build_ven_beading(curr['venous_beading'], note_date=note['date']))
+    results.update(build_hemorrhage(curr['binary_vars'], note_date=note['date']))
+    results.update(build_hemorrhage_type(curr['hemorrhage_type'], note_date=note['date']))
+    results.update(build_intraretinal_severity(curr['hemorrhage_type'], note_date=note['date']))
+    results.update(build_dot_blot_severity(curr['hemorrhage_type'], note_date=note['date']))
+    results.update(build_irma(curr['irma'], note_date=note['date']))
+    results.update(build_fluid(data['common']['treatment'], note_date=note['date']))
+    results.update(build_laser_scars(curr['binary_vars'], note_date=note['date']))
+    results.update(build_laser_panrentinal(curr['binary_vars'], note_date=note['date']))
+    results.update(build_focal_laser_scar_type(curr['laser_scar_type'], note_date=note['date']))
+    results.update(build_grid_laser_scar_type(curr['laser_scar_type'], note_date=note['date']))
+    results.update(build_macular_laser_scar_type(curr['laser_scar_type'], note_date=note['date']))
+    results.update(build_neovasc(curr['binary_vars'], note_date=note['date']))
+    results.update(build_nva(curr['binary_vars'], note_date=note['date']))
+    results.update(build_nvi(curr['binary_vars'], note_date=note['date']))
+    results.update(build_nvd(curr['binary_vars'], note_date=note['date']))
+    results.update(build_nve(curr['binary_vars'], note_date=note['date']))
+    results.update(build_dr_type(curr['dr_type'], note_date=note['date']))
+    results.update(build_npdr_severity(curr['dr_type'], note_date=note['date']))
+    results.update(build_pdr_severity(curr['dr_type'], note_date=note['date']))
+    results.update(build_dr_tx(data['common']['treatment'], note_date=note['date']))
+    results.update(build_edema(curr['binary_vars'], note_date=note['date']))
+    results.update(build_sig_edema(curr['binary_vars'], note_date=note['date']))
+    results.update(build_oct_cme(curr['binary_vars'], note_date=note['date']))
+    results.update(build_dme_tx(data['common']['treatment'], note_date=note['date']))
+    results.update(build_dmacedema_antivegf(data['common']['treatment'], note_date=note['date']))
+    results.update(build_cmt_value(curr['cmt_value'], note_date=note['date']))
     return results

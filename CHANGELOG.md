@@ -27,6 +27,7 @@ Types of changes:
 - Added `note_date` restriction to Uveitis variables
 - Added `note_date` restriction to Glaucoma variables
 - Added `note_date` restriction to RO variables
+- Added `note_date` restriction to diabetic retinopathy variables
 
 ## v20221024
 
