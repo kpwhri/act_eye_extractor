@@ -103,6 +103,13 @@ def has_valid_date(restrict_date, value, *, offset=2):
     return True
 
 
+def _has_higher_priority(priorities, row, target_varname):
+    """Check if current item has lower priority"""
+    if not isinstance(row[target_varname], dict):
+        return False
+    return row[target_varname].get('priority', 0) > priorities[target_varname]
+
+
 def _has_lower_priority(priorities, row, target_varname):
     """Check if current item has lower priority"""
     if not isinstance(row[target_varname], dict):
@@ -202,7 +209,8 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
             if _has_lower_priority(priorities, row, target_varname):
                 continue
             new_value = transformer_func(row[target_varname])  # what should the new value be?
-            if compare_func(new_value, curr_value):  # should the value be updated?
+            # should new_value be used to update old_value?
+            if _has_higher_priority(priorities, row, target_varname) or compare_func(new_value, curr_value):
                 priorities[target_varname] = _get_updated_priority(row, target_varname)  # default to 0 priority
                 results[varname] = result_func(new_value, curr_value)  # how to merge the prev/new value
                 sideeffect_func(results, varname, new_value)

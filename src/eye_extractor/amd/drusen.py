@@ -13,24 +13,24 @@ SMALL_DRUSEN_PAT = re.compile(
     r'|small(er)?'
     r'|trace'
     r'|light'
-    r')(\s*\w+){3} drusen\b',
+    r')(\s+\w+){,3}\s*drusen\b',
     re.I
 )
 INTERMEDIATE_DRUSEN_PAT = re.compile(
     r'('
     r'intermediate'
     r'|moderate'
-    r')(\s*\w+){3} drusen\b',
+    r')(\s+\w+){,3}\s*drusen\b',
     re.I
 )
 LARGE_DRUSEN_PAT = re.compile(
-    r'('
+    r'(?:'
     r'dense'
     r'|extensive'
     r'|large'
     r'|heavy'
     r'|big'
-    r')(\s*\w+){3} drusen\b',
+    r')(?:\s+\w+){,3}\s*drusen\b',
     re.I
 )
 
