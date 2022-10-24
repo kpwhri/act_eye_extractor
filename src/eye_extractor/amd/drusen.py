@@ -40,7 +40,7 @@ NO_DRUSEN_PAT = re.compile(r'((no|or) drusen)', re.I)
 def extract_drusen(text, *, headers=None, lateralities=None):
     data = []
     if headers:
-        if macula_text := headers.iterate('MACULA'):
+        for macula_header, macula_text in headers.iterate('MACULA'):
             lateralities = build_laterality_table(macula_text)
             data += find_drusen(macula_text, lateralities)
     else:
