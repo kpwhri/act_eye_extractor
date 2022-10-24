@@ -1,6 +1,6 @@
 import pytest
 
-from eye_extractor.laterality import Laterality, get_laterality_by_index, build_laterality_table, LATERALITY_PATTERN
+from eye_extractor.laterality import Laterality, build_laterality_table, LATERALITY_PATTERN
 
 
 @pytest.mark.parametrize('text, start_index, exp', [
