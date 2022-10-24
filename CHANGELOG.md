@@ -24,6 +24,7 @@ Types of changes:
 - Modernised how `drusen_type` and `drusen_size` are built
 - Added `note_date` restriction to AMD variables
 - Added `note_date` restriction to Cataract variables
+- Added `note_date` restriction to Uveitis variables
 
 ## v20221024
 
