@@ -17,6 +17,11 @@ Types of changes:
 
 ## [Unreleased]
 
+### Added
+- Added sorting priority for variables
+
+### Changed
+- Modernised how `drusen_type` and `drusen_size` are built
 
 ## v20221024
 
