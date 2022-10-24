@@ -25,6 +25,7 @@ Types of changes:
 - Added `note_date` restriction to AMD variables
 - Added `note_date` restriction to Cataract variables
 - Added `note_date` restriction to Uveitis variables
+- Added `note_date` restriction to Glaucoma variables
 
 ## v20221024
 
