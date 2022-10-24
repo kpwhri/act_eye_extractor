@@ -4,16 +4,16 @@ from eye_extractor.common.algo.fluid import Fluid, fluid_prioritization, rename_
     rename_subretfluid
 from eye_extractor.common.algo.treatment import Treatment
 from eye_extractor.common.drug.antivegf import AntiVegf, rename_antivegf
-from eye_extractor.output.variable import column_from_variable, column_from_variable_binary
+from eye_extractor.output.variable import column_from_variable, column_from_variable_binary, column_from_variable_abbr
 from eye_extractor.ro.rvo import RvoType
 
 
-def build_rao(data):
-    return column_from_variable_binary(data, 'rao_yesno')
+def build_rao(data, *, note_date=None):
+    return column_from_variable_binary(data, 'rao_yesno', restrict_date=note_date)
 
 
-def build_rvo(data):
-    return column_from_variable_binary(data, 'rvo_yesno')
+def build_rvo(data, *, note_date=None):
+    return column_from_variable_binary(data, 'rvo_yesno', restrict_date=note_date)
 
 
 def _rename_rvo_type(val):
@@ -27,15 +27,11 @@ def _rename_rvo_type(val):
     return val.value
 
 
-def build_rvo_type(data, *, skip_output_mappings=False):
+def build_rvo_type(data, *, skip_output_mappings=False, note_date=None):
     rename_func = None if skip_output_mappings else _rename_rvo_type
-    return column_from_variable(
-        {
-            'rvo_yesno_re': RvoType.UNKNOWN,
-            'rvo_yesno_le': RvoType.UNKNOWN,
-            'rvo_yesno_unk': RvoType.UNKNOWN,
-        },
-        data,
+    return column_from_variable_abbr(
+        'rvo_yesno', RvoType.UNKNOWN, data,
+        restrict_date=note_date,
         transformer_func=lambda x: RvoType(x['kind']),
         renamevar_func=lambda x: f'rvo_type_{x.split("_")[-1]}',
         rename_func=rename_func,
@@ -58,16 +54,12 @@ def _rename_rvo_treatment(val: IntEnum):
     return val.value
 
 
-def build_rvo_treatment(data):
+def build_rvo_treatment(data, *, note_date=None):
     # TODO: check is RVO
 
-    return column_from_variable(
-        {
-            'tx_re': Treatment.UNKNOWN,
-            'tx_le': Treatment.UNKNOWN,
-            'tx_unk': Treatment.UNKNOWN,
-        },
-        data,
+    return column_from_variable_abbr(
+        'tx', Treatment.UNKNOWN, data,
+        restrict_date=note_date,
         renamevar_func=lambda x: f'rvo_treatment_{x.split("_")[-1]}',
         rename_func=_rename_rvo_treatment,
         filter_func=lambda x: x.get('category', None) in {'RVO', 'ALL', 'LASER', 'ANTIVEGF'},
@@ -76,16 +68,12 @@ def build_rvo_treatment(data):
     )
 
 
-def build_rvo_antivegf(data):
+def build_rvo_antivegf(data, *, note_date=None):
     # TODO: check is RVO
 
-    return column_from_variable(
-        {
-            'tx_re': AntiVegf.UNKNOWN,
-            'tx_le': AntiVegf.UNKNOWN,
-            'tx_unk': AntiVegf.UNKNOWN,
-        },
-        data,
+    return column_from_variable_abbr(
+        'tx_re', AntiVegf.UNKNOWN, data,
+        restrict_date=note_date,
         renamevar_func=lambda x: f'rvo_antivegf_{x.split("_")[-1]}',
         rename_func=rename_antivegf,
         filter_func=lambda x: x.get('category', None) in {'ANTIVEGF'},
@@ -94,15 +82,11 @@ def build_rvo_antivegf(data):
     )
 
 
-def build_fluid(data, *, skip_rename_variable=False):
+def build_fluid(data, *, skip_rename_variable=False, note_date=None):
     # TODO: check if RVO
-    return column_from_variable(
-        {
-            'fluid_re': Fluid.UNKNOWN,
-            'fluid_le': Fluid.UNKNOWN,
-            'fluid_unk': Fluid.UNKNOWN,
-        },
-        data,
+    return column_from_variable_abbr(
+        'fluid', Fluid.UNKNOWN, data,
+        restrict_date=note_date,
         transformer_func=Fluid,
         result_func=fluid_prioritization,
         enum_to_str=True,
@@ -111,15 +95,11 @@ def build_fluid(data, *, skip_rename_variable=False):
     )
 
 
-def build_intraretfluid(data):
+def build_intraretfluid(data, *, note_date=None):
     # TODO: check if RVO
-    return column_from_variable(
-        {
-            'fluid_re': Fluid.UNKNOWN,
-            'fluid_le': Fluid.UNKNOWN,
-            'fluid_unk': Fluid.UNKNOWN,
-        },
-        data,
+    return column_from_variable_abbr(
+        'fluid_unk', Fluid.UNKNOWN, data,
+        restrict_date=note_date,
         transformer_func=Fluid,
         result_func=fluid_prioritization,
         filter_func=lambda x: x in {
@@ -132,15 +112,11 @@ def build_intraretfluid(data):
     )
 
 
-def build_subretfluid(data):
+def build_subretfluid(data, *, note_date=None):
     # TODO: check if RVO
-    return column_from_variable(
-        {
-            'fluid_re': Fluid.UNKNOWN,
-            'fluid_le': Fluid.UNKNOWN,
-            'fluid_unk': Fluid.UNKNOWN,
-        },
-        data,
+    return column_from_variable_abbr(
+        'fluid', Fluid.UNKNOWN, data,
+        restrict_date=note_date,
         transformer_func=Fluid,
         result_func=fluid_prioritization,
         filter_func=lambda x: x in {
@@ -155,15 +131,16 @@ def build_subretfluid(data):
 
 def build_ro_variables(data):
     curr = data['ro']
+    note = data['curr']
     results = {}
     # RAO
-    results.update(build_rao(curr['rao']))
+    results.update(build_rao(curr['rao'], note_date=note['date']))
     # RVO
-    results.update(build_rvo(curr['rvo']))
-    results.update(build_rvo_type(curr['rvo']))
-    results.update(build_rvo_treatment(data['common']['treatment']))
-    results.update(build_rvo_antivegf(data['common']['treatment']))
-    results.update(build_fluid(data['common']['treatment']))
-    results.update(build_subretfluid(data['common']['treatment']))
-    results.update(build_intraretfluid(data['common']['treatment']))
+    results.update(build_rvo(curr['rvo'], note_date=note['date']))
+    results.update(build_rvo_type(curr['rvo'], note_date=note['date']))
+    results.update(build_rvo_treatment(data['common']['treatment'], note_date=note['date']))
+    results.update(build_rvo_antivegf(data['common']['treatment'], note_date=note['date']))
+    results.update(build_fluid(data['common']['treatment'], note_date=note['date']))
+    results.update(build_subretfluid(data['common']['treatment'], note_date=note['date']))
+    results.update(build_intraretfluid(data['common']['treatment'], note_date=note['date']))
     return results
