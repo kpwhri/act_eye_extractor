@@ -19,6 +19,7 @@ from eye_extractor.history.perhx import create_personal_history
 from eye_extractor.iop import get_iop
 from eye_extractor.laterality import build_laterality_table
 from eye_extractor.ro.algorithm import extract_ro_variables
+from eye_extractor.uveitis.algorithm import extract_uveitis
 from eye_extractor.uveitis.uveitis import get_uveitis
 from eye_extractor.va.extractor2 import extract_va
 from eye_extractor.va.rx import get_manifest_rx
@@ -40,7 +41,7 @@ def extract_all(text: str, *, data: dict = None, sections: dict = None):
     data['glaucoma'] = extract_glaucoma(text, headers=sections, lateralities=lateralities)
     data['manifestrx'] = list(get_manifest_rx(text))
     data['ro'] = extract_ro_variables(text, headers=sections, lateralities=lateralities)
-    data['uveitis'] = get_uveitis(text, headers=sections, lateralities=lateralities)
+    data['uveitis'] = extract_uveitis(text, headers=sections, lateralities=lateralities)
     data['history'] = {
         'family': create_family_history(text, headers=sections, lateralities=lateralities),
         'personal': create_personal_history(text, headers=sections, lateralities=lateralities),
