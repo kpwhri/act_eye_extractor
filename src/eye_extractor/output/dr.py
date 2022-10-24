@@ -7,7 +7,7 @@ from eye_extractor.common.severity import Severity
 from eye_extractor.dr.dr_type import DrType
 from eye_extractor.dr.hemorrhage_type import HemorrhageType
 from eye_extractor.output.labels import DRTreatment
-from eye_extractor.output.variable import column_from_variable, column_from_variable_binary, column_from_variable_abbr
+from eye_extractor.output.variable import column_from_variable_binary, column_from_variable_abbr
 
 
 def build_dr(data, *, note_date=None):

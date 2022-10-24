@@ -4,7 +4,7 @@ from eye_extractor.common.algo.fluid import Fluid, fluid_prioritization, rename_
     rename_subretfluid
 from eye_extractor.common.algo.treatment import Treatment
 from eye_extractor.common.drug.antivegf import AntiVegf, rename_antivegf
-from eye_extractor.output.variable import column_from_variable, column_from_variable_binary, column_from_variable_abbr
+from eye_extractor.output.variable import column_from_variable_binary, column_from_variable_abbr
 from eye_extractor.ro.rvo import RvoType
 
 
