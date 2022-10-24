@@ -217,8 +217,8 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
     return {renamevar_func(varname): rename_func(value) for varname, value in results.items()}
 
 
-def column_from_variable_binary(data, label):
-    return column_from_variable({f'{label}_le': -1, f'{label}_re': -1, f'{label}_unk': -1}, data)
+def column_from_variable_binary(data, label, *, restrict_date=None, **kwargs):
+    return column_from_variable_abbr(label, -1, data, restrict_date=restrict_date, **kwargs)
 
 
 def update_column(target_data: dict, other_data: dict, conditions: list):
