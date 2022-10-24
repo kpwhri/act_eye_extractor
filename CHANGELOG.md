@@ -17,8 +17,16 @@ Types of changes:
 
 ## [Unreleased]
 
+
+## v20221024
+
 ### Added
 - Generalized fluid algorithm (independent of algorithm)
+- Identify context of dates in all variables
+- Parsing date context in AMD variables
+
+### Fixed
+- Hopefully better handling negation with punctuation involved
 
 ## v20221018
 
