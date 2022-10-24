@@ -5,9 +5,10 @@ from eye_extractor.output.variable import column_from_variable
 def build_exam(data):
     results = {}
     curr = data['exam']
+    note = data['note']
     results.update(build_cup_disc_ratio(curr['cd_ratio']))
-    results.update(build_rnfl(curr['rnfl'], data['date']))
-    results.update(build_cmt(curr['cmt'], data['date']))
+    results.update(build_rnfl(curr['rnfl'], note['date']))
+    results.update(build_cmt(curr['cmt'], note['date']))
     return results
 
 
