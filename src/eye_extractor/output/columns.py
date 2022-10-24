@@ -1,8 +1,9 @@
 from eye_extractor.common.algo.fluid import Fluid
 from eye_extractor.common.algo.treatment import Treatment
 from eye_extractor.common.severity import Severity
+from eye_extractor.output.labels import DRTreatment
 from eye_extractor.output.validators import is_int, is_in_range, is_date, contains, is_string, is_upper, \
-    is_float_in_range, equals, is_string_in_enum
+    is_float_in_range, equals, is_string_in_enum, is_int_in_enum
 
 OUTPUT_COLUMNS = {
     # metadata
@@ -391,9 +392,9 @@ OUTPUT_COLUMNS = {
     'diabretinop_type_le': [is_in_range(-1, 2)],
     'diabretinop_type_unk': [is_in_range(-1, 2)],
     # Presence of fluid
-    'fluid_dr_re': [is_string_in_enum(Fluid)],
-    'fluid_dr_le': [is_string_in_enum(Fluid)],
-    'fluid_dr_unk': [is_string_in_enum(Fluid)],
+    'fluid_dr_re': [is_int_in_enum(Fluid)],
+    'fluid_dr_le': [is_int_in_enum(Fluid)],
+    'fluid_dr_unk': [is_int_in_enum(Fluid)],
     # Diabetic macular edema treatment
     'dmacedema_tx_re': [is_in_range(-1, 5)],
     'dmacedema_tx_le': [is_in_range(-1, 5)],
@@ -403,9 +404,9 @@ OUTPUT_COLUMNS = {
     'dmacedema_antivegf_le': [is_in_range(-1, 4)],
     'dmacedema_antivegf_unk': [is_in_range(-1, 4)],
     # Diabetic retinopathy treatment
-    'drtreatment_re': [is_string_in_enum(Treatment)],
-    'drtreatment_le': [is_string_in_enum(Treatment)],
-    'drtreatment_unk': [is_string_in_enum(Treatment)],
+    'drtreatment_re': [is_int_in_enum(Treatment, DRTreatment)],
+    'drtreatment_le': [is_int_in_enum(Treatment, DRTreatment)],
+    'drtreatment_unk': [is_int_in_enum(Treatment, DRTreatment)],
     # Diabetic macular edema CMT value
     'dmacedema_cmt_re': [is_in_range(-1, 1000)],
     'dmacedema_cmt_le': [is_in_range(-1, 1000)],

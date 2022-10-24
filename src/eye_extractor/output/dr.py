@@ -6,6 +6,7 @@ from eye_extractor.common.drug.antivegf import AntiVegf, rename_antivegf
 from eye_extractor.common.severity import Severity
 from eye_extractor.dr.dr_type import DrType
 from eye_extractor.dr.hemorrhage_type import HemorrhageType
+from eye_extractor.output.labels import DRTreatment
 from eye_extractor.output.variable import column_from_variable, column_from_variable_binary
 
 
@@ -187,17 +188,17 @@ def _rename_dr_tx(val: IntEnum):
     # convert to output values
     match val:
         case Treatment.FOCAL:
-            return 6
+            return DRTreatment.FOCAL.value
         case Treatment.SURGERY:
-            return 4  # surgery
+            return DRTreatment.SURGERY.value  # surgery
         case val if 311 <= val.value <= 319:
-            return 3  # injections
+            return DRTreatment.INJECTIONS.value  # injections
         case Treatment.PRP:
-            return 2
+            return DRTreatment.PRP.value
         case Treatment.OBSERVE:
-            return 1  # observe
+            return DRTreatment.OBSERVE.value  # observe
         case val if val.value > 0:
-            return 5  # other
+            return DRTreatment.OTHER.value  # other
     return val.value
 
 
