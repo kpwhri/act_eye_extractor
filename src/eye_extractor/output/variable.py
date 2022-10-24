@@ -103,6 +103,20 @@ def has_valid_date(restrict_date, value, *, offset=2):
     return True
 
 
+def _has_lower_priority(priorities, row, target_varname):
+    """Check if current item has lower priority"""
+    if not isinstance(row[target_varname], dict):
+        return False
+    return priorities[target_varname] > row[target_varname].get('priority', 0)
+
+
+def _get_updated_priority(row, target_varname):
+    """Get updated prioritization value when updating value"""
+    if not isinstance(row[target_varname], dict):
+        return 0  # default to 0 priority
+    return row[target_varname].get('priority', 0)
+
+
 def column_from_variable_abbr(result_abbr, init_value, data, *, compare_func=None, transformer_func=None,
                               result_func=None, convert_func=None, filter_func=None,
                               rename_func=None, sideeffect_func=None, renamevar_func=None,
@@ -175,8 +189,9 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
             rename_func = lambda n: n.value if isinstance(n, Enum) else n
     if renamevar_func is None:  # final renaming of variable name after processing
         renamevar_func = lambda n: n
+    priorities = {convert_func(varname): 0 for varname in results}  # target_varname -> value
     for row in data or []:  # for each element in list read from json file
-        for varname, curr_value in list(results.items()):
+        for varname, curr_value in list(results.items()):  # for each outcome of interest
             target_varname = convert_func(varname)  # change the column/variable name
             if target_varname not in row:
                 continue
@@ -184,8 +199,11 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
                 continue
             if not has_valid_date(restrict_date, row[target_varname]):
                 continue
+            if _has_lower_priority(priorities, row, target_varname):
+                continue
             new_value = transformer_func(row[target_varname])  # what should the new value be?
             if compare_func(new_value, curr_value):  # should the value be updated?
+                priorities[target_varname] = _get_updated_priority(row, target_varname)  # default to 0 priority
                 results[varname] = result_func(new_value, curr_value)  # how to merge the prev/new value
                 sideeffect_func(results, varname, new_value)
     return {renamevar_func(varname): rename_func(value) for varname, value in results.items()}
