@@ -20,6 +20,9 @@ Types of changes:
 ### Added
 - Added sorting priority for variables
 
+### Fixed
+- Uveitis variables were broken (variable name was problematic)
+
 ### Changed
 - Modernised how `drusen_type` and `drusen_size` are built
 - Added `note_date` restriction to AMD variables
