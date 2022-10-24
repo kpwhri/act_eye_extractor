@@ -27,7 +27,7 @@ def dumps_and_loads_json(data):
 def load_date_hook(d):
     if 'date' in d:
         try:
-            d['date'] = datetime.datetime.strptime(d['date'], '%Y-%m-%d').date()
+            d['date'] = datetime.datetime.strptime(d['date'].split(' ')[0], '%Y-%m-%d').date()
         except:
             pass
     return d

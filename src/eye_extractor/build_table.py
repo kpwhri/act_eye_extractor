@@ -10,6 +10,7 @@ import click
 from loguru import logger
 
 from eye_extractor.builders.build_history import build_history
+from eye_extractor.common.json import loads_json
 from eye_extractor.laterality import Laterality
 from eye_extractor.output.amd import build_amd_variables
 from eye_extractor.output.cataract import build_cataract_variables
@@ -34,7 +35,8 @@ def process_data(data, *, add_columns=None, date_column='note_date'):
         'encid': data['enc_id'],
         'is_training': data['train'],
     }
-    data['date'] = datetime.datetime.strptime(data[date_column], '%Y-%m-%d %H:%M:%S').date()
+    data['date'] = datetime.datetime.strptime(data[date_column], '%Y-%m-%d %H:%M:%S')
+    data['note']['date'] = data['date'].date()
     data['note']['default_lat'] = Laterality(data['note']['default_lat'])
     for col in add_columns or []:
         result[col] = data[col]
@@ -85,7 +87,7 @@ def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path, date_column='not
                 if i == 0:
                     writer.writeheader()
                 for line in fh:
-                    data = json.loads(line.strip())
+                    data = loads_json(line.strip())
                     result = process_data(data, add_columns=add_columns, date_column=date_column)
                     validate_columns_in_row(OUTPUT_COLUMNS, result, id_col='studyid')
                     writer.writerow(result)

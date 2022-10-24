@@ -98,7 +98,7 @@ def has_valid_date(restrict_date, value, *, offset=2):
     """require date within 2 days of note ('restrict') date"""
     if restrict_date is None or not isinstance(value, dict):
         return True
-    if 'date' in value:
+    if value.get('date', None):
         return abs((value['date'] - restrict_date).days) <= offset
     return True
 
