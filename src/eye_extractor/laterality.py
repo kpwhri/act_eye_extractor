@@ -133,6 +133,23 @@ def create_variable(data, text, match, lateralities, variable, value, *, known_l
 
 
 def create_new_variable(text, match, lateralities, variable, value, *, known_laterality=None):
+    """
+    Create a new variable (usually passed to a list called data). Wrapper around `create_variable`.
+
+    :param text:
+    :param match:
+    :param lateralities:
+    :param variable:
+    :param value: dict with the following values (most are optional, but these are best practice):
+        * value: numerical representation (or IntEnum)
+        * label: text interpretation of 'value'
+        * term: m.group() (or provide wider context for debugging)
+        * source: section or other information
+        * prioritiy: int >= 0: use to sort relative priority where the larger value is more important
+
+    :param known_laterality:
+    :return:
+    """
     data = {}
     # assign 'value' to each of the lateralities, suffixing '_re', '_le', '_unk'
     create_variable(data, text, match, lateralities, variable, value,
