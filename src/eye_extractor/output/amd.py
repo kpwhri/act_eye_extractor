@@ -20,7 +20,8 @@ def build_amd_variables(data):
     note = data['note']
     results = {}
     results.update(get_amd(curr['amd'], is_amd=note['is_amd'], lat=note['default_lat'], note_date=note['date']))
-    results.update(get_drusen(curr['drusen'], note_date=note['date']))
+    results.update(get_drusen_size(curr['drusen'], note_date=note['date']))
+    results.update(get_drusen_type(curr['drusen'], note_date=note['date']))
     srh = get_subretinal_hemorrhage(curr['srh'], note_date=note['date'])
     results.update(srh)
     results.update(get_pigmentary_changes(curr['pigment'], note_date=note['date']))
@@ -78,6 +79,20 @@ def get_amd(data, *, is_amd=None, lat=Laterality.UNKNOWN, note_date=None):
         elif laterality:  # any mention
             results['amd_re'] = _update_amd(0, results['amd_re'])
     return results
+
+
+def get_drusen_size(data, *, note_date=None):
+    return column_from_variable_abbr(
+        'drusen_size', -1, data,
+        restrict_date=note_date,
+    )
+
+
+def get_drusen_type(data, *, note_date=None):
+    return column_from_variable_abbr(
+        'drusen_type', -1, data,
+        restrict_date=note_date,
+    )
 
 
 def get_drusen(data, *, note_date=None):

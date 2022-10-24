@@ -1,6 +1,6 @@
 import re
 
-from eye_extractor.laterality import build_laterality_table, create_variable
+from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 SMALL_DRUSEN_PAT = re.compile(
     r'('
@@ -41,20 +41,20 @@ BOTH_DRUSEN_PAT = re.compile(r'(soft(\s*(and|,|/)\s*hard)?|hard(\s*(and|,|/)\s*s
 NO_DRUSEN_PAT = re.compile(r'((no|or) drusen)', re.I)
 
 
-def get_drusen(text, *, headers=None, lateralities=None):
-    data = {}
+def extract_drusen(text, *, headers=None, lateralities=None):
+    data = []
     if headers:
-        if macula_text := headers.get('MACULA', None):
+        if macula_text := headers.iterate('MACULA'):
             lateralities = build_laterality_table(macula_text)
-            data |= find_drusen(macula_text, lateralities)
+            data += find_drusen(macula_text, lateralities)
     else:
         if not lateralities:
             lateralities = build_laterality_table(text)
-        data |= find_drusen(text, lateralities)
+        data += find_drusen(text, lateralities)
     return data
 
 
-def find_drusen(text, lateralities):
+def find_drusen(text, lateralities=None):
     """
     Designed so that subsequent variables can overwrite earlier ones.
     In the build step, only the final element will be retained, so starting with the most general.
@@ -62,47 +62,27 @@ def find_drusen(text, lateralities):
     :param lateralities:
     :return:
     """
-    data = {}
-    for m in DRUSEN_PAT.finditer(text):
-        create_variable(data, text, m, lateralities, 'drusen_size', {
-            'value': 4, 'term': m.group(), 'label': 'yes', 'source': 'MACULA',
-        })
-        create_variable(data, text, m, lateralities, 'drusen_type', {
-            'value': 4, 'term': m.group(), 'label': 'yes', 'source': 'MACULA',
-        })
-    for m in NO_DRUSEN_PAT.finditer(text):
-        create_variable(data, text, m, lateralities, 'drusen_size', {
-            'value': 0, 'term': m.group(), 'label': 'no', 'source': 'MACULA',
-        })
-        create_variable(data, text, m, lateralities, 'drusen_type', {
-            'value': 0, 'term': m.group(), 'label': 'no', 'source': 'MACULA',
-        })
-
-    for m in BOTH_DRUSEN_PAT.finditer(text):
-        create_variable(data, text, m, lateralities, 'drusen_type', {
-            'value': 3, 'term': m.group(), 'label': 'both', 'source': 'MACULA',
-        })
-
-    for m in HARD_DRUSEN_PAT.finditer(text):
-        create_variable(data, text, m, lateralities, 'drusen_type', {
-            'value': 1, 'term': m.group(), 'label': 'hard', 'source': 'MACULA',
-        })
-
-    for m in SOFT_DRUSEN_PAT.finditer(text):
-        create_variable(data, text, m, lateralities, 'drusen_type', {
-            'value': 2, 'term': m.group(), 'label': 'soft', 'source': 'MACULA',
-        })
-
-    for m in SMALL_DRUSEN_PAT.finditer(text):
-        create_variable(data, text, m, lateralities, 'drusen_size', {
-            'value': 1, 'term': m.group(), 'label': 'small', 'source': 'MACULA',
-        })
-    for m in INTERMEDIATE_DRUSEN_PAT.finditer(text):
-        create_variable(data, text, m, lateralities, 'drusen_size', {
-            'value': 2, 'term': m.group(), 'label': 'intermediate', 'source': 'MACULA',
-        })
-    for m in LARGE_DRUSEN_PAT.finditer(text):
-        create_variable(data, text, m, lateralities, 'drusen_size', {
-            'value': 3, 'term': m.group(), 'label': 'large', 'source': 'MACULA',
-        })
+    lateralities = lateralities or build_laterality_table(text)
+    data = []
+    for pattern, label, value, priority, targets in [
+        (DRUSEN_PAT, 'yes', 4, 0, ('drusen_size', 'drusen_type')),
+        (NO_DRUSEN_PAT, 'no', 0, 1, ('drusen_size', 'drusen_type')),
+        (BOTH_DRUSEN_PAT, 'both', 3, 2, ('drusen_type',)),
+        (HARD_DRUSEN_PAT, 'hard', 1, 3, ('drusen_type',)),
+        (SOFT_DRUSEN_PAT, 'soft', 2, 4, ('drusen_type',)),
+        (SMALL_DRUSEN_PAT, 'small', 1, 2, ('drusen_size',)),
+        (INTERMEDIATE_DRUSEN_PAT, 'intermediate', 2, 3, ('drusen_size',)),
+        (LARGE_DRUSEN_PAT, 'large', 3, 2, ('drusen_size',)),
+    ]:
+        for m in pattern.finditer(text):
+            for target in targets:
+                data.append(
+                    create_new_variable(text, m, lateralities, target, {
+                        'value': value,
+                        'term': m.group(),
+                        'label': label,
+                        'source': 'MACULA',
+                        'priority': priority,
+                    })
+                )
     return data
