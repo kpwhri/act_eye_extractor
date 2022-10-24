@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 
 from eye_extractor.common.json import dumps_and_loads_json
@@ -24,17 +26,19 @@ def test_all_uveitis_pattern(text, exp):
 
 
 @pytest.mark.parametrize(
-    'text, exp_uveitis_yesno_re, exp_uveitis_yesno_le, exp_uveitis_yesno_unk',
+    'text, exp_uveitis_yesno_re, exp_uveitis_yesno_le, exp_uveitis_yesno_unk, note_date',
     [
-        ('', -1, -1, -1),
-        ('uveitis od', 1, -1, -1),
-        ('OS: no uveitis', -1, 0, -1),
+        ('', -1, -1, -1, None),
+        ('uveitis od', 1, -1, -1, None),
+        ('OS: no uveitis', -1, 0, -1, None),
+        ('12/12/2012 posterior iritis', -1, -1, 1, datetime.date(2012, 12, 12)),
+        ('11/11/2011 posterior iritis', -1, -1, -1, datetime.date(2012, 12, 12)),
     ]
 )
-def test_extract_and_build_uveitis(text, exp_uveitis_yesno_re, exp_uveitis_yesno_le, exp_uveitis_yesno_unk):
+def test_extract_and_build_uveitis(text, exp_uveitis_yesno_re, exp_uveitis_yesno_le, exp_uveitis_yesno_unk, note_date):
     pre_json = get_uveitis(text)
     post_json = dumps_and_loads_json(pre_json)
-    result = build_uveitis(post_json)
+    result = build_uveitis(post_json, note_date=note_date)
     assert result['uveitis_yesno_re'] == exp_uveitis_yesno_re
     assert result['uveitis_yesno_le'] == exp_uveitis_yesno_le
     assert result['uveitis_yesno_unk'] == exp_uveitis_yesno_unk
