@@ -2,35 +2,31 @@ import re
 
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
+small = r'(?:(very\W*)?fine|scattered|occasional|rare|few|mild|small(er)?|trace|light)'
+intermediate = r'(?:intermediate|moderate)'
+large = r'(?:dense|extensive|large|heavy|big|many|lots)'
+words_lt3 = r'(\s+\w+){,3}'
+drusen = 'drusen?'
+
 SMALL_DRUSEN_PAT = re.compile(
-    r'('
-    r'(very\W*)?fine'
-    r'|scattered'
-    r'|occasional'
-    r'|rare'
-    r'|few'
-    r'|mild'
-    r'|small(er)?'
-    r'|trace'
-    r'|light'
-    r')(\s+\w+){,3}\s*drusen\b',
+    rf'(?:'
+    rf'{small}{words_lt3}\s*{drusen}\b'
+    rf'|\b{drusen}{words_lt3}\s*{small}'
+    rf')',
     re.I
 )
 INTERMEDIATE_DRUSEN_PAT = re.compile(
-    r'('
-    r'intermediate'
-    r'|moderate'
-    r')(\s+\w+){,3}\s*drusen\b',
+    r'(?:'
+    rf'{intermediate}{words_lt3}\s*{drusen}\b'
+    rf'|\b{drusen}{words_lt3}\s*{intermediate}'
+    rf')',
     re.I
 )
 LARGE_DRUSEN_PAT = re.compile(
     r'(?:'
-    r'dense'
-    r'|extensive'
-    r'|large'
-    r'|heavy'
-    r'|big'
-    r')(?:\s+\w+){,3}\s*drusen\b',
+    rf'{large}{words_lt3}\s*{drusen}\b'
+    rf'|\b{drusen}{words_lt3}\s*{large}'
+    rf')',
     re.I
 )
 
