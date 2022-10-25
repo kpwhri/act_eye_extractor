@@ -70,7 +70,7 @@ class PosteriorCapsuleOpacity(enum.IntEnum):
 def extract_posterior_capsular_opacity(text, *, headers=None, lateralities=None):
     data = []
     if headers:
-        if lens_text := headers.get('LENS', None):
+        for lens_header, lens_text in headers.iterate('LENS'):
             lens_lateralities = build_laterality_table(lens_text)
             # known patterns
             for label, pat, value in [
@@ -81,7 +81,7 @@ def extract_posterior_capsular_opacity(text, *, headers=None, lateralities=None)
                 ('3_PCO_PAT', build_from_number_pco(3), PosteriorCapsuleOpacity.P3),
                 ('4_PCO_PAT', build_from_number_pco(4), PosteriorCapsuleOpacity.P4),
             ]:
-                _finditer(data, label, lens_lateralities, lens_text, pat, value)
+                _finditer(data, label, lens_lateralities, lens_header, lens_text, pat, value)
             if not data:
                 # just numbers
                 for label, pat, value in [
@@ -91,7 +91,7 @@ def extract_posterior_capsular_opacity(text, *, headers=None, lateralities=None)
                     ('3_PAT', build_from_number(3), PosteriorCapsuleOpacity.P3),
                     ('4_PAT', build_from_number(4), PosteriorCapsuleOpacity.P4),
                 ]:
-                    _finditer(data, label, lens_lateralities, lens_text, pat, value)
+                    _finditer(data, label, lens_lateralities, lens_header, lens_text, pat, value)
 
             # heuristics
             if not data:
@@ -103,18 +103,19 @@ def extract_posterior_capsular_opacity(text, *, headers=None, lateralities=None)
                             create_new_variable(lens_text, m, lens_lateralities, 'posterior_cap_opacity', {
                                 'value': value,
                                 'term': m.group(),
+                                'source': lens_header,
                             })
                         )
     return data
 
 
-def _finditer(data, label, lens_lateralities, lens_text, pat, value):
+def _finditer(data, label, lens_lateralities, lens_header, lens_text, pat, value):
     for m in pat.finditer(lens_text):
         data.append(
             create_new_variable(lens_text, m, lens_lateralities, 'posterior_cap_opacity', {
                 'value': value,
                 'term': m.group(),
                 'regex': label,
-                'source': 'LENS',
+                'source': lens_header,
             })
         )
