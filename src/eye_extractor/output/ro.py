@@ -98,7 +98,7 @@ def build_fluid(data, *, skip_rename_variable=False, note_date=None):
 def build_intraretfluid(data, *, note_date=None):
     # TODO: check if RVO
     return column_from_variable_abbr(
-        'fluid_unk', Fluid.UNKNOWN, data,
+        'fluid', Fluid.UNKNOWN, data,
         restrict_date=note_date,
         transformer_func=Fluid,
         result_func=fluid_prioritization,
@@ -131,7 +131,7 @@ def build_subretfluid(data, *, note_date=None):
 
 def build_ro_variables(data):
     curr = data['ro']
-    note = data['curr']
+    note = data['note']
     results = {}
     # RAO
     results.update(build_rao(curr['rao'], note_date=note['date']))
