@@ -3,7 +3,9 @@ from typing import Match
 
 from eye_extractor.common.string import replace_punctuation
 
-NEGWORDS = frozenset({'no', 'or', 'neg', 'without', 'w/out', '(-)'})
+NEGWORDS = frozenset({
+    'no', 'not', 'or', 'neg', 'without', 'w/out', 'w/o', '(-)', '-',
+})
 
 
 def _handle_negation_with_punctuation(text):

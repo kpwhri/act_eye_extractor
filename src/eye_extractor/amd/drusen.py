@@ -1,5 +1,6 @@
 import re
 
+from eye_extractor.common.negation import NEGWORDS
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 small = r'(?:(very\W*)?fine|scattered|occasional|rare|few|mild|small(er)?|trace|light)'
@@ -34,7 +35,7 @@ DRUSEN_PAT = re.compile(r'drusen', re.I)
 HARD_DRUSEN_PAT = re.compile(r'(hard drusen)', re.I)
 SOFT_DRUSEN_PAT = re.compile(r'(soft drusen)', re.I)
 BOTH_DRUSEN_PAT = re.compile(r'(soft(\s*(and|,|/)\s*hard)?|hard(\s*(and|,|/)\s*soft)?) drusen', re.I)
-NO_DRUSEN_PAT = re.compile(r'((no|or) drusen)', re.I)
+NO_DRUSEN_PAT = re.compile(rf'(?:(?:{"|".join(NEGWORDS)}) drusen)', re.I)
 
 
 def extract_drusen(text, *, headers=None, lateralities=None):

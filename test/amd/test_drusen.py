@@ -9,6 +9,7 @@ from eye_extractor.output.amd import get_drusen_size, get_drusen_type
 
 @pytest.mark.parametrize('text, exp_size_re, exp_size_le, exp_type_re, exp_type_le, note_date', [
     ('WNL OU', -1, -1, -1, -1, None),
+    ('w/o drusen ou', 0, 0, 0, 0, None),
     ('drusen and RPE drop out OU', 4, 4, 4, 4, None),
     ('OD: extensive drusen', 3, -1, 4, -1, None),
     ('OD: 10/2/2011 extensive drusen', -1, -1, -1, -1, datetime.date(2011, 10, 9)),
