@@ -15,18 +15,17 @@ SRH_IN_MACULA_PAT = re.compile(
     r'('
     r'\bheme?s?\b'
     r'|hemorrhage'
-    r')'
+    r'|\bsrh'
+    r')',
+    re.IGNORECASE
 )
 
 
-def get_subretinal_hemorrhage(text, *, headers=None, lateralities=None):
-    if not lateralities:
-        lateralities = build_laterality_table(text)
-
+def extract_subretinal_hemorrhage(text, *, headers=None, lateralities=None):
+    lateralities = lateralities or build_laterality_table(text)
     data = []
-    # everywhere
-    for m in SRH_PAT.finditer(text):
-        negword = is_negated(m, text, {'no', 'or'})
+    for m in SRH_PAT.finditer(text):  # everywhere
+        negword = is_negated(m, text)
         data.append(
             create_new_variable(text, m, lateralities, 'subretinal_hem', {
                 'value': 0 if negword else 1,
@@ -36,17 +35,16 @@ def get_subretinal_hemorrhage(text, *, headers=None, lateralities=None):
                 'regex': 'SRH_PAT', 'source': 'ALL',
             })
         )
-    # macula text only
-    if headers:
-        if macula_text := headers.get('MACULA', None):
+    if headers:  # macula text only
+        for macula_header, macula_text in headers.iterate('MACULA'):
             lateralities = build_laterality_table(macula_text)
-            for m in SRH_IN_MACULA_PAT.finditer(text):
+            for m in SRH_IN_MACULA_PAT.finditer(macula_text):
                 # exclusion words (wrong heme)
-                if is_negated(m, text, {'intraretinal', 'retinal'}):
+                if is_negated(m, macula_text, {'intraretinal', 'retinal'}):
                     continue
-                negword = is_negated(m, text, {'no', 'or', 'without'})
+                negword = is_negated(m, macula_text)
                 data.append(
-                    create_new_variable(text, m, lateralities, 'subretinal_hem', {
+                    create_new_variable(macula_text, m, lateralities, 'subretinal_hem', {
                         'value': 0 if negword else 1,
                         'term': m.group(),
                         'label': 'no' if negword else 'yes',

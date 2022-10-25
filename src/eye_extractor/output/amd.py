@@ -22,7 +22,7 @@ def build_amd_variables(data):
     results.update(get_amd(curr['amd'], is_amd=note['is_amd'], lat=note['default_lat'], note_date=note['date']))
     results.update(get_drusen_size(curr['drusen'], note_date=note['date']))
     results.update(get_drusen_type(curr['drusen'], note_date=note['date']))
-    srh = get_subretinal_hemorrhage(curr['srh'], note_date=note['date'])
+    srh = build_subretinal_hemorrhage(curr['srh'], note_date=note['date'])
     results.update(srh)
     results.update(get_pigmentary_changes(curr['pigment'], note_date=note['date']))
     fluid = build_fluid_amd(data['common']['fluid'], is_amd=note['is_amd'], note_date=note['date'])
@@ -110,7 +110,7 @@ def get_drusen(data, *, note_date=None):
     return results
 
 
-def get_subretinal_hemorrhage(data, *, note_date=None):
+def build_subretinal_hemorrhage(data, *, note_date=None):
     return column_from_variable_abbr('subretinal_hem', -1, data, restrict_date=note_date)
 
 
