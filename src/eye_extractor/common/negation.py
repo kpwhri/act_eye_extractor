@@ -9,6 +9,7 @@ NEGWORDS = frozenset({'no', 'or', 'neg', 'without', 'w/out', '(-)'})
 def _handle_negation_with_punctuation(text):
     """Hack to handle punctuation-infused negation words: replace with 'no'"""
     text = text.replace('w/out', 'without')
+    text = text.replace('w/o', 'without')
     text = text.replace('(-)', ' no ')
     text = re.sub(r'(\D\W*)-([A-Za-z])', r'\g<1> no \g<2>', text)
     return text

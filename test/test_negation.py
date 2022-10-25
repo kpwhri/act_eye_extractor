@@ -72,6 +72,7 @@ def test_handle_negation_with_punctuation(text, exp):
     ('(-)  holes, tears, or detachments OU', 'detachments', True),  # or is negated
     ('(-)  holes, tears, or detachments OU', 'tears', True),
     ('w/out holes, tears, or detachments OU', 'tears', True),
+    ('w/o holes, tears, or detachments OU', 'tears', True),
     ('holes, tears, or detachments OU', 'tears', False),
 ])
 def test_negwords_prenegation(text, term, exp_negated):
