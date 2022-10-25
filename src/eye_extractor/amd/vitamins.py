@@ -40,7 +40,7 @@ def extract_amd_vitamin(text, *, headers=None, lateralities=None):
                 'CURRENT_EYE_MEDICATIONS', 'EYE_MEDICATIONS', 'MEDICATIONS', 'PLAN',
         ):  # TODO: other sections?
             for m in VITAMIN_PAT.finditer(sect_text):
-                negword = is_negated(m, sect_text, {'no', 'not', 'or', 'without'})
+                negword = is_negated(m, sect_text)
                 data.append(
                     {'amd_vitamin': {
                         'value': Vitamin.NO if negword else Vitamin.YES,
@@ -52,7 +52,7 @@ def extract_amd_vitamin(text, *, headers=None, lateralities=None):
                     }}
                 )
     for m in CONTINUE_VITAMIN_PAT.finditer(text):
-        negword = is_negated(m, text, {'no', 'not', 'or', 'without'})
+        negword = is_negated(m, text)
         data.append(
             {'amd_vitamin': {
                 'value': Vitamin.NO if negword else Vitamin.YES,

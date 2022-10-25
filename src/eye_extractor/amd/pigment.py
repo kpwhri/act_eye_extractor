@@ -48,7 +48,7 @@ def _get_pigmentary_changes(text, lateralities, source):
             })
         )
     for m in ATROPHY_PAT.finditer(text):
-        negword = is_negated(m, text, {'no', 'or'}, word_window=3)
+        negword = is_negated(m, text, word_window=3)
         lat = lat_lookup(m, group='lat')
         data.append(
             create_new_variable(text, m, lateralities, 'pigmentchanges', {

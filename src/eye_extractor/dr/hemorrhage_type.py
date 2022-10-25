@@ -1,7 +1,7 @@
 import enum
 import re
 
-from eye_extractor.common.negation import is_negated, NEGWORDS
+from eye_extractor.common.negation import is_negated
 from eye_extractor.common.severity import extract_severity, Severity
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
@@ -69,7 +69,7 @@ def _get_hemorrhage_type(text: str, lateralities, source: str) -> dict:
         (SUBRETINAL_PAT, HemorrhageType.SUBRETINAL, 'subretinal', None),
     ]:
         for m in pat.finditer(text):
-            negated = is_negated(m, text, NEGWORDS, word_window=3)
+            negated = is_negated(m, text, word_window=3)
             context = f'{text[max(0, m.start() - 100): m.start()]} {text[m.end():min(len(text), m.end() + 100)]}'
             severities = extract_severity(context)
             if sev_var and severities:

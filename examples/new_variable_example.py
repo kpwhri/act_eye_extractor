@@ -1,6 +1,6 @@
 import re
 
-from eye_extractor.common.negation import is_negated, NEGWORDS
+from eye_extractor.common.negation import is_negated
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 NEW_PAT = re.compile(
@@ -24,7 +24,7 @@ def get_newvar(text, *, headers=None, lateralities=None):
     varname = 'newvar'
     data = []
     for m in NEW_PAT.finditer(text):
-        negword = is_negated(m, text, NEGWORDS)
+        negword = is_negated(m, text)
         data.append(
             create_new_variable(text, m, lateralities, varname, {
                 'value': 0 if negword else 1,
@@ -39,9 +39,9 @@ def get_newvar(text, *, headers=None, lateralities=None):
         if section_text := headers.get('SECTION', None):
             lateralities = build_laterality_table(section_text)
             for m in NEW_SECTION_PAT.finditer(text):
-                if is_negated(m, text, NEGWORDS):
+                if is_negated(m, text, {'corneal'}):  # negation words to skip: not relevant
                     continue
-                negword = is_negated(m, text, NEGWORDS)
+                negword = is_negated(m, text)  # use pre-defined list
                 data.append(
                     create_new_variable(text, m, lateralities, varname, {
                         'value': 0 if negword else 1,

@@ -333,7 +333,7 @@ def _extract_treatment(section, section_text, section_lateralities, category, *p
         for m in pat.finditer(section_text):
             if is_treatment_uncertain(m, section_text):
                 continue
-            negword = is_negated(m, section_text, {'no', 'or', 'without', 'if'})
+            negword = is_negated(m, section_text)
             curr_laterality = get_contextual_laterality(m, section_text)
             # TODO: check if disease is mentioned in vicinity (e.g., DR, AMD, etc.)
             if callable(value):

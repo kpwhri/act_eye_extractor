@@ -2,7 +2,7 @@ import enum
 import re
 
 from eye_extractor.amd.utils import run_on_macula
-from eye_extractor.common.negation import is_negated, is_post_negated
+from eye_extractor.common.negation import is_negated, is_post_negated, NEGWORDS
 from eye_extractor.laterality import create_new_variable
 
 
@@ -173,7 +173,7 @@ def _get_fluid_in_macula(text, lateralities, source):
         if is_negated(m, text, {'corneal'}):  # non-macular
             continue
         negword = (
-                is_negated(m, text, {'no', 'or', 'without', 'corneal'}, word_window=4)
+                is_negated(m, text, NEGWORDS | {'corneal'}, word_window=4)
                 or is_post_negated(m, text, {'not'}, word_window=3)
         )
         data.append(

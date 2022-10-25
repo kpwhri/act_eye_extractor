@@ -35,8 +35,7 @@ Types of changes:
 - Added `note_date` restriction to RO variables
 - Added `note_date` restriction to diabetic retinopathy variables
 - Created generalized negation as default
-- Added generalized negation words to all AMD-section variables
-- Added generalized negation words to relevant cataract section variables
+- Added generalized negation words to
 - Modernised cataract variables (including generalized negation)
 
 ## v20221024

@@ -5,7 +5,11 @@ from eye_extractor.common.string import replace_punctuation
 
 NEGWORDS = frozenset({
     'no', 'not', 'or', 'neg', 'non', 'negative',
-    'without', 'w/out', 'w/o', '(-)', '-',
+    'without', 'w/out', 'w/o', '(-)', '-', 'if',
+})
+
+HISTORY_WORDS = frozenset({
+    'hx', 'history', 'phx'
 })
 
 

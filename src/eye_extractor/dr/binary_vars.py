@@ -1,6 +1,6 @@
 import re
 
-from eye_extractor.common.negation import is_negated, is_post_negated, NEGWORDS
+from eye_extractor.common.negation import is_negated, is_post_negated
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 
@@ -118,7 +118,7 @@ def get_dr_binary(text, *, headers=None, lateralities=None):
     data = []
     for variable, PAT in DIABETIC_RETINOPATHY_PATS:
         for m in PAT.finditer(text):
-            negword = is_negated(m, text, NEGWORDS, word_window=4)
+            negword = is_negated(m, text, word_window=4)
             if not negword:
                 negword = is_post_negated(m, text, {'or'}, word_window=2)
             data.append(

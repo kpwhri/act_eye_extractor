@@ -1,6 +1,6 @@
 import re
 
-from eye_extractor.common.negation import is_negated, is_post_negated
+from eye_extractor.common.negation import is_negated, is_post_negated, HISTORY_WORDS
 from eye_extractor.laterality import create_new_variable
 
 ALL_UVEITIS_PAT = re.compile(
@@ -41,10 +41,10 @@ def get_uveitis(text, *, headers=None, lateralities=None):
         for m in pat.finditer(text):
             negword = (
                     is_negated(m, text, word_window=4)
-                    or is_post_negated(m, text, {'not'}, word_window=3)
+                    or is_post_negated(m, text, word_window=3)
             )
             histword = (
-                is_negated(m, text, {'hx', 'history'}, word_window=3)
+                is_negated(m, text, HISTORY_WORDS, word_window=3)
             )
             data.append(
                 create_new_variable(text, m, lateralities, 'uveitis_yesno', {

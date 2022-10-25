@@ -64,7 +64,7 @@ def _extract_wetamd_severity(text, lateralities, source):
 def _extract_wetamd_severity_all(text, lateralities, source):
     data = []
     for m in WET_AMD_PAT.finditer(text):
-        negword = is_negated(m, text, {'no', 'or', 'without'})
+        negword = is_negated(m, text)
         data.append(
             create_new_variable(text, m, lateralities, 'wetamd_severity', {
                 'value': WetSeverity.NO if negword else WetSeverity.YES,

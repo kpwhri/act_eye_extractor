@@ -58,7 +58,7 @@ def extract_lasertype(text, *, headers=None, lateralities=None):
                 ('THERMAL_PAT', THERMAL_PAT, Laser.THERMAL),
             ]:
                 for m in pat.finditer(sect_text):
-                    negword = is_negated(m, sect_text, {'no', 'not', 'or', 'without'})
+                    negword = is_negated(m, sect_text)
                     date = parse_date_after(m, sect_text)
                     data.append(
                         create_new_variable(

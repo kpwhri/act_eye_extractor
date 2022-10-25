@@ -1,6 +1,6 @@
 import re
 
-from eye_extractor.common.negation import is_negated, NEGWORDS
+from eye_extractor.common.negation import is_negated
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 
@@ -29,7 +29,7 @@ def get_cmt_value(text: str, *, headers=None, lateralities=None) -> list:
 
 def _get_cmt_value(text: str, lateralities, source: str) -> dict:
     for m in CMT_VALUE_PAT.finditer(text):
-        negated = is_negated(m, text, NEGWORDS, word_window=1)
+        negated = is_negated(m, text, word_window=1)
         yield create_new_variable(text, m, lateralities, 'dmacedema_cmt', {
             'value': 0 if negated else _extract_cmt_value(m),
             'term': m.group(),
