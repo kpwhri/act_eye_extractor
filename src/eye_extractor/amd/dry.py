@@ -49,7 +49,7 @@ def _extract_dryamd_severity(text, lateralities, source):
     """Extract dry amd from macula section"""
     data = []
     for m in DRY_PAT.finditer(text):
-        negword = is_negated(m, text, {'no', 'not', 'or', 'without'})
+        negword = is_negated(m, text)
         data.append(
             create_new_variable(text, m, lateralities, 'dryamd_severity', {
                 'value': DrySeverity.NO if negword else DrySeverity.YES,
@@ -66,7 +66,7 @@ def _extract_dryamd_severity(text, lateralities, source):
 def _extract_dryamd_severity_all(text, lateralities, source):
     data = []
     for m in DRY_AMD_PAT.finditer(text):
-        negword = is_negated(m, text, {'no', 'or', 'without'})
+        negword = is_negated(m, text)
         data.append(
             create_new_variable(text, m, lateralities, 'dryamd_severity', {
                 'value': DrySeverity.NO if negword else DrySeverity.YES,
