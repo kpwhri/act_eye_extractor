@@ -1,7 +1,7 @@
 import enum
 import re
 
-from eye_extractor.common.negation import has_before, is_negated, has_after, NEGWORDS
+from eye_extractor.common.negation import has_before, is_negated, has_after
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 

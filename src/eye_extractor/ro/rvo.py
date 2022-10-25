@@ -2,7 +2,7 @@ import enum
 import re
 from typing import Match
 
-from eye_extractor.common.negation import is_negated, NEGWORDS
+from eye_extractor.common.negation import is_negated
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 
@@ -43,7 +43,7 @@ def extract_rvo(text, *, headers=None, lateralities=None):
         lateralities = build_laterality_table(text)
     data = []
     for m in RVO_PAT.finditer(text):
-        negword = is_negated(m, text, NEGWORDS)
+        negword = is_negated(m, text)
         data.append(
             create_new_variable(text, m, lateralities, 'rvo_yesno', {
                 'value': 0 if negword else 1,

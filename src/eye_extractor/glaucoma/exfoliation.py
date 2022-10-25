@@ -4,7 +4,7 @@ Exfoliation, but not glaucoma.
 import enum
 import re
 
-from eye_extractor.common.negation import has_before, has_after, is_negated, NEGWORDS
+from eye_extractor.common.negation import has_before, has_after, is_negated
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 
