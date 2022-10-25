@@ -71,7 +71,7 @@ def _extract_subret_fibrous(text, data, sect_label):
         curr_text = text
         for m in pat.finditer(curr_text):
             lateralities = build_laterality_table(curr_text)
-            negword = is_negated(m, curr_text, {'no', 'or', 'without'}, word_window=3)
+            negword = is_negated(m, curr_text, word_window=3)
             data.append(
                 create_new_variable(curr_text, m, lateralities, 'subret_fibrous', {
                     'value': Scar.NO if negword else value,

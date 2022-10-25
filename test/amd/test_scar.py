@@ -25,6 +25,7 @@ def test_scar_patterns(pat, text, exp):
     ('', {'MACULA': 'OD: macular scar'}, 'MACULAR', 'UNKNOWN', 'UNKNOWN'),
     ('', {'MACULA': 'sub ret scar os'}, 'UNKNOWN', 'SUBRETINAL', 'UNKNOWN'),
     ('disciform scar ou', None, 'DISCIFORM', 'DISCIFORM', 'UNKNOWN'),
+    ('no disciform scar ou', None, 'NO', 'NO', 'UNKNOWN'),
 ])
 def test_scar_extract_build(text, headers, exp_subret_fibrous_re, exp_subret_fibrous_le, exp_subret_fibrous_unk):
     pre_json = extract_subret_fibrous(text, headers=Headers(headers))
