@@ -22,6 +22,8 @@ Types of changes:
 
 ### Fixed
 - Uveitis variables were broken (variable name was problematic)
+- Subretinal hemorrhage
+- Remove 'dry eyes' from matches for dry amd
 
 ### Changed
 - Modernised how `drusen_type` and `drusen_size` are built
@@ -31,6 +33,8 @@ Types of changes:
 - Added `note_date` restriction to Glaucoma variables
 - Added `note_date` restriction to RO variables
 - Added `note_date` restriction to diabetic retinopathy variables
+- Created generalized negation as default
+- Added generalized negation words to all AMD-section variables
 
 ## v20221024
 
