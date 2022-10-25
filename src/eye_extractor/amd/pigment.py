@@ -36,7 +36,7 @@ def get_pigmentary_changes(text, *, headers=None, lateralities=None):
 def _get_pigmentary_changes(text, lateralities, source):
     data = []
     for m in PIGMENTARY_PAT.finditer(text):
-        negword = is_negated(m, text, {'no', 'or'}, word_window=3)
+        negword = is_negated(m, text, word_window=3)
         data.append(
             create_new_variable(text, m, lateralities, 'pigmentchanges', {
                 'value': 0 if negword else 1,

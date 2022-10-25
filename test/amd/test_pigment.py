@@ -21,6 +21,7 @@ def test_pigmentary_pattern(text, exp):
     ('no pigment dispersion', 0, 'no'),
     ('no drusen or pigment dispersion', 0, 'no'),
     ('no evidence of drusen or pigment dispersion', 0, 'or'),
+    ('w/o evidence of pigment dispersion', 0, 'without'),
     ('atrophy OS', 1, None),
 ])
 def test_pigment_value_first_variable(text, exp_value, exp_negword):
