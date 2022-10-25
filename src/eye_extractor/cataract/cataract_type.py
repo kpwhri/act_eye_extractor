@@ -60,7 +60,7 @@ def get_cataract_type(text, *, headers=None, lateralities=None):
         (PSC_PAT, CataractType.PSC, 'PSC'),
     ]:
         for m in pat.finditer(text):
-            negword = is_negated(m, text, {'no', 'or', 'without'})
+            negword = is_negated(m, text)
             gd = m.groupdict()
             if severity := gd.get('severity1', '') or gd.get('severity2', '') or None:
                 severity = max(float(s.strip('+ ')) for s in severity.split('-'))
