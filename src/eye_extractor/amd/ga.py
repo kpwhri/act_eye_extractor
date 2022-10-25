@@ -36,7 +36,7 @@ def _extract_ga_macula(text, lateralities, source):
     """Extract GA from macula section"""
     data = []
     for m in GA_PAT.finditer(text):
-        negword = is_negated(m, text, {'no', 'or', 'without'})
+        negword = is_negated(m, text)
         data.append(
             create_new_variable(text, m, lateralities, 'geoatrophy', {
                 'value': GeoAtrophy.NO if negword else GeoAtrophy.YES,

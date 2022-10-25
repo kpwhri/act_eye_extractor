@@ -20,6 +20,7 @@ def test_ga_patterns(pat, text, exp):
 @pytest.mark.parametrize('text, headers, exp_geoatrophy_re, exp_geoatrophy_le, exp_geoatrophy_unk', [
     ('', {'MACULA': 'ga'}, -1, -1, 1),
     ('', {'MACULA': 'no ga'}, -1, -1, 0),
+    ('', {'MACULA': 'w/o ga'}, -1, -1, 0),
 ])
 def test_ga_extract_build(text, headers, exp_geoatrophy_re, exp_geoatrophy_le, exp_geoatrophy_unk):
     pre_json = extract_geoatrophy(text, headers=Headers(headers))

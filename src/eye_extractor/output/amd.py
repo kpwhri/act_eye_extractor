@@ -139,8 +139,7 @@ def build_subretfluid_amd(data, *, is_amd=None, note_date=None):
 def build_ped(data, *, note_date=None):
     """Build binary pigmentary epithelial detachment variable"""
     return column_from_variable_abbr(
-        'ped', PigEpiDetach.UNKNOWN,
-        data,
+        'ped', PigEpiDetach.UNKNOWN, data,
         restrict_date=note_date,
         transformer_func=PigEpiDetach,
     )
@@ -149,8 +148,7 @@ def build_ped(data, *, note_date=None):
 def build_choroidalneovasc(data, *, note_date=None):
     """Build cnv/choroidal neovascularization as binary (yes/no/unknown)"""
     return column_from_variable_abbr(
-        'choroidalneovasc', ChoroidalNeoVasc.UNKNOWN,
-        data,
+        'choroidalneovasc', ChoroidalNeoVasc.UNKNOWN, data,
         restrict_date=note_date,
         transformer_func=ChoroidalNeoVasc,
         compare_func=lambda n, c: c == ChoroidalNeoVasc.UNKNOWN,  # take first; only update unknown
@@ -160,8 +158,7 @@ def build_choroidalneovasc(data, *, note_date=None):
 def build_subret_fibrous(data, *, note_date=None):
     """Build cnv/choroidal neovascularization as binary (yes/no/unknown)"""
     return column_from_variable_abbr(
-        'subret_fibrous', Scar.UNKNOWN,
-        data,
+        'subret_fibrous', Scar.UNKNOWN, data,
         restrict_date=note_date,
         transformer_func=Scar,
         compare_func=lambda n, c: c == Scar.UNKNOWN,  # take first; only update unknown
@@ -172,8 +169,7 @@ def build_subret_fibrous(data, *, note_date=None):
 def build_geoatrophy(data, *, note_date=None):
     """Build geographic atrophy as binary (yes/no/unknown)"""
     return column_from_variable_abbr(
-        'geoatrophy', GeoAtrophy.UNKNOWN,
-        data,
+        'geoatrophy', GeoAtrophy.UNKNOWN, data,
         restrict_date=note_date,
         transformer_func=GeoAtrophy,
         compare_func=lambda n, c: c == GeoAtrophy.UNKNOWN,  # take first; only update unknown
@@ -184,8 +180,7 @@ def build_geoatrophy(data, *, note_date=None):
 def build_dryamd_severity(data, *, ga_result=None, note_date=None):
     """Build dry amd severity"""
     result = column_from_variable_abbr(
-        'dryamd_severity', DrySeverity.UNKNOWN,
-        data,
+        'dryamd_severity', DrySeverity.UNKNOWN, data,
         restrict_date=note_date,
         transformer_func=DrySeverity,
         enum_to_str=True,
@@ -204,8 +199,7 @@ def build_wetamd_severity(data, *, cnv_result=None, srh_result=None,
                           is_amd=None, is_dr=None, fluid_result=None, note_date=None):
     """Build wet amd severity"""
     result = column_from_variable_abbr(
-        'wetamd_severity', WetSeverity.UNKNOWN,
-        data,
+        'wetamd_severity', WetSeverity.UNKNOWN, data,
         transformer_func=WetSeverity,
         enum_to_str=True,
     )
@@ -232,8 +226,7 @@ def augment_wetamd_severity(result, *, cnv_result=None, srh_result=None,
 def build_amd_vitamin(data, *, note_date=None):
     """Build amd vitamin"""
     return column_from_variable(
-        {'amd_vitamin': Vitamin.UNKNOWN},
-        data,
+        {'amd_vitamin': Vitamin.UNKNOWN}, data,
         restrict_date=note_date,
         transformer_func=Vitamin,
         enum_to_str=False,
@@ -257,8 +250,7 @@ def build_lasertype(data, *, note_date=None):
                 return False
 
     return column_from_variable_abbr(
-        'amd_lasertype', Laser.UNKNOWN,
-        data,
+        'amd_lasertype', Laser.UNKNOWN, data,
         restrict_date=note_date,
         transformer_func=Laser,
         enum_to_str=False,
