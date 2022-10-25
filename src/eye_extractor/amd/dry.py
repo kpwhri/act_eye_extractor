@@ -2,7 +2,7 @@ import enum
 import re
 
 from eye_extractor.amd.utils import run_on_macula
-from eye_extractor.common.negation import is_negated
+from eye_extractor.common.negation import is_negated, is_post_negated
 from eye_extractor.laterality import create_new_variable
 
 
@@ -49,6 +49,8 @@ def _extract_dryamd_severity(text, lateralities, source):
     """Extract dry amd from macula section"""
     data = []
     for m in DRY_PAT.finditer(text):
+        if is_post_negated(m, text, {'eye', 'eyes'}):
+            continue
         negword = is_negated(m, text)
         data.append(
             create_new_variable(text, m, lateralities, 'dryamd_severity', {
@@ -66,6 +68,8 @@ def _extract_dryamd_severity(text, lateralities, source):
 def _extract_dryamd_severity_all(text, lateralities, source):
     data = []
     for m in DRY_AMD_PAT.finditer(text):
+        if is_post_negated(m, text, {'eye', 'eyes'}):
+            continue
         negword = is_negated(m, text)
         data.append(
             create_new_variable(text, m, lateralities, 'dryamd_severity', {
