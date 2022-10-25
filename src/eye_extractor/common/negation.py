@@ -3,7 +3,7 @@ from typing import Match, Set
 
 from eye_extractor.common.string import replace_punctuation
 
-NEGWORDS: Set = {'no', 'or', 'neg', 'without', 'w/out', '(-)'}
+NEGWORDS = frozenset({'no', 'or', 'neg', 'without', 'w/out', '(-)'})
 
 
 def _handle_negation_with_punctuation(text):
@@ -14,7 +14,7 @@ def _handle_negation_with_punctuation(text):
     return text
 
 
-def is_negated(m: Match, text: str, terms: set[str],
+def is_negated(m: Match | int, text: str, terms: set[str] = NEGWORDS,
                *, word_window: int = 2, char_window: int = 0,
                skip_regex: Match = None,
                boundary_chars=':', skip_n_boundary_chars=0, lowercase_text=True):
@@ -25,7 +25,7 @@ def is_negated(m: Match, text: str, terms: set[str],
     :param lowercase_text: force lowercase text
     :param skip_regex:
     :param boundary_chars:
-    :param m:
+    :param m: re.match object or int that should appear at end of text (i.e., m.start())
     :param text:
     :param terms:
     :param word_window: number of words to inspect for negation terms
@@ -33,7 +33,7 @@ def is_negated(m: Match, text: str, terms: set[str],
     :return:
     """
     return has_before(
-        end_idx=m.start(), text=text, terms=terms,
+        end_idx=m if isinstance(m, int) else m.start(), text=text, terms=terms,
         word_window=word_window, char_window=char_window,
         boundary_chars=boundary_chars, skip_n_boundary_chars=skip_n_boundary_chars,
         skip_regex=skip_regex, lowercase_text=lowercase_text,
@@ -65,7 +65,7 @@ def has_before(end_idx: int, text: str, terms: set[str],
             return word
 
 
-def is_post_negated(m: Match, text: str, terms: set[str],
+def is_post_negated(m: Match | int, text: str, terms: set[str] = NEGWORDS,
                     *, word_window: int = 2, char_window: int = 0,
                     skip_n_boundary_chars=1, skip_regex: Match = None,
                     boundary_chars=':', lowercase_text=True):
@@ -76,7 +76,7 @@ def is_post_negated(m: Match, text: str, terms: set[str],
         useful for, e.g., removing 'OU:' which might not want to be counted as a section boundary
     :param boundary_chars: stop looking after this symbol (defaults to None)
     :param lowercase_text: force the input text to be lowercased
-    :param m:
+    :param m: re.Match or equivalent of re.Match.end() (where to start looking in text)
     :param text:
     :param terms:
     :param word_window: number of words to inspect for negation terms
@@ -84,7 +84,7 @@ def is_post_negated(m: Match, text: str, terms: set[str],
     :return:
     """
     return has_after(
-        start_idx=m.end(), text=text, terms=terms,
+        start_idx=m if isinstance(m, int) else m.end(), text=text, terms=terms,
         word_window=word_window, char_window=char_window,
         skip_n_boundary_chars=skip_n_boundary_chars, skip_regex=skip_regex,
         boundary_chars=boundary_chars, lowercase_text=lowercase_text,

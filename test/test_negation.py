@@ -1,6 +1,6 @@
 import pytest
 
-from eye_extractor.common.negation import has_after, has_before, _handle_negation_with_punctuation
+from eye_extractor.common.negation import has_after, has_before, _handle_negation_with_punctuation, is_negated
 from eye_extractor.laterality import LATERALITY_PLUS_COLON_PATTERN
 
 
@@ -65,3 +65,13 @@ def test_handle_negation_with_punctuation(text, exp):
     """Hacky way to handle negation in punctuation"""
     res = _handle_negation_with_punctuation(text)
     assert res == exp
+
+
+@pytest.mark.parametrize('text, term, exp_negated', [
+    ('(-)  holes, tears, or detachments OU', 'holes', True),
+])
+def test_negwords_prenegation(text, term, exp_negated):
+    """Test negwords global"""
+    start_index = text.index(term)
+    res = is_negated(start_index, text)
+    assert bool(res) is exp_negated
