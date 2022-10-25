@@ -1,6 +1,6 @@
 import re
 
-from eye_extractor.common.negation import is_negated, has_before, has_after, NEGWORDS
+from eye_extractor.common.negation import is_negated, has_before, has_after
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 tilt = r'(?:tilt\w*)'
@@ -31,7 +31,7 @@ def extract_tilted_disc(text, headers=None, lateralities=None):
     data = []
 
     for m in TILTED_PLUS_PAT.finditer(text):
-        negword = is_negated(m, text, NEGWORDS)
+        negword = is_negated(m, text)
         data.append(
             create_new_variable(text, m, lateralities, 'tilted_disc', {
                 'value': 0 if negword else 1,
@@ -45,7 +45,7 @@ def extract_tilted_disc(text, headers=None, lateralities=None):
     if not data:
         pos_terms = {'saucer', 'saucered', 'disc', 'discs', 'od', 'os'}
         for m in TILTED_PAT.finditer(text):
-            negword = is_negated(m, text, NEGWORDS)
+            negword = is_negated(m, text)
             if (
                 has_before(m.start(), text, {'head', 'glasses', 'to'}, word_window=5)
                 or has_after(m.end(), text, {'head', 'glasses'}, word_window=5)

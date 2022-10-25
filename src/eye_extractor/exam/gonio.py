@@ -1,7 +1,7 @@
 import enum
 import re
 
-from eye_extractor.common.negation import is_negated, has_before
+from eye_extractor.common.negation import is_negated, has_before, NEGWORDS
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 
@@ -56,25 +56,24 @@ def extract_gonio(text, *, headers=None, lateralities=None):
     data = []
 
     if headers:  # look for 'suspect', etc. in glaucoma section(s)
-        for sect_name in ['ANGLE', 'ANGLES', 'GONIO', 'GONIOSCOPY']:
-            if section_text := headers.get(sect_name, None):
-                section_lateralities = build_laterality_table(section_text)
-                for pat, pat_label, value in [
-                    (OPEN_4_PAT, 'OPEN_4_PAT', Gonio.OPEN),
-                    (CLOSED_0_PAT, 'CLOSED_0_PAT', Gonio.CLOSED),
-                ]:
-                    for m in pat.finditer(section_text):
-                        negword = is_negated(m, section_text, {'no', 'or', 'without', 'not', 'such'})
-                        data.append(
-                            create_new_variable(section_text, m, section_lateralities, 'gonio', {
-                                'value': Gonio.NONE if negword else value,
-                                'term': m.group(),
-                                'label': 'no' if negword else 'yes',
-                                'negated': negword,
-                                'regex': pat_label,
-                                'source': sect_name,
-                            })
-                        )
+        for sect_name, section_text in headers.iterate('ANGLE', 'ANGLES', 'GONIO', 'GONIOSCOPY'):
+            section_lateralities = build_laterality_table(section_text)
+            for pat, pat_label, value in [
+                (OPEN_4_PAT, 'OPEN_4_PAT', Gonio.OPEN),
+                (CLOSED_0_PAT, 'CLOSED_0_PAT', Gonio.CLOSED),
+            ]:
+                for m in pat.finditer(section_text):
+                    negword = is_negated(m, section_text, NEGWORDS | {'such'})
+                    data.append(
+                        create_new_variable(section_text, m, section_lateralities, 'gonio', {
+                            'value': Gonio.NONE if negword else value,
+                            'term': m.group(),
+                            'label': 'no' if negword else 'yes',
+                            'negated': negword,
+                            'regex': pat_label,
+                            'source': sect_name,
+                        })
+                    )
 
     for gl_pat, pat_label, value in [
         (OPEN_PAT, 'OPEN_PAT', Gonio.OPEN),
@@ -84,7 +83,7 @@ def extract_gonio(text, *, headers=None, lateralities=None):
             matchedtext = m.group()
             if not has_before(m.start(), text, {'gonio', 'gonioscopy'}, word_window=5, skip_n_boundary_chars=1):
                 continue
-            negword = is_negated(m, text, {'no', 'or', 'without', 'not'})
+            negword = is_negated(m, text, NEGWORDS)
             data.append(
                 create_new_variable(text, m, lateralities, 'gonio', {
                     'value': Gonio.NONE if negword else value,

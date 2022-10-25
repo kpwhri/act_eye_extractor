@@ -4,6 +4,7 @@ import pytest
 
 from eye_extractor.glaucoma.cct import CCT_OD_OS_PAT, CCT_OD_PAT, CCT_OS_PAT, CCT_OU_PAT, extract_cct, CCT_OS_OD_PAT, \
     CCT_OD_OS_GEN_PAT
+from eye_extractor.headers import Headers
 from eye_extractor.output.glaucoma import build_cct
 
 
@@ -37,7 +38,7 @@ def test_cct_patterns(pat, text, exp):
     ('Pachymetry: CCT  540, 585 ', None, 540, 585, -1),
 ])
 def test_cct_extract_and_build(text, headers, exp_cct_re, exp_cct_le, exp_cct_unk):
-    pre_json = extract_cct(text, headers=headers, lateralities=None)
+    pre_json = extract_cct(text, headers=Headers(headers), lateralities=None)
     post_json = json.loads(json.dumps(pre_json))
     result = build_cct(post_json)
     assert result['centralcornealthickness_re'] == exp_cct_re

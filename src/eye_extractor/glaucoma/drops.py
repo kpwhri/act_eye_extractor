@@ -18,20 +18,18 @@ def extract_glaucoma_drops(text, *, headers=None, lateralities=None):
     varname = 'glaucoma_rx_{}'
     data = []
     if m := NO_OPT_MED_RX.search(text):
-        data.append(
-            {
-                varname.format(GenericDrop.NONE.name.lower()): {
-                    'value': 1,
-                    'term': m.group(1),
-                    'regex': 'NO_OPT_MED_RX',
-                    'source': 'ALL',
-                }
+        data.append({
+            varname.format(GenericDrop.NONE.name.lower()): {
+                'value': 1,
+                'term': m.group(1),
+                'regex': 'NO_OPT_MED_RX',
+                'source': 'ALL',
             }
-        )
+        })
         return data
     for m in DROPS_RX.finditer(text):
         # TODO: confirm presence of 'current medications'
-        negword = is_negated(m, text, NEGWORDS)
+        negword = is_negated(m, text)
         term = m.group()
         standardized_name = get_standardized_name(term)
         for gd in DROP_TO_ENUM[standardized_name]:

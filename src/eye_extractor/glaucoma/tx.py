@@ -4,7 +4,7 @@ Glaucoma Treatment Plan `glaucoma_tx`
 import enum
 import re
 
-from eye_extractor.common.negation import is_negated, is_post_negated, has_before, NEGWORDS
+from eye_extractor.common.negation import is_negated, is_post_negated, has_before
 from eye_extractor.common.drug.drops import DROPS_PAT
 from eye_extractor.laterality import build_laterality_table, create_new_variable, Laterality
 
@@ -89,7 +89,7 @@ def extract_tx(text, *, headers=None, lateralities=None):
                             or is_post_negated(m, section_text, {'vs'})):
                         continue
                     curr_laterality = None
-                    negword = is_negated(m, section_text, NEGWORDS)
+                    negword = is_negated(m, section_text)
                     if has_before(m.start(), section_text, {'r'}, char_window=4):
                         curr_laterality = Laterality.OD
                     elif has_before(m.start(), section_text, {'l'}, char_window=4):

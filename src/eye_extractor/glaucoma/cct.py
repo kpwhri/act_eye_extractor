@@ -168,10 +168,9 @@ def extract_cct(text, *, headers=None, lateralities=None):
     data = []
 
     if headers:
-        for sect_name in ['PACHYMETRY', 'CCT', 'CCTS']:
-            if section_text := headers.get(sect_name, None):
-                if res := search_cct(section_text, sect_name):
-                    data.append(res)
+        for sect_name, section_text in headers.iterate('PACHYMETRY', 'CCT', 'CCTS'):
+            if res := search_cct(section_text, sect_name):
+                data.append(res)
     for m in CCT_SECTION_PAT.finditer(text):
         if res := search_cct(text[m.end(): m.end() + 20], 'ALL'):
             data.append(res)

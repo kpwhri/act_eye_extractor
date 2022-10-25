@@ -5,6 +5,7 @@ import pytest
 from eye_extractor.glaucoma.dx import POAG_PAT, NTG_PAT, LTG_PAT, PXG_PAT, PG_PAT, CONGENITAL_PAT, ICE_PAT, NV_PAT, \
     UVEI_PAT, ACG_PAT, STEROID_PAT, TRAUMATIC_PAT, extract_glaucoma_dx, SUSPECT_PAT, OCULAR_HYPERTENSIVE_PAT, \
     CUPPING_PAT
+from eye_extractor.headers import Headers
 from eye_extractor.output.glaucoma import build_glaucoma_dx
 
 
@@ -82,7 +83,7 @@ def test_glaucomatype_extract_build(
         exp_glaucoma_dx_re, exp_glaucoma_dx_le, exp_glaucoma_dx_unk,
         exp_glaucoma_type_re, exp_glaucoma_type_le, exp_glaucoma_type_unk,
 ):
-    pre_json = extract_glaucoma_dx(text, headers={section_label.upper(): section_text})
+    pre_json = extract_glaucoma_dx(text, headers=Headers({section_label.upper(): section_text}))
     post_json = json.loads(json.dumps(pre_json))
     result = build_glaucoma_dx(post_json)
     assert result['glaucoma_dx_re'] == exp_glaucoma_dx_re

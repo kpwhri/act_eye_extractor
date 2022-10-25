@@ -38,7 +38,7 @@ def extract_exfoliation(text, *, headers=None, lateralities=None):
         elif has_after(m.end(), text, {'glauc', 'gl', 'glaucoma'},
                        word_window=3):
             continue
-        negword = is_negated(m, text, NEGWORDS)
+        negword = is_negated(m, text)
         data.append(
             create_new_variable(text, m, lateralities, 'exfoliation', {
                 'value': Exfoliation.NO if negword else Exfoliation.YES,

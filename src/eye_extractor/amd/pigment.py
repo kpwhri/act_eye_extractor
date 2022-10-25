@@ -2,7 +2,7 @@ import re
 
 from eye_extractor.amd.utils import run_on_macula
 from eye_extractor.common.negation import is_negated
-from eye_extractor.laterality import create_new_variable, laterality_pattern, LATERALITY, lat_lookup
+from eye_extractor.laterality import create_new_variable, laterality_pattern, lat_lookup
 
 change = r'(?:chang|disrupt|dispers|migrat|atrophy|abnormal|atrophy|clump|mottl|pigment)\w*'
 pigment = r'(?:(?:hyper)?pigment\w*|\brpe\b)'

@@ -1,7 +1,7 @@
 import enum
 import re
 
-from eye_extractor.common.negation import is_negated, NEGWORDS
+from eye_extractor.common.negation import is_negated
 from eye_extractor.exam.cup_disk_ratio import cd
 from eye_extractor.glaucoma.dx import OCULAR_HYPERTENSIVE_PAT
 from eye_extractor.laterality import build_laterality_table, create_new_variable
@@ -54,7 +54,7 @@ def extract_preglaucoma_dx(text, *, headers=None, lateralities=None):
         (OCULAR_HYPERTENSIVE_PAT, 'OCULAR_HYPERTENSIVE_PAT', Preglaucoma.OHTN),
     ]:
         for m in pat.finditer(text):
-            negword = is_negated(m, text, NEGWORDS)
+            negword = is_negated(m, text)
             data.append(
                 create_new_variable(text, m, lateralities, 'preglaucoma', {
                     'value': Preglaucoma.NONE if negword else value,

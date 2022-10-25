@@ -26,7 +26,6 @@ def test_exfoliation_extract_build(text, headers, exp_exfoliation_re, exp_exfoli
     pre_json = extract_exfoliation(text, headers=Headers(headers), lateralities=None)
     post_json = json.loads(json.dumps(pre_json))
     result = build_exfoliation(post_json)
-    print(result)
     assert result['exfoliation_re'] == exp_exfoliation_re
     assert result['exfoliation_le'] == exp_exfoliation_le
     assert result['exfoliation_unk'] == exp_exfoliation_unk

@@ -37,6 +37,7 @@ Types of changes:
 - Created generalized negation as default
 - Added generalized negation words to all AMD-section variables
 - Added generalized negation words to relevant cataract section variables
+- Modernised cataract variables (including generalized negation)
 
 ## v20221024
 

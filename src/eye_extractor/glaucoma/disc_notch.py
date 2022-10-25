@@ -21,7 +21,7 @@ def extract_disc_notch(text, headers=None, lateralities=None):
     data = []
 
     for m in NOTCH_PAT.finditer(text):
-        negword = is_negated(m, text, {'no', 'or', 'without', 'not'})
+        negword = is_negated(m, text)
         data.append(
             create_new_variable(text, m, lateralities, 'disc_notch', {
                 'value': 0 if negword else 1,

@@ -52,7 +52,7 @@ def extract_disc_pallor(text, *, headers=None, lateralities=None):
 
 def _extract_disc_pallor(pat_label, pat, value, sect_text, sect_name, lateralities=None):
     for m in pat.finditer(sect_text):
-        negword = is_negated(m, sect_text, {'no', 'not', 'or', 'without'})
+        negword = is_negated(m, sect_text)
         yield create_new_variable(
             sect_text, m, lateralities, 'disc_pallor_glaucoma', {
                 'value': DiscPallor.NO if negword else value,
