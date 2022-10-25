@@ -1,6 +1,6 @@
 import pytest
 
-from eye_extractor.common.negation import has_after, has_before
+from eye_extractor.common.negation import has_after, has_before, _handle_negation_with_punctuation
 from eye_extractor.laterality import LATERALITY_PLUS_COLON_PATTERN
 
 
@@ -52,3 +52,16 @@ def test_skip_regex_before():
     assert res1 is None
     res2 = has_before(16, text, {'gonioscopy'}, skip_regex=LATERALITY_PLUS_COLON_PATTERN, skip_n_boundary_chars=1)
     assert res2 == 'gonioscopy'
+
+
+@pytest.mark.parametrize('text, exp', [
+    ('2 - 4', '2 - 4'),
+    ('2 -CVN', '2  no CVN'),
+    ('2 (-)CVN', '2  no CVN'),
+    ('2 (-) CVN', '2  no  CVN'),
+    ('DM w/out NPDR OU', 'DM without NPDR OU'),
+])
+def test_handle_negation_with_punctuation(text, exp):
+    """Hacky way to handle negation in punctuation"""
+    res = _handle_negation_with_punctuation(text)
+    assert res == exp

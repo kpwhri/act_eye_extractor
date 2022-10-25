@@ -47,7 +47,7 @@ def get_uveitis(text, *, headers=None, lateralities=None):
                 is_negated(m, text, {'hx', 'history'}, word_window=3)
             )
             data.append(
-                create_new_variable(text, m, lateralities, 'fluid_amd', {
+                create_new_variable(text, m, lateralities, 'uveitis_yesno', {
                     'value': 0 if negword else 1,
                     'term': m.group(),
                     'label': 'no' if negword else 'yes',
@@ -57,4 +57,4 @@ def get_uveitis(text, *, headers=None, lateralities=None):
                     'source': 'ALL',
                 })
             )
-        return data
+    return data

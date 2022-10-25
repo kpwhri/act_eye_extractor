@@ -17,6 +17,33 @@ Types of changes:
 
 ## [Unreleased]
 
+### Added
+- Added sorting priority for variables
+
+### Fixed
+- Uveitis variables were broken (variable name was problematic)
+
+### Changed
+- Modernised how `drusen_type` and `drusen_size` are built
+- Added `note_date` restriction to AMD variables
+- Added `note_date` restriction to Cataract variables
+- Added `note_date` restriction to Uveitis variables
+- Added `note_date` restriction to Glaucoma variables
+- Added `note_date` restriction to RO variables
+- Added `note_date` restriction to diabetic retinopathy variables
+
+## v20221024
+
+### Added
+- Generalized fluid algorithm (independent of algorithm)
+- Identify context of dates in all variables
+- Parsing date context in AMD variables
+
+### Fixed
+- Hopefully better handling negation with punctuation involved
+
+## v20221018
+
 ### Changed
 - Wet/dry AMD variable 'UNSPECIFIED' to 'YES'
 - Wet/dry AMD variables use other relevant variables to update final results
@@ -26,6 +53,10 @@ Types of changes:
 ### Added
 - Added loading sections from file
 - Increased synonyms for drusen severity
+- Created check to ensure strings are in an enum
+
+### Fixed
+- Fluid variable had several issues
 
 ## v20220921
 

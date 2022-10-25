@@ -89,14 +89,66 @@ When checking to see if the default (IolLens.UNKNOWN) should be updated, we can 
             rename_func=lambda x: x.name.lower(),
 
 """
+import datetime
 import enum
 from enum import Enum
+
+
+def has_valid_date(restrict_date, value, *, offset=2):
+    """require date within 2 days of note ('restrict') date"""
+    if restrict_date is None or not isinstance(value, dict):
+        return True
+    if value.get('date', None):
+        return abs((value['date'] - restrict_date).days) <= offset
+    return True
+
+
+def _has_higher_priority(priorities, row, target_varname):
+    """Check if current item has lower priority"""
+    if not isinstance(row[target_varname], dict):
+        return False
+    return row[target_varname].get('priority', 0) > priorities[target_varname]
+
+
+def _has_lower_priority(priorities, row, target_varname):
+    """Check if current item has lower priority"""
+    if not isinstance(row[target_varname], dict):
+        return False
+    return priorities[target_varname] > row[target_varname].get('priority', 0)
+
+
+def _get_updated_priority(row, target_varname):
+    """Get updated prioritization value when updating value"""
+    if not isinstance(row[target_varname], dict):
+        return 0  # default to 0 priority
+    return row[target_varname].get('priority', 0)
+
+
+def column_from_variable_abbr(result_abbr, init_value, data, *, compare_func=None, transformer_func=None,
+                              result_func=None, convert_func=None, filter_func=None,
+                              rename_func=None, sideeffect_func=None, renamevar_func=None,
+                              enum_to_str=False, restrict_date: datetime.date = None):
+    """Build result dictionary with result_abbreviation and initial value"""
+    return column_from_variable(
+        {f'{result_abbr}_{suffix}': init_value for suffix in ('re', 'le', 'unk')},
+        data,
+        compare_func=compare_func,
+        transformer_func=transformer_func,
+        result_func=result_func,
+        convert_func=convert_func,
+        filter_func=filter_func,
+        rename_func=rename_func,
+        sideeffect_func=sideeffect_func,
+        renamevar_func=renamevar_func,
+        enum_to_str=enum_to_str,
+        restrict_date=restrict_date,
+    )
 
 
 def column_from_variable(results, data, *, compare_func=None, transformer_func=None,
                          result_func=None, convert_func=None, filter_func=None,
                          rename_func=None, sideeffect_func=None, renamevar_func=None,
-                         enum_to_str=False):
+                         enum_to_str=False, restrict_date: datetime.date = None):
     """
     Assuming values that can be graded according to a comparator functions,
         converts the results of `create_new_variable` into only that with the
@@ -118,6 +170,7 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
     :param results: initial values
     :param data: dict-like (read from json)
     :param compare_func: given two results X and Y, return True if X is better than Y
+    :param restrict_date: if 'date' included in value, require to be near this
     :return:
     """
     if compare_func is None:
@@ -143,22 +196,29 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
             rename_func = lambda n: n.value if isinstance(n, Enum) else n
     if renamevar_func is None:  # final renaming of variable name after processing
         renamevar_func = lambda n: n
+    priorities = {convert_func(varname): 0 for varname in results}  # target_varname -> value
     for row in data or []:  # for each element in list read from json file
-        for varname, curr_value in list(results.items()):
+        for varname, curr_value in list(results.items()):  # for each outcome of interest
             target_varname = convert_func(varname)  # change the column/variable name
             if target_varname not in row:
                 continue
             if not filter_func(row[target_varname]):  # apply inclusion criteria in filter func
                 continue
+            if not has_valid_date(restrict_date, row[target_varname]):
+                continue
+            if _has_lower_priority(priorities, row, target_varname):
+                continue
             new_value = transformer_func(row[target_varname])  # what should the new value be?
-            if compare_func(new_value, curr_value):  # should the value be updated?
+            # should new_value be used to update old_value?
+            if _has_higher_priority(priorities, row, target_varname) or compare_func(new_value, curr_value):
+                priorities[target_varname] = _get_updated_priority(row, target_varname)  # default to 0 priority
                 results[varname] = result_func(new_value, curr_value)  # how to merge the prev/new value
                 sideeffect_func(results, varname, new_value)
     return {renamevar_func(varname): rename_func(value) for varname, value in results.items()}
 
 
-def column_from_variable_binary(data, label):
-    return column_from_variable({f'{label}_le': -1, f'{label}_re': -1, f'{label}_unk': -1}, data)
+def column_from_variable_binary(data, label, *, restrict_date=None, **kwargs):
+    return column_from_variable_abbr(label, -1, data, restrict_date=restrict_date, **kwargs)
 
 
 def update_column(target_data: dict, other_data: dict, conditions: list):

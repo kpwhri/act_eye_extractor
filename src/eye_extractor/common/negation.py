@@ -3,8 +3,15 @@ from typing import Match, Set
 
 from eye_extractor.common.string import replace_punctuation
 
-
 NEGWORDS: Set = {'no', 'or', 'neg', 'without', 'w/out', '(-)'}
+
+
+def _handle_negation_with_punctuation(text):
+    """Hack to handle punctuation-infused negation words: replace with 'no'"""
+    text = text.replace('w/out', 'without')
+    text = text.replace('(-)', ' no ')
+    text = re.sub(r'(\D\W*)-([A-Za-z])', r'\g<1> no \g<2>', text)
+    return text
 
 
 def is_negated(m: Match, text: str, terms: set[str],
@@ -26,15 +33,19 @@ def is_negated(m: Match, text: str, terms: set[str],
     :return:
     """
     return has_before(
-        end_idx=m.start(), text=text, terms=terms, word_window=word_window, char_window=char_window,
+        end_idx=m.start(), text=text, terms=terms,
+        word_window=word_window, char_window=char_window,
         boundary_chars=boundary_chars, skip_n_boundary_chars=skip_n_boundary_chars,
-        skip_regex=skip_regex, lowercase_text=lowercase_text)
+        skip_regex=skip_regex, lowercase_text=lowercase_text,
+        hack_punctuation=True,
+    )
 
 
 def has_before(end_idx: int, text: str, terms: set[str],
                *, word_window: int = 2, char_window: int = 0,
                skip_regex: Match = None,
-               boundary_chars=':', skip_n_boundary_chars=0, lowercase_text=True):
+               boundary_chars=':', skip_n_boundary_chars=0, lowercase_text=True,
+               hack_punctuation=False):
     if not char_window:
         char_window = word_window * 10
     context = text[max(0, end_idx - char_window): end_idx]
@@ -45,6 +56,8 @@ def has_before(end_idx: int, text: str, terms: set[str],
         context = ' '.join(context_list[-1 - skip_n_boundary_chars:])
     if lowercase_text:
         context = context.lower()
+    if hack_punctuation:
+        context = _handle_negation_with_punctuation(context)
     no_punct = replace_punctuation(context)
     words = no_punct.split()
     for word in words[-word_window:]:
@@ -74,13 +87,16 @@ def is_post_negated(m: Match, text: str, terms: set[str],
         start_idx=m.end(), text=text, terms=terms,
         word_window=word_window, char_window=char_window,
         skip_n_boundary_chars=skip_n_boundary_chars, skip_regex=skip_regex,
-        boundary_chars=boundary_chars, lowercase_text=lowercase_text)
+        boundary_chars=boundary_chars, lowercase_text=lowercase_text,
+        hack_punctuation=True,
+    )
 
 
 def has_after(start_idx: int, text: str, terms: set[str],
               *, word_window: int = 2, char_window: int = 0,
               skip_n_boundary_chars=1, skip_regex: Match = None,
-              boundary_chars=':', lowercase_text=True):
+              boundary_chars=':', lowercase_text=True,
+              hack_punctuation=False):
     """
 
     :param start_idx:
@@ -105,6 +121,8 @@ def has_after(start_idx: int, text: str, terms: set[str],
         context = ' '.join(context_list[:1 + skip_n_boundary_chars])
     if lowercase_text:
         context = context.lower()
+    if hack_punctuation:
+        context = _handle_negation_with_punctuation(context)
     no_punct = replace_punctuation(context)
     words = no_punct.split()
     for word in words[:word_window]:

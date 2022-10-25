@@ -5,33 +5,35 @@ from eye_extractor.glaucoma.dx import GlaucomaType
 from eye_extractor.glaucoma.exfoliation import Exfoliation
 from eye_extractor.glaucoma.preglaucoma import Preglaucoma
 from eye_extractor.glaucoma.tx import GlaucomaTreatment
-from eye_extractor.output.variable import column_from_variable
+from eye_extractor.output.variable import column_from_variable, has_valid_date, column_from_variable_abbr
 
 
 def build_glaucoma(data):
     results = {}
     curr = data['glaucoma']
-    results.update(build_glaucoma_drops(curr['drops']))
-    results.update(build_glaucoma_dx(curr['dx']))
-    results.update(build_gonio(curr.get('gonio', None)))
-    results.update(build_cct(curr.get('cct', None)))
-    results.update(build_disc_hem(curr.get('disc_hem', None)))
-    results.update(build_disc_notch(curr.get('disc_notch', None)))
-    results.update(build_tilted_disc(curr.get('tilted_disc', None)))
-    results.update(build_ppa(curr.get('ppa', None)))
+    note = data['note']
+    results.update(build_glaucoma_drops(curr['drops'], note_date=note['date']))
+    results.update(build_glaucoma_dx(curr['dx'], note_date=note['date']))
+    results.update(build_gonio(curr.get('gonio', None), note_date=note['date']))
+    results.update(build_cct(curr.get('cct', None), note_date=note['date']))
+    results.update(build_disc_hem(curr.get('disc_hem', None), note_date=note['date']))
+    results.update(build_disc_notch(curr.get('disc_notch', None), note_date=note['date']))
+    results.update(build_tilted_disc(curr.get('tilted_disc', None), note_date=note['date']))
+    results.update(build_ppa(curr.get('ppa', None), note_date=note['date']))
     # results.update(build_tx(curr.get('tx', None)))
-    results.update(build_tx_new(data['common']['treatment']))
-    results.update(build_exfoliation(curr.get('exfoliation', None)))
-    results.update(build_preglaucoma_dx(curr.get('preglaucoma', None)))
-    results.update(build_disc_pallor(curr.get('disc_pallor', None)))
+    results.update(build_tx_new(data['common']['treatment'], note_date=note['date']))
+    results.update(build_exfoliation(curr.get('exfoliation', None), note_date=note['date']))
+    results.update(build_preglaucoma_dx(curr.get('preglaucoma', None), note_date=note['date']))
+    results.update(build_disc_pallor(curr.get('disc_pallor', None), note_date=note['date']))
     return results
 
 
-def build_glaucoma_drops(data):
+def build_glaucoma_drops(data, *, note_date=None):
     results = {f'glaucoma_rx_{x.name.lower()}': -1 for x in GenericDrop if x.name != 'UNKNOWN'}
     for record in data:
         for key, value in record.items():
-            results[key] = value['value']
+            if has_valid_date(note_date, value):
+                results[key] = value['value']
     return results
 
 
@@ -41,7 +43,7 @@ def _build_glaucoma_dx_sideeffect_func(results, varname, newvalue):
         results[f'glaucoma_dx_{varname.split("_")[-1]}'] = GlaucomaType.GLAUCOMA
 
 
-def build_glaucoma_dx(data):
+def build_glaucoma_dx(data, *, note_date=None):
     return column_from_variable(
         {
             'glaucoma_dx_re': GlaucomaType.UNKNOWN,
@@ -52,6 +54,7 @@ def build_glaucoma_dx(data):
             'glaucoma_type_unk': GlaucomaType.UNKNOWN,
         },
         data,
+        restrict_date=note_date,
         transformer_func=GlaucomaType,
         enum_to_str=True,
         # compare: only update an unknown or auto-fill Glaucoma
@@ -62,113 +65,90 @@ def build_glaucoma_dx(data):
     )
 
 
-def build_gonio(data):
-    return column_from_variable(
-        {
-            'gonio_re': Gonio.UNKNOWN,
-            'gonio_le': Gonio.UNKNOWN,
-            'gonio_unk': Gonio.UNKNOWN,
-        },
-        data,
+def build_gonio(data, *, note_date=None):
+    return column_from_variable_abbr(
+        'gonio', Gonio.UNKNOWN, data,
+        restrict_date=note_date,
         transformer_func=Gonio,
         enum_to_str=True,
     )
 
 
-def build_cct(data):
-    return column_from_variable(
-        {
-            'centralcornealthickness_re': -1,
-            'centralcornealthickness_le': -1,
-            'centralcornealthickness_unk': -1,
-        },
-        data,
+def build_cct(data, *, note_date=None):
+    return column_from_variable_abbr(
+        'centralcornealthickness', -1, data,
+        restrict_date=note_date,
         compare_func=lambda new, current: current == -1,  # only update defaults
     )
 
 
-def build_disc_hem(data):
+def build_disc_hem(data, *, note_date=None):
     """
     Build disc hemorrhage into 1=yes, 0=no, -1=unknown
     Default comparison is used to only retain greatest (i.e., any yes)
+    :param note_date:
     :param data:
     :return:
     """
-    return column_from_variable(
-        {
-            'disc_hem_re': -1,
-            'disc_hem_le': -1,
-            'disc_hem_unk': -1,
-        },
-        data,
+    return column_from_variable_abbr(
+        'disc_hem', -1, data,
+        restrict_date=note_date,
     )
 
 
-def build_disc_notch(data):
+def build_disc_notch(data, *, note_date=None):
     """
     Build disc notch into 1=yes, 0=no, -1=unknown
     Default comparison is used to only retain greatest (i.e., any yes)
+    :param note_date:
     :param data:
     :return:
     """
-    return column_from_variable(
-        {
-            'disc_notch_re': -1,
-            'disc_notch_le': -1,
-            'disc_notch_unk': -1,
-        },
-        data,
+    return column_from_variable_abbr(
+        'disc_notch', -1, data,
+        restrict_date=note_date,
     )
 
 
-def build_tilted_disc(data):
+def build_tilted_disc(data, *, note_date=None):
     """
     Build tilted disc into 1=yes, 0=no, -1=unknown
     Default comparison is used to only retain greatest (i.e., any yes)
+    :param note_date:
     :param data:
     :return:
     """
-    return column_from_variable(
-        {
-            'tilted_disc_re': -1,
-            'tilted_disc_le': -1,
-            'tilted_disc_unk': -1,
-        },
-        data,
+    return column_from_variable_abbr(
+        'tilted_disc', -1, data,
+        restrict_date=note_date,
     )
 
 
-def build_ppa(data):
+def build_ppa(data, *, note_date=None):
     """
     Build perpapillary atrophy into 1=yes, 0=no, -1=unknown
     Default comparison is used to only retain greatest (i.e., any yes)
+    :param note_date:
     :param data:
     :return:
     """
-    return column_from_variable(
-        {
-            'ppa_re': -1,
-            'ppa_le': -1,
-            'ppa_unk': -1,
-        },
-        data,
+    return column_from_variable_abbr(
+        'ppa', -1, data,
+        restrict_date=note_date,
     )
 
 
-def build_tx(data):
+def build_tx(data, *, note_date=None):
     """
     Build treatment plan into GlacuomaTreatment variable
     Default comparison is used to only retain greatest (i.e., any yes)
+    :param note_date:
     :param data:
     :return:
     """
-    return column_from_variable(
-        {
-            'glaucoma_tx_re': GlaucomaTreatment.UNKNOWN,
-            'glaucoma_tx_le': GlaucomaTreatment.UNKNOWN,
-            'glaucoma_tx_unk': GlaucomaTreatment.UNKNOWN,
-        },
-        data,
+    return column_from_variable_abbr(
+        'glaucoma_tx', GlaucomaTreatment.UNKNOWN, data,
+        restrict_date=note_date,
         transformer_func=GlaucomaTreatment,
         enum_to_str=True,
         # compare: only update an unknown
@@ -178,21 +158,18 @@ def build_tx(data):
     )
 
 
-def build_tx_new(data):
+def build_tx_new(data, *, note_date=None):
     """
     Build treatment plan into Treatment variable
     Default comparison is used to only retain greatest (i.e., any yes)
+    :param note_date:
     :param data:
     :return:
     """
     # TODO: check if this note is about glaucoma
-    return column_from_variable(
-        {
-            'tx_re': Treatment.UNKNOWN,
-            'tx_le': Treatment.UNKNOWN,
-            'tx_unk': Treatment.UNKNOWN,
-        },
-        data,
+    return column_from_variable_abbr(
+        'tx', Treatment.UNKNOWN, data,
+        restrict_date=note_date,
         filter_func=lambda x: x.get('category', 'ALL') in {'ALL', 'GLAUCOMA'},
         renamevar_func=lambda x: f'glaucoma_{x}',
         transformer_func=Treatment,
@@ -204,38 +181,33 @@ def build_tx_new(data):
     )
 
 
-def build_exfoliation(data):
+def build_exfoliation(data, *, note_date=None):
     """
     Build exfoliation (non-glaucoma)
     Default comparison is used to only retain greatest (i.e., any yes)
+    :param note_date:
     :param data:
     :return:
     """
-    return column_from_variable(
-        {
-            'exfoliation_re': Exfoliation.UNKNOWN,
-            'exfoliation_le': Exfoliation.UNKNOWN,
-            'exfoliation_unk': Exfoliation.UNKNOWN,
-        },
+    return column_from_variable_abbr(
+        'exfoliation', Exfoliation.UNKNOWN,
         data,
+        restrict_date=note_date,
         transformer_func=Exfoliation,
     )
 
 
-def build_preglaucoma_dx(data):
+def build_preglaucoma_dx(data, *, note_date=None):
     """
     Build exfoliation (non-glaucoma)
     Default comparison is used to only retain greatest (i.e., any yes)
+    :param note_date:
     :param data:
     :return:
     """
-    return column_from_variable(
-        {
-            'preglaucoma_re': Preglaucoma.UNKNOWN,
-            'preglaucoma_le': Preglaucoma.UNKNOWN,
-            'preglaucoma_unk': Preglaucoma.UNKNOWN,
-        },
-        data,
+    return column_from_variable_abbr(
+        'preglaucoma', Preglaucoma.UNKNOWN, data,
+        restrict_date=note_date,
         enum_to_str=True,
         transformer_func=Preglaucoma,
         compare_func=lambda n, c: c in {
@@ -244,18 +216,15 @@ def build_preglaucoma_dx(data):
     )
 
 
-def build_disc_pallor(data):
+def build_disc_pallor(data, *, note_date=None):
     """
     Build disc notch into 1=yes, 0=no, -1=unknown
     Default comparison is used to only retain greatest (i.e., any yes)
+    :param note_date:
     :param data:
     :return:
     """
-    return column_from_variable(
-        {
-            'disc_pallor_glaucoma_re': -1,
-            'disc_pallor_glaucoma_le': -1,
-            'disc_pallor_glaucoma_unk': -1,
-        },
-        data,
+    return column_from_variable_abbr(
+        'disc_pallor_glaucoma', -1, data,
+        restrict_date=note_date,
     )
