@@ -38,7 +38,7 @@ def extract_ped(text, *, headers=None, lateralities=None):
 def _extract_ped(text, lateralities, source):
     data = []
     for m in PED_PAT.finditer(text):
-        negword = is_negated(m, text, {'no', 'or'}, word_window=3)
+        negword = is_negated(m, text, word_window=3)
         data.append(
             create_new_variable(text, m, lateralities, 'ped', {
                 'value': PigEpiDetach.NO if negword else PigEpiDetach.YES,

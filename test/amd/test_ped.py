@@ -23,6 +23,7 @@ def test_ped_patterns(pat, text, exp):
         ('', {'MACULA': 'retinal pigment epithelial detachment and drusen'}, -1, -1, 1),
         ('', {'MACULA': 'no PED OD'}, 0, -1, -1),
         ('', {'MACULA': 'OU: PEDs'}, 1, 1, -1),
+        ('', {'MACULA': '-PED'}, -1, -1, 0),
     ])
 def test_ped_extract_build(text, headers, exp_ped_re, exp_ped_le, exp_ped_unk, ):
     pre_json = extract_ped(text, headers=Headers(headers))
