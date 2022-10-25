@@ -150,7 +150,7 @@ def _get_fluid(text, lateralities, source):
             if is_negated(m, text, {'corneal'}):  # non-macular
                 continue
             negword = (
-                    is_negated(m, text, {'no', 'or', 'without'}, word_window=4)
+                    is_negated(m, text, word_window=4)
                     or is_post_negated(m, text, {'not'}, word_window=3)
             )
             data.append(
