@@ -47,7 +47,7 @@ def _extract_wetamd_severity(text, lateralities, source):
     """Extract wet amd from macula section"""
     data = []
     for m in WET_PAT.finditer(text):
-        negword = is_negated(m, text, {'no', 'or', 'without', 'non'})
+        negword = is_negated(m, text)
         data.append(
             create_new_variable(text, m, lateralities, 'wetamd_severity', {
                 'value': WetSeverity.NO if negword else WetSeverity.YES,

@@ -20,6 +20,8 @@ def test_wet_patterns(pat, text, exp):
 
 @pytest.mark.parametrize('text, headers, exp_wetamd_severity_re, exp_wetamd_severity_le, exp_wetamd_severity_unk', [
     ('', {'MACULA': 'wet'}, 'UNKNOWN', 'UNKNOWN', 'YES'),
+    ('', {'MACULA': 'not wet'}, 'UNKNOWN', 'UNKNOWN', 'NO'),
+    ('', {'MACULA': 'non wet amd od'}, 'NO', 'UNKNOWN', 'UNKNOWN'),
     ('', {'ASSESSMENT': 'exudative od'}, 'YES', 'UNKNOWN', 'UNKNOWN'),
     ('', {'ASSESSMENT': '(H35.32) age-related macular degeneration, wet, right eye'}, 'YES', 'UNKNOWN', 'UNKNOWN'),
     ('neovascular armd', None, 'UNKNOWN', 'UNKNOWN', 'YES'),

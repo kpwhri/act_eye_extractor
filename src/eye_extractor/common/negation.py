@@ -4,7 +4,8 @@ from typing import Match
 from eye_extractor.common.string import replace_punctuation
 
 NEGWORDS = frozenset({
-    'no', 'not', 'or', 'neg', 'without', 'w/out', 'w/o', '(-)', '-',
+    'no', 'not', 'or', 'neg', 'non', 'negative',
+    'without', 'w/out', 'w/o', '(-)', '-',
 })
 
 
