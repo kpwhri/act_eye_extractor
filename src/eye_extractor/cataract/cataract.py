@@ -7,18 +7,17 @@ CATARACT_PAT = re.compile(
     r'(?:'
     r'(need|require)s?\W*cataract\W*surgery'
     r'|(significant|cortical|nuclear|mild)\W*cataract'
-    r''
     r')',
     re.I
 )
 
 
-def get_cataract(text, *, headers=None, lateralities=None):
+def extract_cataract(text, *, headers=None, lateralities=None):
     if not lateralities:
         lateralities = build_laterality_table(text)
     data = []
     for m in CATARACT_PAT.finditer(text):
-        negword = is_negated(m, text, {'no', 'or'})
+        negword = is_negated(m, text)
         data.append(
             create_new_variable(text, m, lateralities, 'cataractiol_yesno', {
                 'value': 0 if negword else 1,
