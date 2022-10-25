@@ -19,6 +19,8 @@ def test_cnv_patterns(pat, text, exp):
 
 @pytest.mark.parametrize('text, headers, exp_cnv_re, exp_cnv_le, exp_cnv_unk', [
         ('no cnv', None, -1, -1, 0),
+        ('-cnv', None, -1, -1, 0),
+        ('OD: -cnv', None, 0, -1, -1),
         ('OS: no evidence of choroidal neovascularization', None, -1, 0, -1),
     ])
 def test_cnv_extract_build(text, headers, exp_cnv_re, exp_cnv_le, exp_cnv_unk, ):

@@ -13,7 +13,7 @@ def _handle_negation_with_punctuation(text):
     text = text.replace('w/out', 'without')
     text = text.replace('w/o', 'without')
     text = text.replace('(-)', ' no ')
-    text = re.sub(r'(\D\W*)-([A-Za-z])', r'\g<1> no \g<2>', text)
+    text = re.sub(r'((?:^|\D)\W*)-([A-Za-z]|$)', r'\g<1> no \g<2>', text)
     return text
 
 

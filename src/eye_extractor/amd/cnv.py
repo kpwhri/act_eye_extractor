@@ -33,7 +33,7 @@ def extract_choroidalneovasc(text, *, headers=None, lateralities=None):
 
 def _extract_cnv(text, data, lateralities, sect_label):
     for m in CNV_PAT.finditer(text):
-        negword = is_negated(m, text, {'no', 'or', 'without'}, word_window=3)
+        negword = is_negated(m, text, word_window=3)
         data.append(
             create_new_variable(text, m, lateralities, 'choroidalneovasc', {
                 'value': ChoroidalNeoVasc.NO if negword else ChoroidalNeoVasc.YES,
