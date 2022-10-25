@@ -1,5 +1,5 @@
 import re
-from typing import Match, Set
+from typing import Match
 
 from eye_extractor.common.string import replace_punctuation
 
