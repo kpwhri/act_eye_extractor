@@ -125,7 +125,7 @@ _va_extract_and_build_cases = [
      4,
      [('HM', 'vacc_letters_re'),
       ('CF', 'vacc_letters_le'),
-      (3.5, 'vacc_distance_le')
+      (3, 'vacc_distance_le')
       ]
      ),
     ("¶Visual Acuity: ', 'Snellen', \" ¶Unaided ¶OD:20/50-2 ¶OS:20/70-2 ¶Va's with specs ¶OD:20/45-1 ¶OS:20/35-2",
@@ -165,15 +165,15 @@ _va_extract_and_build_cases = [
     ("Visual acuity:  Snellen  ¶SC: OD: 20/cf @ 2'  ¶       OS: 20/cf @ 4'",
      4,
      [('CF', 'vasc_letters_re'),
-      (2.0, 'vasc_distance_re'),
+      (2, 'vasc_distance_re'),
       ('CF', 'vasc_letters_le'),
-      (4.0, 'vasc_distance_le')]
+      (4, 'vasc_distance_le')]
      ),
     ("VISUAL  ACUITY:  Snellen           ¶sc:      ¶R eye: 20/NLP   ¶L eye: 20/HM @ 1",
      4,
      [('NLP', 'vasc_letters_re'),
       ('HM', 'vasc_letters_le'),
-      (1.0, 'vasc_distance_le')]
+      (1, 'vasc_distance_le')]
      ),
 ]
 
