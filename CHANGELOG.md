@@ -19,6 +19,7 @@ Types of changes:
 
 ### Added
 - Added sorting priority for variables
+- End-to-end testing for several variables
 
 ### Fixed
 - Uveitis variables were broken (variable name was problematic)
@@ -35,6 +36,7 @@ Types of changes:
 - Added `note_date` restriction to diabetic retinopathy variables
 - Created generalized negation as default
 - Added generalized negation words to all AMD-section variables
+- Added generalized negation words to relevant cataract section variables
 
 ## v20221024
 
