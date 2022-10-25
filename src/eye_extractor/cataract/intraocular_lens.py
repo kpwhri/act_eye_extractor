@@ -28,7 +28,7 @@ IOL_PAT = re.compile(rf'(?:\biol\b)', re.I)
 def extract_iol_lens(text, *, headers=None, lateralities=None):
     data = []
     if headers:
-        if lens_text := headers.get('LENS', None):
+        for lens_header, lens_text in headers.iterate('LENS'):
             overlapper = IndexOverlapChecker()
             lens_lateralities = build_laterality_table(lens_text)
             for label, pat, value in [
@@ -44,7 +44,7 @@ def extract_iol_lens(text, *, headers=None, lateralities=None):
                         continue  # prevent IOL from finding ACIOL, etc.
                     overlapper.add(m.start(), m.end())
                     negword = (
-                            is_negated(m, lens_text, {'no', 'or', 'without'}, word_window=4)
+                            is_negated(m, lens_text, word_window=4)
                             or is_post_negated(m, lens_text, {'not'}, word_window=3)
                     )
                     data.append(
@@ -53,7 +53,7 @@ def extract_iol_lens(text, *, headers=None, lateralities=None):
                             'term': m.group(),
                             'label': 'no' if negword else 'yes',
                             'regex': label,
-                            'source': 'LENS',
+                            'source': lens_header,
                         })
                     )
     return data
