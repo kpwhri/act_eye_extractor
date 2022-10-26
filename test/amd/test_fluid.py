@@ -3,7 +3,7 @@ import json
 import pytest
 
 from eye_extractor.common.algo.fluid import FLUID_NOS_PAT, SUBRETINAL_FLUID_PAT, INTRARETINAL_FLUID_PAT, extract_fluid, \
-    SUB_AND_INTRARETINAL_FLUID_PAT
+    SUB_AND_INTRARETINAL_FLUID_PAT, MACULAR_EDEMA_PAT
 from eye_extractor.headers import Headers
 from eye_extractor.output.amd import build_fluid_amd
 
@@ -15,6 +15,15 @@ from eye_extractor.output.amd import build_fluid_amd
 ])
 def test_fluid_nos_pattern(text, exp):
     assert bool(FLUID_NOS_PAT.search(text)) == exp
+
+
+@pytest.mark.parametrize('text, exp', [
+    ('macular edema', 1),
+    ('csme', 1),
+    ('SCME', 1),
+])
+def test_fluid_macular_edema(text, exp):
+    assert bool(MACULAR_EDEMA_PAT.search(text)) == exp
 
 
 @pytest.mark.parametrize('text, exp', [

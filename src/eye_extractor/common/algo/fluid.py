@@ -80,7 +80,7 @@ def fluid_prioritization(new_value: Fluid, curr_value: Fluid | None):
 srf = r'sr\s*f(?:luids?)?'
 irf = r'ir\s*f(?:luids?)?'
 
-MACULAR_EDEMA_PAT = re.compile(  # TODO: this is intraretinal fluid
+MACULAR_EDEMA_PAT = re.compile(
     rf'\b(?:'
     rf'macular edema'
     rf'|csme'
