@@ -6,11 +6,14 @@ from eye_extractor.common.drug.antivegf import AntiVegf, rename_antivegf
 from eye_extractor.common.severity import Severity
 from eye_extractor.dr.dr_type import DrType
 from eye_extractor.dr.hemorrhage_type import HemorrhageType
+from eye_extractor.output.common import macula_is_wnl
 from eye_extractor.output.labels import DRTreatment
 from eye_extractor.output.variable import column_from_variable_binary, column_from_variable_abbr
 
 
-def build_dr(data, *, note_date=None):
+def build_dr(data, *, macula_wnl=None, note_date=None):
+    if macula_is_wnl(macula_wnl, note_date):
+        return {f'diab_retinop_yesno_{suffix}': 1 for suffix in ('re', 'le', 'unk')}
     return column_from_variable_binary(data, 'diab_retinop_yesno', restrict_date=note_date)
 
 
@@ -253,7 +256,7 @@ def build_dr_variables(data):
     curr = data['dr']
     note = data['note']
     results = {}
-    results.update(build_dr(curr['binary_vars'], note_date=note['date']))
+    results.update(build_dr(curr['binary_vars'], macula_wnl=data['common']['macula_wnl'], note_date=note['date']))
     results.update(build_ret_micro(curr['binary_vars'], note_date=note['date']))
     results.update(build_cottonwspot(curr['binary_vars'], note_date=note['date']))
     results.update(build_hard_exudates(curr['binary_vars'], note_date=note['date']))

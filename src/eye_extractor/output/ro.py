@@ -4,15 +4,20 @@ from eye_extractor.common.algo.fluid import Fluid, fluid_prioritization, rename_
     rename_subretfluid
 from eye_extractor.common.algo.treatment import Treatment
 from eye_extractor.common.drug.antivegf import AntiVegf, rename_antivegf
+from eye_extractor.output.common import macula_is_wnl
 from eye_extractor.output.variable import column_from_variable_binary, column_from_variable_abbr
 from eye_extractor.ro.rvo import RvoType
 
 
-def build_rao(data, *, note_date=None):
+def build_rao(data, *, macula_wnl=None, note_date=None):
+    if macula_is_wnl(macula_wnl, note_date):
+        return {f'rao_yesno_{suffix}': 1 for suffix in ('re', 'le', 'unk')}
     return column_from_variable_binary(data, 'rao_yesno', restrict_date=note_date)
 
 
-def build_rvo(data, *, note_date=None):
+def build_rvo(data, *, macula_wnl=None, note_date=None):
+    if macula_is_wnl(macula_wnl, note_date):
+        return {f'rvo_yesno_{suffix}': 1 for suffix in ('re', 'le', 'unk')}
     return column_from_variable_binary(data, 'rvo_yesno', restrict_date=note_date)
 
 
@@ -134,9 +139,9 @@ def build_ro_variables(data):
     note = data['note']
     results = {}
     # RAO
-    results.update(build_rao(curr['rao'], note_date=note['date']))
+    results.update(build_rao(curr['rao'], macula_wnl=data['common']['macula_wnl'], note_date=note['date']))
     # RVO
-    results.update(build_rvo(curr['rvo'], note_date=note['date']))
+    results.update(build_rvo(curr['rvo'], macula_wnl=data['common']['macula_wnl'], note_date=note['date']))
     results.update(build_rvo_type(curr['rvo'], note_date=note['date']))
     results.update(build_rvo_treatment(data['common']['treatment'], note_date=note['date']))
     results.update(build_rvo_antivegf(data['common']['treatment'], note_date=note['date']))
