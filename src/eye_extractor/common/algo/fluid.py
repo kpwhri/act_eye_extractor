@@ -82,7 +82,7 @@ irf = r'ir\s*f(?:luids?)?'
 
 MACULAR_EDEMA_PAT = re.compile(
     rf'\b(?:'
-    rf'macular?\s*edema'
+    rf'mac(ular?)?\s*edema'
     rf'|csme'
     rf'|scme'  # popular typo
     rf')\b',

@@ -101,6 +101,9 @@ def test_fluid_to_column(data, exp_fluid_amd_re, exp_fluid_amd_le):
     ('corneal edema', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
     ('macular edema os', {}, 'UNKNOWN', 'INTRARETINAL FLUID', 'UNKNOWN'),
     ('(-) edema OD', {}, 'NO', 'UNKNOWN', 'UNKNOWN'),
+    ('(-) mac edema OD', {}, 'NO INTRARETINAL FLUID', 'UNKNOWN', 'UNKNOWN'),
+    ('-CSME OS', {}, 'UNKNOWN', 'NO INTRARETINAL FLUID', 'UNKNOWN'),
+    ('CSME OS', {}, 'UNKNOWN', 'INTRARETINAL FLUID', 'UNKNOWN'),
 ])
 def test_fluid_extract_build(text, headers, exp_fluid_re, exp_fluid_le, exp_fluid_unk, ):
     pre_json = extract_fluid(text, headers=Headers(headers))
