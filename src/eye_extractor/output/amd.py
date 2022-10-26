@@ -9,6 +9,7 @@ from eye_extractor.amd.vitamins import Vitamin
 from eye_extractor.amd.wet import WetSeverity
 from eye_extractor.common.algo.treatment import Treatment
 from eye_extractor.common.drug.antivegf import rename_antivegf, AntiVegf
+from eye_extractor.output.common import macula_is_wnl
 from eye_extractor.output.laterality import laterality_from_int
 from eye_extractor.laterality import Laterality
 from eye_extractor.output.shared import get_default_fluid_result, build_subretfluid, build_intraretfluid, build_fluid
@@ -19,7 +20,13 @@ def build_amd_variables(data):
     curr = data['amd']
     note = data['note']
     results = {}
-    results.update(get_amd(curr['amd'], is_amd=note['is_amd'], lat=note['default_lat'], note_date=note['date']))
+    results.update(get_amd(
+        curr['amd'],
+        is_amd=note['is_amd'],
+        lat=note['default_lat'],
+        macula_wnl=data['common']['macula_wnl'],
+        note_date=note['date'])
+    )
     results.update(get_drusen_size(curr['drusen'], note_date=note['date']))
     results.update(get_drusen_type(curr['drusen'], note_date=note['date']))
     srh = build_subretinal_hemorrhage(curr['srh'], note_date=note['date'])
@@ -51,7 +58,7 @@ def build_amd_variables(data):
     return results
 
 
-def get_amd(data, *, is_amd=None, lat=Laterality.UNKNOWN, note_date=None):
+def get_amd(data, *, is_amd=None, lat=Laterality.UNKNOWN, note_date=None, macula_wnl=None):
     def _update_amd(new, old):
         if new == 1 or old == 1:
             return 1
@@ -63,6 +70,12 @@ def get_amd(data, *, is_amd=None, lat=Laterality.UNKNOWN, note_date=None):
         'amd_re': 8,
         'amd_le': 8,
     }
+
+    if macula_is_wnl(macula_wnl, note_date):
+        return {
+            'amd_re': 0,
+            'amd_le': 0,
+        }
     if is_amd:
         if lat in {Laterality.OD, Laterality.OU}:
             results['amd_re'] = 1
