@@ -90,7 +90,7 @@ def test_fluid_to_column(data, exp_fluid_amd_re, exp_fluid_amd_le):
     ('', {'MACULA': 'large area of edema OD'}, 'FLUID', 'UNKNOWN', 'UNKNOWN'),
     ('corneal fluid', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
     ('corneal edema', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
-    ('macular edema os', {}, 'UNKNOWN', 'FLUID', 'UNKNOWN'),
+    ('macular edema os', {}, 'UNKNOWN', 'INTRARETINAL FLUID', 'UNKNOWN'),
     ('(-) edema OD', {}, 'NO', 'UNKNOWN', 'UNKNOWN'),
 ])
 def test_fluid_extract_build(text, headers, exp_fluid_re, exp_fluid_le, exp_fluid_unk, ):

@@ -5,7 +5,7 @@ from eye_extractor.common.string import replace_punctuation
 
 NEGWORDS = frozenset({
     'no', 'not', 'or', 'neg', 'non', 'negative',
-    'without', 'w/out', 'w/o', '(-)', '-', 'if',
+    'without', 'w/out', 'w/o', '(-)', 'if',
 })
 
 HISTORY_WORDS = frozenset({
@@ -18,7 +18,7 @@ def _handle_negation_with_punctuation(text):
     text = text.replace('w/out', 'without')
     text = text.replace('w/o', 'without')
     text = text.replace('(-)', ' no ')
-    text = re.sub(r'((?:^|\D)\W*)-([A-Za-z]|$)', r'\g<1> no \g<2>', text)
+    text = re.sub(r'((?:^|\D\s+)\s*)-([A-Za-z]|$)', r'\g<1> no \g<2>', text)
     return text
 
 
@@ -52,7 +52,7 @@ def is_negated(m: Match | int, text: str, terms: set[str] = NEGWORDS,
 def has_before(end_idx: int, text: str, terms: set[str],
                *, word_window: int = 2, char_window: int = 0,
                skip_regex: Match = None,
-               boundary_chars=':', skip_n_boundary_chars=0, lowercase_text=True,
+               boundary_chars=':¶', skip_n_boundary_chars=0, lowercase_text=True,
                hack_punctuation=False):
     if not char_window:
         char_window = word_window * 10
@@ -103,7 +103,7 @@ def is_post_negated(m: Match | int, text: str, terms: set[str] = NEGWORDS,
 def has_after(start_idx: int, text: str, terms: set[str],
               *, word_window: int = 2, char_window: int = 0,
               skip_n_boundary_chars=1, skip_regex: Match = None,
-              boundary_chars=':', lowercase_text=True,
+              boundary_chars=':¶', lowercase_text=True,
               hack_punctuation=False):
     """
 

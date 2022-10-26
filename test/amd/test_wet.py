@@ -12,6 +12,7 @@ from eye_extractor.output.variable import update_column
     (WET_PAT, 'wet', True),
     (WET_AMD_PAT, 'wet amd', True),
     (WET_AMD_PAT, 'nvARMD', True),
+    (WET_AMD_PAT, 'macular degeneration: n', False),
 ])
 def test_wet_patterns(pat, text, exp):
     m = pat.search(text)

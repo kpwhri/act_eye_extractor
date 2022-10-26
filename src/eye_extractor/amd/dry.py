@@ -49,7 +49,7 @@ def _extract_dryamd_severity(text, lateralities, source):
     """Extract dry amd from macula section"""
     data = []
     for m in DRY_PAT.finditer(text):
-        if is_post_negated(m, text, {'eye', 'eyes'}):
+        if is_post_negated(m, text, {'eye', 'eyes'}) or is_negated(m, text, {'eye', 'eyes'}, word_window=4):
             continue
         negword = is_negated(m, text)
         data.append(

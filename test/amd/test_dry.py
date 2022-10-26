@@ -30,6 +30,7 @@ def test_dry_patterns(pat, text, exp):
         ('atrophic armd', None, 'UNKNOWN', 'UNKNOWN', 'YES', None),
         ('OD: non-exudative senile AMD', None, 'YES', 'UNKNOWN', 'UNKNOWN', None),
         ('dry eyes', None, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN', None),
+        ('your eyes are really dry', None, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN', None),
     ])
 def test_dry_extract_build(text, headers, exp_dryamd_severity_re, exp_dryamd_severity_le,
                            exp_dryamd_severity_unk, note_date):

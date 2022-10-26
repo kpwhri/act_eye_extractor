@@ -20,8 +20,8 @@ wet = r'(?:wet|(?:exudat|neovascul)\w+)'
 
 WET_AMD_PAT = re.compile(
     rf'\b(?:'
-    rf'(?:{wet}|nv?)\W*{amd}'
-    rf'|{amd}\W*(?:{wet}|nv?)'
+    rf'(?:{wet}|nv)\W*{amd}'
+    rf'|{amd}\W*(?:{wet}|nv)'
     rf')\b',
     re.I
 )
@@ -47,7 +47,7 @@ def _extract_wetamd_severity(text, lateralities, source):
     """Extract wet amd from macula section"""
     data = []
     for m in WET_PAT.finditer(text):
-        negword = is_negated(m, text)
+        negword = is_negated(m, text, word_window=4)
         data.append(
             create_new_variable(text, m, lateralities, 'wetamd_severity', {
                 'value': WetSeverity.NO if negword else WetSeverity.YES,
@@ -64,7 +64,7 @@ def _extract_wetamd_severity(text, lateralities, source):
 def _extract_wetamd_severity_all(text, lateralities, source):
     data = []
     for m in WET_AMD_PAT.finditer(text):
-        negword = is_negated(m, text)
+        negword = is_negated(m, text, word_window=4)
         data.append(
             create_new_variable(text, m, lateralities, 'wetamd_severity', {
                 'value': WetSeverity.NO if negword else WetSeverity.YES,

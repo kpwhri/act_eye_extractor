@@ -56,7 +56,7 @@ def test_skip_regex_before():
 
 @pytest.mark.parametrize('text, exp', [
     ('2 - 4', '2 - 4'),
-    ('2 -CVN', '2  no CVN'),
+    ('2, -CVN', '2,  no CVN'),
     ('2 (-)CVN', '2  no CVN'),
     ('2 (-) CVN', '2  no  CVN'),
     ('DM w/out NPDR OU', 'DM without NPDR OU'),

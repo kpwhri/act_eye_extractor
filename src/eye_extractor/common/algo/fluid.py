@@ -80,9 +80,11 @@ def fluid_prioritization(new_value: Fluid, curr_value: Fluid | None):
 srf = r'sr\s*f(?:luids?)?'
 irf = r'ir\s*f(?:luids?)?'
 
-MACULAR_EDEMA_PAT = re.compile(
+MACULAR_EDEMA_PAT = re.compile(  # TODO: this is intraretinal fluid
     rf'\b(?:'
     rf'macular edema'
+    rf'|csme'
+    rf'|scme'  # popular typo
     rf')\b',
     re.IGNORECASE
 )
@@ -135,7 +137,7 @@ def extract_fluid(text, *, headers=None, lateralities=None):
 def _get_fluid(text, lateralities, source):
     data = []
     for label, pat, positive_value, negative_value, positive_word in [
-        ('MACULAR_EDEMA', MACULAR_EDEMA_PAT, Fluid.FLUID, Fluid.NO, 'macular edema'),
+        ('MACULAR_EDEMA', MACULAR_EDEMA_PAT, Fluid.INTRARETINAL_FLUID, Fluid.NO_INTRARETINAL_FLUID, 'macular edema'),
         ('SUBRETINAL_FLUID_PAT', SUBRETINAL_FLUID_PAT,
          Fluid.SUBRETINAL_FLUID, Fluid.NO_SUBRETINAL_FLUID, 'subretinal fluid'
          ),
