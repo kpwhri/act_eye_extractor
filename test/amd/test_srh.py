@@ -47,6 +47,7 @@ def test_srh_value_first_variable(text, exp_value, exp_negword):
     ('no srh', {}, -1, -1, 0),
     ('no srf or srh', {}, -1, -1, 0),
     ('', {'MACULA': 'w/o srh ou'}, 0, 0, -1),
+    ('OCT MACULA: 2/2/2022 OS: srh', {'MACULA': 'w/o srh os'}, -1, 1, -1),
 ])
 def test_srh_extract_build(text, headers, subretinal_hem_re, subretinal_hem_le, subretinal_hem_unk):
     pre_json = extract_subretinal_hemorrhage(text, headers=Headers(headers))
