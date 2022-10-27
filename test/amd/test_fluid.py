@@ -4,6 +4,7 @@ import pytest
 
 from eye_extractor.common.algo.fluid import FLUID_NOS_PAT, SUBRETINAL_FLUID_PAT, INTRARETINAL_FLUID_PAT, extract_fluid, \
     SUB_AND_INTRARETINAL_FLUID_PAT, MACULAR_EDEMA_PAT
+from eye_extractor.common.json import dumps_and_loads_json
 from eye_extractor.headers import Headers
 from eye_extractor.output.amd import build_fluid_amd
 
@@ -96,18 +97,19 @@ def test_fluid_to_column(data, exp_fluid_amd_re, exp_fluid_amd_le):
 @pytest.mark.parametrize('text, headers, exp_fluid_re, exp_fluid_le, exp_fluid_unk', [
     ('', {'MACULA': 'subretinal fluid od'}, 'SUBRETINAL FLUID', 'UNKNOWN', 'UNKNOWN'),
     ('', {'MACULA': 'with fluid and exudates'}, 'UNKNOWN', 'UNKNOWN', 'FLUID'),
-    ('', {'MACULA': 'large area of edema OD'}, 'FLUID', 'UNKNOWN', 'UNKNOWN'),
+    ('', {'MACULA': 'large area of edema OD'}, 'INTRARETINAL FLUID', 'UNKNOWN', 'UNKNOWN'),
     ('corneal fluid', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
     ('corneal edema', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
     ('macular edema os', {}, 'UNKNOWN', 'INTRARETINAL FLUID', 'UNKNOWN'),
-    ('(-) edema OD', {}, 'NO', 'UNKNOWN', 'UNKNOWN'),
+    ('(-) edema OD', {}, 'NO INTRARETINAL FLUID', 'UNKNOWN', 'UNKNOWN'),
     ('(-) mac edema OD', {}, 'NO INTRARETINAL FLUID', 'UNKNOWN', 'UNKNOWN'),
     ('-CSME OS', {}, 'UNKNOWN', 'NO INTRARETINAL FLUID', 'UNKNOWN'),
     ('CSME OS', {}, 'UNKNOWN', 'INTRARETINAL FLUID', 'UNKNOWN'),
+    ('OCT MACULA: 2/2/2022 OD: ... mild edema ', {}, 'INTRARETINAL FLUID', 'UNKNOWN', 'UNKNOWN'),
 ])
 def test_fluid_extract_build(text, headers, exp_fluid_re, exp_fluid_le, exp_fluid_unk, ):
     pre_json = extract_fluid(text, headers=Headers(headers))
-    post_json = json.loads(json.dumps(pre_json))
+    post_json = dumps_and_loads_json(pre_json)
     result = build_fluid_amd(post_json, skip_rename_variable=True)
     assert result['fluid_amd_re'] == exp_fluid_re
     assert result['fluid_amd_le'] == exp_fluid_le

@@ -84,6 +84,7 @@ irf = r'ir\s*f(?:luids?)?'
 MACULAR_EDEMA_PAT = re.compile(
     rf'\b(?:'
     rf'mac(ular?)?\s*edema'
+    rf'|edema'
     rf'|csme'
     rf'|scme'  # popular typo
     rf')\b',
@@ -93,7 +94,6 @@ MACULAR_EDEMA_PAT = re.compile(
 FLUID_NOS_PAT = re.compile(
     rf'\b(?:'
     rf'fluid'
-    rf'|edema'
     rf')\b',
     re.IGNORECASE
 )
@@ -140,12 +140,12 @@ def extract_fluid(text, *, headers=None, lateralities=None):
 
 
 def _extract_fluid_from_oct(text):
-    data = []
+    result = []
     for section_dict in find_oct_macula_sections(text):
         for lat, data in section_dict.items():
-            data += _get_fluid(data['text'], None, 'OCT MACULA',
-                               known_laterality=lat, known_date=data['date'], priority=2)
-    return data
+            result += _get_fluid_in_macula(data['text'], None, 'OCT MACULA',
+                                           known_laterality=lat, known_date=data['date'], priority=2)
+    return result
 
 
 def _get_fluid(text, lateralities, source, *, known_laterality=None, known_date=None, priority=0):
