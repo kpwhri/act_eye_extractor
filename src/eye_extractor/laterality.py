@@ -51,7 +51,7 @@ LATERALITY_SPLIT_PATTERN = re.compile(  # for determining likely boundaries
 )
 
 LATERALITY_PLUS_COLON_PATTERN = re.compile(
-    rf'\b(?:{laterality_pattern})\W*:'
+    rf'\b({laterality_pattern})\W*:'
 )
 
 
@@ -121,7 +121,7 @@ def get_immediate_next_or_prev_laterality_from_table(table, index, *, max_skips=
 
 def create_variable(data, text, match, lateralities, variable, value, *, known_laterality=None):
     # dates: this will probably significantly increase processing time
-    if isinstance(value, dict) and 'date' not in value:  # skip if alternative way of finding date
+    if isinstance(value, dict) and value.get('date', None) is None:  # skip if alternative way of finding date
         value['date'] = parse_nearest_date_to_line_start(match.start(), text)
     # laterality
     lat = known_laterality or get_laterality_for_term(

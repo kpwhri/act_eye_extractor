@@ -4,6 +4,7 @@ import re
 from eye_extractor.amd.utils import run_on_macula
 from eye_extractor.common.negation import is_negated, is_post_negated, NEGWORD_SET
 from eye_extractor.laterality import create_new_variable
+from eye_extractor.sections.oct_macula import find_oct_macula_sections
 
 
 class Fluid(enum.IntEnum):
@@ -124,7 +125,10 @@ SUB_AND_INTRARETINAL_FLUID_PAT = re.compile(
 
 
 def extract_fluid(text, *, headers=None, lateralities=None):
-    return run_on_macula(
+    data = []
+    # prioritize OCT results
+    data += _extract_fluid_from_oct(text)
+    data = run_on_macula(
         macula_func=_get_fluid_in_macula,
         default_func=_get_fluid_in_macula,  # for testing
         text=text,
@@ -132,9 +136,19 @@ def extract_fluid(text, *, headers=None, lateralities=None):
         lateralities=lateralities,
         all_func=_get_fluid,
     )
+    return data
 
 
-def _get_fluid(text, lateralities, source):
+def _extract_fluid_from_oct(text):
+    data = []
+    for section_dict in find_oct_macula_sections(text):
+        for lat, data in section_dict.items():
+            data += _get_fluid(data['text'], None, 'OCT MACULA',
+                               known_laterality=lat, known_date=data['date'], priority=2)
+    return data
+
+
+def _get_fluid(text, lateralities, source, *, known_laterality=None, known_date=None, priority=0):
     data = []
     for label, pat, positive_value, negative_value, positive_word in [
         ('MACULAR_EDEMA', MACULAR_EDEMA_PAT, Fluid.INTRARETINAL_FLUID, Fluid.NO_INTRARETINAL_FLUID, 'macular edema'),
@@ -162,15 +176,19 @@ def _get_fluid(text, lateralities, source):
                     'label': 'no' if negword else positive_word,
                     'negated': negword,
                     'regex': label,
+                    'priority': priority,
                     'source': source,
-                })
+                    'date': known_date,
+                }, known_laterality=known_laterality)
             )
 
     return data
 
 
-def _get_fluid_in_macula(text, lateralities, source):
+def _get_fluid_in_macula(text, lateralities, source, *,
+                         known_laterality=None, priority=1, known_date=None):
     data = []
+    data += _get_fluid(text, lateralities, 'MACULA', priority=priority)
     for m in FLUID_NOS_PAT.finditer(text):
         if is_negated(m, text, {'corneal'}):  # non-macular
             continue
@@ -186,7 +204,9 @@ def _get_fluid_in_macula(text, lateralities, source):
                 'negated': negword,
                 'regex': 'FLUID_NOS_PAT',
                 'source': source,
-            })
+                'priority': priority,
+                'date': known_date,
+            }, known_laterality=known_laterality)
         )
     data += _get_fluid(text, lateralities, source)
     return data
