@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 
 from eye_extractor.amd.srh import SRH_PAT, extract_subretinal_hemorrhage, SRH_IN_MACULA_PAT
@@ -41,18 +43,22 @@ def test_srh_value_first_variable(text, exp_value, exp_negword):
     assert first_variable['negated'] == exp_negword
 
 
-@pytest.mark.parametrize('text, headers, subretinal_hem_re, subretinal_hem_le, subretinal_hem_unk', [
-    ('subretinal hemorrhage', {}, -1, -1, 1),
-    ('no subretinal hemorrhage', {}, -1, -1, 0),
-    ('no srh', {}, -1, -1, 0),
-    ('no srf or srh', {}, -1, -1, 0),
-    ('', {'MACULA': 'w/o srh ou'}, 0, 0, -1),
-    ('OCT MACULA: 2/2/2022 OS: srh', {'MACULA': 'w/o srh os'}, -1, 1, -1),
+@pytest.mark.parametrize('text, headers, subretinal_hem_re, subretinal_hem_le, subretinal_hem_unk, note_date', [
+    ('subretinal hemorrhage', {}, -1, -1, 1, None),
+    ('no subretinal hemorrhage', {}, -1, -1, 0, None),
+    ('no srh', {}, -1, -1, 0, None),
+    ('no srf or srh', {}, -1, -1, 0, None),
+    ('', {'MACULA': 'w/o srh ou'}, 0, 0, -1, None),
+    ('OCT MACULA: 2/2/2022 OS: srh', {'MACULA': 'w/o srh os'}, -1, 1, -1, None),
+    ('OCT MACULA: 2/2/2022 OS: srh', {'MACULA': 'w/o srh os'}, -1, 1, -1, None),
+    ('OCT MACULA: 2/2/2022 OS: srh', {'MACULA': 'w/o srh os'}, -1, 0, -1, datetime.date(2022, 2, 9)),
+    ('OCT MACULA: 2/2/2022 OS: srh', {'MACULA': 'w/o srh ou'}, 0, 0, -1, datetime.date(2022, 2, 9)),
+    ('OCT MACULA: 2/2/2022 OS: srh', {'MACULA': 'w/o srh ou'}, 0, 1, -1, datetime.date(2022, 2, 1)),
 ])
-def test_srh_extract_build(text, headers, subretinal_hem_re, subretinal_hem_le, subretinal_hem_unk):
+def test_srh_extract_build(text, headers, subretinal_hem_re, subretinal_hem_le, subretinal_hem_unk, note_date):
     pre_json = extract_subretinal_hemorrhage(text, headers=Headers(headers))
     post_json = dumps_and_loads_json(pre_json)
-    result = build_subretinal_hemorrhage(post_json)
+    result = build_subretinal_hemorrhage(post_json, note_date=note_date)
     assert result['subretinal_hem_re'] == subretinal_hem_re
     assert result['subretinal_hem_le'] == subretinal_hem_le
     assert result['subretinal_hem_unk'] == subretinal_hem_unk
