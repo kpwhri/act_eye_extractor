@@ -1,7 +1,7 @@
 import enum
 import re
 
-from eye_extractor.common.negation import is_negated, has_before, NEGWORDS
+from eye_extractor.common.negation import is_negated, has_before, NEGWORD_SET
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 
@@ -63,7 +63,7 @@ def extract_gonio(text, *, headers=None, lateralities=None):
                 (CLOSED_0_PAT, 'CLOSED_0_PAT', Gonio.CLOSED),
             ]:
                 for m in pat.finditer(section_text):
-                    negword = is_negated(m, section_text, NEGWORDS | {'such'})
+                    negword = is_negated(m, section_text, NEGWORD_SET | {'such'})
                     data.append(
                         create_new_variable(section_text, m, section_lateralities, 'gonio', {
                             'value': Gonio.NONE if negword else value,
@@ -83,7 +83,7 @@ def extract_gonio(text, *, headers=None, lateralities=None):
             matchedtext = m.group()
             if not has_before(m.start(), text, {'gonio', 'gonioscopy'}, word_window=5, skip_n_boundary_chars=1):
                 continue
-            negword = is_negated(m, text, NEGWORDS)
+            negword = is_negated(m, text)
             data.append(
                 create_new_variable(text, m, lateralities, 'gonio', {
                     'value': Gonio.NONE if negword else value,

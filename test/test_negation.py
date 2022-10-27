@@ -74,6 +74,9 @@ def test_handle_negation_with_punctuation(text, exp):
     ('w/out holes, tears, or detachments OU', 'tears', True),
     ('w/o holes, tears, or detachments OU', 'tears', True),
     ('holes, tears, or detachments OU', 'tears', False),
+    ('anti-vegf', 'vegf', False),
+    ('no new SRF', 'SRF', False),
+    ('not only SRF', 'SRF', False),
 ])
 def test_negwords_prenegation(text, term, exp_negated):
     """Test negwords global"""

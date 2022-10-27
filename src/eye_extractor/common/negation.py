@@ -3,10 +3,29 @@ from typing import Match
 
 from eye_extractor.common.string import replace_punctuation
 
-NEGWORDS = frozenset({
-    'no', 'not', 'or', 'neg', 'non', 'negative',
-    'without', 'w/out', 'w/o', '(-)', 'if',
-})
+NEGWORDS = {
+    'no': {
+        'new': False,
+        None: True,
+    },
+    'not': {
+        'only': False,
+        'just': False,
+        None: True,
+    },
+    'or': True,
+    'neg': True,
+    'non': True,
+    'negative': True,
+    'without': True,
+    'w/out': True,
+    'w/o': True,
+    '(-)': True,
+    'if': True,
+    None: False,
+}
+
+NEGWORD_SET = frozenset({key for key in NEGWORDS if key})
 
 HISTORY_WORDS = frozenset({
     'hx', 'history', 'phx'
@@ -14,26 +33,34 @@ HISTORY_WORDS = frozenset({
 
 
 def _prep_negation_tree(words, fsa):
+    """Build FSA to make it backwards-compatible with simple set."""
     if isinstance(fsa, dict):
         pass  # desired state
     elif isinstance(fsa, (list, set, frozenset)):  # one-level -> convert to dict
-        fsa = {x: x for x in fsa} | {None: None}
+        fsa = {x: True for x in fsa} | {None: False}
     else:
         raise ValueError(f'Unrecognized type containing negation: {type(fsa)}')
     return _recurse_negation_tree(words, fsa)
 
 
 def _recurse_negation_tree(words, fsa, level=0):
+    """
+    Use FSA to determine if negation word present; this allows for
+        affirmative mentions like 'not only'.
+    See `NEGWORDS` for example of `fsa`.
+    """
     for i, word in enumerate(words):
         if word in fsa:
             val = fsa[word]
             if isinstance(val, dict):  # branch node
-                val = _recurse_negation_tree(words[i + 1:], fsa[word], level + 1)
-            if level > 0 or val:
-                return val
+                val = _recurse_negation_tree(words[i + 1:], val, level + 1)
+            if val:
+                return f'{word} {val}' if isinstance(val, str) else word
+            elif level > 0:
+                return False
             else:  # level0 False: target not found
                 continue
-    return fsa[None]
+    return fsa[None] or None
 
 
 def _handle_negation_with_punctuation(text):
@@ -45,7 +72,7 @@ def _handle_negation_with_punctuation(text):
     return text
 
 
-def is_negated(m: Match | int, text: str, terms: set[str] = NEGWORDS,
+def is_negated(m: Match | int, text: str, terms: set[str] | dict = NEGWORDS,
                *, word_window: int = 2, char_window: int = 0,
                skip_regex: Match = None,
                boundary_chars=':', skip_n_boundary_chars=0, lowercase_text=True):
@@ -72,7 +99,7 @@ def is_negated(m: Match | int, text: str, terms: set[str] = NEGWORDS,
     )
 
 
-def has_before(end_idx: int, text: str, terms: set[str],
+def has_before(end_idx: int, text: str, terms: set[str] | dict,
                *, word_window: int = 2, char_window: int = 0,
                skip_regex: Match = None,
                boundary_chars=':¶', skip_n_boundary_chars=0, lowercase_text=True,
@@ -94,7 +121,7 @@ def has_before(end_idx: int, text: str, terms: set[str],
     return _prep_negation_tree(words[-word_window:], terms)
 
 
-def is_post_negated(m: Match | int, text: str, terms: set[str] = NEGWORDS,
+def is_post_negated(m: Match | int, text: str, terms: set[str] | dict = NEGWORDS,
                     *, word_window: int = 2, char_window: int = 0,
                     skip_n_boundary_chars=1, skip_regex: Match = None,
                     boundary_chars=':', lowercase_text=True):
@@ -121,7 +148,7 @@ def is_post_negated(m: Match | int, text: str, terms: set[str] = NEGWORDS,
     )
 
 
-def has_after(start_idx: int, text: str, terms: set[str],
+def has_after(start_idx: int, text: str, terms: set[str] | dict,
               *, word_window: int = 2, char_window: int = 0,
               skip_n_boundary_chars=1, skip_regex: Match = None,
               boundary_chars=':¶', lowercase_text=True,
