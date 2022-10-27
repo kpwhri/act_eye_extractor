@@ -15,3 +15,17 @@ def get_next_text_to_newline(index, text, line_end_chars=LINE_START_CHARACTERS):
     return line
 
 
+def get_next_index_of_newline(index, text, line_end_chars=LINE_START_CHARACTERS):
+    i = index
+    for i, letter in enumerate(text[index:], start=index):
+        if letter in line_end_chars:
+            return i
+    return i
+
+
+def get_previous_index_of_newline(index, text, line_end_chars=LINE_START_CHARACTERS):
+    i = index
+    for i, letter in enumerate(text[:index][::-1]):
+        if letter in line_end_chars:
+            return index - i
+    return i

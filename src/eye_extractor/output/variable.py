@@ -200,6 +200,7 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
     for row in data or []:  # for each element in list read from json file
         for varname, curr_value in list(results.items()):  # for each outcome of interest
             target_varname = convert_func(varname)  # change the column/variable name
+            print(target_varname, curr_value, priorities, results)
             if target_varname not in row:
                 continue
             if not filter_func(row[target_varname]):  # apply inclusion criteria in filter func
@@ -207,6 +208,7 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
             if not has_valid_date(restrict_date, row[target_varname]):
                 continue
             if _has_lower_priority(priorities, row, target_varname):
+                print('has lower priority!')
                 continue
             new_value = transformer_func(row[target_varname])  # what should the new value be?
             # should new_value be used to update old_value?

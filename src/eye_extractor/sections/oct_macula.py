@@ -2,7 +2,8 @@ import re
 
 from eye_extractor.common.date import parse_date
 from eye_extractor.laterality import LATERALITY_PLUS_COLON_PATTERN, lat_lookup, Laterality
-from eye_extractor.nlp.character_groups import get_next_text_to_newline
+from eye_extractor.nlp.character_groups import get_next_text_to_newline, get_previous_text_to_newline, \
+    get_previous_index_of_newline, get_next_index_of_newline
 
 from loguru import logger
 
@@ -14,6 +15,8 @@ OCT_MACULA_PAT = re.compile(
     rf')',
     re.IGNORECASE,
 )
+
+SECTION_PAT = re.compile(r'[A-Za-z]{2}:')
 
 
 def _find_oct_macula_section_laterality(text, *, restrict_date=None):
@@ -32,7 +35,7 @@ def _find_oct_macula_section_laterality(text, *, restrict_date=None):
         data[prev_lat] = {'text': get_next_text_to_newline(prev_start, text), 'date': date}
     if not data and text:  # didn't find lateralities
         logger.warning(f'No lateralities in OCT MACULA section: {text}')
-        data[Laterality.UNKNOWN] = text
+        data[Laterality.UNKNOWN] = {'text': text, 'date': date}
     return data
 
 
@@ -61,3 +64,25 @@ def find_oct_macula_sections(text, *, restrict_date=None) -> list[dict]:
         ):
             sections.append(res)
     return sections
+
+
+def remove_macula_oct(text):
+    first_macula_oct = None
+    last_macula_oct = None
+    for m in OCT_MACULA_PAT.finditer(text):
+        if not first_macula_oct:
+            first_macula_oct = m.start()
+        last_macula_oct = m.end()
+    if last_macula_oct is None:
+        return text  # didn't find macula oct
+    pos = None
+    end_oct = last_macula_oct + 200
+    for m in SECTION_PAT.finditer(text, pos=last_macula_oct):
+        if m.group().lower().strip(':') in {'od', 'os'}:
+            pos = m.end()
+            end_oct = get_next_index_of_newline(m.end(), text)
+            continue
+        else:
+            end_oct = get_previous_index_of_newline(m.start(), text[pos + 10:m.start()])
+            break
+    return text[:first_macula_oct] + text[end_oct:]
