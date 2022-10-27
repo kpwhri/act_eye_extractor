@@ -13,6 +13,29 @@ HISTORY_WORDS = frozenset({
 })
 
 
+def _prep_negation_tree(words, fsa):
+    if isinstance(fsa, dict):
+        pass  # desired state
+    elif isinstance(fsa, (list, set, frozenset)):  # one-level -> convert to dict
+        fsa = {x: x for x in fsa} | {None: None}
+    else:
+        raise ValueError(f'Unrecognized type containing negation: {type(fsa)}')
+    return _recurse_negation_tree(words, fsa)
+
+
+def _recurse_negation_tree(words, fsa, level=0):
+    for i, word in enumerate(words):
+        if word in fsa:
+            val = fsa[word]
+            if isinstance(val, dict):  # branch node
+                val = _recurse_negation_tree(words[i + 1:], fsa[word], level + 1)
+            if level > 0 or val:
+                return val
+            else:  # level0 False: target not found
+                continue
+    return fsa[None]
+
+
 def _handle_negation_with_punctuation(text):
     """Hack to handle punctuation-infused negation words: replace with 'no'"""
     text = text.replace('w/out', 'without')
@@ -68,9 +91,7 @@ def has_before(end_idx: int, text: str, terms: set[str],
         context = _handle_negation_with_punctuation(context)
     no_punct = replace_punctuation(context)
     words = no_punct.split()
-    for word in words[-word_window:]:
-        if word in terms:
-            return word
+    return _prep_negation_tree(words[-word_window:], terms)
 
 
 def is_post_negated(m: Match | int, text: str, terms: set[str] = NEGWORDS,
@@ -133,6 +154,4 @@ def has_after(start_idx: int, text: str, terms: set[str],
         context = _handle_negation_with_punctuation(context)
     no_punct = replace_punctuation(context)
     words = no_punct.split()
-    for word in words[:word_window]:
-        if word in terms:
-            return word
+    return _prep_negation_tree(words[:word_window], terms)
