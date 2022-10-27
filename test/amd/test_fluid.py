@@ -109,6 +109,8 @@ def test_fluid_to_column(data, exp_fluid_amd_re, exp_fluid_amd_le):
     ('OCT MACULA: 2/2/2022 OD: 132, mild edema ', {}, 'INTRARETINAL FLUID', 'UNKNOWN', 'UNKNOWN', None),
     ('OCT MACULA: 2/2/2022 OD: 132, mild edema ', {'MACULA': 'no edema od'},
      'INTRARETINAL FLUID', 'UNKNOWN', 'UNKNOWN', datetime.date(2022, 2, 2)),
+    ('OCT MACULA: 2/9/2022 OD: 132, mild edema ', {'MACULA': 'no edema od'},
+     'NO INTRARETINAL FLUID', 'UNKNOWN', 'UNKNOWN', datetime.date(2022, 2, 2)),
 ])
 def test_fluid_extract_build(text, headers, exp_fluid_re, exp_fluid_le, exp_fluid_unk, note_date):
     pre_json = extract_fluid(text, headers=Headers(headers))
