@@ -6,7 +6,7 @@ from loguru import logger
 
 from dateutil.parser import parse, ParserError
 
-from eye_extractor.nlp.character_groups import LINE_START_CHARACTERS, get_previous_text_to_newline
+from eye_extractor.nlp.character_groups import LINE_START_CHARS_RX, get_previous_text_to_newline
 
 month_name = r'(?:\b(?P<month_name>jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\w*\b)'
 month = r'(?P<month>\d{1,2})'
@@ -133,7 +133,7 @@ def parse_date_after(m: Match, text, *, characters=20, as_string=False):
     return date_as_string(dt) if as_string else dt
 
 
-def parse_nearest_date_to_line_start(start, text, *, line_start_chars=LINE_START_CHARACTERS):
+def parse_nearest_date_to_line_start(start, text, *, line_start_chars=LINE_START_CHARS_RX):
     """Get most recent date in current line."""
     if line_start_chars:
         line = get_previous_text_to_newline(start, text, line_start_chars=line_start_chars)

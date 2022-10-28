@@ -75,14 +75,16 @@ def remove_macula_oct(text):
         last_macula_oct = m.end()
     if last_macula_oct is None:
         return text  # didn't find macula oct
-    pos = None
     end_oct = last_macula_oct + 200
+    pos = last_macula_oct  # last found section start
+    # look for start of next section
     for m in SECTION_PAT.finditer(text, pos=last_macula_oct):
         if m.group().lower().strip(':') in {'od', 'os'}:
-            pos = m.end()
-            end_oct = get_next_index_of_newline(m.end(), text)
+            pos = m.end()  # found new section start, but want to include od/os in the group
+            end_oct = get_next_index_of_newline(pos, text)
             continue
-        else:
-            end_oct = get_previous_index_of_newline(m.start(), text[pos + 10:m.start()])
+        else:  # end of od/os sections
+            substring = text[pos + 5:m.start()]
+            end_oct = pos + 5 + get_previous_index_of_newline(len(substring), substring)
             break
     return text[:first_macula_oct] + text[end_oct:]
