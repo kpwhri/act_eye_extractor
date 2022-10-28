@@ -1,6 +1,8 @@
+import json
 import pytest
 
 from eye_extractor import iop
+from eye_extractor.output.iop import build_iop
 
 
 @pytest.mark.parametrize('text, re, le', [
@@ -24,7 +26,32 @@ from eye_extractor import iop
     ),
     (' TONOMETRY: O.D. 12 mm; OS 13 mm', '12.0', '13.0'),
     ('Applanation Tonometry, if measured: 18OD 19OS', '18.0', '19.0'),
+    ('Tonometry: Method: nt', '0', '0'),
+    ('Past IOP: ¶2/22/2020»OD 10  OS 8', '10.0', '8.0'),
+    ('Tonometry: Method: nt ¶Pupillary Dilation: No 2:50 PM ¶REVIEWED AND UPDATED: 12/15/2006', '0', '0'),
+    ('IOPs by applanation: RE 16, LE 12 @ 0920', '16.0', '12.0'),
+    ('IOPs by tech  ¶ ¶Dilated: yes, by tech   ¶Posterior Segment ¶  ¶Vitreous: RE no pigment, cells, or hg; LE no '
+     'pigment, cells, or hg ¶Discs: flat, sharp, pink ¶Cupping: RE 0.9V x 0.9H; LE 0.9V x 0.9H', '0', '0'),
 ])
 def test_iop_measurements(text, re, le):
     assert re == iop.iop_measurement_re(text)
     assert le == iop.iop_measurement_le(text)
+
+
+# Test extract and build.
+_iop_extract_and_build_cases = [
+    ('Past IOP: ¶2/22/2020»OD 10  OS 8', 10.0, 8.0),
+    ('IOPs by applanation: RE 16, LE 12 @ 0820', 16.0, 12.0),
+    ('TONOMETRY (app): OD 17 OS 17 @ 1:13 PM', 17.0, 17.0),
+    ('IOPs (NCT) OD 17 OS 15 @ 1211pm', 17.0, 15.0),
+]
+
+
+@pytest.mark.parametrize('text, exp_iop_measurement_re, exp_iop_measurement_le',
+                         _iop_extract_and_build_cases)
+def test_iop_extract_and_build(text, exp_iop_measurement_re, exp_iop_measurement_le):
+    pre_json = list(iop.get_iop(text))
+    post_json = json.loads(json.dumps(pre_json))
+    result = build_iop(post_json)
+    assert result['iop_measurement_re'] == exp_iop_measurement_re
+    assert result['iop_measurement_le'] == exp_iop_measurement_le
