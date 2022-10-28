@@ -40,8 +40,9 @@ def build_amd_variables(data):
     cnv = build_choroidalneovasc(curr['cnv'], note_date=note['date'])
     results.update(cnv)
     results.update(build_subret_fibrous(curr['scar'], note_date=note['date']))
-    results.update(build_geoatrophy(curr['ga'], note_date=note['date']))
-    results.update(build_dryamd_severity(curr['dry'], note_date=note['date']))
+    ga = build_geoatrophy(curr['ga'], note_date=note['date'])
+    results.update(ga)
+    results.update(build_dryamd_severity(curr['dry'], is_amd=note['is_amd'], note_date=note['date'], ga_result=ga))
     results.update(build_wetamd_severity(
         curr['wet'],
         cnv_result=cnv,
@@ -190,8 +191,10 @@ def build_geoatrophy(data, *, note_date=None):
     )
 
 
-def build_dryamd_severity(data, *, ga_result=None, note_date=None):
+def build_dryamd_severity(data, *, is_amd=None, ga_result=None, note_date=None):
     """Build dry amd severity"""
+    if is_amd is False:
+        return {f'dryamd_severity_{val}': DrySeverity.UNKNOWN for val in ('re', 'le', 'unk')}
     result = column_from_variable_abbr(
         'dryamd_severity', DrySeverity.UNKNOWN, data,
         restrict_date=note_date,
