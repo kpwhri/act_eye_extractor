@@ -300,16 +300,10 @@ def build_lasertype_new(data, *, is_amd=None, note_date=None):
                 return 3
         return val.value
 
-    default = {
-        'tx_re': Treatment.UNKNOWN,
-        'tx_le': Treatment.UNKNOWN,
-        'tx_unk': Treatment.UNKNOWN,
-    }
     if is_amd is False:
-        return default
-    return column_from_variable(
-        default,
-        data,
+        return {f'amd_lasertype_{lat}': AntiVegf.UNKNOWN for lat in ('re', 'le', 'unk')}
+    return column_from_variable_abbr(
+        'tx', Treatment.UNKNOWN, data,
         restrict_date=note_date,
         renamevar_func=lambda x: f'amd_lasertype_{x.split("_")[-1]}',
         rename_func=_rename_lasertype,
@@ -321,19 +315,14 @@ def build_lasertype_new(data, *, is_amd=None, note_date=None):
 
 
 def build_amd_antivegf(data, *, is_amd=None, note_date=None):
-    default = {
-        'tx_re': AntiVegf.UNKNOWN,
-        'tx_le': AntiVegf.UNKNOWN,
-        'tx_unk': AntiVegf.UNKNOWN,
-    }
     if is_amd is False:
-        return default
-    return column_from_variable(
-        default,
-        data,
+        return {f'amd_antivegf_{lat}': AntiVegf.UNKNOWN for lat in ('re', 'le', 'unk')}
+    return column_from_variable_abbr(
+        'tx', AntiVegf.UNKNOWN, data,
         renamevar_func=lambda x: f'amd_antivegf_{x.split("_")[-1]}',
         rename_func=rename_antivegf,
         filter_func=lambda x: x.get('category', None) in {'ANTIVEGF'},
         transformer_func=AntiVegf,
         enum_to_str=False,
+        restrict_date=note_date,
     )

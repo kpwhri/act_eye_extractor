@@ -3,14 +3,17 @@
 """
 from eye_extractor.common.algo.fluid import Fluid, rename_intraretfluid, fluid_prioritization, rename_subretfluid, \
     rename_fluid
-from eye_extractor.output.variable import column_from_variable_abbr
+from eye_extractor.common.drug.antivegf import AntiVegf, rename_antivegf
+from eye_extractor.output.variable import column_from_variable_abbr, column_from_variable
 
 
 def build_shared_variables(data):
+    note = data['note']
     results = {}
-    results.update(build_fluid(data['common']['fluid']))
-    results.update(build_subretfluid(data['common']['fluid']))
-    results.update(build_intraretfluid(data['common']['fluid']))
+    results.update(build_fluid(data['common']['fluid'], note_date=note['date']))
+    results.update(build_subretfluid(data['common']['fluid'], note_date=note['date']))
+    results.update(build_intraretfluid(data['common']['fluid'], note_date=note['date']))
+    results.update(build_antivegf(data, note_date=note['date']))
     return results
 
 
@@ -65,4 +68,16 @@ def build_subretfluid(data, *, rename_var='subretfluid', note_date=None):
         },
         renamevar_func=lambda x: x.replace('fluid', rename_var),
         rename_func=rename_subretfluid,
+    )
+
+
+def build_antivegf(data, *, note_date=None):
+    return column_from_variable_abbr(
+        'tx', AntiVegf.UNKNOWN, data,
+        renamevar_func=lambda x: f'antivegf_{x.split("_")[-1]}',
+        rename_func=rename_antivegf,
+        filter_func=lambda x: x.get('category', None) in {'ANTIVEGF'},
+        transformer_func=AntiVegf,
+        enum_to_str=False,
+        restrict_date=note_date,
     )

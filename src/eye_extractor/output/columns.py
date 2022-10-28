@@ -103,6 +103,10 @@ OUTPUT_COLUMNS = {
     'intraretfluid_re': [is_in_range(-1, 1)],
     'intraretfluid_le': [is_in_range(-1, 1)],
     'intraretfluid_unk': [is_in_range(-1, 1)],
+    # Antivegf
+    'antivegf_re': [is_in_range(-1, 3)],
+    'antivegf_le': [is_in_range(-1, 3)],
+    'antivegf_unk': [is_in_range(-1, 3)],
 
     ## RO (RVO/RAO)
     # RVO
