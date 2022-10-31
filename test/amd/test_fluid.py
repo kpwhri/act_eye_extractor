@@ -72,9 +72,9 @@ def test_intraretinal_fluid_pattern(text, exp):
 
 
 @pytest.mark.parametrize('text, exp_value, exp_negword', [
-    ('no new heme and fluid od', 0, 'no'),
-    ('new subretinal fluid in central macula', 1, None),
-    ('fluid not noted today', 0, 'not'),
+    ('no new heme and fluid od', 21, None),
+    ('new subretinal fluid in central macula', 11, None),
+    ('fluid not noted today', 20, 'not'),
     ('no irf', 20, 'no'),
     ('srf not noted', 10, 'not'),
 ])
@@ -82,6 +82,7 @@ def test_fluid_value_first_variable(text, exp_value, exp_negword):
     data = extract_fluid(text)
     assert len(data) > 0
     first_variable = list(data[0].values())[0]
+    print(first_variable)
     assert first_variable['value'] == exp_value
     assert first_variable['negated'] == exp_negword
 
@@ -97,7 +98,7 @@ def test_fluid_to_column(data, exp_fluid_amd_re, exp_fluid_amd_le):
 
 @pytest.mark.parametrize('text, headers, exp_fluid_re, exp_fluid_le, exp_fluid_unk, note_date', [
     ('', {'MACULA': 'subretinal fluid od'}, 'SUBRETINAL FLUID', 'UNKNOWN', 'UNKNOWN', None),
-    ('', {'MACULA': 'with fluid and exudates'}, 'UNKNOWN', 'UNKNOWN', 'FLUID', None),
+    ('', {'MACULA': 'with fluid and exudates'}, 'UNKNOWN', 'UNKNOWN', 'INTRARETINAL FLUID', None),
     ('', {'MACULA': 'large area of edema OD'}, 'INTRARETINAL FLUID', 'UNKNOWN', 'UNKNOWN', None),
     ('corneal fluid', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN', None),
     ('corneal edema', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN', None),

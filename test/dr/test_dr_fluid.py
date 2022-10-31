@@ -11,9 +11,9 @@ from eye_extractor.output.dr import build_fluid
 
 @pytest.mark.parametrize('text, headers, exp_fluid_re, exp_fluid_le, exp_fluid_unk', [
     ('', {'MACULA': 'subretinal fluid od'}, 'SUBRETINAL FLUID', 'UNKNOWN', 'UNKNOWN'),
-    ('', {'MACULA': 'with fluid and exudates'}, 'UNKNOWN', 'UNKNOWN', 'FLUID'),
+    ('', {'MACULA': 'with fluid and exudates'}, 'UNKNOWN', 'UNKNOWN', 'INTRARETINAL FLUID'),
     ('no SRF/IRF OS', {}, 'UNKNOWN', 'NO SUB AND INTRARETINAL FLUID', 'UNKNOWN'),
-    ('No heme or fluid od', {}, 'NO', 'UNKNOWN', 'UNKNOWN'),
+    ('No heme or fluid od', {}, 'NO INTRARETINAL FLUID', 'UNKNOWN', 'UNKNOWN'),
     ('no IRF OU', {}, 'NO INTRARETINAL FLUID', 'NO INTRARETINAL FLUID', 'UNKNOWN')
 ])
 def test_dr_fluid_extract_and_build(text, headers, exp_fluid_re, exp_fluid_le, exp_fluid_unk, ):
