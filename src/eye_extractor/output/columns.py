@@ -1,10 +1,14 @@
 from eye_extractor.amd.dry import DrySeverity
+from eye_extractor.amd.scar import Scar
 from eye_extractor.amd.wet import WetSeverity
 from eye_extractor.common.algo.fluid import Fluid
 from eye_extractor.common.algo.treatment import Treatment
 from eye_extractor.common.severity import Severity
+from eye_extractor.exam.gonio import Gonio
+from eye_extractor.glaucoma.dx import GlaucomaType
+from eye_extractor.glaucoma.preglaucoma import Preglaucoma
 from eye_extractor.output.labels import DRTreatment
-from eye_extractor.output.validators import is_int, is_in_range, is_date, contains, is_string, is_upper, \
+from eye_extractor.output.validators import is_int, is_in_range, is_date, contains, \
     is_float_in_range, equals, is_string_in_enum, is_int_in_enum
 
 OUTPUT_COLUMNS = {
@@ -258,16 +262,16 @@ OUTPUT_COLUMNS = {
     'glaucoma_rx_brinzolamide': [is_in_range(-1, 1)],
     'glaucoma_rx_tafluprost': [is_in_range(-1, 1)],
     # glaucoma dx/type
-    'glaucoma_dx_re': [is_upper],
-    'glaucoma_dx_le': [is_upper],
-    'glaucoma_dx_unk': [is_upper],
-    'glaucoma_type_re': [is_upper],
-    'glaucoma_type_le': [is_upper],
-    'glaucoma_type_unk': [is_upper],
+    'glaucoma_dx_re': [is_string_in_enum(GlaucomaType)],
+    'glaucoma_dx_le': [is_string_in_enum(GlaucomaType)],
+    'glaucoma_dx_unk': [is_string_in_enum(GlaucomaType)],
+    'glaucoma_type_re': [is_string_in_enum(GlaucomaType)],
+    'glaucoma_type_le': [is_string_in_enum(GlaucomaType)],
+    'glaucoma_type_unk': [is_string_in_enum(GlaucomaType)],
     # gonioscopy
-    'gonio_re': [is_upper],
-    'gonio_le': [is_upper],
-    'gonio_unk': [is_upper],
+    'gonio_re': [is_string_in_enum(Gonio)],
+    'gonio_le': [is_string_in_enum(Gonio)],
+    'gonio_unk': [is_string_in_enum(Gonio)],
     # cct
     'centralcornealthickness_re': [is_in_range(450, 750), equals(-1)],
     'centralcornealthickness_le': [is_in_range(450, 750), equals(-1)],
@@ -293,13 +297,13 @@ OUTPUT_COLUMNS = {
     'exfoliation_le': [is_in_range(-1, 1)],
     'exfoliation_unk': [is_in_range(-1, 1)],
     # preglaucoma
-    'preglaucoma_re': [is_upper],
-    'preglaucoma_le': [is_upper],
-    'preglaucoma_unk': [is_upper],
+    'preglaucoma_re': [is_string_in_enum(Preglaucoma)],
+    'preglaucoma_le': [is_string_in_enum(Preglaucoma)],
+    'preglaucoma_unk': [is_string_in_enum(Preglaucoma)],
     # glaucoma treatment
-    'glaucoma_tx_re': [is_upper],
-    'glaucoma_tx_le': [is_upper],
-    'glaucoma_tx_unk': [is_upper],
+    'glaucoma_tx_re': [is_string_in_enum(Treatment)],
+    'glaucoma_tx_le': [is_string_in_enum(Treatment)],
+    'glaucoma_tx_unk': [is_string_in_enum(Treatment)],
     # glaucoma disc pallor: yes/no/unknown
     'disc_pallor_glaucoma_re': [is_in_range(-1, 1)],
     'disc_pallor_glaucoma_le': [is_in_range(-1, 1)],
@@ -313,9 +317,9 @@ OUTPUT_COLUMNS = {
     'choroidalneovasc_le': [is_in_range(-1, 1)],
     'choroidalneovasc_unk': [is_in_range(-1, 1)],
     # scar: subretinal fibrous
-    'subret_fibrous_re': [is_upper],
-    'subret_fibrous_le': [is_upper],
-    'subret_fibrous_unk': [is_upper],
+    'subret_fibrous_re': [is_string_in_enum(Scar)],
+    'subret_fibrous_le': [is_string_in_enum(Scar)],
+    'subret_fibrous_unk': [is_string_in_enum(Scar)],
     # geographic atrophy (yes/no/unknown)
     'geoatrophy_re': [is_in_range(-1, 1)],
     'geoatrophy_le': [is_in_range(-1, 1)],
