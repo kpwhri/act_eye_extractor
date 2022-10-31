@@ -1,6 +1,7 @@
 """Build miscellaneous variables.
 
 """
+from eye_extractor.amd.dry import DrySeverity
 from eye_extractor.amd.wet import WetSeverity
 from eye_extractor.common.algo.fluid import Fluid, rename_intraretfluid, fluid_prioritization, rename_subretfluid, \
     rename_fluid
@@ -93,3 +94,12 @@ def build_wet_severity(data, *, note_date=None):
         restrict_date=note_date,
     )
 
+
+def build_dry_severity(data, *, note_date=None):
+    return column_from_variable_abbr(
+        'dryamd_severity', DrySeverity.UNKNOWN, data,
+        transformer_func=DrySeverity,
+        enum_to_str=True,
+        renamevar_func=rename_variable_func('dry_severity'),
+        restrict_date=note_date,
+    )

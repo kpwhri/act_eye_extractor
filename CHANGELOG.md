@@ -19,6 +19,7 @@ Types of changes:
 
 ### Added
 - Generic wet severity variable (`wet_severity_*`)
+- Generic dry severity variable (`dry_severity_*`)
 
 ### Fixed
 - Added note date restriction to `wetamd_severity` variable
