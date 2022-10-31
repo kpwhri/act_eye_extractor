@@ -8,7 +8,7 @@ version = '20221031'
 authors = [
     { name = 'dcronkite', email = 'dcronkite+pypi@gmail.com' }
 ]
-homepage = 'https://github.com/dcronkite/eye_extractor'
+homepage = 'https://github.com/kpwhri/act_eye_extractor'
 requires = [
     'loguru',
     'click',
