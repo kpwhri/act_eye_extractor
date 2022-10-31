@@ -86,6 +86,7 @@ MACULAR_EDEMA_PAT = re.compile(
     rf'mac(ular?)?\s*edema'
     rf'|edema'
     rf'|csme'
+    rf'|cme'
     rf'|scme'  # popular typo
     rf')\b',
     re.IGNORECASE

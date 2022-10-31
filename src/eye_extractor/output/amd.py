@@ -13,7 +13,8 @@ from eye_extractor.output.common import macula_is_wnl
 from eye_extractor.output.laterality import laterality_from_int
 from eye_extractor.laterality import Laterality
 from eye_extractor.output.shared import get_default_fluid_result, build_subretfluid, build_intraretfluid, build_fluid
-from eye_extractor.output.variable import column_from_variable, update_column, column_from_variable_abbr, has_valid_date
+from eye_extractor.output.variable import column_from_variable, update_column, column_from_variable_abbr, \
+    has_valid_date, rename_variable_func
 
 
 def build_amd_variables(data):
@@ -204,7 +205,7 @@ def build_dryamd_severity(data, *, is_amd=None, ga_result=None, note_date=None):
     return augment_dryamd_severity(result, ga_result=ga_result)
 
 
-def augment_dryamd_severity(result, *, ga_result=None, note_date=None):
+def augment_dryamd_severity(result, *, ga_result=None):
     result = update_column(result, ga_result, [
         (GeoAtrophy.YES, 'UNKNOWN', 'YES'),
     ])
@@ -218,6 +219,7 @@ def build_wetamd_severity(data, *, cnv_result=None, srh_result=None,
         'wetamd_severity', WetSeverity.UNKNOWN, data,
         transformer_func=WetSeverity,
         enum_to_str=True,
+        restrict_date=note_date,
     )
     return augment_wetamd_severity(result, cnv_result=cnv_result, srh_result=srh_result,
                                    is_amd=is_amd, is_dr=is_dr, fluid_result=fluid_result)
@@ -305,7 +307,7 @@ def build_lasertype_new(data, *, is_amd=None, note_date=None):
     return column_from_variable_abbr(
         'tx', Treatment.UNKNOWN, data,
         restrict_date=note_date,
-        renamevar_func=lambda x: f'amd_lasertype_{x.split("_")[-1]}',
+        renamevar_func=rename_variable_func('amd_lasertype'),
         rename_func=_rename_lasertype,
         filter_func=lambda x: x.get('category', None) in {'AMD'},
         transformer_func=Treatment,
@@ -319,7 +321,7 @@ def build_amd_antivegf(data, *, is_amd=None, note_date=None):
         return {f'amd_antivegf_{lat}': AntiVegf.UNKNOWN for lat in ('re', 'le', 'unk')}
     return column_from_variable_abbr(
         'tx', AntiVegf.UNKNOWN, data,
-        renamevar_func=lambda x: f'amd_antivegf_{x.split("_")[-1]}',
+        renamevar_func=rename_variable_func('amd_antivegf'),
         rename_func=rename_antivegf,
         filter_func=lambda x: x.get('category', None) in {'ANTIVEGF'},
         transformer_func=AntiVegf,

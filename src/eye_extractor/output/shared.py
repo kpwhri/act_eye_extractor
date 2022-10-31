@@ -1,10 +1,11 @@
 """Build miscellaneous variables.
 
 """
+from eye_extractor.amd.wet import WetSeverity
 from eye_extractor.common.algo.fluid import Fluid, rename_intraretfluid, fluid_prioritization, rename_subretfluid, \
     rename_fluid
 from eye_extractor.common.drug.antivegf import AntiVegf, rename_antivegf
-from eye_extractor.output.variable import column_from_variable_abbr, column_from_variable
+from eye_extractor.output.variable import column_from_variable_abbr, column_from_variable, rename_variable_func
 
 
 def build_shared_variables(data):
@@ -81,3 +82,14 @@ def build_antivegf(data, *, note_date=None):
         enum_to_str=False,
         restrict_date=note_date,
     )
+
+
+def build_wet_severity(data, *, note_date=None):
+    return column_from_variable_abbr(
+        'wetamd_severity', WetSeverity.UNKNOWN, data,
+        transformer_func=WetSeverity,
+        enum_to_str=True,
+        renamevar_func=rename_variable_func('wet_severity'),
+        restrict_date=note_date,
+    )
+

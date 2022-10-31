@@ -124,6 +124,10 @@ def _get_updated_priority(row, target_varname):
     return row[target_varname].get('priority', 0)
 
 
+def rename_variable_func(varname):
+    return lambda x: f'{varname}_{x.split("_")[-1]}'
+
+
 def column_from_variable_abbr(result_abbr, init_value, data, *, compare_func=None, transformer_func=None,
                               result_func=None, convert_func=None, filter_func=None,
                               rename_func=None, sideeffect_func=None, renamevar_func=None,

@@ -43,3 +43,10 @@ def test_wet_augment():
     wet_result = {'wetamd_severity_re': 'UNKNOWN'}
     res = augment_wetamd_severity(wet_result, srh_result=srh_result, is_amd=True)
     assert res['wetamd_severity_re'] == 'YES'
+
+
+def test_wet_augment_false():
+    srh_result = {'subretinal_hem_re': 1}
+    wet_result = {'wetamd_severity_re': 'UNKNOWN'}
+    res = augment_wetamd_severity(wet_result, srh_result=srh_result, is_amd=False)
+    assert res['wetamd_severity_re'] == 'UNKNOWN'
