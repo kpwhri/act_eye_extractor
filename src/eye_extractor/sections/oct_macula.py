@@ -3,15 +3,17 @@ import re
 from eye_extractor.common.date import parse_date
 from eye_extractor.laterality import LATERALITY_PLUS_COLON_PATTERN, lat_lookup, Laterality
 from eye_extractor.nlp.character_groups import get_next_text_to_newline, get_previous_text_to_newline, \
-    get_previous_index_of_newline, get_next_index_of_newline
+    get_previous_index_of_newline, get_next_index_of_newline, LINE_START_CHARS_RX
 
 from loguru import logger
 
 from eye_extractor.output.variable import has_valid_date
 
 OCT_MACULA_PAT = re.compile(
-    rf'\b(?:'
-    rf'oct\s*macula:'
+    rf'(?:'
+    rf'\boct\s*macula:'
+    rf'|[{LINE_START_CHARS_RX}]\s*oct\b'
+    rf'|^oct\b'
     rf')',
     re.IGNORECASE,
 )
