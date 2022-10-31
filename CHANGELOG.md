@@ -17,14 +17,21 @@ Types of changes:
 
 ## [Unreleased]
 
+## v20221031
+
 ### Added
 - Added sorting priority for variables
 - End-to-end testing for several variables
+- Function to retrieve the OCT macula section
+- Function to remove the OCT macula section 
+- Check AMD is WNL
+- Generic antivegf output
 
 ### Fixed
 - Uveitis variables were broken (variable name was problematic)
 - Subretinal hemorrhage
 - Remove 'dry eyes' from matches for dry amd
+- Various bug fixes and improvements in fluid
 
 ### Changed
 - Modernised how `drusen_type` and `drusen_size` are built
@@ -37,6 +44,7 @@ Types of changes:
 - Created generalized negation as default
 - Added generalized negation words to
 - Modernised cataract variables (including generalized negation)
+- Negation defaults to accepting an FSA as a dict
 
 ## v20221024
 

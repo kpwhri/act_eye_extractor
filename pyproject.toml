@@ -4,7 +4,7 @@ build-backend = 'flit_core.buildapi'
 
 [project]
 name = 'eye_extractor'
-version = '20221018'
+version = '20221031'
 authors = [
     { name = 'dcronkite', email = 'dcronkite+pypi@gmail.com' }
 ]
