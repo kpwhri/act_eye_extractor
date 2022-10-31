@@ -1,3 +1,5 @@
+from eye_extractor.amd.dry import DrySeverity
+from eye_extractor.amd.wet import WetSeverity
 from eye_extractor.common.algo.fluid import Fluid
 from eye_extractor.common.algo.treatment import Treatment
 from eye_extractor.common.severity import Severity
@@ -107,6 +109,14 @@ OUTPUT_COLUMNS = {
     'antivegf_re': [is_in_range(-1, 3)],
     'antivegf_le': [is_in_range(-1, 3)],
     'antivegf_unk': [is_in_range(-1, 3)],
+    # dry severity
+    'dry_severity_re': [is_string_in_enum(DrySeverity)],
+    'dry_severity_le': [is_string_in_enum(DrySeverity)],
+    'dry_severity_unk': [is_string_in_enum(DrySeverity)],
+    # wet severity
+    'wet_severity_re': [is_string_in_enum(WetSeverity)],
+    'wet_severity_le': [is_string_in_enum(WetSeverity)],
+    'wet_severity_unk': [is_string_in_enum(WetSeverity)],
 
     ## RO (RVO/RAO)
     # RVO
@@ -311,13 +321,13 @@ OUTPUT_COLUMNS = {
     'geoatrophy_le': [is_in_range(-1, 1)],
     'geoatrophy_unk': [is_in_range(-1, 1)],
     # dry severity
-    'dryamd_severity_re': [is_upper],
-    'dryamd_severity_le': [is_upper],
-    'dryamd_severity_unk': [is_upper],
+    'dryamd_severity_re': [is_string_in_enum(DrySeverity)],
+    'dryamd_severity_le': [is_string_in_enum(DrySeverity)],
+    'dryamd_severity_unk': [is_string_in_enum(DrySeverity)],
     # wet severity
-    'wetamd_severity_re': [is_upper],
-    'wetamd_severity_le': [is_upper],
-    'wetamd_severity_unk': [is_upper],
+    'wetamd_severity_re': [is_string_in_enum(WetSeverity)],
+    'wetamd_severity_le': [is_string_in_enum(WetSeverity)],
+    'wetamd_severity_unk': [is_string_in_enum(WetSeverity)],
     # vitamin (yes/no/unknown)
     'amd_vitamin': [is_in_range(-1, 1)],
     # lasertype
