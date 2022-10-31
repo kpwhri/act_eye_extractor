@@ -22,6 +22,7 @@ Types of changes:
 - Generic dry severity variable (`dry_severity_*`)
 - Added `amd_unk`
 - Fixed issues in subretinal heme
+- Macular cyst (this will probably be treated as IRF): `macular_cyst_*`
 
 ### Fixed
 - Added note date restriction to `wetamd_severity` variable

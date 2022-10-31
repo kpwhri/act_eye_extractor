@@ -2,7 +2,7 @@ import enum
 import re
 
 from eye_extractor.amd.utils import run_on_macula
-from eye_extractor.common.negation import is_negated, is_post_negated, NEGWORD_SET
+from eye_extractor.common.negation import is_negated, is_post_negated
 from eye_extractor.laterality import create_new_variable
 from eye_extractor.sections.oct_macula import find_oct_macula_sections, remove_macula_oct
 
@@ -143,9 +143,9 @@ def extract_fluid(text, *, headers=None, lateralities=None):
 def _extract_fluid_from_oct(text):
     result = []
     for section_dict in find_oct_macula_sections(text):
-        for lat, data in section_dict.items():
-            result += _get_fluid_in_macula(data['text'], None, 'OCT MACULA',
-                                           known_laterality=lat, known_date=data['date'], priority=2)
+        for lat, values in section_dict.items():
+            result += _get_fluid_in_macula(values['text'], None, 'OCT MACULA',
+                                           known_laterality=lat, known_date=values['date'], priority=2)
     return result
 
 

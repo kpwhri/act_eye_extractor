@@ -11,11 +11,14 @@ from eye_extractor.amd.wet import WetSeverity
 from eye_extractor.common.algo.treatment import Treatment
 from eye_extractor.common.drug.antivegf import rename_antivegf, AntiVegf
 from eye_extractor.output.common import macula_is_wnl
-from eye_extractor.output.laterality import laterality_from_int
 from eye_extractor.laterality import Laterality
 from eye_extractor.output.shared import get_default_fluid_result, build_subretfluid, build_intraretfluid, build_fluid
 from eye_extractor.output.variable import column_from_variable, update_column, column_from_variable_abbr, \
-    has_valid_date, rename_variable_func
+    rename_variable_func, column_from_variable_binary
+
+
+def build_macular_cyst(data, *, note_date=None):
+    return column_from_variable_binary(data, 'macular_cyst', restrict_date=note_date,)
 
 
 def build_amd_variables(data):
@@ -58,6 +61,7 @@ def build_amd_variables(data):
     # results.update(build_lasertype(curr['lasertype']))
     results.update(build_lasertype_new(data['common']['treatment'], is_amd=note['is_amd'], note_date=note['date']))
     results.update(build_amd_antivegf(data['common']['treatment'], is_amd=note['is_amd'], note_date=note['date']))
+    results.update(build_macular_cyst(data['cyst']))
     return results
 
 
@@ -69,10 +73,10 @@ def build_amd(data, *, is_amd=None, lat=Laterality.UNKNOWN, note_date=None, macu
             'amd_unk': AMD.NO,
         }
     results = {
-            'amd_re': AMD.UNKNOWN,
-            'amd_le': AMD.UNKNOWN,
-            'amd_unk': AMD.UNKNOWN,
-        }
+        'amd_re': AMD.UNKNOWN,
+        'amd_le': AMD.UNKNOWN,
+        'amd_unk': AMD.UNKNOWN,
+    }
     if is_amd:
         if lat in {Laterality.OD, Laterality.OU}:
             results['amd_re'] = 1

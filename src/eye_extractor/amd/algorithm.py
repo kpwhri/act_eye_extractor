@@ -1,5 +1,6 @@
 from eye_extractor.amd.amd import extract_amd
 from eye_extractor.amd.cnv import extract_choroidalneovasc
+from eye_extractor.amd.cyst import extract_macular_cyst
 from eye_extractor.amd.drusen import extract_drusen
 from eye_extractor.amd.dry import extract_dryamd_severity
 from eye_extractor.amd.ga import extract_geoatrophy
@@ -28,4 +29,5 @@ def extract_amd_variables(text, *, headers=None, lateralities=None):
         'vitamin': extract_amd_vitamin(text, headers=headers, lateralities=lateralities),
         'lasertype': extract_lasertype(text, headers=headers, lateralities=lateralities),
         'fluid': extract_fluid(text, headers=headers, lateralities=lateralities),
+        'cyst': extract_macular_cyst(text, headers=headers, lateralities=lateralities),
     }
