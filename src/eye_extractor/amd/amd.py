@@ -1,81 +1,45 @@
+import enum
 import re
 
-from eye_extractor.laterality import laterality_finder, Laterality
+from eye_extractor.common.negation import is_negated
+from eye_extractor.laterality import create_new_variable
 
 AMD_RX = re.compile(
-    r'('
-    r'\bar?md\b'
-    r'|(age\Wrelated )?macular degener\w+'
-    r'|macular\s+degener\w+'
-    r')',
+    r'\b(?:'
+    r'ar?md'
+    r'|(age\W*related\W*)?macular?\s*degener\w+'
+    r'|macular?\s+degener\w+'
+    r')\b',
     re.I
 )
 
 
-def delimiter_split(text, keep_last=False):
-    split = re.split(r'(?:\n\s*\n|:|\.)', text)
-    if keep_last:
-        return split[-1]
-    return split[0]
+class AMD(enum.IntEnum):
+    UNKNOWN = -1
+    NO = 0
+    YES = 1
 
 
-def get_laterality(match, text):
-    # check after
-    lat = None
-    for lat in laterality_finder(
-            delimiter_split(text[match.end():match.end() + 50])
-    ):
-        print(f'Found pre-lat: {lat}')
-        return lat
-    # check latest in pre-text
-    for lat in laterality_finder(
-            delimiter_split(text[max(0, match.start()) - 50:match.start()], keep_last=True)
-    ):
-        print(f'Found post-lat: {lat}')
-        pass
-    if lat:
-        return lat
-    return Laterality.UNKNOWN
-
-
-def get_amd(text):
+def _extract_amd(section_name, section_text, priority=0):
     data = []
-    for m in AMD_RX.finditer(text):
-        data.append({
-            'label': 'amd',
-            'term': m.group(),
-            'laterality': get_laterality(m, text),
-        })
+    for m in AMD_RX.finditer(section_text):
+        negword = is_negated(m, section_text, word_window=3)
+        data.append(
+            create_new_variable(section_text, m, None, 'amd', {
+                'label': 'no' if negword else 'amd',
+                'value': 0 if negword else 1,
+                'negated': negword,
+                'term': m.group(),
+                'priority': priority,
+                'source': section_name,
+            })
+        )
     return data
 
 
-def get_amd_old(text):
-    """
-    Dx code: AMD (age related macular degeneration)     362.50, H35.30
-    :return:
-    """
-    lats = set()
-    for m in AMD_RX.finditer(text):
-        print(f'Found AMD: {m.group()}')
-        lats.add(get_laterality(m, text))
-    return lats
-
-
-def amd_le(text):
-    lats = get_amd_old(text)
-    print(f'Found lats: {lats}')
-    if {Laterality.OS, Laterality.OU} & lats:
-        return '1.0'  # yes
-    elif lats:  # any mention
-        return '0.0'
-    return '8.0'  # no mention
-
-
-def amd_re(text):
-    lats = get_amd_old(text)
-    print(f'Found lats: {lats}')
-    if {Laterality.OD, Laterality.OU} & lats:
-        return '1.0'  # yes
-    elif lats:  # any mention
-        return '0.0'
-    return '8.0'  # no mention
+def extract_amd(text, *, headers=None, lateralities=None):
+    data = []
+    for section_name, section_text in headers.iterate('ASSESSMENT', 'PLAN', 'COMMENTS', 'MACULA'):
+        data += _extract_amd(section_name, section_text, priority=2)
+    data += _extract_amd('ALL', text)
+    return data

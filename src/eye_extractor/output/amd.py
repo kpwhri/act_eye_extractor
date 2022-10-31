@@ -1,3 +1,4 @@
+from eye_extractor.amd.amd import AMD
 from eye_extractor.amd.cnv import ChoroidalNeoVasc
 from eye_extractor.amd.dry import DrySeverity
 from eye_extractor.common.algo.fluid import Fluid
@@ -21,7 +22,7 @@ def build_amd_variables(data):
     curr = data['amd']
     note = data['note']
     results = {}
-    results.update(get_amd(
+    results.update(build_amd(
         curr['amd'],
         is_amd=note['is_amd'],
         lat=note['default_lat'],
@@ -60,40 +61,27 @@ def build_amd_variables(data):
     return results
 
 
-def get_amd(data, *, is_amd=None, lat=Laterality.UNKNOWN, note_date=None, macula_wnl=None):
-    def _update_amd(new, old):
-        if new == 1 or old == 1:
-            return 1
-        elif old == 8:
-            return new
-        return old
-
-    results = {
-        'amd_re': 8,
-        'amd_le': 8,
-    }
-
+def build_amd(data, *, is_amd=None, lat=Laterality.UNKNOWN, note_date=None, macula_wnl=None):
     if macula_is_wnl(macula_wnl, note_date):
         return {
-            'amd_re': 0,
-            'amd_le': 0,
+            'amd_re': AMD.NO,
+            'amd_le': AMD.NO,
+            'amd_unk': AMD.NO,
+        }
+    results = {
+            'amd_re': AMD.UNKNOWN,
+            'amd_le': AMD.UNKNOWN,
+            'amd_unk': AMD.UNKNOWN,
         }
     if is_amd:
         if lat in {Laterality.OD, Laterality.OU}:
             results['amd_re'] = 1
         if lat in {Laterality.OU, Laterality.OU}:
             results['amd_le'] = 1
-    for item in data:
-        laterality = laterality_from_int(item['laterality'])
-        if {Laterality.OS, Laterality.OU} & {laterality}:
-            results['amd_le'] = _update_amd(1, results['amd_le'])
-        elif laterality:  # any mention
-            results['amd_le'] = _update_amd(0, results['amd_le'])
-        if {Laterality.OD, Laterality.OU} & {laterality}:
-            results['amd_re'] = _update_amd(1, results['amd_re'])
-        elif laterality:  # any mention
-            results['amd_re'] = _update_amd(0, results['amd_re'])
-    return results
+    return column_from_variable(
+        results, data,
+        restrict_date=note_date,
+    )
 
 
 def get_drusen_size(data, *, note_date=None):
