@@ -109,13 +109,15 @@ def get_iop(text):
             curr = {}
             d = m.groupdict()
             if val := d.get('OD', None):
-                curr['iop_measurement_re'] = {
-                    'value': convert_iop_value(val)
-                }
+                if convert_iop_value(val) < 100:
+                    curr['iop_measurement_re'] = {
+                        'value': convert_iop_value(val)
+                    }
             if val := d.get('OS', None):
-                curr['iop_measurement_le'] = {
-                    'value': convert_iop_value(val)
-                }
+                if convert_iop_value(val) < 100:
+                    curr['iop_measurement_le'] = {
+                        'value': convert_iop_value(val)
+                    }
             curr['instrument'] = d.get('INSTRUMENT', None)
             curr['method1'] = d.get('METHOD1', None)
             curr['method2'] = d.get('METHOD2', None)
@@ -128,20 +130,23 @@ def get_iop(text):
         d = m.groupdict()
         curr['instrument'] = d.get('INSTRUMENT', None)
         if val := d.get('OS', None):
-            curr['iop_measurement_le'] = {
-                'value': convert_iop_value(val)
-            }
+            if convert_iop_value(val) < 100:
+                curr['iop_measurement_le'] = {
+                    'value': convert_iop_value(val)
+                }
             if val := d.get('OD', None):
+                if convert_iop_value(val) < 100:
+                    curr['iop_measurement_re'] = {
+                        'value': convert_iop_value(val)
+                    }
+        elif val := d.get('OD', None):
+            if convert_iop_value(val) < 100:
                 curr['iop_measurement_re'] = {
                     'value': convert_iop_value(val)
                 }
-        elif val := d.get('OD', None):
-            curr['iop_measurement_re'] = {
-                'value': convert_iop_value(val)
-            }
-            curr['iop_measurement_le'] = {
-                'value': convert_iop_value(val)
-            }
+                curr['iop_measurement_le'] = {
+                    'value': convert_iop_value(val)
+                }
         if curr:
             yield curr
 

@@ -32,6 +32,9 @@ from eye_extractor.output.iop import build_iop
     ('IOPs by applanation: RE 16, LE 12 @ 0920', '16.0', '12.0'),
     ('IOPs by tech  ¶ ¶Dilated: yes, by tech   ¶Posterior Segment ¶  ¶Vitreous: RE no pigment, cells, or hg; LE no '
      'pigment, cells, or hg ¶Discs: flat, sharp, pink ¶Cupping: RE 0.9V x 0.9H; LE 0.9V x 0.9H', '0', '0'),
+    ('INTRAOCULAR PRESSURE (IOP) by NCT:  OD 120 mmHg  OS 120 mmHg @ 12pm', '0', '0'),
+    ('INTRAOCULAR PRESSURE (IOP) by NCT: OD *** mmHg OS *** mmHg @ ***', '0', '0'),
+    ('Tonometry: Method: not done    OD:  mmHg   OS:  mmHg   6:32 PM', '0', '0'),
 ])
 def test_iop_measurements(text, re, le):
     assert re == iop.iop_measurement_re(text)
@@ -44,6 +47,11 @@ _iop_extract_and_build_cases = [
     ('IOPs by applanation: RE 16, LE 12 @ 0820', 16.0, 12.0),
     ('TONOMETRY (app): OD 17 OS 17 @ 1:13 PM', 17.0, 17.0),
     ('IOPs (NCT) OD 17 OS 15 @ 1211pm', 17.0, 15.0),
+    ('IOPs:  15/15', 15.0, 15.0),
+    ('Untreated IOP:  ¶Target IOP: OD:    OS:  ¶Date treatment started: Tmax:  ¶IOPs:  15/15', 15.0, 15.0),
+    ('¶  ¶INTRAOCULAR PRESSURE(IOP)by NCT:OD 15 mmHg  OS 16 mmHg @ 1003 am ¶', 15.0, 16.0),
+
+
 ]
 
 
