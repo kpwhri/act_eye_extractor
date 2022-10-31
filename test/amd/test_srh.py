@@ -2,7 +2,7 @@ import datetime
 
 import pytest
 
-from eye_extractor.amd.srh import SRH_PAT, extract_subretinal_hemorrhage, SRH_IN_MACULA_PAT
+from eye_extractor.amd.srh import SRH_PAT, extract_subretinal_hemorrhage
 from eye_extractor.common.json import dumps_and_loads_json
 from eye_extractor.headers import Headers
 from eye_extractor.output.amd import build_subretinal_hemorrhage
@@ -15,18 +15,10 @@ from eye_extractor.output.amd import build_subretinal_hemorrhage
     ('srheme', 1),
     ('dysrhythmia', 0),
     ('(intraretinal?) hg', 0),
+    ('subretinal hg', 1),
 ])
 def test_srh_pattern(text, exp):
     assert bool(SRH_PAT.search(text)) == exp
-
-
-@pytest.mark.parametrize('text, exp', [
-    ('no hemorrhage', 1),
-    ('hem', 1),
-    ('no heme', 1),
-])
-def test_srh_in_macula_pattern(text, exp):
-    assert bool(SRH_IN_MACULA_PAT.search(text)) == exp
 
 
 @pytest.mark.parametrize('text, exp_value, exp_negword', [
@@ -47,6 +39,9 @@ def test_srh_value_first_variable(text, exp_value, exp_negword):
     ('subretinal hemorrhage', {}, -1, -1, 1, None),
     ('no subretinal hemorrhage', {}, -1, -1, 0, None),
     ('no srh', {}, -1, -1, 0, None),
+    ('no sr hem', {}, -1, -1, 0, None),
+    ('sr hem od, no srh os', {}, 1, 0, -1, None),
+    ('sub and intraretinal heme os', {}, -1, 1, -1, None),
     ('no srf or srh', {}, -1, -1, 0, None),
     ('', {'MACULA': 'w/o srh ou'}, 0, 0, -1, None),
     ('OCT MACULA: 2/2/2022 OS: srh', {'MACULA': 'w/o srh os'}, -1, 1, -1, None),
@@ -54,6 +49,7 @@ def test_srh_value_first_variable(text, exp_value, exp_negword):
     ('OCT MACULA: 2/2/2022 OS: srh', {'MACULA': 'w/o srh os'}, -1, 0, -1, datetime.date(2022, 2, 9)),
     ('OCT MACULA: 2/2/2022 OS: srh', {'MACULA': 'w/o srh ou'}, 0, 0, -1, datetime.date(2022, 2, 9)),
     ('OCT MACULA: 2/2/2022 OS: srh', {'MACULA': 'w/o srh ou'}, 0, 1, -1, datetime.date(2022, 2, 1)),
+
 ])
 def test_srh_extract_build(text, headers, subretinal_hem_re, subretinal_hem_le, subretinal_hem_unk, note_date):
     pre_json = extract_subretinal_hemorrhage(text, headers=Headers(headers))

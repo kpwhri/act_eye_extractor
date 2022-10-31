@@ -4,20 +4,15 @@ from eye_extractor.common.negation import is_negated
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 from eye_extractor.sections.oct_macula import find_oct_macula_sections, remove_macula_oct
 
-SRH_PAT = re.compile(
-    r'('
-    r'subretinal\W*(hem\w+|\bhg\b)'
-    r'|\bsrh'
-    r')',
-    re.IGNORECASE
-)
+subretinal = r'(?:sub\W*ret(?:inal)?|sr)'
+heme = r'(?:hem\w*|hg)'
 
-SRH_IN_MACULA_PAT = re.compile(
-    r'('
-    r'\bheme?s?\b'
-    r'|hemorrhage'
-    r'|\bsrh'
-    r')',
+SRH_PAT = re.compile(
+    rf'\b(?:'
+    rf'{subretinal}\W*{heme}'
+    rf'|sr\s*hf?e?'
+    rf'|sub\W*(?:and|&)\W*intra\W*ret\w*\s*{heme}'
+    rf')\b',
     re.IGNORECASE
 )
 
@@ -28,8 +23,8 @@ def extract_subretinal_hemorrhage(text, *, headers=None, lateralities=None):
     # prioritizing oct results
     for section_dict in find_oct_macula_sections(text):
         for lat, values in section_dict.items():
-            for m in SRH_IN_MACULA_PAT.finditer(values['text']):
-                if is_negated(m, values['text'], {'intraretinal', 'retinal'}):
+            for m in SRH_PAT.finditer(values['text']):
+                if is_negated(m, values['text'], {'intraretinal', 'retinal', 'subarachnoid', 'vitreous'}, word_window=1):
                     continue
                 negword = is_negated(m, values['text'])
                 data.append(
@@ -38,7 +33,7 @@ def extract_subretinal_hemorrhage(text, *, headers=None, lateralities=None):
                         'term': m.group(),
                         'label': 'no' if negword else 'yes',
                         'negated': negword,
-                        'regex': 'SRH_IN_MACULA_PAT',
+                        'regex': 'SRH_PAT',
                         'source': 'OCT MACULA',
                         'priority': 2,
                         'date': values['date']
@@ -60,7 +55,7 @@ def extract_subretinal_hemorrhage(text, *, headers=None, lateralities=None):
     if headers:  # macula text only
         for macula_header, macula_text in headers.iterate('MACULA'):
             lateralities = build_laterality_table(macula_text)
-            for m in SRH_IN_MACULA_PAT.finditer(macula_text):
+            for m in SRH_PAT.finditer(macula_text):
                 # exclusion words (wrong heme)
                 if is_negated(m, macula_text, {'intraretinal', 'retinal'}):
                     continue
@@ -71,8 +66,8 @@ def extract_subretinal_hemorrhage(text, *, headers=None, lateralities=None):
                         'term': m.group(),
                         'label': 'no' if negword else 'yes',
                         'negated': negword,
-                        'regex': 'SRH_IN_MACULA_PAT',
-                        'source': 'MACULA',
+                        'regex': 'SRH_PAT',
+                        'source': macula_header,
                     })
                 )
     return data
