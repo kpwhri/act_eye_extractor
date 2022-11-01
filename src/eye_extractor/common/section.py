@@ -6,19 +6,22 @@ from eye_extractor.laterality import build_laterality_table
 SectFunc = Callable[[str, dict, str], list]
 
 
+def _run_on_section(func, name, text):
+    return func(text, build_laterality_table(text), name)
+
+
 def run_on_section(section_funcs: dict[str, SectFunc], default_func: SectFunc, text: str,
                    *, headers=None, lateralities=None):
     data = []
     if headers:
-        for section_name, section_func in section_funcs.items():
-            if section_text := (
-                    text if section_name == 'ALL' else
-                    headers.get(section_name, None)
-            ):
-                lateralities = build_laterality_table(section_text)
-                data += section_func(section_text, lateralities, section_name)
+        for section_names, section_func in section_funcs.items():
+            if section_names == 'ALL':
+                data += _run_on_section(section_func, section_names, text)
+            else:
+                if not isinstance(section_names, tuple):
+                    section_names = (section_names,)
+                for section_name, section_text in headers.iterate(*section_names):
+                    data += _run_on_section(section_func, section_name, section_text)
     else:  # this is often just used for testing
-        if not lateralities:
-            lateralities = build_laterality_table(text)
-        data += default_func(text, lateralities, 'ALL')
+        data += default_func(text, lateralities or build_laterality_table(text), 'ALL')
     return data

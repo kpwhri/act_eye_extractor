@@ -6,6 +6,7 @@ import re
 
 from eye_extractor.amd.drusen import find_drusen
 from eye_extractor.laterality import LATERALITY_PATTERN, LATERALITY
+from eye_extractor.nlp.character_groups import LINE_START_CHARS_RX
 
 HEADER_PAT = re.compile(  # built in reverse, always looks for semicolon
     r":(\s?[A-Z'/]+)+"
@@ -19,8 +20,9 @@ SectionText = str
 # TODO: have headers store text hierarchically MACULA: djfslkdj OD: drusen -> MACULA: 'd... OD: drusen'
 class Headers:
 
-    def __init__(self, *initialdicts):
+    def __init__(self, *initialdicts, text=None):
         self.data = []
+        self.text = text
         for initialdict in initialdicts:
             if initialdict:
                 self.add(initialdict)
@@ -32,16 +34,33 @@ class Headers:
 
     def iterate(self, *headers: Section) -> tuple[Section, SectionText]:
         for header in headers:
+            found = False
             for d in self.data:
                 if text := d.get(header, None):
                     yield header, text
+                    found = True
                     break
+            if not found:
+                self.search(header)
 
     def get(self, header: Section, default=None) -> SectionText:
         for d in self.data:
             if header in d:
                 return d[header]
         return default
+
+    def search(self, header: Section):
+        """Search for missing patterns requested"""
+        if not self.text:
+            return None
+        header_rx = header.replace('_', r'\s*')
+        if m := re.search(rf'[{LINE_START_CHARS_RX}]\s*{header_rx}\s*[:-]', self.text, re.I):
+            m2 = re.search(rf'[A-Za-z]\s*:', self.text[m.end():])
+            if m2:
+                end = m2.start() + m.end()
+            else:
+                end = m.end() + 100
+            return self.text[m.start(): end]
 
     def __bool__(self):
         return bool(self.data and sum(len(x) for x in self.data) > 0)

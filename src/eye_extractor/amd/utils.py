@@ -4,11 +4,7 @@ from eye_extractor.common.section import run_on_section, SectFunc
 def run_on_macula(macula_func: SectFunc, default_func: SectFunc, text: str,
                   *, headers=None, lateralities=None, all_func: SectFunc = None):
     section_funcs = {
-        'MACULA': macula_func,
-        'ARMD': macula_func,
-        'AMD': macula_func,
-        'ASSESSMENT': macula_func,
-        # may add more MACULA sections
+        ('MACULA', 'ARMD', 'MAC', 'AMD', 'ASSESSMENT'): macula_func,
     }
     if all_func is not None:
         section_funcs['ALL'] = all_func
