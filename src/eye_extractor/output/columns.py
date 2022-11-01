@@ -265,6 +265,9 @@ OUTPUT_COLUMNS = {
     'glaucoma_rx_physostigmine': [is_in_range(-1, 1)],
     'glaucoma_rx_brinzolamide': [is_in_range(-1, 1)],
     'glaucoma_rx_tafluprost': [is_in_range(-1, 1)],
+    'glaucoma_rx_cosopt': [is_in_range(-1, 1)],
+    'glaucoma_rx_travatan': [is_in_range(-1, 1)],
+    'glaucoma_rx_alphagan': [is_in_range(-1, 1)],
     # glaucoma dx/type
     'glaucoma_dx_re': [is_string_in_enum(GlaucomaType)],
     'glaucoma_dx_le': [is_string_in_enum(GlaucomaType)],

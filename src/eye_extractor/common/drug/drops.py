@@ -29,6 +29,10 @@ class GenericDrop(enum.IntEnum):
     PHYSOSTIGMINE = 21
     BRINZOLAMIDE = 22
     TAFLUPROST = 23
+    # prescription labels
+    COSOPT = 100
+    TRAVATAN = 101
+    ALPHAGAN = 102
 
 
 DROP_TO_ENUM = {
@@ -41,10 +45,10 @@ DROP_TO_ENUM = {
     'zioptan': [GenericDrop.TAFLUPROST],
     'xalatan': [GenericDrop.LATANOPROST],
     'vyzulta': [GenericDrop.LATANOPROSTENE_BUNOD],
-    'travatan': [GenericDrop.TRAVOPROST],
-    'alphagan': [GenericDrop.BRIMONIDINE],
+    'travatan': [GenericDrop.TRAVOPROST, GenericDrop.TRAVATAN],
+    'alphagan': [GenericDrop.BRIMONIDINE, GenericDrop.ALPHAGAN],
     'trusopt': [GenericDrop.DORZOLAMIDE],
-    'cosopt': [GenericDrop.DORZOLAMIDE, GenericDrop.TIMOLOL],
+    'cosopt': [GenericDrop.DORZOLAMIDE, GenericDrop.TIMOLOL, GenericDrop.COSOPT],
     'azopt': [GenericDrop.BRINZOLAMIDE],
     'phospholine': [GenericDrop.ECHOTHIOPHATE_IODIDE],
     'istalol': [GenericDrop.TIMOLOL],

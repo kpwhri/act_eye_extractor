@@ -70,7 +70,6 @@ TRABECULOPLASTY_PAT = re.compile(
 
 
 def extract_tx(text, *, headers=None, lateralities=None):
-    lateralities = lateralities or build_laterality_table(text)
     data = []
     if headers:
         for section, section_text in headers.iterate('PLAN', 'PLAN_COMMENTS', 'COMMENTS'):
