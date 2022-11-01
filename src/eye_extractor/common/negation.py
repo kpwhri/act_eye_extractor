@@ -82,6 +82,10 @@ def _handle_negation_with_punctuation(text):
     return text
 
 
+def is_any_negated(m: Match | int, text: str):
+    return is_negated(m, text) or is_post_negated(m, text)
+
+
 def is_negated(m: Match | int, text: str, terms: set[str] | dict = NEGWORDS,
                *, word_window: int = 2, char_window: int = 0,
                skip_regex: Match = None,
