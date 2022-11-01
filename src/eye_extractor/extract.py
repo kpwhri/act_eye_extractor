@@ -20,6 +20,7 @@ from eye_extractor.history.perhx import create_personal_history
 from eye_extractor.iop import get_iop
 from eye_extractor.laterality import build_laterality_table
 from eye_extractor.ro.algorithm import extract_ro_variables
+from eye_extractor.sections.history import remove_history_sections
 from eye_extractor.uveitis.algorithm import extract_uveitis
 from eye_extractor.va.extractor2 import extract_va
 from eye_extractor.va.rx import get_manifest_rx
@@ -29,6 +30,8 @@ def extract_all(text: str, *, data: dict = None, sections: dict = None):
     if not sections:
         sections = extract_headers_and_text(text)
     lateralities = build_laterality_table(text)
+    orig_text = text
+    text = remove_history_sections(text)
     if data is None:
         data = {}
     data['note'] = extract_note_level_info(text, headers=sections, lateralities=lateralities)
@@ -43,8 +46,8 @@ def extract_all(text: str, *, data: dict = None, sections: dict = None):
     data['ro'] = extract_ro_variables(text, headers=sections, lateralities=lateralities)
     data['uveitis'] = extract_uveitis(text, headers=sections, lateralities=lateralities)
     data['history'] = {
-        'family': create_family_history(text, headers=sections, lateralities=lateralities),
-        'personal': create_personal_history(text, headers=sections, lateralities=lateralities),
+        'family': create_family_history(orig_text, headers=sections, lateralities=lateralities),
+        'personal': create_personal_history(orig_text, headers=sections, lateralities=lateralities),
     }
     data['exam'] = get_exam(text, headers=sections, lateralities=lateralities)
     data['dr'] = extract_dr_variables(text, headers=sections, lateralities=lateralities)
