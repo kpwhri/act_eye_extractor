@@ -8,6 +8,7 @@ from eye_extractor.nlp.character_groups import get_next_text_to_newline, get_pre
 from loguru import logger
 
 from eye_extractor.output.variable import has_valid_date
+from eye_extractor.sections.utils import get_index_of_next_section_start
 
 OCT_MACULA_PAT = re.compile(
     rf'(?:'
@@ -49,36 +50,18 @@ def find_oct_macula_sections(text, *, restrict_date=None) -> list[dict]:
     :return: list[dict[Laterality->str|'date'->datetime.date]]
     """
     sections = []
-    prev_start = None
     for m in OCT_MACULA_PAT.finditer(text):
-        prev_end = m.start()
-        if prev_start:
-            if res := _find_oct_macula_section_laterality(
-                    text[prev_start: prev_end],
-                    restrict_date=restrict_date,
-            ):
-                sections.append(res)
-        prev_start = m.end()
-    if prev_start:
+        end_index = get_index_of_next_section_start(text, m.end(), max_length=200)
         if res := _find_oct_macula_section_laterality(
-                text[prev_start: prev_start + 200],
+                text[m.start(): end_index],
                 restrict_date=restrict_date,
         ):
             sections.append(res)
     return sections
 
 
-def remove_macula_oct(text):
-    first_macula_oct = None
-    last_macula_oct = None
-    for m in OCT_MACULA_PAT.finditer(text):
-        if not first_macula_oct:
-            first_macula_oct = m.start()
-        last_macula_oct = m.end()
-    if last_macula_oct is None:
-        return text  # didn't find macula oct
-    end_oct = last_macula_oct + 200
-    pos = last_macula_oct  # last found section start
+def _get_start_of_next_section(text, pos, end_oct):
+    last_macula_oct = pos
     # look for start of next section
     for m in SECTION_PAT.finditer(text, pos=last_macula_oct):
         if m.group().lower().strip(':') in {'od', 'os'}:
@@ -89,4 +72,15 @@ def remove_macula_oct(text):
             substring = text[pos + 5:m.start()]
             end_oct = pos + 5 + get_previous_index_of_newline(len(substring), substring)
             break
-    return text[:first_macula_oct] + text[end_oct:]
+    return end_oct
+
+
+def remove_macula_oct(text):
+    result = []
+    prev_end = 0
+    for m in OCT_MACULA_PAT.finditer(text):
+        end_index = get_index_of_next_section_start(text, m.end(), max_length=200)
+        result.append(text[prev_end: m.start()])
+        prev_end = end_index
+    result.append(text[prev_end:])
+    return ''.join(result)

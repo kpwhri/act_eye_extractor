@@ -1,5 +1,6 @@
 import re
 
+from eye_extractor.nlp.character_groups import LINE_START_CHARS_RX
 from eye_extractor.sections.utils import get_index_of_next_section_start
 
 history = r'(?:hist(ory)?|hx)'
@@ -30,6 +31,7 @@ STOP_BEFORE_REGEX = re.compile(
     rf'|date'
     rf'|time'
     rf'|(?:patient\s*)?active\s*problem\s*list'
+    rf'|[{LINE_START_CHARS_RX} ]{{2}}'
     rf')',
     re.I
 )
