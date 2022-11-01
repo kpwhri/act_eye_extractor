@@ -17,15 +17,34 @@ SectionText = str
 
 # TODO: have headers store laterality state
 # TODO: have headers store text hierarchically MACULA: djfslkdj OD: drusen -> MACULA: 'd... OD: drusen'
-class Headers(UserDict):
-    def __init__(self, initialdict):
-        super().__init__(initialdict)
-        self.data = {x.replace(' ', '_').upper(): y for x, y in self.data.items()}
+class Headers:
+
+    def __init__(self, *initialdicts):
+        self.data = []
+        for initialdict in initialdicts:
+            if initialdict:
+                self.add(initialdict)
+
+    def add(self, d: dict):
+        self.data.append(
+            {x.replace(' ', '_').upper(): y for x, y in d.items()}
+        )
 
     def iterate(self, *headers: Section) -> tuple[Section, SectionText]:
         for header in headers:
-            if text := self.data.get(header, None):
-                yield header, text
+            for d in self.data:
+                if text := d.get(header, None):
+                    yield header, text
+                    break
+
+    def get(self, header: Section, default=None) -> SectionText:
+        for d in self.data:
+            if header in d:
+                return d[header]
+        return default
+
+    def __bool__(self):
+        return bool(self.data and sum(len(x) for x in self.data) > 0)
 
 
 def extract_headers_and_text(text):
