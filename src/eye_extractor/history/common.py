@@ -15,6 +15,13 @@ NEGATIVE_FOR_PAT = re.compile(
 )
 
 
+FAMILY_RELATIONS = [
+    'brother', 'sister', 'mother', 'father', 'aunt', 'grandmother', 'grandma',
+    'bro', 'sis', 'mom', 'mama', 'dad', 'papa', 'uncle', 'grandfather', 'grandpa',
+]
+FAMILY_RELATION_PAT = re.compile(rf'(?:{"|".join(FAMILY_RELATIONS)})', re.I)
+
+
 def find_end(text, start_pos):
     for m in POSSIBLE_END_HX_PAT.finditer(text, pos=start_pos):
         if m.group() == '===':
@@ -62,7 +69,7 @@ def update_hx_data(data, key, value=None, exclusive_search=True):
         logger.warning(f'Unidentified history category: {key} ({value})')
 
 
-def create_history(text, start_pats):
+def create_history(text, start_pats, is_personal_hx=False):
     data = {}
     for start_pat in start_pats:
         for m in start_pat.finditer(text):
@@ -75,6 +82,8 @@ def create_history(text, start_pats):
                 for key, val in zip(it, it):
                     if key in {'yes', 'no'}:
                         key, val = val, key
+                    if is_personal_hx and FAMILY_RELATION_PAT.search(key):
+                        continue
                     update_hx_data(data, key, 1 if val == 'yes' else 0)
             else:
                 # update with all keywords
