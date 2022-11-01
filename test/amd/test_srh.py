@@ -37,6 +37,7 @@ def test_srh_value_first_variable(text, exp_value, exp_negword):
 
 @pytest.mark.parametrize('text, headers, subretinal_hem_re, subretinal_hem_le, subretinal_hem_unk, note_date', [
     ('subretinal hemorrhage', {}, -1, -1, 1, None),
+    ('macular sr heme', {}, -1, -1, 1, None),
     ('no subretinal hemorrhage', {}, -1, -1, 0, None),
     ('no srh', {}, -1, -1, 0, None),
     ('no sr hem', {}, -1, -1, 0, None),
