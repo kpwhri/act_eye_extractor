@@ -24,6 +24,7 @@ Types of changes:
 - Fixed issues in subretinal heme
 - Macular cyst (this will probably be treated as IRF): `macular_cyst_*`
 - Additional OCT section pattern
+- Script to debug patterns
 
 ### Fixed
 - Added note date restriction to `wetamd_severity` variable

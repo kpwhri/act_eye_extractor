@@ -9,6 +9,7 @@ from eye_extractor.amd.algorithm import extract_amd_variables
 from eye_extractor.cataract.algorithm import extract_cataract_variables
 from eye_extractor.cataract.cataract_surgery import get_cataract_surgery
 from eye_extractor.common.noteinfo import extract_note_level_info
+from eye_extractor.corpusio import read_file, read_directories, read_filelist, read_from_params
 from eye_extractor.dr.diabetic_retinopathy import extract_dr_variables
 from eye_extractor.common.algo.extract import extract_common_algorithms
 from eye_extractor.exam.algorithm import get_exam
@@ -20,7 +21,6 @@ from eye_extractor.iop import get_iop
 from eye_extractor.laterality import build_laterality_table
 from eye_extractor.ro.algorithm import extract_ro_variables
 from eye_extractor.uveitis.algorithm import extract_uveitis
-from eye_extractor.uveitis.uveitis import get_uveitis
 from eye_extractor.va.extractor2 import extract_va
 from eye_extractor.va.rx import get_manifest_rx
 
@@ -68,52 +68,17 @@ def extract_variables(directories: tuple[pathlib.Path], outdir: pathlib.Path = N
     outdir.mkdir(parents=True, exist_ok=True)
     start_time = datetime.datetime.now()
     with open(outdir / f'eye_extractor_{start_time:%Y%m%d_%H%M%S}.jsonl', 'w', encoding='utf8') as out:
-        if filelist is not None:
-            for line in extract_variables_from_filelist(filelist):
-                out.write(json.dumps(line, default=str) + '\n')
-        else:
-            for line in extract_variables_from_directories(*directories):
-                out.write(json.dumps(line, default=str) + '\n')
+        for file, text, data, sections in read_from_params(*directories, filelist):
+            line = extract_variable_from_text(text, data, sections)
+            out.write(json.dumps(line, default=str) + '\n')
     duration = datetime.datetime.now() - start_time
     logger.info(f'Total run time: {duration}')
 
 
-def _read_json_file(path, *, encoding='utf8'):
-    if path.exists():
-        with open(path, encoding=encoding) as fh:
-            return json.load(fh)
-
-
-def extract_variable_from_file(file, directory):
-    with open(file, encoding='utf8') as fh:
-        text = fh.read()
-    # read metadata file (if exists)
-    if not (data := _read_json_file(directory / f'{file.stem}.meta')):
-        data = {'filename': str(file)}
-    # read section data file (if exists)
-    if not (sections := Headers(_read_json_file(directory / f'{file.stem}.sect'))):
-        sections = extract_headers_and_text(text)
-    # extract eye info from file
+def extract_variable_from_text(text, data, sections):
+    """extract eye info from text, data, and section info"""
     data = extract_all(text, data=data, sections=sections)
     return data
-
-
-def extract_variables_from_filelist(filelist):
-    with open(filelist) as fh:
-        for i, line in enumerate(fh, start=1):
-            file = pathlib.Path(line.strip())
-            yield extract_variable_from_file(file, file.parent)
-            if i % 10000 == 0:
-                logger.info(f'Processed {i} records.')
-
-
-def extract_variables_from_directories(*directories: pathlib.Path):
-    for directory in directories:
-        logger.info(f'Reading Directory: {directory}')
-        for i, file in enumerate(directory.glob('*.txt'), start=1):
-            yield extract_variable_from_file(file, directory)
-            if i % 10000 == 0:
-                logger.info(f'Processed {i} records.')
 
 
 if __name__ == '__main__':

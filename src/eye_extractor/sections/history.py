@@ -19,7 +19,7 @@ HISTORY_SECTION_PAT = re.compile(
 
 PROBLEM_LIST = re.compile(
     rf'(?:'
-    rf'(?P:patient\s*)?active\s*problem\s*list'
+    rf'(?:patient\s*)?active\s*problem\s*list'
     rf')',
     re.I
 )
@@ -29,7 +29,7 @@ STOP_BEFORE_REGEX = re.compile(
     rf'signed\s*by'
     rf'|date'
     rf'|time'
-    rf'|(?P:patient\s*)?active\s*problem\s*list'
+    rf'|(?:patient\s*)?active\s*problem\s*list'
     rf')',
     re.I
 )
