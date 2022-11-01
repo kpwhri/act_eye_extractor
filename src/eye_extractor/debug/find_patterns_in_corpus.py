@@ -21,7 +21,7 @@ def _prep_text(text):
 
 
 def _context(m, text, context=20):
-    return text[max(0, m.start() - context): m.end() + context]
+    return _prep_text(text[max(0, m.start() - context): m.end() + context])
 
 
 @click.command()
