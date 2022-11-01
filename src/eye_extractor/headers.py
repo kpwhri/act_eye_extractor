@@ -27,10 +27,13 @@ class Headers:
             if initialdict:
                 self.add(initialdict)
 
-    def add(self, d: dict):
-        self.data.append(
-            {x.replace(' ', '_').upper(): y for x, y in d.items()}
-        )
+    def add(self, d):
+        if isinstance(d, dict):
+            self.data.append(
+                {x.replace(' ', '_').upper(): y for x, y in d.items()}
+            )
+        elif isinstance(d, Headers):
+            self.data += d.data
 
     def iterate(self, *headers: Section) -> tuple[Section, SectionText]:
         for header in headers:
