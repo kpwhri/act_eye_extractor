@@ -1,10 +1,9 @@
-import json
 import re
 
 import pytest
 
 from eye_extractor.build_table import build_va
-from eye_extractor.history.common import update_history_from_key
+from eye_extractor.common.json import dumps_and_loads_json
 from eye_extractor.va.extractor2 import vacc_numbercorrect_le, extract_va, VA_PATTERN, clean_punc
 from eye_extractor.va.pattern import VA, VA_LINE_CC, VA_LINE_SC, VA_LINE_SC_CC, VA_LINE_SC_OD, VA_LINE_SC_OS
 from eye_extractor.va.rx import get_manifest_rx, BCV_PAT
@@ -182,11 +181,9 @@ _va_extract_and_build_cases = [
 def test_va_extract_and_build(text, exp_length, exps):
     result = list(extract_va(text))
     assert len(result) == exp_length
-    post_json = json.loads(json.dumps(result))
+    post_json = dumps_and_loads_json(result)
     assert len(post_json) == exp_length
-    print(post_json)
     va_dict = build_va(post_json)
-    print(va_dict)
     for val, field in exps:
         assert val == va_dict.get(field, None)
 
@@ -219,8 +216,8 @@ def test_va_extract_and_build(text, exp_length, exps):
             marks=pytest.mark.skip(reason='Missing pattern.')),
     ])
 def test_get_manifest_rx(
-    text, sphere_re, cylinder_re, axis_re, add_re, denom_re, correct_re,
-    sphere_le, cylinder_le, axis_le, add_le, denom_le, correct_le):
+        text, sphere_re, cylinder_re, axis_re, add_re, denom_re, correct_re,
+        sphere_le, cylinder_le, axis_le, add_le, denom_le, correct_le):
     results = list(get_manifest_rx(text))
     if not results:
         raise ValueError('Pattern not found.')
@@ -270,11 +267,9 @@ def test_bcv_pat():
 def test_va_ni(text, exp_length, exps):
     result = list(extract_va(text))
     assert len(result) == exp_length
-    post_json = json.loads(json.dumps(result))
+    post_json = dumps_and_loads_json(result)
     assert len(post_json) == exp_length
-    print(post_json)
     va_dict = build_va(post_json)
-    print(va_dict)
     for val, field1, field2 in exps:
         assert val == va_dict.get(field1, None)
         assert val == va_dict.get(field2, None)
