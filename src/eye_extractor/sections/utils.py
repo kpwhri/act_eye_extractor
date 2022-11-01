@@ -33,3 +33,4 @@ def get_index_of_next_section_start(text, start_index, *, max_length=None,
             continue
         else:
             return m.start()  # return start of entire pattern
+    return None

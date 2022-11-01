@@ -79,7 +79,8 @@ def parse_date(text):
             curr_month = data.get('month', None) or _get_month(data.get('month_name', None))
             curr_year = data.get('year')
             try:
-                return datetime.date(int(curr_year), int(curr_month), int(curr_day))
+                dt = datetime.date(int(curr_year), int(curr_month), int(curr_day))
+                return dt
             except Exception as e:
                 logger.error(f'Failed to parse datetime: {m.group()} with {str(e)}')
     try:
