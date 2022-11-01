@@ -6,6 +6,8 @@ from eye_extractor.common.string import replace_punctuation
 NEGWORDS = {
     'no': {
         'new': False,
+        'increased': False,
+        'worsening': False,
         None: True,
     },
     'not': {
