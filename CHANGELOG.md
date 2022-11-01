@@ -28,6 +28,8 @@ Types of changes:
 ### Fixed
 - Added note date restriction to `wetamd_severity` variable
 - Modernised `amd` variable
+- Improved VA
+- Improved IOP
 
 ### Changed
 - Changed 'fluid' in macula to default to intraretinal fluid 
