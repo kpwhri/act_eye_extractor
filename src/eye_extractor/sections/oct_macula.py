@@ -3,8 +3,7 @@ import re
 from eye_extractor.common.date import parse_date
 from eye_extractor.common.negation import is_post_negated
 from eye_extractor.laterality import LATERALITY_PLUS_COLON_PATTERN, lat_lookup, Laterality
-from eye_extractor.nlp.character_groups import get_next_text_to_newline, get_previous_text_to_newline, \
-    get_previous_index_of_newline, get_next_index_of_newline, LINE_START_CHARS_RX
+from eye_extractor.nlp.character_groups import get_next_text_to_newline, LINE_START_CHARS_RX
 
 from loguru import logger
 
@@ -32,9 +31,6 @@ def _find_oct_macula_section_laterality(text, *, restrict_date=None):
         return None
     prev_start = None
     prev_lat = None
-    print(text[:30])
-    print(date)
-    print(re.search(rf'{date.year}\W*OD\s', text[:35]))
     if date and re.search(rf'{date.year}\W*OD\s', text[:35]):
         pat = re.compile(r'\b(OD|OS)\b')  # there aren't colons in this context
     else:

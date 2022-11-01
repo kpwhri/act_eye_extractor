@@ -6,6 +6,7 @@ Keep track of text that did not have the pattern matched.
 """
 import datetime
 import pathlib
+import re
 
 import click
 from loguru import logger
@@ -17,6 +18,10 @@ from eye_extractor.sections.oct_macula import find_oct_macula_sections
 
 def _prep_text(text):
     return text.replace('\n', r'\n').replace('\t', r'\t')
+
+
+def _context(m, text, context=20):
+    return text[max(0, m.start() - context): m.end() + context]
 
 
 @click.command()
@@ -39,14 +44,14 @@ def find_patterns_in_corpus(
         for file, text, data, sections in read_from_params(*directories, filelist):
             if 'HISTORY' in patterns:
                 _sections = retrieve_history_sections(text)
-                if not _sections:
-                    miss.write(f'{file.name}\tHISTORY\t{file}\n')
+                if not _sections and (m := re.search(r'(?:history|hx)', text, re.I)):
+                    miss.write(f'{file.name}\tHISTORY\t{_context(m, text)}\n')
                 for section in _sections:
                     out.write(f'{file.name}\tHISTORY\t{_prep_text(section["name"])}\t{_prep_text(section["text"])}\n')
             if 'OCT' in patterns:
                 _sections = find_oct_macula_sections(text)
-                if not _sections:
-                    miss.write(f'{file.name}\tOCT\t{file}\n')
+                if not _sections and (m := re.search(r'\boct\b', text, re.I)):
+                    miss.write(f'{file.name}\tOCT\t{_context(m, text)}\n')
                 for mac_sections in _sections:
                     for lat, values in mac_sections.items():
                         out.write(f'{file.name}\tOCT\t{lat.name}\t{_prep_text(values["text"])}\n')
