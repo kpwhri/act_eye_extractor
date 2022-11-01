@@ -124,11 +124,13 @@ def create_variable(data, text, match, lateralities, variable, value, *, known_l
     if isinstance(value, dict) and value.get('date', None) is None:  # skip if alternative way of finding date
         value['date'] = parse_nearest_date_to_line_start(match.start(), text)
     # laterality
-    lat = known_laterality or get_laterality_for_term(
-        lateralities or build_laterality_table(text),
-        match,
-        text
-    )
+    lat = known_laterality
+    if not known_laterality or known_laterality == Laterality.UNKNOWN:
+        lat = get_laterality_for_term(
+            lateralities or build_laterality_table(text),
+            match,
+            text
+        )
     add_laterality_to_variable(data, lat, variable, value)
 
 
