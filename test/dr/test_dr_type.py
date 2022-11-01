@@ -44,7 +44,7 @@ _dr_type_extract_and_build_cases = [
     ('MODERATE NONPROLIFERATIVE DIABETIC RETINOPATHY OD', {}, DrType.NPDR, DrType.UNKNOWN, DrType.UNKNOWN),
     ('proliferative Diabetic Retinopathy: YES, MILD OU', {}, DrType.PDR, DrType.PDR, DrType.UNKNOWN),
     ('Proliferative diabetic retinopathy OS', {}, DrType.UNKNOWN, DrType.PDR, DrType.UNKNOWN),
-    ('Hx of pdr od', {}, DrType.PDR, DrType.UNKNOWN, DrType.UNKNOWN),
+    ('Hx of pdr od', {}, DrType.NONE, DrType.UNKNOWN, DrType.UNKNOWN),  # historical
     ('Uncontrolled Proliferative Diabetic Retinopathy', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.PDR),
 ]
 

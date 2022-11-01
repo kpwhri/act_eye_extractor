@@ -10,7 +10,7 @@ from loguru import logger
 from eye_extractor.output.variable import has_valid_date
 from eye_extractor.sections.utils import get_index_of_next_section_start
 
-optional_macula = r'(?:\s*macula):?'
+optional_macula = r'(?:\s*macula)?:?'
 
 OCT_MACULA_PAT = re.compile(
     rf'(?:'

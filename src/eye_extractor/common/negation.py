@@ -26,6 +26,8 @@ NEGWORDS = {
     'resolved': True,
     'resolution': True,
     'cleared': True,
+    'hx': True,
+    'history': True,
     None: False,
 }
 
