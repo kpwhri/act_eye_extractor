@@ -5,12 +5,7 @@ from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 
 CMT_VALUE_PAT = re.compile(
-    r'\b('
-    r'OD\W*(?P<digit2>\d+)'
-    r'|OS\W*(?P<digit3>\d+)'
-    r'|CMT\s*(?P<digit1>\d+)'
-    r'|central macular thickness\W*(?P<digit4>\d+)(um)?'
-    r')\b',
+    r'\b(?:OD\W*|OS\W*|CMT\s*|central macular thickness\W*)(?P<digit>\d+)(um)?\b',
     re.I
 )
 
@@ -31,17 +26,10 @@ def _get_cmt_value(text: str, lateralities, source: str) -> dict:
     for m in CMT_VALUE_PAT.finditer(text):
         negated = is_negated(m, text, word_window=1)
         yield create_new_variable(text, m, lateralities, 'dmacedema_cmt', {
-            'value': 0 if negated else _extract_cmt_value(m),
+            'value': 0 if negated else int(m.group('digit')),
             'term': m.group(),
             'label': f'No CMT value' if negated else 'CMT value',
             'negated': negated,
             'regex': 'CMT_VALUE_PAT',
             'source': source,
         })
-
-
-def _extract_cmt_value(m):
-    values = [m.group('digit1'), m.group('digit2'), m.group('digit3'), m.group('digit4')]
-    for val in values:
-        if val:
-            return int(val)

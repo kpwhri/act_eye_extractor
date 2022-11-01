@@ -85,7 +85,7 @@ def parse_va_test(row, prev_denom, results, *, no_improvement=False):
         prev_denom[lat] = (test.upper(), distance, False)
 
 
-def get_va(data):
+def build_va(data):
     results = {}
     prev_denom = {}
     for row in data:

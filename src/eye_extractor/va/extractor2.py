@@ -4,13 +4,15 @@ Approach:
 2. Find the laterality
 3. Find other classification
 """
-import re
 import enum
+import re
+from typing import Generator
 
 from loguru import logger
 
 from eye_extractor.laterality import Laterality, LATERALITY, LATERALITY_PATTERN, lat_lookup
-from eye_extractor.va.pattern import VA_LINE_CC, VA_LINE_SC, VA_LINE_GROUPED
+from eye_extractor.va.pattern import VA_LINE_CC, VA_LINE_SC, VA_LINE_GROUPED, VA_LINE_SC_CC, VA_LINE_SC_OD, \
+    VA_LINE_SC_OS
 
 
 class VisualAcuity(enum.Enum):
@@ -67,8 +69,8 @@ STOPWORDS_PATTERN = re.compile(
 
 VA_PATTERN = re.compile(
     r'(?:\s|^|~|:)(?P<numerator>20|3E|E)/\s*(?P<score>(?:\d+|NT|NA))\s*(?P<sign>[+|-])*\s*(?P<diopter>\d)*'
-    r'|(?:20/\s*)?(?P<test>HM|CF|LP|NLP)(?:\W+(?:@|at|x)?\s*'
-    r'(?P<distance>\d+)\s*(?P<distance_metric>\'|"|in|ft|feet)'
+    r'|(?:20/\s*)?(?P<test>HM|CF|LP|NLP)(?:(\W+(?:@|at|x))?\s*'
+    r'(?P<distance>\d+)\s*(?P<distance_metric>\'|"|in|ft|feet)?'
     r'(?P<test2>HM|CF|LP|NLP)?'
     r'|$)',
     re.I
@@ -126,7 +128,7 @@ def get_keywords_in_range(keywords, word_start, end_context):
         if is_stopword:
             continue
         if start_idx > word_start and (
-                len(labels) > 1 or labels[0] not in (VisualAcuity.CORRECTED, VisualAcuity.UNCORRECTED)):
+            len(labels) > 1 or labels[0] not in (VisualAcuity.CORRECTED, VisualAcuity.UNCORRECTED)):
             continue  # only allow correction after the score
         for label in labels:
             if label not in results and label not in not_list:
@@ -187,7 +189,7 @@ def handle_test_from_groups(groupdict):
     logger.info(f'Not handled exam: {test}')
 
 
-def get_elements_from_line(m, metadata):
+def get_elements_from_line(m, metadata: list) -> list[dict]:
     d = m.groupdict()
     shared = d.get('shared', dict())
     lst = []
@@ -200,6 +202,7 @@ def get_elements_from_line(m, metadata):
     return lst
 
 
+# TODO: Delete following function, seems unused.
 def get_number_correct(sign, diopter):
     if sign and diopter:
         return f'{sign}{diopter}'
@@ -210,16 +213,29 @@ def get_number_correct(sign, diopter):
     return ''
 
 
-def extract_va_precise(text):
+def extract_va_precise(text: str) -> tuple[list, str]:
     rows = []
-    for va_pat in (VA_LINE_GROUPED, VA_LINE_CC, VA_LINE_SC):
+    for va_pat in (
+        VA_LINE_GROUPED,
+        VA_LINE_SC_CC,
+        VA_LINE_CC,
+        VA_LINE_SC,
+        VA_LINE_SC_OD,
+        VA_LINE_SC_OS,
+    ):
         for m in va_pat.pattern.finditer(text):
             rows += get_elements_from_line(m, va_pat.metadata)
         text = va_pat.pattern.sub(' ', text)
     return rows, text
 
 
-def extract_va(text):
+def clean_punc(text: str, pat: str = r'[¶»]') -> str:
+    """Removes unnecessary punctuation from text."""
+    return re.sub(pat, ' ', text)
+
+
+def extract_va(text: str) -> Generator[dict, None, None]:
+    text = clean_punc(text)
     rows, text = extract_va_precise(text)
     yield from rows
     # find other terms

@@ -3,10 +3,10 @@ import re
 
 import pytest
 
-from eye_extractor.build_table import get_va
+from eye_extractor.build_table import build_va
 from eye_extractor.history.common import update_history_from_key
-from eye_extractor.va.extractor2 import vacc_numbercorrect_le, extract_va, VA_PATTERN
-from eye_extractor.va.pattern import VA
+from eye_extractor.va.extractor2 import vacc_numbercorrect_le, extract_va, VA_PATTERN, clean_punc
+from eye_extractor.va.pattern import VA, VA_LINE_CC, VA_LINE_SC, VA_LINE_SC_CC, VA_LINE_SC_OD, VA_LINE_SC_OS
 from eye_extractor.va.rx import get_manifest_rx, BCV_PAT
 
 
@@ -25,8 +25,14 @@ def test_vacc_le(text, exp):
     ('20/40+1', '20', '40', '+1', None, None, None),
     ('20/hm at 3ft', None, None, None, 'hm', None, None),
     ('20/HM 3\'', None, None, None, 'HM', None, None),
+    ('20/30+2', '20', '30', '+2', None, None, None),
+    ('20/100-1', '20', '100', '-1', None, None, None),
+    ('20/ HM', None, None, None, None, None, 'HM'),
+    ('20/ 70', '20', '70', None, None, None, None),
+    ('20/CF2', None, None, None, 'CF', None, None),
+    ('NLP', None, None, None, None, None, 'NLP'),
 ])
-def test_va_pattern_matches(text, exp_num, exp_score, exp_diopter, exp_test, exp_test2, exp_test3):
+def test_va_pattern_precise(text, exp_num, exp_score, exp_diopter, exp_test, exp_test2, exp_test3):
     pat = re.compile(VA.replace("##", "_0"), re.I)
     m = pat.match(text)
     assert m is not None
@@ -39,19 +45,150 @@ def test_va_pattern_matches(text, exp_num, exp_score, exp_diopter, exp_test, exp
     assert m.group('test3_0') == exp_test3, m.groupdict()
 
 
-@pytest.mark.parametrize('text, exp_num, exp_score, exp_diopter, exp_test, exp_test2', [
-    ('20/20', '20', '20', None, None, None),
-    ('20/40+1', '20', '40', '1', None, None),
-    ('20/hm at 3ft', None, None, None, 'hm', None),
-    ('20/HM', None, None, None, 'HM', None),
+@pytest.mark.parametrize('text, exp_num, exp_score, exp_sign, exp_diopter, exp_test, exp_test2', [
+    ('20/20', '20', '20', None, None, None, None),
+    ('20/40+1', '20', '40', '+', '1', None, None),
+    ('20/hm at 3ft', None, None, None, None, 'hm', None),
+    ('20/HM', None, None, None, None, 'HM', None),
+    ('20/30+2', '20', '30', '+', '2', None, None),
+    ('20/100-1', '20', '100', '-', '1', None, None),
+    ('20/ HM', None, None, None, None, 'HM', None),
+    ('20/ 70', '20', '70', None, None, None, None),
+    ('20/CF2', None, None, None, None, 'CF', None),
+    ('NLP', None, None, None, None, 'NLP', None)
 ])
-def test_va_pattern(text, exp_num, exp_score, exp_diopter, exp_test, exp_test2):
+def test_va_pattern(text, exp_num, exp_score, exp_sign, exp_diopter, exp_test, exp_test2):
     m = VA_PATTERN.search(text)
     assert m.group('numerator') == exp_num
     assert m.group('score') == exp_score
+    assert m.group('sign') == exp_sign
     assert m.group('diopter') == exp_diopter
     assert m.group('test') == exp_test
     assert m.group('test2') == exp_test2
+
+
+@pytest.mark.parametrize('text, exp', [
+    ("¶Visual Acuity: ', 'Snellen', \" ¶Unaided ¶OD:20/50-2 ¶OS:20/70-2 ¶Va's with specs ¶OD:20/45-1 ¶OS:20/35-2",
+     True),
+])
+def test_va_line_sc_cc_pattern(text, exp):
+    text = clean_punc(text)
+    m = VA_LINE_SC_CC.pattern.search(text)
+    assert bool(m) == exp
+
+
+@pytest.mark.parametrize('text, exp', [
+    ("¶Visual Acuity: Snellen ¶Va's with specs ¶OD:20/50-1 ¶OS:20/35-2", True),
+    ("¶VISUAL ACUITY: Snellen ¶CC:  ¶OD:20/HM  ¶OS:20/CF 3-4 feet", True),
+    ("¶Visual Acuity: Snellen ¶CC  OD NLP           ¶CC  OS 20/400  PH NI", True),
+    ("VISUAL ACUITY - BEST CORRECTED: ¶OD: 20/35 ¶OS: 20/50", True),
+])
+def test_va_line_cc_pattern(text, exp):
+    text = clean_punc(text)
+    m = VA_LINE_CC.pattern.search(text)
+    assert bool(m) == exp
+
+
+@pytest.mark.parametrize('text, exp', [
+    ("¶Visual Acuity: ', 'Snellen', \" ¶Unaided ¶OD:20/50-2 ¶OS:20/70-2", True),
+    ("VISUAL  ACUITY:  Snellen           ¶without correction:     ¶R eye: 20/NLP   ¶L eye: 20/HM @ 1", True),
+    ("Visual acuity:  Snellen  ¶SC: OD: 20/cf @ 2'  ¶       OS: 20/cf @ 4'", True),
+])
+def test_va_line_sc_pattern(text, exp):
+    text = clean_punc(text)
+    m = VA_LINE_SC.pattern.search(text)
+    assert bool(m) == exp
+
+
+@pytest.mark.parametrize('text, exp', [
+    ("VISUAL ACUITY:  ¶SC  OD 20/70  PH 20/30-2 ¶", True),
+    ("VISUAL ACUITY:  ¶SC  OD  20/30+2 ¶", True),
+])
+def test_va_line_sc_od_pattern(text, exp):
+    text = clean_punc(text)
+    m = VA_LINE_SC_OD.pattern.search(text)
+    assert bool(m) == exp
+
+
+@pytest.mark.parametrize('text, exp', [
+    ("VISUAL ACUITY:  ¶SC  OS 20/70  PH 20/30-2 ¶", True),
+    ("VISUAL ACUITY:  ¶SC: OS:  20/25-1 ¶", True),
+])
+def test_va_line_sc_os_pattern(text, exp):
+    text = clean_punc(text)
+    m = VA_LINE_SC_OS.pattern.search(text)
+    assert bool(m) == exp
+
+
+_va_extract_and_build_cases = [
+    ("VISUAL ACUITY: Snellen ¶CC:  ¶OD:20/HM  ¶OS:20/CF 3-4 feet",
+     4,
+     [('HM', 'vacc_letters_re'),
+      ('CF', 'vacc_letters_le'),
+      (3, 'vacc_distance_le')
+      ]
+     ),
+    ("¶Visual Acuity: ', 'Snellen', \" ¶Unaided ¶OD:20/50-2 ¶OS:20/70-2 ¶Va's with specs ¶OD:20/45-1 ¶OS:20/35-2",
+     4,
+     [(50, 'vasc_denominator_re'),
+      (70, 'vasc_denominator_le'),
+      (45, 'vacc_denominator_re'),
+      (35, 'vacc_denominator_le')]
+     ),
+    ("VISUAL ACUITY:  ¶SC  OS 20/80  PH 20/30-2 ¶",
+     2,
+     [(80, 'vasc_denominator_le'),
+      (30, 'vaph_denominator_le'),
+      (-2, 'vaph_numbercorrect_le')]
+     ),
+    ("Visual Acuity: Snellen ¶CC  OD ENUCLEATED           ¶CC  OS 20/40+2  PH NI       ¶  ¶",
+     4,
+     [(None, 'vacc_denominator_re'),
+      (40, 'vacc_denominator_le'),
+      (2, 'vacc_numbercorrect_le'),
+      (None, 'vaph_denominator_re'),
+      (None, 'vaph_denominator_le')]
+     ),
+    ("Visual Acuity: Snellen ¶CC  OD NLP           ¶CC  OS 20/400  PH NI",
+     4,
+     [('NLP', 'vacc_letters_re'),
+      (400, 'vacc_denominator_le'),
+      (0, 'vacc_numbercorrect_le'),
+      (None, 'vaph_denominator_re'),
+      (None, 'vaph_denominator_le')]
+     ),
+    ("VISUAL  ACUITY:  Snellen           ¶without correction:     ¶R eye: 20/NLP   ¶L eye: 20/HM @ 1",
+     4,
+     [('NLP', 'vasc_letters_re'),
+      ('HM', 'vasc_letters_le')]
+     ),
+    ("Visual acuity:  Snellen  ¶SC: OD: 20/cf @ 2'  ¶       OS: 20/cf @ 4'",
+     4,
+     [('CF', 'vasc_letters_re'),
+      (2, 'vasc_distance_re'),
+      ('CF', 'vasc_letters_le'),
+      (4, 'vasc_distance_le')]
+     ),
+    ("VISUAL  ACUITY:  Snellen           ¶sc:      ¶R eye: 20/NLP   ¶L eye: 20/HM @ 1",
+     4,
+     [('NLP', 'vasc_letters_re'),
+      ('HM', 'vasc_letters_le'),
+      (1, 'vasc_distance_le')]
+     ),
+]
+
+
+@pytest.mark.parametrize('text, exp_length, exps', _va_extract_and_build_cases)
+def test_va_extract_and_build(text, exp_length, exps):
+    result = list(extract_va(text))
+    assert len(result) == exp_length
+    post_json = json.loads(json.dumps(result))
+    assert len(post_json) == exp_length
+    print(post_json)
+    va_dict = build_va(post_json)
+    print(va_dict)
+    for val, field in exps:
+        assert val == va_dict.get(field, None)
 
 
 @pytest.mark.parametrize(
@@ -82,8 +219,8 @@ def test_va_pattern(text, exp_num, exp_score, exp_diopter, exp_test, exp_test2):
             marks=pytest.mark.skip(reason='Missing pattern.')),
     ])
 def test_get_manifest_rx(
-        text, sphere_re, cylinder_re, axis_re, add_re, denom_re, correct_re,
-        sphere_le, cylinder_le, axis_le, add_le, denom_le, correct_le):
+    text, sphere_re, cylinder_re, axis_re, add_re, denom_re, correct_re,
+    sphere_le, cylinder_le, axis_le, add_le, denom_le, correct_le):
     results = list(get_manifest_rx(text))
     if not results:
         raise ValueError('Pattern not found.')
@@ -116,7 +253,7 @@ def test_bcv_pat():
     ('Previous Visual acuity: Snellen    CC: OD: 20/HM 3\' PH: OD: 20/NI     OS: 20/80-2+1 PH: OS: 20/NI',
      4, [
          ('HM', 'vacc_letters_re', 'vaph_letters_re'),
-         (3, 'vacc_distance_re', 'vaph_distance_re'),
+         (3.0, 'vacc_distance_re', 'vaph_distance_re'),
      ]
      ),
     ('VISUAL ACUITY:    Snellen CC:   OD: 20/40   PH: OD: 20/NI   OS: 20/20   PH: OS: 20/',
@@ -136,8 +273,16 @@ def test_va_ni(text, exp_length, exps):
     post_json = json.loads(json.dumps(result))
     assert len(post_json) == exp_length
     print(post_json)
-    va_dict = get_va(post_json)
+    va_dict = build_va(post_json)
     print(va_dict)
     for val, field1, field2 in exps:
         assert val == va_dict.get(field1, None)
         assert val == va_dict.get(field2, None)
+
+
+@pytest.mark.parametrize('text, exp', [
+    ('¶»»»OS: +3.00-0.75x085 VA: 20/30- VA OU: 20/30  ¶»»»»ADD:+2.50 20/30- @ 16 inches  ¶»»',
+     '    OS: +3.00-0.75x085 VA: 20/30- VA OU: 20/30       ADD:+2.50 20/30- @ 16 inches     '),
+])
+def test_clean_punc(text, exp):
+    assert exp == clean_punc(text)
