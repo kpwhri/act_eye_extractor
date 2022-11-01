@@ -1,5 +1,5 @@
 import re
-from typing import Match
+from typing import Match, Pattern
 
 from eye_extractor.common.string import replace_punctuation
 
@@ -40,6 +40,8 @@ NEGWORDS_POST = frozenset(
 HISTORY_WORDS = frozenset({
     'hx', 'history', 'phx'
 })
+
+DEFAULT_BOUNDARY_REGEX = re.compile(r'\b(?:od|os|ou)\b')
 
 
 def _prep_negation_tree(words, fsa):
@@ -88,10 +90,11 @@ def is_any_negated(m: Match | int, text: str):
 
 def is_negated(m: Match | int, text: str, terms: set[str] | dict = NEGWORDS,
                *, word_window: int = 2, char_window: int = 0,
-               skip_regex: Match = None,
-               boundary_chars=':', skip_n_boundary_chars=0, lowercase_text=True):
+               skip_regex: Pattern = None, boundary_regex: Pattern = DEFAULT_BOUNDARY_REGEX,
+               boundary_chars=':¶', skip_n_boundary_chars=0, lowercase_text=True):
     """Look back from match for specified terms. Stop at `boundary_chars`.
 
+    :param boundary_regex: create a boundary
     :param skip_n_boundary_chars: stop after N boundary chars;
         if set to 1, will stop when it runs into the second `boundary_chars`
     :param lowercase_text: force lowercase text
@@ -106,7 +109,7 @@ def is_negated(m: Match | int, text: str, terms: set[str] | dict = NEGWORDS,
     """
     return has_before(
         end_idx=m if isinstance(m, int) else m.start(), text=text, terms=terms,
-        word_window=word_window, char_window=char_window,
+        word_window=word_window, char_window=char_window, boundary_regex=boundary_regex,
         boundary_chars=boundary_chars, skip_n_boundary_chars=skip_n_boundary_chars,
         skip_regex=skip_regex, lowercase_text=lowercase_text,
         hack_punctuation=True,
@@ -115,7 +118,7 @@ def is_negated(m: Match | int, text: str, terms: set[str] | dict = NEGWORDS,
 
 def has_before(end_idx: int, text: str, terms: set[str] | dict,
                *, word_window: int = 2, char_window: int = 0,
-               skip_regex: Match = None,
+               skip_regex: Pattern = None, boundary_regex: Pattern = None,
                boundary_chars=':¶', skip_n_boundary_chars=0, lowercase_text=True,
                hack_punctuation=False):
     if not char_window:
@@ -124,7 +127,10 @@ def has_before(end_idx: int, text: str, terms: set[str] | dict,
     if boundary_chars:
         if skip_regex is not None:
             context = skip_regex.sub(' ', context)
-        context_list = re.split(f'[{re.escape(boundary_chars)}]', context)
+        boundary_pattern = f'[{re.escape(boundary_chars)}]'
+        if boundary_regex:
+            boundary_pattern = f'(?:{boundary_regex.pattern}|{boundary_pattern})'
+        context_list = re.split(boundary_pattern, context)
         context = ' '.join(context_list[-1 - skip_n_boundary_chars:])
     if lowercase_text:
         context = context.lower()
@@ -136,11 +142,12 @@ def has_before(end_idx: int, text: str, terms: set[str] | dict,
 
 
 def is_post_negated(m: Match | int, text: str, terms: set[str] | dict = NEGWORDS_POST,
-                    *, word_window: int = 2, char_window: int = 0,
+                    *, word_window: int = 2, char_window: int = 0, boundary_regex: Pattern = DEFAULT_BOUNDARY_REGEX,
                     skip_n_boundary_chars=1, skip_regex: Match = None,
                     boundary_chars=':¶', lowercase_text=True):
     """
 
+    :param boundary_regex:
     :param skip_n_boundary_chars:
     :param skip_regex: remove these before splitting on boundary characters;
         useful for, e.g., removing 'OU:' which might not want to be counted as a section boundary
@@ -163,7 +170,7 @@ def is_post_negated(m: Match | int, text: str, terms: set[str] | dict = NEGWORDS
 
 
 def has_after(start_idx: int, text: str, terms: set[str] | dict,
-              *, word_window: int = 2, char_window: int = 0,
+              *, word_window: int = 2, char_window: int = 0, boundary_regex: Pattern = None,
               skip_n_boundary_chars=1, skip_regex: Match = None,
               boundary_chars=':¶', lowercase_text=True,
               hack_punctuation=False):
@@ -187,7 +194,10 @@ def has_after(start_idx: int, text: str, terms: set[str] | dict,
     if boundary_chars:
         if skip_regex is not None:
             context = skip_regex.sub(' ', context)
-        context_list = re.split(f'[{re.escape(boundary_chars)}]', context)
+        boundary_pattern = f'[{re.escape(boundary_chars)}]'
+        if boundary_regex:
+            boundary_pattern = f'(?:{boundary_regex.pattern}|{boundary_pattern})'
+        context_list = re.split(boundary_pattern, context)
         context = ' '.join(context_list[:1 + skip_n_boundary_chars])
     if lowercase_text:
         context = context.lower()

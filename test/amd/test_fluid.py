@@ -100,6 +100,7 @@ def test_fluid_to_column(data, exp_fluid_amd_re, exp_fluid_amd_le):
     ('', {'MACULA': 'subretinal fluid od'}, 'SUBRETINAL FLUID', 'UNKNOWN', 'UNKNOWN', None),
     ('', {'MACULA': 'with fluid and exudates'}, 'UNKNOWN', 'UNKNOWN', 'INTRARETINAL FLUID', None),
     ('', {'MACULA': 'large area of edema OD'}, 'INTRARETINAL FLUID', 'UNKNOWN', 'UNKNOWN', None),
+    ('', {'MACULA': 'no srf od'}, 'NO SUBRETINAL FLUID', 'UNKNOWN', 'UNKNOWN', None),
     ('corneal fluid', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN', None),
     ('corneal edema', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN', None),
     ('macular edema os', {}, 'UNKNOWN', 'INTRARETINAL FLUID', 'UNKNOWN', None),

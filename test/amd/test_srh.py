@@ -43,6 +43,7 @@ def test_srh_value_first_variable(text, exp_value, exp_negword):
     ('sr hem od, no srh os', {}, 1, 0, -1, None),
     ('sub and intraretinal heme os', {}, -1, 1, -1, None),
     ('no srf or srh', {}, -1, -1, 0, None),
+    ('no srf od, srh os', {}, -1, 1, -1, None),
     ('', {'MACULA': 'w/o srh ou'}, 0, 0, -1, None),
     ('OCT MACULA: 2/2/2022 OS: srh', {'MACULA': 'w/o srh os'}, -1, 1, -1, None),
     ('OCT MACULA: 2/2/2022 OS: srh', {'MACULA': 'w/o srh os'}, -1, 1, -1, None),
