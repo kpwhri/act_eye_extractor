@@ -25,12 +25,14 @@ Types of changes:
 - Macular cyst (this will probably be treated as IRF): `macular_cyst_*`
 - Additional OCT section pattern
 - Script to debug patterns
+- Function to check both pre- and post-negation using default values
 
 ### Fixed
 - Added note date restriction to `wetamd_severity` variable
 - Modernised `amd` variable
 - Improved VA
 - Improved IOP
+- Improved post-negation
 
 ### Changed
 - Changed 'fluid' in macula to default to intraretinal fluid 
