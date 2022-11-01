@@ -19,7 +19,7 @@ def read_file(file, directory):
     if not (data := _read_json_file(directory / f'{file.stem}.meta')):
         data = {'filename': str(file)}
     # read section data file (if exists)
-    sections = Headers(_read_json_file(directory / f'{file.stem}.sect'))
+    sections = Headers(_read_json_file(directory / f'{file.stem}.sect'), text=text)
     sections.add(extract_headers_and_text(text))
     return file, text, data, sections
 

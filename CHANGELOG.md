@@ -26,6 +26,7 @@ Types of changes:
 - Additional OCT section pattern
 - Script to debug patterns
 - Function to check both pre- and post-negation using default values
+- Missing sections will be searched for; this might have too much overhead...
 
 ### Fixed
 - Added note date restriction to `wetamd_severity` variable
@@ -33,6 +34,7 @@ Types of changes:
 - Improved VA
 - Improved IOP
 - Improved post-negation
+- Created additional medication categories (included prescription values)
 
 ### Changed
 - Changed 'fluid' in macula to default to intraretinal fluid 
