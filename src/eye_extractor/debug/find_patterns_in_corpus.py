@@ -40,13 +40,13 @@ def find_patterns_in_corpus(
             if 'HISTORY' in patterns:
                 _sections = retrieve_history_sections(text)
                 if not _sections:
-                    miss.write(f'{file.name}\tHISTORY\t{file}')
+                    miss.write(f'{file.name}\tHISTORY\t{file}\n')
                 for section in _sections:
                     out.write(f'{file.name}\tHISTORY\t{_prep_text(section["name"])}\t{_prep_text(section["text"])}\n')
             if 'OCT' in patterns:
                 _sections = find_oct_macula_sections(text)
                 if not _sections:
-                    miss.write(f'{file.name}\tOCT\t{file}')
+                    miss.write(f'{file.name}\tOCT\t{file}\n')
                 for mac_sections in _sections:
                     for lat, values in mac_sections.items():
                         out.write(f'{file.name}\tOCT\t{lat.name}\t{_prep_text(values["text"])}\n')
