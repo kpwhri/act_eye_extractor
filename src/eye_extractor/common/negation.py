@@ -22,10 +22,18 @@ NEGWORDS = {
     'w/o': True,
     '(-)': True,
     'if': True,
+    'possible': True,
+    'resolved': True,
+    'resolution': True,
+    'cleared': True,
     None: False,
 }
 
 NEGWORD_SET = frozenset({key for key in NEGWORDS if key})
+
+NEGWORDS_POST = frozenset(
+    {'not', 'cleared', 'resolved', 'or'}
+)
 
 HISTORY_WORDS = frozenset({
     'hx', 'history', 'phx'
@@ -121,10 +129,10 @@ def has_before(end_idx: int, text: str, terms: set[str] | dict,
     return _prep_negation_tree(words[-word_window:], terms)
 
 
-def is_post_negated(m: Match | int, text: str, terms: set[str] | dict = NEGWORDS,
+def is_post_negated(m: Match | int, text: str, terms: set[str] | dict = NEGWORDS_POST,
                     *, word_window: int = 2, char_window: int = 0,
                     skip_n_boundary_chars=1, skip_regex: Match = None,
-                    boundary_chars=':', lowercase_text=True):
+                    boundary_chars=':¶', lowercase_text=True):
     """
 
     :param skip_n_boundary_chars:
