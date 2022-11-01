@@ -14,9 +14,9 @@ optional_macula = r'(?:\s*macula)?:?'
 
 OCT_MACULA_PAT = re.compile(
     rf'(?:'
-    rf'\boct\s*macula:'
-    rf'|[{LINE_START_CHARS_RX}]\s*oct{optional_macula}\b'
-    rf'|^oct{optional_macula}\b'
+    rf'\bocts?\s*macula:'
+    rf'|[{LINE_START_CHARS_RX}]\s*octs?{optional_macula}\b'
+    rf'|^octs?{optional_macula}\b'
     rf')',
     re.IGNORECASE,
 )
