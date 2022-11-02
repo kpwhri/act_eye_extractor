@@ -26,7 +26,7 @@ Types of changes:
 - Additional OCT section pattern
 - Script to debug patterns
 - Function to check both pre- and post-negation using default values
-- Missing sections will be searched for; this might have too much overhead...
+- Missing sections can be searched for (via runtime option), though this can increase processing by 4x
 
 ### Fixed
 - Added note date restriction to `wetamd_severity` variable
