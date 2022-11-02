@@ -1,6 +1,7 @@
 import datetime
 import json
 import pathlib
+import sys
 
 import click
 from loguru import logger
@@ -73,6 +74,9 @@ def extract_variables(directories: tuple[pathlib.Path], outdir: pathlib.Path = N
         outdir = pathlib.Path('out')
     outdir.mkdir(parents=True, exist_ok=True)
     start_time = datetime.datetime.now()
+    logger.remove()
+    logger.add(outdir / f'eye_extractor_{start_time:%Y%m%d_%H%M%S}.log', level='DEBUG')
+    logger.add(sys.stderr, level='INFO')
     with open(outdir / f'eye_extractor_{start_time:%Y%m%d_%H%M%S}.jsonl', 'w', encoding='utf8') as out:
         for file, text, data, sections in read_from_params(*directories, filelist,
                                                            search_missing_headers=search_missing_headers):
