@@ -22,7 +22,8 @@ class Headers:
 
     def __init__(self, *initialdicts, text=None):
         self.data = []
-        self.text = text
+        self.text = text  # if not None, use this text for missing headers
+        self.searched = {}  # store previous lookups
         for initialdict in initialdicts:
             if initialdict:
                 self.add(initialdict)
@@ -47,7 +48,8 @@ class Headers:
                     found = True
                     break
             if not found:
-                self.search(header)
+                if search_result := self.search(header):
+                    yield header, search_result
 
     def get(self, header: Section, default=None) -> SectionText:
         for d in self.data:
@@ -56,17 +58,21 @@ class Headers:
         return default
 
     def search(self, header: Section):
-        """Search for missing patterns requested"""
+        """Search for missing section headers"""
         if not self.text:
             return None
-        header_rx = header.replace('_', r'\s*')
-        if m := re.search(rf'[{LINE_START_CHARS_RX}]\s*{header_rx}\s*[:-]', self.text, re.I):
-            m2 = re.search(rf'[A-Za-z]\s*:', self.text[m.end():])
-            if m2:
-                end = m2.start() + m.end()
-            else:
-                end = m.end() + 100
-            return self.text[m.start(): end]
+        if header not in self.searched:
+            header_rx = header.replace('_', r'\W*')
+            section_text = None
+            if m := re.search(rf'(?:[{LINE_START_CHARS_RX}]|^)\s*{header_rx}\s*[:-]', self.text, re.I):
+                m2 = re.search(rf'[A-Za-z]\s*:', self.text[m.end():])
+                if m2:
+                    end = m2.start() + m.end()
+                else:
+                    end = m.end() + 100
+                section_text = self.text[m.end(): end]
+            self.searched[header] = section_text
+        return self.searched[header]
 
     def __bool__(self):
         return bool(self.data and sum(len(x) for x in self.data) > 0)
