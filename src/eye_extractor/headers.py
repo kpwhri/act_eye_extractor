@@ -27,6 +27,9 @@ class Headers:
             if initialdict:
                 self.add(initialdict)
 
+    def set_text(self, text):
+        self.text = text
+
     def add(self, d):
         if isinstance(d, dict):
             self.data.append(

@@ -60,7 +60,10 @@ def extract_all(text: str, *, data: dict = None, sections: dict = None):
 @click.argument('directories', nargs=-1, type=click.Path(exists=True, file_okay=False, path_type=pathlib.Path))
 @click.option('--outdir', type=click.Path(file_okay=False, path_type=pathlib.Path), default=None)
 @click.option('--filelist', type=click.Path(dir_okay=False, path_type=pathlib.Path), default=None)
-def extract_variables(directories: tuple[pathlib.Path], outdir: pathlib.Path = None, filelist: pathlib.Path = None):
+@click.option('--search-missing-headers', is_flag=True, default=False,
+              help='If a requested header is not found, attempt to find it in the text.')
+def extract_variables(directories: tuple[pathlib.Path], outdir: pathlib.Path = None, filelist: pathlib.Path = None,
+                      *, search_missing_headers=False):
     """
     Iterate through all '*.txt' files in directory for processing by eye extractor.
         Optionally, will include relevant metadata from associated *.meta json files
@@ -71,7 +74,8 @@ def extract_variables(directories: tuple[pathlib.Path], outdir: pathlib.Path = N
     outdir.mkdir(parents=True, exist_ok=True)
     start_time = datetime.datetime.now()
     with open(outdir / f'eye_extractor_{start_time:%Y%m%d_%H%M%S}.jsonl', 'w', encoding='utf8') as out:
-        for file, text, data, sections in read_from_params(*directories, filelist):
+        for file, text, data, sections in read_from_params(*directories, filelist,
+                                                           search_missing_headers=search_missing_headers):
             line = extract_variable_from_text(text, data, sections)
             out.write(json.dumps(line, default=str) + '\n')
     duration = datetime.datetime.now() - start_time
