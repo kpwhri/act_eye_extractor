@@ -90,7 +90,7 @@ def is_any_negated(m: Match | int, text: str):
     return is_negated(m, text) or is_post_negated(m, text)
 
 
-def is_negated(m: Match | int, text: str, terms: set[str] | dict = NEGWORDS,
+def is_negated(m: Match | int, text: str, terms: set[str] | frozenset[str] | dict = NEGWORDS,
                *, word_window: int = 2, char_window: int = 0,
                skip_regex: Pattern = None, boundary_regex: Pattern = DEFAULT_BOUNDARY_REGEX,
                boundary_chars=':¶', skip_n_boundary_chars=0, lowercase_text=True):
@@ -143,7 +143,7 @@ def has_before(end_idx: int, text: str, terms: set[str] | dict,
     return _prep_negation_tree(words[-word_window:], terms)
 
 
-def is_post_negated(m: Match | int, text: str, terms: set[str] | dict = NEGWORDS_POST,
+def is_post_negated(m: Match | int, text: str, terms: set[str] | frozenset[str] | dict = NEGWORDS_POST,
                     *, word_window: int = 2, char_window: int = 0, boundary_regex: Pattern = DEFAULT_BOUNDARY_REGEX,
                     skip_n_boundary_chars=1, skip_regex: Match = None,
                     boundary_chars=':¶', lowercase_text=True):
@@ -164,7 +164,7 @@ def is_post_negated(m: Match | int, text: str, terms: set[str] | dict = NEGWORDS
     """
     return has_after(
         start_idx=m if isinstance(m, int) else m.end(), text=text, terms=terms,
-        word_window=word_window, char_window=char_window,
+        word_window=word_window, char_window=char_window, boundary_regex=boundary_regex,
         skip_n_boundary_chars=skip_n_boundary_chars, skip_regex=skip_regex,
         boundary_chars=boundary_chars, lowercase_text=lowercase_text,
         hack_punctuation=True,
@@ -178,6 +178,8 @@ def has_after(start_idx: int, text: str, terms: set[str] | dict,
               hack_punctuation=False):
     """
 
+    :param boundary_regex:
+    :param hack_punctuation:
     :param start_idx:
     :param text:
     :param terms:

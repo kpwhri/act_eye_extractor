@@ -23,6 +23,8 @@ OCT_MACULA_PAT = re.compile(
 
 SECTION_PAT = re.compile(r'[A-Za-z]{2}:')
 
+oct_macula_not_section_keywords = frozenset({'today', 'done', 'visit', 'performed'})
+
 
 def _find_oct_macula_section_laterality(text, *, restrict_date=None):
     data = {}
@@ -57,7 +59,7 @@ def find_oct_macula_sections(text, *, restrict_date=None) -> list[dict]:
     """
     sections = []
     for m in OCT_MACULA_PAT.finditer(text):
-        if is_post_negated(m, text, terms={'today', 'done', 'visit'}):
+        if is_post_negated(m, text, terms=oct_macula_not_section_keywords):
             continue
         end_index = get_index_of_next_section_start(text, m.end(), max_length=200)
         if res := _find_oct_macula_section_laterality(
@@ -72,7 +74,7 @@ def remove_macula_oct(text):
     result = []
     prev_end = 0
     for m in OCT_MACULA_PAT.finditer(text):
-        if is_post_negated(m, text, terms={'today', 'done', 'visit'}):
+        if is_post_negated(m, text, terms=oct_macula_not_section_keywords):
             continue
         end_index = get_index_of_next_section_start(text, m.end(), max_length=200)
         result.append(text[prev_end: m.start()])
