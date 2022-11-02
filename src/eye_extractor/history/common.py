@@ -65,7 +65,7 @@ def update_hx_data(data, key, value=None, exclusive_search=True):
         if found_ and exclusive_search:
             return
     if not found:
-        logger.warning(f'Unidentified history category: {key} ({value})')
+        logger.debug(f'Unidentified history category: {key[:40]} ({value})')
 
 
 def create_history(text, start_pats, is_personal_hx=False):
