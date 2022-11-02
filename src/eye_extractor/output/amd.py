@@ -61,7 +61,7 @@ def build_amd_variables(data):
     # results.update(build_lasertype(curr['lasertype']))
     results.update(build_lasertype_new(data['common']['treatment'], is_amd=note['is_amd'], note_date=note['date']))
     results.update(build_amd_antivegf(data['common']['treatment'], is_amd=note['is_amd'], note_date=note['date']))
-    results.update(build_macular_cyst(data['cyst']))
+    results.update(build_macular_cyst(curr['cyst']))
     return results
 
 
