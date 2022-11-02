@@ -105,6 +105,8 @@ def get_iop(text):
     text = clean_punc(text)
     for iop_pattern in (IOP_PATTERN_OU, IOP_PATTERN_LE, IOP_PATTERN_RE, IOP_PATTERN_LE_POST,
                         IOP_PATTERN_RE_POST, IOP_PATTERN_FRACTION):
+        start = 0
+        new_text = []  # keep text to retain
         for m in iop_pattern.finditer(text):
             curr = {}
             d = m.groupdict()
@@ -122,8 +124,11 @@ def get_iop(text):
             curr['method1'] = d.get('METHOD1', None)
             curr['method2'] = d.get('METHOD2', None)
             if curr:
-                text = re.sub(m.string, ' ', text)
+                new_text.append(text[start: m.start()])
+                start = m.end()
                 yield curr
+        new_text.append(text[start:])
+        text = ''.join(new_text)
 
     for m in IOP_PATTERN2.finditer(text):
         curr = {}

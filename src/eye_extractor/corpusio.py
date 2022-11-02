@@ -26,6 +26,8 @@ def read_file(file, directory):
 
 def read_directories(*directories: pathlib.Path):
     for directory in directories:
+        if not directory:
+            continue
         logger.info(f'Reading Directory: {directory}')
         for i, file in enumerate(directory.glob('*.txt'), start=1):
             yield read_file(file, directory)
