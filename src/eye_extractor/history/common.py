@@ -64,8 +64,6 @@ def update_hx_data(data, key, value=None, exclusive_search=True):
         found |= found_
         if found_ and exclusive_search:
             return
-    if not found:
-        logger.debug(f'Unidentified history category: {key[:40]} ({value})')
 
 
 def create_history(text, start_pats, is_personal_hx=False):
@@ -75,11 +73,11 @@ def create_history(text, start_pats, is_personal_hx=False):
             start = m.end()
             end = find_end(text, start)
             curr_text = text[start:end]
-            yes_no_list = [x.strip() for x in re.split(r'\b(yes|no)\b', curr_text.strip()) if x.strip()]
+            yes_no_list = [x.strip() for x in re.split(r'\b(yes|no(?:ne)?)\b', curr_text.strip()) if x.strip()]
             if len(yes_no_list) > 1:
                 it = iter(yes_no_list)
                 for key, val in zip(it, it):
-                    if key in {'yes', 'no'}:
+                    if key in {'yes', 'no', 'none'}:
                         key, val = val, key
                     if is_personal_hx and FAMILY_RELATION_PAT.search(key):
                         continue
