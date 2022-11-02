@@ -70,7 +70,6 @@ Q4_PAT = re.compile(
     re.I
 )
 
-
 SEVERITY_PATS = [
     (SEVERE_PAT, Severity.SEVERE),
     (MODERATE_PAT, Severity.MODERATE),
@@ -100,5 +99,3 @@ def extract_severity(text: str) -> list[Severity]:
             sevs.append(severity)
 
     return sevs
-
-

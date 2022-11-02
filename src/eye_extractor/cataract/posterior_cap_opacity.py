@@ -1,5 +1,5 @@
-import re
 import enum
+import re
 
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
@@ -47,7 +47,6 @@ PCO_PAT = re.compile(
     rf'(?:{pco})',
     re.I
 )
-
 
 NO_PCO_PAT = re.compile(
     rf'(?:\bno\s*{pco})',

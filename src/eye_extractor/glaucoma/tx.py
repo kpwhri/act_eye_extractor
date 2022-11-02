@@ -4,8 +4,8 @@ Glaucoma Treatment Plan `glaucoma_tx`
 import enum
 import re
 
-from eye_extractor.common.negation import is_negated, is_post_negated, has_before
 from eye_extractor.common.drug.drops import DROPS_PAT
+from eye_extractor.common.negation import is_negated, is_post_negated, has_before
 from eye_extractor.laterality import build_laterality_table, create_new_variable, Laterality
 
 
@@ -75,12 +75,12 @@ def extract_tx(text, *, headers=None, lateralities=None):
         for section, section_text in headers.iterate('PLAN', 'PLAN_COMMENTS', 'COMMENTS'):
             section_lateralities = build_laterality_table(section_text)
             for pat_label, pat, value in [
-                ('OBSERVE_PAT', OBSERVE_PAT, GlaucomaTreatment.OBSERVE), 
-                ('CONTINUE_RX_PAT', CONTINUE_RX_PAT, GlaucomaTreatment.CONTINUE_RX), 
-                ('NEW_MEDICATION_PAT', NEW_MEDICATION_PAT, GlaucomaTreatment.NEW_MEDICATION), 
-                ('ALT_PAT', ALT_PAT, GlaucomaTreatment.ALT), 
-                ('SLT_PAT', SLT_PAT, GlaucomaTreatment.SLT), 
-                ('SURGERY_PAT', SURGERY_PAT, GlaucomaTreatment.SURGERY), 
+                ('OBSERVE_PAT', OBSERVE_PAT, GlaucomaTreatment.OBSERVE),
+                ('CONTINUE_RX_PAT', CONTINUE_RX_PAT, GlaucomaTreatment.CONTINUE_RX),
+                ('NEW_MEDICATION_PAT', NEW_MEDICATION_PAT, GlaucomaTreatment.NEW_MEDICATION),
+                ('ALT_PAT', ALT_PAT, GlaucomaTreatment.ALT),
+                ('SLT_PAT', SLT_PAT, GlaucomaTreatment.SLT),
+                ('SURGERY_PAT', SURGERY_PAT, GlaucomaTreatment.SURGERY),
                 ('TRABECULOPLASTY_PAT', TRABECULOPLASTY_PAT, GlaucomaTreatment.TRABECULOPLASTY),
             ]:
                 for m in pat.finditer(section_text):

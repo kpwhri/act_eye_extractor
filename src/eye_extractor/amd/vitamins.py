@@ -64,5 +64,3 @@ def extract_amd_vitamin(text, *, headers=None, lateralities=None):
             }}
         )
     return data
-
-

@@ -6,7 +6,7 @@ from eye_extractor.amd.wet import WetSeverity
 from eye_extractor.common.algo.fluid import Fluid, rename_intraretfluid, fluid_prioritization, rename_subretfluid, \
     rename_fluid
 from eye_extractor.common.drug.antivegf import AntiVegf, rename_antivegf
-from eye_extractor.output.variable import column_from_variable_abbr, column_from_variable, rename_variable_func
+from eye_extractor.output.variable import column_from_variable_abbr, rename_variable_func
 
 
 def build_shared_variables(data):

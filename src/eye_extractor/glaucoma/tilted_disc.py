@@ -47,13 +47,13 @@ def extract_tilted_disc(text, headers=None, lateralities=None):
         for m in TILTED_PAT.finditer(text):
             negword = is_negated(m, text)
             if (
-                has_before(m.start(), text, {'head', 'glasses', 'to'}, word_window=5)
-                or has_after(m.end(), text, {'head', 'glasses'}, word_window=5)
+                    has_before(m.start(), text, {'head', 'glasses', 'to'}, word_window=5)
+                    or has_after(m.end(), text, {'head', 'glasses'}, word_window=5)
             ):
                 continue
             elif (
-                has_before(m.start(), text, pos_terms, word_window=5, skip_n_boundary_chars=1)
-                or has_after(m.end(), text, pos_terms, word_window=5, skip_n_boundary_chars=1)
+                    has_before(m.start(), text, pos_terms, word_window=5, skip_n_boundary_chars=1)
+                    or has_after(m.end(), text, pos_terms, word_window=5, skip_n_boundary_chars=1)
             ):
                 data.append(
                     create_new_variable(text, m, lateralities, 'tilted_disc', {

@@ -1,6 +1,6 @@
-from eye_extractor.output.laterality import laterality_from_int, laterality_iter
-
 from loguru import logger
+
+from eye_extractor.output.laterality import laterality_from_int, laterality_iter
 
 etdrs_lookup = {
     'vacc': 'wc',

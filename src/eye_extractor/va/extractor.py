@@ -127,7 +127,7 @@ class VAExtractor:
         elif d['exam'] == 'NLP':
             return 3.0
         return None
-    
+
     def get_best_result(self, lat: Laterality):
         min_priority = 0
         best_lva = None

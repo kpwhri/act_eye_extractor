@@ -8,13 +8,13 @@ from loguru import logger
 from eye_extractor.amd.algorithm import extract_amd_variables
 from eye_extractor.cataract.algorithm import extract_cataract_variables
 from eye_extractor.cataract.cataract_surgery import get_cataract_surgery
-from eye_extractor.common.noteinfo import extract_note_level_info
-from eye_extractor.corpusio import read_file, read_directories, read_filelist, read_from_params
-from eye_extractor.dr.diabetic_retinopathy import extract_dr_variables
 from eye_extractor.common.algo.extract import extract_common_algorithms
+from eye_extractor.common.noteinfo import extract_note_level_info
+from eye_extractor.corpusio import read_from_params
+from eye_extractor.dr.diabetic_retinopathy import extract_dr_variables
 from eye_extractor.exam.algorithm import get_exam
 from eye_extractor.glaucoma.algorithm import extract_glaucoma
-from eye_extractor.headers import extract_headers_and_text, Headers
+from eye_extractor.headers import extract_headers_and_text
 from eye_extractor.history.famhx import create_family_history
 from eye_extractor.history.perhx import create_personal_history
 from eye_extractor.iop import get_iop

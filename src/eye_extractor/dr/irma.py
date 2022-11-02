@@ -57,4 +57,3 @@ def _get_irma(text: str, lateralities, source: str) -> dict:
                 'regex': 'IRMA_PAT',
                 'source': source,
             })
-

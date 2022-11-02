@@ -1,24 +1,24 @@
 from eye_extractor.amd.amd import AMD
 from eye_extractor.amd.cnv import ChoroidalNeoVasc
 from eye_extractor.amd.dry import DrySeverity
-from eye_extractor.common.algo.fluid import Fluid
 from eye_extractor.amd.ga import GeoAtrophy
 from eye_extractor.amd.lasertype import Laser
 from eye_extractor.amd.ped import PigEpiDetach
 from eye_extractor.amd.scar import Scar
 from eye_extractor.amd.vitamins import Vitamin
 from eye_extractor.amd.wet import WetSeverity
+from eye_extractor.common.algo.fluid import Fluid
 from eye_extractor.common.algo.treatment import Treatment
 from eye_extractor.common.drug.antivegf import rename_antivegf, AntiVegf
-from eye_extractor.output.common import macula_is_wnl
 from eye_extractor.laterality import Laterality
+from eye_extractor.output.common import macula_is_wnl
 from eye_extractor.output.shared import get_default_fluid_result, build_subretfluid, build_intraretfluid, build_fluid
 from eye_extractor.output.variable import column_from_variable, update_column, column_from_variable_abbr, \
     rename_variable_func, column_from_variable_binary
 
 
 def build_macular_cyst(data, *, note_date=None):
-    return column_from_variable_binary(data, 'macular_cyst', restrict_date=note_date,)
+    return column_from_variable_binary(data, 'macular_cyst', restrict_date=note_date, )
 
 
 def build_amd_variables(data):

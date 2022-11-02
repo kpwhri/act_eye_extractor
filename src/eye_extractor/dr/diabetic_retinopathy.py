@@ -11,7 +11,7 @@ def extract_dr_variables(text: str, *, headers=None, lateralities=None) -> dict:
     return {
         'binary_vars': get_dr_binary(text, headers=headers, lateralities=lateralities),
         'cmt_value': get_cmt_value(text, headers=headers, lateralities=lateralities),
-        'dr_type': get_dr_type(text, headers=headers,lateralities=lateralities),
+        'dr_type': get_dr_type(text, headers=headers, lateralities=lateralities),
         'hemorrhage_type': get_hemorrhage_type(text, headers=headers, lateralities=lateralities),
         'irma': get_irma(text, headers=headers, lateralities=lateralities),
         'laser_scar_type': get_laser_scar_type(text, headers=headers, lateralities=lateralities),

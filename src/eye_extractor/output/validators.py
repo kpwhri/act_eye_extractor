@@ -79,6 +79,7 @@ def is_string_in_enum(*enums):
 
     enums: IntEnum elements
     """
+
     def _is_string_in_enum(val, *error_messages):
         for enum in enums:
             for item in enum:
@@ -87,6 +88,7 @@ def is_string_in_enum(*enums):
         raise ValidatorError(
             f'Value {val} not in enum names for {", ".join(str(x) for x in enums)}: {", ".join(error_messages)}'
         )
+
     return _is_string_in_enum
 
 
@@ -95,6 +97,7 @@ def is_int_in_enum(*enums):
 
     enums: IntEnum elements
     """
+
     def _is_int_in_enum(val, *error_messages):
         for enum in enums:
             for item in enum:
@@ -103,6 +106,7 @@ def is_int_in_enum(*enums):
         raise ValidatorError(
             f'Value {val} not in enum values for {", ".join(str(x) for x in enums)}: {", ".join(error_messages)}'
         )
+
     return _is_int_in_enum
 
 

@@ -2,9 +2,8 @@ import datetime
 import re
 from typing import Match
 
-from loguru import logger
-
 from dateutil.parser import parse, ParserError
+from loguru import logger
 
 from eye_extractor.nlp.character_groups import LINE_START_CHARS_RX, get_previous_text_to_newline
 

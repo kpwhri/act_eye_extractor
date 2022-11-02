@@ -80,4 +80,3 @@ def _get_dr_type(text: str, lateralities, source: str) -> dict:
                 'regex': pat_label,
                 'source': source,
             })
-

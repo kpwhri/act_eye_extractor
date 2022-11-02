@@ -117,5 +117,3 @@ VA_LINE_SC_OS = VaPattern(
     ),
     [MD_OS_SC, MD_OS_PH]
 )
-
-

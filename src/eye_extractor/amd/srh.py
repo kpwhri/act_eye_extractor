@@ -24,7 +24,8 @@ def extract_subretinal_hemorrhage(text, *, headers=None, lateralities=None):
     for section_dict in find_oct_macula_sections(text):
         for lat, values in section_dict.items():
             for m in SRH_PAT.finditer(values['text']):
-                if is_negated(m, values['text'], {'intraretinal', 'retinal', 'subarachnoid', 'vitreous'}, word_window=1):
+                if is_negated(m, values['text'], {'intraretinal', 'retinal', 'subarachnoid', 'vitreous'},
+                              word_window=1):
                     continue
                 negword = is_any_negated(m, values['text'])
                 data.append(

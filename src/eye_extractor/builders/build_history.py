@@ -21,5 +21,3 @@ def build_personal_history(data):
         'perhx_dme': data.get('dme', -1),
         'perhx_cataract': data.get('cataracts', -1),
     }
-
-

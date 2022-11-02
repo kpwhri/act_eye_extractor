@@ -10,5 +10,6 @@ def extract_cataract_variables(text, *, headers=None, lateralities=None):
     results['cataract_type'] = get_cataract_type(text, headers=headers, lateralities=lateralities)
     results['cataract_type'] = get_cataract_type(text, headers=headers, lateralities=lateralities)
     results['intraocular_lens'] = extract_iol_lens(text, headers=headers, lateralities=lateralities)
-    results['posterior_cap_opacity'] = extract_posterior_capsular_opacity(text, headers=headers, lateralities=lateralities)
+    results['posterior_cap_opacity'] = extract_posterior_capsular_opacity(text, headers=headers,
+                                                                          lateralities=lateralities)
     return results

@@ -15,7 +15,6 @@ import re
 from eye_extractor.common.regex import coalesce_match
 from eye_extractor.laterality import od_pattern, os_pattern, ou_pattern
 
-
 cd = r'c(?:up)?\W*(?:to\W*)?d(?:is[kc])?'
 cd_ratio = (rf'{cd}\W*?'
             rf'(?:ratios?\s*)?'

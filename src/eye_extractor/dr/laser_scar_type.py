@@ -79,5 +79,3 @@ def _get_lsr_macular_header(text: str, lateralities) -> dict:
             'regex': 'MACULAR_HEADER_PAT',
             'source': 'MACULA',
         })
-
-

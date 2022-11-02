@@ -3,7 +3,6 @@ import re
 from eye_extractor.common.negation import is_negated, is_post_negated
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
-
 DIABETIC_RETINOPATHY_PATS = [
     ('diab_retinop_yesno', re.compile(
         r'\b('

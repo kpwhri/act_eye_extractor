@@ -3,7 +3,6 @@ Build table from jsonl output.
 """
 import csv
 import datetime
-import json
 import pathlib
 
 import click

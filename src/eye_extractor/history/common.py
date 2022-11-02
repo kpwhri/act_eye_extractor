@@ -14,7 +14,6 @@ NEGATIVE_FOR_PAT = re.compile(
     r'(?P<target>(?:[\w-]+\W){1,3})'
 )
 
-
 FAMILY_RELATIONS = [
     'brother', 'sister', 'mother', 'father', 'aunt', 'grandmother', 'grandma',
     'bro', 'sis', 'mom', 'mama', 'dad', 'papa', 'uncle', 'grandfather', 'grandpa',

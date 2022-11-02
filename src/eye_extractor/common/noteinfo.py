@@ -7,7 +7,7 @@ import enum
 import re
 
 from eye_extractor.headers import extract_headers_and_text
-from eye_extractor.laterality import build_laterality_table, LATERALITY_PATTERN, lat_lookup, Laterality
+from eye_extractor.laterality import LATERALITY_PATTERN, lat_lookup, Laterality
 from eye_extractor.patterns import AMD_PAT, GLAUCOMA_PAT
 from eye_extractor.ro.rao import RAO_PAT
 from eye_extractor.ro.rvo import RVO_PAT

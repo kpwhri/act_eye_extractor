@@ -10,7 +10,7 @@ from typing import Generator
 
 from loguru import logger
 
-from eye_extractor.laterality import Laterality, LATERALITY, LATERALITY_PATTERN, lat_lookup
+from eye_extractor.laterality import Laterality, LATERALITY_PATTERN, lat_lookup
 from eye_extractor.va.pattern import VA_LINE_CC, VA_LINE_SC, VA_LINE_GROUPED, VA_LINE_SC_CC, VA_LINE_SC_OD, \
     VA_LINE_SC_OS
 
@@ -128,7 +128,7 @@ def get_keywords_in_range(keywords, word_start, end_context):
         if is_stopword:
             continue
         if start_idx > word_start and (
-            len(labels) > 1 or labels[0] not in (VisualAcuity.CORRECTED, VisualAcuity.UNCORRECTED)):
+                len(labels) > 1 or labels[0] not in (VisualAcuity.CORRECTED, VisualAcuity.UNCORRECTED)):
             continue  # only allow correction after the score
         for label in labels:
             if label not in results and label not in not_list:
@@ -216,12 +216,12 @@ def get_number_correct(sign, diopter):
 def extract_va_precise(text: str) -> tuple[list, str]:
     rows = []
     for va_pat in (
-        VA_LINE_GROUPED,
-        VA_LINE_SC_CC,
-        VA_LINE_CC,
-        VA_LINE_SC,
-        VA_LINE_SC_OD,
-        VA_LINE_SC_OS,
+            VA_LINE_GROUPED,
+            VA_LINE_SC_CC,
+            VA_LINE_CC,
+            VA_LINE_SC,
+            VA_LINE_SC_OD,
+            VA_LINE_SC_OS,
     ):
         for m in va_pat.pattern.finditer(text):
             rows += get_elements_from_line(m, va_pat.metadata)

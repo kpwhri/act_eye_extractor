@@ -2,8 +2,7 @@ import re
 
 from eye_extractor.common.date import parse_date_before
 from eye_extractor.common.negation import has_before, has_after, is_post_negated, is_negated
-from eye_extractor.laterality import laterality_pattern, lat_lookup, Laterality, get_laterality_for_term, \
-    create_variable
+from eye_extractor.laterality import laterality_pattern, lat_lookup, Laterality, create_variable
 
 TABLE_HEADER_PAT = re.compile(
     rf'(?:'
@@ -52,7 +51,7 @@ def extract_rnfl_values(text, *, headers=None, lateralities=None):
         result['date'] = parse_date_before(header_match, text, as_string=True)
         end = header_match.end()
         for _ in range(2):
-            if m := TABLE_ROW_PAT.search(text, pos=end, endpos=end+75):
+            if m := TABLE_ROW_PAT.search(text, pos=end, endpos=end + 75):
                 has_thinning = is_thinning(m, text)
                 if lat_lookup(m, group='lat') == Laterality.OD:
                     result.update(_unpack_matches(m, 're'))

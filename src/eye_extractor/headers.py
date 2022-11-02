@@ -1,7 +1,6 @@
 """
 Treat headers and their text as key-value pairs
 """
-from collections import UserDict
 import re
 
 from eye_extractor.amd.drusen import find_drusen

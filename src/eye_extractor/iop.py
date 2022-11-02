@@ -1,7 +1,7 @@
 """Intraocular Pressure (IOP)"""
 import re
-from eye_extractor.va.common import right_eye, left_eye
 
+from eye_extractor.va.common import right_eye, left_eye
 
 tonometry = r'(?P<INSTRUMENT>tonometry|tappl|tapp|ta|iops?|intraocular pressures?|t?nct|pressure)'
 method = r'(?:(?:Method|with|by)\W+(?P<METHOD1>[^:]*?)\W*)'
@@ -10,7 +10,6 @@ method2 = r'(?:(?P<METHOD2>applanation|tappl|flouress|t?nct|non contact method' 
 nt = r'(n[at]|not assessed)'
 at_time = r'(?:((performed|done)\W*)?(?:@|at)\s*\d+:\d+\s*(?:AM|PM)?\W*)'
 fill_terms = r'(?:(?:if measured)\W*)'
-
 
 IOP_PATTERN_FRACTION = re.compile(
     rf'\b({tonometry}\W*'
@@ -22,7 +21,6 @@ IOP_PATTERN_FRACTION = re.compile(
     rf')\b',
     re.I
 )
-
 
 IOP_PATTERN_RE = re.compile(
     rf'\b{tonometry}\W*'

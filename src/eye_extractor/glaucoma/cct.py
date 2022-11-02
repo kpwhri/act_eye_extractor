@@ -105,6 +105,7 @@ def search_cct(text, sect_name):
                 'regex': pat,
                 'source': sect_name,
             }}
+
     if m := CCT_OD_OS_PAT.search(text):
         return get_od_os(m, 'CCT_OD_OS_PAT')
     elif m := CCT_OS_OD_PAT.search(text):

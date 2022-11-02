@@ -3,7 +3,6 @@ import re
 from eye_extractor.common.negation import is_negated
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
-
 CMT_VALUE_PAT = re.compile(
     r'\b(?:OD\W*|OS\W*|CMT\s*|central macular thickness\W*)(?P<digit>\d+)(um)?\b',
     re.I

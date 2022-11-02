@@ -1,7 +1,5 @@
 import re
 
-from loguru import logger
-
 from eye_extractor.history.common import create_history, history_pat
 
 START_PER_HX_PAT = re.compile(
