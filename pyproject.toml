@@ -9,7 +9,7 @@ authors = [
     { name = 'dcronkite', email = 'dcronkite+pypi@gmail.com' }
 ]
 homepage = 'https://github.com/kpwhri/act_eye_extractor'
-requires = [
+dependencies = [
     'loguru',
     'click',
     'python-dateutil',
