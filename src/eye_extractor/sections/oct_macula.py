@@ -44,7 +44,6 @@ def _find_oct_macula_section_laterality(text, *, restrict_date=None):
     if prev_start:
         data[prev_lat] = {'text': get_next_text_to_newline(prev_start, text), 'date': date}
     if not data and text:  # didn't find lateralities
-        logger.warning(f'No lateralities in OCT MACULA section: {text}')
         data[Laterality.UNKNOWN] = {'text': text, 'date': date}
     return data
 
