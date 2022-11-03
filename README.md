@@ -130,9 +130,17 @@ The extract step produces a CSV file with individual eye-related variables from 
 
 1. Ensure that the build output `jsonl` file(s) are in a single directory (let's assume this is `C:\extract\run1`)
 2. Let's suppose we want to output the CSV to `C:\build`
-3. Run: `python src\eye_extractor\build_table.py C:\extract\run1 C:\build`
-4. The resulting CSV will have a single `note_id`/`docid` per line.
+3. `docid`, `studyid`, `date`, `enc_id`, and `train` metadata will be used from the `1.meta` file. To use additional values (e.g., 'department'), add the argument `--add-column department`.
+4. Run: `python src\eye_extractor\build_table.py C:\extract\run1 C:\build`
+5. The resulting CSV will have a single `note_id`/`docid` per line.
+6. You can interpret the output variables by generating a data dictionary from the `output/columns.py` file.
 
+
+#### Performance Expectations
+
+Every optometry, ophthalmology, and other note types look distinct based on author, location, etc., etc. 
+While this algorithm has been tuned to particular sites, it is not guaranteed to perform as well in new environments. 
+For this reason, expect to put some effort into fixing variables. One approach might be to look at outputs where all values are missing.
 
 ### Building a New Variable
 
