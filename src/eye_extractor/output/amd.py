@@ -102,21 +102,6 @@ def get_drusen_type(data, *, note_date=None):
     )
 
 
-def get_drusen(data, *, note_date=None):
-    results = {
-        'drusen_size_le': 'UNKNOWN',
-        'drusen_size_re': 'UNKNOWN',
-        'drusen_size_unk': 'UNKNOWN',
-        'drusen_type_le': 'UNKNOWN',
-        'drusen_type_re': 'UNKNOWN',
-        'drusen_type_unk': 'UNKNOWN',
-    }
-    for k, v in data.items():
-        # TODO fix drusen to allow multiple variables
-        results[k] = v['label'].upper()  # the last one is most specific, so overwrite
-    return results
-
-
 def build_subretinal_hemorrhage(data, *, note_date=None):
     return column_from_variable_abbr('subretinal_hem', -1, data, restrict_date=note_date)
 
