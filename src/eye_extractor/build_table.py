@@ -29,10 +29,10 @@ from eye_extractor.output.validators import validate_columns_in_row
 def process_data(data, *, add_columns=None, date_column='note_date'):
     result = {
         'docid': data['note_id'],
-        'studyid': data['studyid'],
+        'studyid': data.get('studyid', None),
         'date': data[date_column],
-        'encid': data['enc_id'],
-        'is_training': data['train'],
+        'encid': data.get('enc_id', None),
+        'is_training': data.get('train', None),
     }
     data['date'] = datetime.datetime.strptime(data[date_column], '%Y-%m-%d %H:%M:%S')
     data['note']['date'] = data['date'].date()
