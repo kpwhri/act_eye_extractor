@@ -18,7 +18,7 @@ Types of changes:
 ## [Unreleased]
 
 
-## v20221031
+## v20221103
 
 ### Added
 - Generic wet severity variable (`wet_severity_*`)
