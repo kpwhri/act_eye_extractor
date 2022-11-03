@@ -80,6 +80,60 @@ The reasons for this two-stage approach is multiple:
 * Allow debugging (more info can be included in `jsonl` file)
 * Simplify construction of variables which rely on a wide amount of inputs.
 
+### Running Application
+
+Running the application will provide a JSONL file of all extracted variables and a CSV file of final summary values.
+
+For the following to work, you must:
+* Install Python 3.10+ (most recent version recommended)
+* Install required packages: `pip install requirements.txt`
+* Assemble a directory/folder (on the file system) with relevant notes
+  * Only optometry, ophthalmology, and cataract surgery notes
+  * Other types of notes may produce FPs
+  * The note should be in a file labeled something like `1.txt`
+  * Metadata associated with the note can be included in the same file as `1.meta`
+    * This should be in json format with simple key-value pairs (please include `note_id` and `date`):
+      * `{'note_id': 1, 'date': '2022-02-22 00:00:00'}`
+  * (Optional) The notes can be pre-sectioned using something like `sectag` into a json file called `1.sect`
+* Ensure that the project root (`/src`) is on the PYTHONPATH
+  * E.g., `set/export PYTHONPATH=C:\eye_extractor\src`
+  * E.g., powershell likes `$env:PYTHONPATH=-C:\eye_extractor\src'`
+
+#### Build Step
+
+The build step produces a jsonl file where each line represents all the NLP work on a single note.
+
+Assuming all notes are in the directory: `C:\notes`, and the output info should be in `C:\extract`, run:
+```
+   python src\eye_extractor\extract.py C:\notes --outdir C:\extract\run0
+```
+
+NB: it is best practice to place each run into a separate directory (e.g., the addition of `run0` to the path). 
+This will simplify running the extract step.
+
+To speed up processing, one option is to run this across multiple subsets of notes. 
+These notes could be placed in different directories, or be split among different filelists. 
+A filelist is a file with one file listed per line (full path, including filename). Add a filelist 
+to tell a run which files to look for.
+
+```
+   python src\eye_extractor\extract.py C:\notes --outdir C:\extract\run1 --filelist C:\filelist1.txt
+   python src\eye_extractor\extract.py C:\notes --outdir C:\extract\run1 --filelist C:\filelist2.txt
+   python src\eye_extractor\extract.py C:\notes --outdir C:\extract\run1 --filelist C:\filelist3.txt
+```
+
+Each run will create a jsonlines file. To merge these together and build separate variables, see the Extract Step.
+
+#### Extract Step
+
+The extract step produces a CSV file with individual eye-related variables from the jsonlines output of the build step.
+
+1. Ensure that the build output `jsonl` file(s) are in a single directory (let's assume this is `C:\extract\run1`)
+2. Let's suppose we want to output the CSV to `C:\build`
+3. Run: `python src\eye_extractor\build_table.py C:\extract\run1 C:\build`
+4. The resulting CSV will have a single `note_id`/`docid` per line.
+
+
 ### Building a New Variable
 
 These are the steps for adding a new variable (and the variable is assumed to belong to a particular 'category').
