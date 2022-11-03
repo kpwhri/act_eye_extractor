@@ -78,7 +78,7 @@ def extract_variables(directories: tuple[pathlib.Path], outdir: pathlib.Path = N
     logger.add(outdir / f'eye_extractor_{start_time:%Y%m%d_%H%M%S}.log', level='DEBUG')
     logger.add(sys.stderr, level='INFO')
     with open(outdir / f'eye_extractor_{start_time:%Y%m%d_%H%M%S}.jsonl', 'w', encoding='utf8') as out:
-        for file, text, data, sections in read_from_params(*directories, filelist,
+        for file, text, data, sections in read_from_params(*directories, filelist=filelist,
                                                            search_missing_headers=search_missing_headers):
             line = extract_variable_from_text(text, data, sections)
             out.write(json.dumps(line, default=str) + '\n')
