@@ -3,7 +3,7 @@ import re
 history_pat = r'(?:hx|history)'
 
 POSSIBLE_END_HX_PAT = re.compile(
-    r'(?:===|:)',
+    r'(?:===|___|:)',
     re.I
 )
 

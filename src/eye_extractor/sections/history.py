@@ -5,13 +5,14 @@ from eye_extractor.nlp.character_groups import LINE_START_CHARS_RX
 from eye_extractor.sections.utils import get_index_of_next_section_start
 
 history = r'(?:hist(?:ory)?|hx)'
-medical = r'(?:ocular|eye|optical|med(?:ical)?)'
+medical = r'(?:ocular|eye|optical|med(?:ical)?|eye\W*health)'
 past = r'(?:past|personal)'
 
 HISTORY_SECTION_PAT = re.compile(
     rf'\b(?:'
     rf'review\s*of\s*symptoms'
     rf'|review\s*of\s*systems'
+    rf'|systems\s*review'
     rf'|social\s*{history}'
     rf'|(?:{past}\s*)?{medical}\s*{history}(?:\s*of)?'
     rf'|pm\s*{history}(?:\s*of)?'
