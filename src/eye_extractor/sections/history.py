@@ -1,5 +1,6 @@
 import re
 
+from eye_extractor.history.common import find_end
 from eye_extractor.nlp.character_groups import LINE_START_CHARS_RX
 from eye_extractor.sections.utils import get_index_of_next_section_start
 
@@ -40,6 +41,7 @@ STOP_BEFORE_REGEX = re.compile(
 def _find_history_sections(text):
     """
     Retrieve offsets for history sections of note.
+    Uses two methods to find the widest window.
     :param text:
     :return: yields matched_section_name, start_index (incl header), start_index, end_index
     """
@@ -47,7 +49,8 @@ def _find_history_sections(text):
         end_index = get_index_of_next_section_start(
             text, m.end(), max_length=1000, stop_before_regex=STOP_BEFORE_REGEX
         )
-        yield m.group().strip().strip(':'), m.start(), m.end(), end_index
+        end_index2 = find_end(text, m.end())
+        yield m.group().strip().strip(':'), m.start(), m.end(), max(end_index, end_index2)
 
 
 def retrieve_history_sections(text):
