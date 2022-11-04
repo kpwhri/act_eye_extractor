@@ -21,7 +21,7 @@ FAMILY_RELATION_PAT = re.compile(rf'(?:{"|".join(FAMILY_RELATIONS)})', re.I)
 CONDITION_WORDS = frozenset({
     'amd', 'armd', 'glaucoma', 'cataract', 'cataracts', 'retina', 'issues',
     'eye', 'pvd', 'trauma', 'amblyopia', 'surgery', 'dr', 'retinopathy',
-    'diabetes', 'degeneration',
+    'diabetes', 'degeneration', 'type', 'onset',
 })
 
 
