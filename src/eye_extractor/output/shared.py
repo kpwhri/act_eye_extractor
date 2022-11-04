@@ -15,6 +15,8 @@ def build_shared_variables(data):
     results.update(build_fluid(data['common']['fluid'], note_date=note['date']))
     results.update(build_subretfluid(data['common']['fluid'], note_date=note['date']))
     results.update(build_intraretfluid(data['common']['fluid'], note_date=note['date']))
+    results.update(build_dry_severity(data['amd']['dry'], note_date=note['date']))
+    results.update(build_wet_severity(data['amd']['wet'], note_date=note['date']))
     results.update(build_antivegf(data, note_date=note['date']))
     return results
 
