@@ -31,8 +31,8 @@ def find_end(text, start_pos):
         if m.group() == '===':
             return m.start()
         elif m.group() == ':':
-            curr_text = text[m.end():].strip()
-            prev_word = re.split(r'[\s/-]+', text[start_pos: m.start()].strip())[-1]
+            curr_text = text[m.end():].strip().strip('¶')
+            prev_word = re.split(r'[\s/\-¶]+', text[start_pos: m.start()].strip())[-1]
             if curr_text.startswith(('yes', 'no')):
                 continue
             elif prev_word in CONDITION_WORDS:

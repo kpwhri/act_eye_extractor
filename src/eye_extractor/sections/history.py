@@ -4,16 +4,18 @@ from eye_extractor.history.common import find_end
 from eye_extractor.nlp.character_groups import LINE_START_CHARS_RX
 from eye_extractor.sections.utils import get_index_of_next_section_start
 
-history = r'(?:hist(ory)?|hx)'
+history = r'(?:hist(?:ory)?|hx)'
 medical = r'(?:ocular|eye|optical|med(?:ical)?)'
+past = r'(?:past|personal)'
 
 HISTORY_SECTION_PAT = re.compile(
     rf'\b(?:'
     rf'review\s*of\s*symptoms'
+    rf'|review\s*of\s*systems'
     rf'|social\s*{history}'
-    rf'|(?:past\s*)?medical\s*{history}(?:\s*of)?'
+    rf'|(?:{past}\s*)?{medical}\s*{history}(?:\s*of)?'
     rf'|pm\s*{history}(?:\s*of)?'
-    rf'|fam(?:ily)?\s*{history}(?:\s*of)?'
+    rf'|fam(?:ily)?\s*(?:{medical}\s*)?{history}(?:\s*of)?'
     rf'|past\s*(?:\w+\W*){{,6}}'
     rf')[:-]',
     re.I
@@ -74,7 +76,7 @@ def remove_history_sections(text):
     """
     results = []
     prev_end = 0
-    for _, start_index, _, end_index in _find_history_sections(text):
+    for _1, start_index, _, end_index in _find_history_sections(text):
         results.append(text[prev_end: start_index])
         prev_end = end_index
     results.append(text[prev_end:])
