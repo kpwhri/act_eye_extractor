@@ -29,15 +29,15 @@ class Diagnosis(enum.IntEnum):
 def extract_note_level_info(text, *, headers=None, lateralities=None):
     headers = headers or extract_headers_and_text(text)
     result = {
-        'is_amd': None,
-        'is_dr': None,
-        'is_cataract': None,
-        'is_glaucoma': None,
-        'is_rvo': None,
-        'is_rao': None,
-        'is_uveitis': None,
+        'is_amd': False,
+        'is_dr': False,
+        'is_cataract': False,
+        'is_glaucoma': False,
+        'is_rvo': False,
+        'is_rao': False,
+        'is_uveitis': False,
         'default_lat': Laterality.UNKNOWN,
-        'primary_dx': None,
+        'primary_dx': False,
     }
     for header, text in headers.iterate(
             'ASSESSMENT', 'ASSESSMENT_COMMENTS', 'CHIEF_COMPLAINT',
