@@ -23,6 +23,9 @@ class AMD(enum.IntEnum):
 def _extract_amd(section_name, section_text, priority=0):
     data = []
     for m in AMD_RX.finditer(section_text):
+        if priority == 0 and ':' in section_text[m.end():m.end() + 2]:
+            if 'y' not in section_text[m.end()+1:m.end() + 3]:
+                continue
         negword = is_negated(m, section_text, word_window=3)
         data.append(
             create_new_variable(section_text, m, None, 'amd', {

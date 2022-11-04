@@ -10,6 +10,9 @@ from eye_extractor.output.amd import build_amd
     ('', {'ASSESSMENT': 'Age-related macular degeneration, left eye'}, -1, 1, -1, None),
     ('', {'PLAN': 'Age-related macular degeneration, right eye'}, 1, -1, -1, None),
     ('ARMD OU', {}, 1, 1, -1, None),
+    ('ARMD: ', {}, -1, -1, -1, None),  # start of section, needs an yes/no
+    ('AMD: yes', {}, -1, -1, 1, None),  # start of section, needs an yes/no
+    ('AMD: no', {}, -1, -1, -1, None),  # TODO: this should be negated
     ('', {'MACULA': 'no amd OU'}, 0, 0, -1, None),
 ])
 def test_amd(text, headers, amd_re, amd_le, amd_unk, note_date):
