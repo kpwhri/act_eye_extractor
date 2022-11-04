@@ -1,4 +1,5 @@
 import re
+import string
 
 history_pat = r'(?:hx|history)'
 
@@ -25,6 +26,24 @@ CONDITION_WORDS = frozenset({
 })
 
 
+def find_previous_letter(text, start_pos):
+    for i in range(start_pos, 0, -1):
+        if text[i] in string.ascii_letters:
+            return i
+    return 0
+
+
+def find_word_start(text, start_pos):
+    for i in range(start_pos, 0, -1):
+        if text[i] not in string.ascii_letters:
+            return i + 1
+    return 0
+
+
+def find_start_of_previous_word(text, start_pos):
+    return find_word_start(text, find_previous_letter(text, start_pos))
+
+
 def find_end(text, start_pos):
     text = text.lower()
     for m in POSSIBLE_END_HX_PAT.finditer(text, pos=start_pos):
@@ -38,7 +57,7 @@ def find_end(text, start_pos):
             elif prev_word in CONDITION_WORDS:
                 continue
             else:
-                return m.start()
+                return find_start_of_previous_word(text, m.start())
 
 
 def update_history_from_key(data, pat, key, value, data_key):
