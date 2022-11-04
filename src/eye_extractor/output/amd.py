@@ -66,7 +66,8 @@ def build_amd_variables(data):
 
 
 def build_amd(data, *, is_amd=None, lat=Laterality.UNKNOWN, note_date=None, macula_wnl=None):
-    if macula_is_wnl(macula_wnl, note_date):
+    wnl_lat = macula_is_wnl(macula_wnl, note_date)
+    if wnl_lat == Laterality.OU:
         return {
             'amd_re': AMD.NO,
             'amd_le': AMD.NO,
@@ -79,13 +80,18 @@ def build_amd(data, *, is_amd=None, lat=Laterality.UNKNOWN, note_date=None, macu
     }
     if is_amd:
         if lat in {Laterality.OD, Laterality.OU}:
-            results['amd_re'] = 1
+            results['amd_re'] = AMD.YES
         if lat in {Laterality.OU, Laterality.OU}:
-            results['amd_le'] = 1
-    return column_from_variable(
+            results['amd_le'] = AMD.YES
+    results = column_from_variable(
         results, data,
         restrict_date=note_date,
     )
+    if wnl_lat == Laterality.OD:
+        results['amd_re'] = AMD.NO
+    if wnl_lat == Laterality.OS:
+        results['amd_le'] = AMD.NO
+    return results
 
 
 def get_drusen_size(data, *, note_date=None):

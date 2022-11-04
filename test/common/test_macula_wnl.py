@@ -5,17 +5,18 @@ import pytest
 from eye_extractor.common.algo.macula_wnl import extract_macula_wnl
 from eye_extractor.common.json import dumps_and_loads_json
 from eye_extractor.headers import Headers
+from eye_extractor.laterality import Laterality
 from eye_extractor.output.amd import build_amd
 from eye_extractor.output.common import macula_is_wnl
 
 
 @pytest.mark.parametrize('data, date, exp', [
-    ({'value': 1, 'date': None}, datetime.date(2012, 12, 12), True),
-    ({'value': 1, 'date': datetime.date(2012, 12, 12)}, datetime.date(2012, 12, 12), True),
-    ({'value': 1, 'date': datetime.date(2012, 12, 19)}, datetime.date(2012, 12, 12), False),
+    ({'value': 1, 'date': None}, datetime.date(2012, 12, 12), Laterality.OU),
+    ({'value': 1, 'date': datetime.date(2012, 12, 12)}, datetime.date(2012, 12, 12), Laterality.OU),
+    ({'value': 1, 'date': datetime.date(2012, 12, 19)}, datetime.date(2012, 12, 12), None),
 ])
 def test_macula_is_wnl(data, date, exp):
-    res = macula_is_wnl(data, date)
+    res = macula_is_wnl({'lat': Laterality.OU} | data, date)  # default to OU lat
     assert res == exp
 
 
