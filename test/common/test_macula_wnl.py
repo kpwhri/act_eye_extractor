@@ -19,12 +19,13 @@ def test_macula_is_wnl(data, date, exp):
     assert res == exp
 
 
-@pytest.mark.parametrize('text, headers, amd_re, amd_le', [
-    ('', {'MACULA': 'WNL OU'}, 0, 0),
+@pytest.mark.parametrize('text, headers, amd_re, amd_le, amd_unk', [
+    ('', {'MACULA': 'WNL OU'}, 0, 0, 0),
 ])
-def test_macula_wnl_on_amd(text, headers, amd_re, amd_le):
+def test_macula_wnl_on_amd(text, headers, amd_re, amd_le, amd_unk):
     pre_json = extract_macula_wnl(text, headers=Headers(headers))
     post_json = dumps_and_loads_json(pre_json)
     result = build_amd(None, macula_wnl=post_json)
     assert result['amd_re'] == amd_re
     assert result['amd_le'] == amd_le
+    assert result['amd_unk'] == amd_unk
