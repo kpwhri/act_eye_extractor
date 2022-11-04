@@ -1,7 +1,5 @@
 import re
 
-from loguru import logger
-
 history_pat = r'(?:hx|history)'
 
 POSSIBLE_END_HX_PAT = re.compile(
@@ -20,14 +18,24 @@ FAMILY_RELATIONS = [
 ]
 FAMILY_RELATION_PAT = re.compile(rf'(?:{"|".join(FAMILY_RELATIONS)})', re.I)
 
+CONDITION_WORDS = frozenset({
+    'amd', 'armd', 'glaucoma', 'cataract', 'cataracts', 'retina', 'issues',
+    'eye', 'pvd', 'trauma', 'amblyopia', 'surgery', 'dr', 'retinopathy',
+    'diabetes',
+})
+
 
 def find_end(text, start_pos):
+    text = text.lower()
     for m in POSSIBLE_END_HX_PAT.finditer(text, pos=start_pos):
         if m.group() == '===':
             return m.start()
         elif m.group() == ':':
             curr_text = text[m.end():].strip()
+            prev_word = re.split(r'[\s/-]+', text[start_pos: m.start()].strip())[-1]
             if curr_text.startswith(('yes', 'no')):
+                continue
+            elif prev_word in CONDITION_WORDS:
                 continue
             else:
                 return m.start()
