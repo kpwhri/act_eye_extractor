@@ -58,6 +58,7 @@ def find_end(text, start_pos):
                 continue
             else:
                 return find_start_of_previous_word(text, m.start())
+    return len(text)
 
 
 def update_history_from_key(data, pat, key, value, data_key):
