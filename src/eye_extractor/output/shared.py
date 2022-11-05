@@ -17,7 +17,7 @@ def build_shared_variables(data):
     results.update(build_intraretfluid(data['common']['fluid'], note_date=note['date']))
     results.update(build_dry_severity(data['amd']['dry'], note_date=note['date']))
     results.update(build_wet_severity(data['amd']['wet'], note_date=note['date']))
-    results.update(build_antivegf(data, note_date=note['date']))
+    results.update(build_antivegf(data['common']['treatment'], note_date=note['date']))
     return results
 
 
@@ -78,7 +78,7 @@ def build_subretfluid(data, *, rename_var='subretfluid', note_date=None):
 def build_antivegf(data, *, note_date=None):
     return column_from_variable_abbr(
         'tx', AntiVegf.UNKNOWN, data,
-        renamevar_func=lambda x: f'antivegf_{x.split("_")[-1]}',
+        renamevar_func=rename_variable_func('antivegf'),
         rename_func=rename_antivegf,
         filter_func=lambda x: x.get('category', None) in {'ANTIVEGF'},
         transformer_func=AntiVegf,
