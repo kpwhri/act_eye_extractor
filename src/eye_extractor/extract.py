@@ -1,3 +1,11 @@
+"""
+Primary entry point for extracting eye-related variables from a corpus of notes.
+
+The `extract` function will take text notes as input (supplied by filelists, directories, etc.)
+    and write NLP-extracted information to a jsonlines file.
+
+Once completing this step, use the `build_table` to compile this information to a CSV file.
+"""
 import datetime
 import json
 import pathlib
