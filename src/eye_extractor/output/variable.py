@@ -128,13 +128,17 @@ def rename_variable_func(varname):
     return lambda x: f'{varname}_{x.split("_")[-1]}'
 
 
+def build_lat_suffixes(abbr, init_value):
+    return {f'{abbr}_{suffix}': init_value for suffix in ('re', 'le', 'unk')}
+
+
 def column_from_variable_abbr(result_abbr, init_value, data, *, compare_func=None, transformer_func=None,
                               result_func=None, convert_func=None, filter_func=None,
                               rename_func=None, sideeffect_func=None, renamevar_func=None,
                               enum_to_str=False, restrict_date: datetime.date = None):
     """Build result dictionary with result_abbreviation and initial value"""
     return column_from_variable(
-        {f'{result_abbr}_{suffix}': init_value for suffix in ('re', 'le', 'unk')},
+        build_lat_suffixes(result_abbr, init_value),
         data,
         compare_func=compare_func,
         transformer_func=transformer_func,

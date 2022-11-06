@@ -14,7 +14,7 @@ from eye_extractor.laterality import Laterality
 from eye_extractor.output.common import macula_is_wnl
 from eye_extractor.output.shared import get_default_fluid_result, build_subretfluid, build_intraretfluid, build_fluid
 from eye_extractor.output.variable import column_from_variable, update_column, column_from_variable_abbr, \
-    rename_variable_func, column_from_variable_binary
+    rename_variable_func, column_from_variable_binary, build_lat_suffixes
 
 
 def build_macular_cyst(data, *, note_date=None):
@@ -178,7 +178,7 @@ def build_geoatrophy(data, *, note_date=None):
 def build_dryamd_severity(data, *, is_amd=None, ga_result=None, note_date=None):
     """Build dry amd severity"""
     if is_amd is False:
-        return {f'dryamd_severity_{val}': DrySeverity.UNKNOWN.name for val in ('re', 'le', 'unk')}
+        return build_lat_suffixes('dryamd_severity', DrySeverity.UNKNOWN.name)
     result = column_from_variable_abbr(
         'dryamd_severity', DrySeverity.UNKNOWN, data,
         restrict_date=note_date,
@@ -286,7 +286,7 @@ def build_lasertype_new(data, *, is_amd=None, note_date=None):
         return val.value
 
     if is_amd is False:
-        return {f'amd_lasertype_{lat}': AntiVegf.UNKNOWN for lat in ('re', 'le', 'unk')}
+        return build_lat_suffixes('amd_lasertype', AntiVegf.UNKNOWN)
     return column_from_variable_abbr(
         'tx', Treatment.UNKNOWN, data,
         restrict_date=note_date,
@@ -301,7 +301,7 @@ def build_lasertype_new(data, *, is_amd=None, note_date=None):
 
 def build_amd_antivegf(data, *, is_amd=None, note_date=None):
     if is_amd is False:
-        return {f'amd_antivegf_{lat}': AntiVegf.UNKNOWN for lat in ('re', 'le', 'unk')}
+        return build_lat_suffixes('amd_antivegf', AntiVegf.UNKNOWN)
     return column_from_variable_abbr(
         'tx', AntiVegf.UNKNOWN, data,
         renamevar_func=rename_variable_func('amd_antivegf'),

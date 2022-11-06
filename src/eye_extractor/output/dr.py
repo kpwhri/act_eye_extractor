@@ -8,12 +8,12 @@ from eye_extractor.dr.dr_type import DrType
 from eye_extractor.dr.hemorrhage_type import HemorrhageType
 from eye_extractor.output.common import macula_is_wnl
 from eye_extractor.output.labels import DRTreatment
-from eye_extractor.output.variable import column_from_variable_binary, column_from_variable_abbr
+from eye_extractor.output.variable import column_from_variable_binary, column_from_variable_abbr, build_lat_suffixes
 
 
 def build_dr(data, *, macula_wnl=None, note_date=None):
     if macula_is_wnl(macula_wnl, note_date):
-        return {f'diab_retinop_yesno_{suffix}': 1 for suffix in ('re', 'le', 'unk')}
+        return build_lat_suffixes('diab_retinop_yesno', 1)
     return column_from_variable_binary(data, 'diab_retinop_yesno', restrict_date=note_date)
 
 
