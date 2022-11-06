@@ -7,6 +7,8 @@ Some of these (e.g., `find_end`) may have broader uses in locating the beginning
 import re
 import string
 
+from eye_extractor.nlp.negate.other_subject import FAMILY_RELATION_PAT
+
 history_pat = r'(?:hx|history)'
 
 POSSIBLE_END_HX_PAT = re.compile(
@@ -18,12 +20,6 @@ NEGATIVE_FOR_PAT = re.compile(
     r'(?:negative\W*for)\W*'
     r'(?P<target>(?:[\w-]+\W){1,3})'
 )
-
-FAMILY_RELATIONS = [
-    'brother', 'sister', 'mother', 'father', 'aunt', 'grandmother', 'grandma',
-    'bro', 'sis', 'mom', 'mama', 'dad', 'papa', 'uncle', 'grandfather', 'grandpa',
-]
-FAMILY_RELATION_PAT = re.compile(rf'(?:{"|".join(FAMILY_RELATIONS)})', re.I)
 
 CONDITION_WORDS = frozenset({
     'amd', 'armd', 'glaucoma', 'cataract', 'cataracts', 'retina', 'issues',

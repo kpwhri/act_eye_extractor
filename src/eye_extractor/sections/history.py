@@ -18,6 +18,7 @@ HISTORY_SECTION_PAT = re.compile(
     rf'|pm\s*{history}(?:\s*of)?'
     rf'|fam(?:ily)?\s*(?:{medical}\s*)?{history}(?:\s*of)?'
     rf'|past\s*(?:\w+\W*){{,6}}'
+    rf'|family\s*{history}\s*of\s*any\s*eye\s*or\s*medical\s*diseases'
     rf')[:-]',
     re.I
 )

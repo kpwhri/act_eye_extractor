@@ -1,7 +1,7 @@
 import re
 
 from eye_extractor.common.date import parse_nearest_date_to_line_start
-from eye_extractor.common.negation import is_negated
+from eye_extractor.nlp.negate.negation import is_negated
 from eye_extractor.laterality import lat_lookup
 
 MACULA_WNL = re.compile(

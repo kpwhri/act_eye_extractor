@@ -4,7 +4,7 @@ import re
 from eye_extractor.common.drug.all import ALL_DRUG_PAT
 from eye_extractor.common.drug.antivegf import ANTIVEGF_RX, ANTIVEGF_TO_ENUM, ANTIVEGF_PAT
 from eye_extractor.common.drug.shared import get_standardized_name
-from eye_extractor.common.negation import is_negated, is_post_negated, has_before
+from eye_extractor.nlp.negate.negation import is_negated, is_post_negated, has_before
 from eye_extractor.laterality import build_laterality_table, Laterality, create_new_variable
 
 

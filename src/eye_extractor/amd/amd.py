@@ -1,8 +1,10 @@
 import enum
 import re
 
-from eye_extractor.common.negation import is_negated
+from eye_extractor.nlp.negate.historical import is_historical
+from eye_extractor.nlp.negate.negation import is_negated
 from eye_extractor.laterality import create_new_variable
+from eye_extractor.nlp.negate.other_subject import is_other_subject
 
 AMD_RX = re.compile(
     r'\b(?:'
@@ -27,11 +29,15 @@ def _extract_amd(section_name, section_text, priority=0):
             if 'y' not in section_text[m.end()+1:m.end() + 3]:
                 continue
         negword = is_negated(m, section_text, word_window=3)
+        histword = is_historical(m, section_text)
+        osubjword = is_other_subject(m, section_text)
         data.append(
             create_new_variable(section_text, m, None, 'amd', {
                 'label': 'no' if negword else 'amd',
-                'value': 0 if negword else 1,
+                'value': 0 if negword else -1 if histword or osubjword else 1,
                 'negated': negword,
+                'othersubj': osubjword,
+                'historical': histword,
                 'term': m.group(),
                 'priority': priority,
                 'source': section_name,

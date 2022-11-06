@@ -2,7 +2,7 @@ import enum
 import re
 
 from eye_extractor.amd.utils import run_on_macula
-from eye_extractor.common.negation import is_negated, is_post_negated
+from eye_extractor.nlp.negate.negation import is_negated, is_post_negated
 from eye_extractor.laterality import create_new_variable
 from eye_extractor.sections.oct_macula import find_oct_macula_sections, remove_macula_oct
 

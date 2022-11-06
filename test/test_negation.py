@@ -1,6 +1,6 @@
 import pytest
 
-from eye_extractor.common.negation import has_after, has_before, _handle_negation_with_punctuation, is_negated
+from eye_extractor.nlp.negate.negation import has_after, has_before, _handle_negation_with_punctuation, is_negated
 from eye_extractor.laterality import LATERALITY_PLUS_COLON_PATTERN
 
 

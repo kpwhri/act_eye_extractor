@@ -1,6 +1,7 @@
 import re
 
-from eye_extractor.common.negation import is_negated, is_post_negated, HISTORY_WORDS
+from eye_extractor.nlp.negate.negation import is_negated, is_post_negated
+from eye_extractor.nlp.negate.historical import HISTORY_WORDS
 from eye_extractor.laterality import create_new_variable
 
 ALL_UVEITIS_PAT = re.compile(

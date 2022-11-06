@@ -7,7 +7,7 @@ Peripapillary atrophy (PPA)
 """
 import re
 
-from eye_extractor.common.negation import is_negated
+from eye_extractor.nlp.negate.negation import is_negated
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 PPA_PAT = re.compile(

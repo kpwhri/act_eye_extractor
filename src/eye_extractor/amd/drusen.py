@@ -1,6 +1,6 @@
 import re
 
-from eye_extractor.common.negation import NEGWORD_SET
+from eye_extractor.nlp.negate.negation import NEGWORD_SET
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 small = r'(?:(very\W*)?fine|scattered|occasional|rare|few|mild|small(er)?|trace|light)'

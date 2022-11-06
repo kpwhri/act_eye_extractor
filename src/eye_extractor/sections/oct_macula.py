@@ -1,9 +1,7 @@
 import re
 
-from loguru import logger
-
 from eye_extractor.common.date import parse_date
-from eye_extractor.common.negation import is_post_negated
+from eye_extractor.nlp.negate.negation import is_post_negated
 from eye_extractor.laterality import LATERALITY_PLUS_COLON_PATTERN, lat_lookup, Laterality
 from eye_extractor.nlp.character_groups import get_next_text_to_newline, LINE_START_CHARS_RX
 from eye_extractor.output.variable import has_valid_date

@@ -39,10 +39,6 @@ NEGWORDS_POST = frozenset(
     {'not', 'cleared', 'resolved', 'or'}
 )
 
-HISTORY_WORDS = frozenset({
-    'hx', 'history', 'phx'
-})
-
 DEFAULT_BOUNDARY_REGEX = re.compile(r'\b(?:od|os|ou)\b')
 
 

@@ -1,7 +1,7 @@
 import re
 
 from eye_extractor.common.date import parse_date_before
-from eye_extractor.common.negation import has_before, has_after, is_post_negated, is_negated
+from eye_extractor.nlp.negate.negation import has_before, has_after, is_post_negated, is_negated
 from eye_extractor.laterality import laterality_pattern, lat_lookup, Laterality, create_variable
 
 TABLE_HEADER_PAT = re.compile(
