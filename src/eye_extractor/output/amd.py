@@ -178,7 +178,7 @@ def build_geoatrophy(data, *, note_date=None):
 def build_dryamd_severity(data, *, is_amd=None, ga_result=None, note_date=None):
     """Build dry amd severity"""
     if is_amd is False:
-        return {f'dryamd_severity_{val}': DrySeverity.UNKNOWN for val in ('re', 'le', 'unk')}
+        return {f'dryamd_severity_{val}': DrySeverity.UNKNOWN.name for val in ('re', 'le', 'unk')}
     result = column_from_variable_abbr(
         'dryamd_severity', DrySeverity.UNKNOWN, data,
         restrict_date=note_date,
