@@ -1,3 +1,9 @@
+"""
+Shared functions related to finding and extracting information related to historical conditions,
+    both personal history and family history.
+
+Some of these (e.g., `find_end`) may have broader uses in locating the beginning of the next section.
+"""
 import re
 import string
 
@@ -27,6 +33,7 @@ CONDITION_WORDS = frozenset({
 
 
 def find_previous_letter(text, start_pos):
+    """Look backwards to identify the first letter in text from `start_pos`"""
     for i in range(start_pos, 0, -1):
         if text[i] in string.ascii_letters:
             return i
@@ -34,6 +41,7 @@ def find_previous_letter(text, start_pos):
 
 
 def find_word_start(text, start_pos):
+    """From a `start_pos` in a word, look backwards to identify the start index of a word"""
     for i in range(start_pos, 0, -1):
         if text[i] not in string.ascii_letters:
             return i + 1
@@ -41,6 +49,7 @@ def find_word_start(text, start_pos):
 
 
 def find_start_of_previous_word(text, start_pos):
+    """Find the index of the previous word's start"""
     return find_word_start(text, find_previous_letter(text, start_pos))
 
 
@@ -67,7 +76,7 @@ def find_end(text, start_pos):
             curr_text = text[m.end():].strip().strip('¶')
             prev_word = re.split(r'[\s/\-¶]+', text[start_pos: m.start()].strip())[-1]
             if curr_text.startswith(('yes', 'no')):
-                continue  # is a subheade4r
+                continue  # is a subheader
             elif prev_word in CONDITION_WORDS:
                 continue  # is a subheader
             else:  # found the next section
@@ -76,6 +85,7 @@ def find_end(text, start_pos):
 
 
 def update_history_from_key(data, pat, key, value, data_key):
+    """Update history dict `data` with identified key"""
     if re.search(pat, key, re.I):
         data[data_key] = 1 if value else 0
         return True
@@ -84,6 +94,7 @@ def update_history_from_key(data, pat, key, value, data_key):
 
 def update_hx_data(data, key, value=None, exclusive_search=True):
     """
+    Search the history section for particular patterns/keywords to identify historical conditions.
 
     :param data:
     :param key:
@@ -109,6 +120,14 @@ def update_hx_data(data, key, value=None, exclusive_search=True):
 
 
 def create_history(text, start_pats, is_personal_hx=False):
+    """
+    Extract specific historical information and conditions from a history section.
+
+    :param text: text to look in
+    :param start_pats: history patterns (compiled)
+    :param is_personal_hx: personal history section if true, else family history
+    :return:
+    """
     data = {}
     for start_pat in start_pats:
         for m in start_pat.finditer(text):
