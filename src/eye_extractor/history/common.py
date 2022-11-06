@@ -45,7 +45,21 @@ def find_start_of_previous_word(text, start_pos):
 
 
 def find_end(text, start_pos):
-    text = text.lower()
+    """
+    Identify the end of a section, particular a historical section.
+    These are challenging as they tend to contain 'subheaders' with yes/no answers.
+    They also tend to have the same 'subheaders'.
+    Here, we try to identify subheaders using the 'yes'/'no' values or a set of known
+        subheaders.
+    The index of the start of the next header is returned. If the next header has mulitple
+        words, only the last term will be identified.
+    Line endings, etc., are not considered
+
+    :param text: text to search for the end of the current section
+    :param start_pos:
+    :return:
+    """
+    text = text.lower()  # will check membership in lowercase sets
     for m in POSSIBLE_END_HX_PAT.finditer(text, pos=start_pos):
         if m.group() == '===':
             return m.start()
@@ -53,12 +67,12 @@ def find_end(text, start_pos):
             curr_text = text[m.end():].strip().strip('¶')
             prev_word = re.split(r'[\s/\-¶]+', text[start_pos: m.start()].strip())[-1]
             if curr_text.startswith(('yes', 'no')):
-                continue
+                continue  # is a subheade4r
             elif prev_word in CONDITION_WORDS:
-                continue
-            else:
+                continue  # is a subheader
+            else:  # found the next section
                 return find_start_of_previous_word(text, m.start())
-    return len(text)
+    return len(text)  # this is the last section
 
 
 def update_history_from_key(data, pat, key, value, data_key):
