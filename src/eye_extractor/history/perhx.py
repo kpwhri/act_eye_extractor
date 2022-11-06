@@ -4,8 +4,8 @@ from eye_extractor.history.common import create_history, history_pat
 
 START_PER_HX_PAT = re.compile(
     rf'(?:'
-    rf'(?:(?:past|personal)\W*)?(?:ocular|eye)\W*{history_pat}\W*?(?:of\W*)?:'
-    rf'|past\W*medical\W*history ?:?'
+    rf'(?:(?:past|personal|medical)\W*)?(?:ocular|eye)\W*{history_pat}\W*?(?:of\W*)?:'
+    rf'|(?:(?:past|personal)\W*)?medical\W*{history_pat} ?:?'
     rf'|active\W*problem\W*list ?:?'
     rf'|\bpmhx?\W*?:'
     rf'|past\W*history\W*or\W*currently\W*being\W*treated\W*for\W*?:'
