@@ -95,6 +95,7 @@ MACULAR_EDEMA_PAT = re.compile(
 FLUID_NOS_PAT = re.compile(
     rf'\b(?:'
     rf'fluid'
+    rf'|edema'
     rf')\b',
     re.IGNORECASE
 )
