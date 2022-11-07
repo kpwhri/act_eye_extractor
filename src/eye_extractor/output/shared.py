@@ -32,8 +32,7 @@ def get_default_fluid_result():
 def build_fluid(data, *, skip_rename_variable=False, rename_var='fluid',
                 note_date=None):
     return column_from_variable_abbr(
-        'fluid', Fluid.UNKNOWN,
-        data,
+        'fluid', Fluid.UNKNOWN, data,
         restrict_date=note_date,
         transformer_func=Fluid,
         result_func=fluid_prioritization,
@@ -45,8 +44,7 @@ def build_fluid(data, *, skip_rename_variable=False, rename_var='fluid',
 
 def build_intraretfluid(data, *, rename_var='intraretfluid', note_date=None):
     return column_from_variable_abbr(
-        'fluid', Fluid.UNKNOWN,
-        data,
+        'fluid', Fluid.UNKNOWN, data,
         restrict_date=note_date,
         transformer_func=Fluid,
         result_func=fluid_prioritization,
@@ -61,8 +59,7 @@ def build_intraretfluid(data, *, rename_var='intraretfluid', note_date=None):
 
 def build_subretfluid(data, *, rename_var='subretfluid', note_date=None):
     return column_from_variable_abbr(
-        'fluid', Fluid.UNKNOWN,
-        data,
+        'fluid', Fluid.UNKNOWN, data,
         restrict_date=note_date,
         transformer_func=Fluid,
         result_func=fluid_prioritization,

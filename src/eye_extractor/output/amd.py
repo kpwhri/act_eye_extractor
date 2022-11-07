@@ -118,19 +118,19 @@ def get_pigmentary_changes(data, *, note_date=None):
 
 def build_fluid_amd(data, *, is_amd=None, skip_rename_variable=False, note_date=None):
     if is_amd is False:
-        return get_default_fluid_result()
+        return build_lat_suffixes('fluid_amd', Fluid.UNKNOWN)
     return build_fluid(data, rename_var='fluid_amd', skip_rename_variable=skip_rename_variable, note_date=note_date)
 
 
 def build_intraretfluid_amd(data, *, is_amd=None, note_date=None):
     if is_amd is False:
-        return get_default_fluid_result()
+        return build_lat_suffixes('amd_intraretfluid', Fluid.UNKNOWN)
     return build_intraretfluid(data, rename_var='amd_intraretfluid', note_date=note_date)
 
 
 def build_subretfluid_amd(data, *, is_amd=None, note_date=None):
     if is_amd is False:
-        return get_default_fluid_result()
+        return build_lat_suffixes('amd_subretfluid', Fluid.UNKNOWN)
     return build_subretfluid(data, rename_var='amd_subretfluid', note_date=note_date)
 
 
