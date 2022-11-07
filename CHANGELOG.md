@@ -17,6 +17,16 @@ Types of changes:
 
 ## [Unreleased]
 
+### Added
+- Boilerplate removal
+- Handling complex bilateralities (e.g., `od > os`)
+- Improved identification of the end of a section
+- Documentation to numerous functions
+
+### Fixed
+- Several fluid variables were overwriting each other
+- 'OCT' being interpreted as month of October
+- Note level diagnoses were incorrectly defaulted to None/null rather than False.
 
 ## v20221103
 
