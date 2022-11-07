@@ -16,6 +16,30 @@ class Laterality(enum.IntEnum):
 
 
 LATERALITY = {
+    'OD greater than OS': Laterality.OU,
+    'OD > OS': Laterality.OU,
+    'OD>OS': Laterality.OU,
+    'OS greater than OD': Laterality.OU,
+    'OS > OD': Laterality.OU,
+    'OS>OD': Laterality.OU,
+    'O.D. greater than O.S.': Laterality.OU,
+    'O.D. > O.S.': Laterality.OU,
+    'O.D.>O.S.': Laterality.OU,
+    'O.S. greater than O.D.': Laterality.OU,
+    'O.S. > O.D.': Laterality.OU,
+    'O.S.>O.D.': Laterality.OU,
+    'OD less than OS': Laterality.OU,
+    'OD < OS': Laterality.OU,
+    'OD<OS': Laterality.OU,
+    'OS less than OD': Laterality.OU,
+    'OS < OD': Laterality.OU,
+    'OS<OD': Laterality.OU,
+    'O.D. less than O.S.': Laterality.OU,
+    'O.D. < O.S.': Laterality.OU,
+    'O.D.<O.S.': Laterality.OU,
+    'O.S. less than O.D.': Laterality.OU,
+    'O.S. < O.D.': Laterality.OU,
+    'O.S.<O.D.': Laterality.OU,
     'OD': Laterality.OD,
     'O.D.': Laterality.OD,
     'RE': Laterality.OD,
@@ -32,14 +56,21 @@ LATERALITY = {
     # 'BE': Laterality.OU,  # ambiguous
     'OU': Laterality.OU,
     'O.U.': Laterality.OU,
-    'BILATERAL': Laterality.OU
+    'BILATERAL': Laterality.OU,
 }
 
-od_pattern = '|'.join(k for k, v in LATERALITY.items() if v == Laterality.OD).replace('.', r'\.')
-os_pattern = '|'.join(k for k, v in LATERALITY.items() if v == Laterality.OS).replace('.', r'\.')
-ou_pattern = '|'.join(k for k, v in LATERALITY.items() if v == Laterality.OU).replace('.', r'\.')
 
-laterality_pattern = '|'.join(LATERALITY.keys()).replace('.', r'\.')
+def _build_pattern(lat):
+    return '|'.join(
+        k for k, v in LATERALITY.items() if v == lat
+    ).replace('.', r'\.').replace(' ', r'\s+')
+
+
+od_pattern = _build_pattern(Laterality.OD)
+os_pattern = _build_pattern(Laterality.OS)
+ou_pattern = _build_pattern(Laterality.OU)
+
+laterality_pattern = '|'.join(LATERALITY.keys()).replace('.', r'\.').replace(' ', r'\s+')
 
 LATERALITY_PATTERN = re.compile(
     rf'\b({laterality_pattern})\b\s*:?',
@@ -75,7 +106,9 @@ def simplify_lateralities(lats):
 
 
 def lat_lookup(m, *, group=0):
-    return LATERALITY[m.group(group).upper().strip().strip(':').strip()]
+    return LATERALITY[
+        ' '.join(x.strip() for x in m.group(group).upper().strip().strip(':').strip().split())
+    ]
 
 
 def build_laterality_table(text):

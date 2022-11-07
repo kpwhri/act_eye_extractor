@@ -13,6 +13,9 @@ from eye_extractor.laterality import Laterality, build_laterality_table, LATERAL
     ('intermediate drusen od, heavy drusen os', 30, Laterality.OS),
     ('OD: intermediate drusen OS: heavy drusen', 0, Laterality.OD),
     ('OD: intermediate drusen OS: heavy drusen', 30, Laterality.OS),
+    ('AMD od > os', 3, Laterality.OU),
+    ('AMD od>os', 3, Laterality.OU),
+    ('AMD od  >  os', 3, Laterality.OU),
 ])
 def test_laterality_by_index(text, start_index, exp):
     latloc = build_laterality_table(text)
