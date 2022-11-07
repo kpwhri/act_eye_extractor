@@ -4,6 +4,7 @@ Extract note-level information for laterality, disease.
 This is primarily focused in the ASSESSMENT and CHIEF COMPLAINT sections.
 """
 import enum
+import itertools
 import re
 
 from eye_extractor.headers import extract_headers_and_text
@@ -12,6 +13,13 @@ from eye_extractor.patterns import AMD_PAT, GLAUCOMA_PAT
 from eye_extractor.ro.rao import RAO_PAT
 from eye_extractor.ro.rvo import RVO_PAT
 from eye_extractor.uveitis.uveitis import UVEITIS_PAT
+
+TREATED_FOR_PAT = re.compile(
+    rf'(?:'
+    rf'being\s*treated\s*for(?P<condition>.*?)[.:]'
+    rf')',
+    re.I
+)
 
 
 class Diagnosis(enum.IntEnum):
@@ -24,6 +32,12 @@ class Diagnosis(enum.IntEnum):
     RVO = 6
     RAO = 7
     UVEITIS = 8
+
+
+def additional_sections(text):
+    for pat in (TREATED_FOR_PAT,):
+        if m := pat.search(text):
+            yield 'TREATED_FOR', m.group('condition')
 
 
 def extract_note_level_info(text, *, headers=None, lateralities=None):
@@ -39,8 +53,11 @@ def extract_note_level_info(text, *, headers=None, lateralities=None):
         'default_lat': Laterality.UNKNOWN,
         'primary_dx': False,
     }
-    for header, text in headers.iterate(
-            'ASSESSMENT', 'ASSESSMENT_COMMENTS', 'CHIEF_COMPLAINT',
+    for header, text in itertools.chain(
+            headers.iterate(
+                'ASSESSMENT', 'ASSESSMENT_COMMENTS', 'CHIEF_COMPLAINT', 'HPI',
+            ),
+            additional_sections(text)
     ):
         for key, pattern, dx in [
             ('is_amd', AMD_PAT, Diagnosis.AMD),

@@ -8,6 +8,7 @@ from eye_extractor.common.date import parse_nearest_date_to_line_start
 
 
 class Laterality(enum.IntEnum):
+    NONE = -1  # placeholder
     OD = 1  # right
     OS = 2  # left
     OU = 3  # both/bilateral
