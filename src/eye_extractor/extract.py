@@ -28,6 +28,7 @@ from eye_extractor.history.famhx import create_family_history
 from eye_extractor.history.perhx import create_personal_history
 from eye_extractor.iop import get_iop
 from eye_extractor.laterality import build_laterality_table
+from eye_extractor.nlp.negate.boilerplate import remove_boilerplate
 from eye_extractor.ro.algorithm import extract_ro_variables
 from eye_extractor.sections.history import remove_history_sections
 from eye_extractor.uveitis.algorithm import extract_uveitis
@@ -40,7 +41,9 @@ def extract_all(text: str, *, data: dict = None, sections: dict = None):
         sections = extract_headers_and_text(text)
     lateralities = build_laterality_table(text)
     orig_text = text
-    text = remove_history_sections(text)
+    no_hist_text = remove_history_sections(text)
+    # TODO: for treatment-related, may need to look at non-boilerplate removed text
+    text = remove_boilerplate(no_hist_text)
     if data is None:
         data = {}
     data['note'] = extract_note_level_info(text, headers=sections, lateralities=lateralities)
