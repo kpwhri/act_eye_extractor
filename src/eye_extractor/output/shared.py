@@ -21,14 +21,6 @@ def build_shared_variables(data):
     return results
 
 
-def get_default_fluid_result():
-    return {
-        'fluid_re': Fluid.UNKNOWN,
-        'fluid_le': Fluid.UNKNOWN,
-        'fluid_unk': Fluid.UNKNOWN,
-    }
-
-
 def build_fluid(data, *, skip_rename_variable=False, rename_var='fluid',
                 note_date=None):
     return column_from_variable_abbr(

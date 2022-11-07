@@ -12,7 +12,7 @@ from eye_extractor.common.algo.treatment import Treatment
 from eye_extractor.common.drug.antivegf import rename_antivegf, AntiVegf
 from eye_extractor.laterality import Laterality
 from eye_extractor.output.common import macula_is_wnl
-from eye_extractor.output.shared import get_default_fluid_result, build_subretfluid, build_intraretfluid, build_fluid
+from eye_extractor.output.shared import build_subretfluid, build_intraretfluid, build_fluid
 from eye_extractor.output.variable import column_from_variable, update_column, column_from_variable_abbr, \
     rename_variable_func, column_from_variable_binary, build_lat_suffixes
 
