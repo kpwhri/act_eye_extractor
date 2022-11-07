@@ -70,7 +70,11 @@ def _get_month(value):
 
 
 def parse_date(text, *, allow_month_only=False, allow_year_only=False, allow_fuzzy=True):
-    """Look for date in text and return datetime object"""
+    """Look for date in text and return datetime object
+
+    Set `allow_fuzzy` to False to require exact match.
+        * Known to read OCT (as in macula OCT) as October.
+    """
     for i, pat in enumerate([DATE_PAT1, DATE_PAT2, DATE_PAT3, DATE_PAT4, DATE_PAT4b, DATE_PAT5]):
         if i == 4 and not allow_month_only:
             continue  # don't rely on month only
@@ -126,15 +130,15 @@ def date_as_string(dt):
     return dt.strftime('%Y-%m-%d') if dt is not None else None
 
 
-def parse_date_before(m: Match, text, *, characters=20, as_string=False):
+def parse_date_before(m: Match, text, *, characters=20, as_string=False, allow_fuzzy=True):
     """Look for date after a particular match"""
-    dt = parse_date(text[max(0, m.start() - characters): m.start()])
+    dt = parse_date(text[max(0, m.start() - characters): m.start()], allow_fuzzy=allow_fuzzy)
     return date_as_string(dt) if as_string else dt
 
 
-def parse_date_after(m: Match, text, *, characters=20, as_string=False):
+def parse_date_after(m: Match, text, *, characters=20, as_string=False, allow_fuzzy=True):
     """Look for date before a regex match"""
-    dt = parse_date(text[m.end(): m.end() + characters])
+    dt = parse_date(text[m.end(): m.end() + characters], allow_fuzzy=allow_fuzzy)
     return date_as_string(dt) if as_string else dt
 
 
