@@ -198,6 +198,8 @@ def augment_dryamd_severity(result, *, ga_result=None):
 def build_wetamd_severity(data, *, cnv_result=None, srh_result=None,
                           is_amd=None, is_dr=None, fluid_result=None, note_date=None):
     """Build wet amd severity"""
+    if is_amd is False:
+        return build_lat_suffixes('wetamd_severity', WetSeverity.UNKNOWN.name)
     result = column_from_variable_abbr(
         'wetamd_severity', WetSeverity.UNKNOWN, data,
         transformer_func=WetSeverity,
