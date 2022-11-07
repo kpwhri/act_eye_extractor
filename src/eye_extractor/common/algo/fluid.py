@@ -78,7 +78,7 @@ def fluid_prioritization(new_value: Fluid, curr_value: Fluid | None):
     return curr_value  # default to current value
 
 
-srf = r'sr\s*f(?:luids?)?'
+srf = r'sr\s*h?f(?:luids?)?'
 irf = r'ir\s*f(?:luids?)?'
 
 MACULAR_EDEMA_PAT = re.compile(

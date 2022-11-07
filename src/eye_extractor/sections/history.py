@@ -14,7 +14,7 @@ HISTORY_SECTION_PAT = re.compile(
     rf'|review\s*of\s*systems'
     rf'|systems\s*review'
     rf'|social\s*{history}'
-    rf'|(?:{past}\s*)?{medical}\s*{history}(?:\s*of)?'
+    rf'|(?:{past}\s*)?{medical}\s*{history}(?:\s*(?:of|includes))?'
     rf'|pm\s*{history}(?:\s*of)?'
     rf'|fam(?:ily)?\s*(?:{medical}\s*)?{history}(?:\s*of)?'
     rf'|past\s*(?:\w+\W*){{,6}}'
