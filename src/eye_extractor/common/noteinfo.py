@@ -56,6 +56,7 @@ def extract_note_level_info(text, *, headers=None, lateralities=None):
     for header, text in itertools.chain(
             headers.iterate(
                 'ASSESSMENT', 'ASSESSMENT_COMMENTS', 'CHIEF_COMPLAINT', 'HPI',
+                'IMPRESSION',
             ),
             additional_sections(text)
     ):
