@@ -69,9 +69,13 @@ def _get_month(value):
     return MONTHS[value.lower()[:3] if value else value]
 
 
-def parse_date(text):
+def parse_date(text, *, allow_month_only=False, allow_year_only=False, allow_fuzzy=True):
     """Look for date in text and return datetime object"""
-    for pat in [DATE_PAT1, DATE_PAT2, DATE_PAT3, DATE_PAT4, DATE_PAT4b, DATE_PAT5]:
+    for i, pat in enumerate([DATE_PAT1, DATE_PAT2, DATE_PAT3, DATE_PAT4, DATE_PAT4b, DATE_PAT5]):
+        if i == 4 and not allow_month_only:
+            continue  # don't rely on month only
+        if i == 6 and not allow_year_only:
+            continue  # don't just rely on year-only
         if m := pat.search(text):
             data = m.groupdict()
             curr_day = data.get('day', 17)  # default to 17, close to mid-month
@@ -82,10 +86,11 @@ def parse_date(text):
                 return dt
             except Exception as e:
                 logger.error(f'Failed to parse datetime: {m.group()} with {str(e)}')
-    try:
-        return parse(text, fuzzy=True)
-    except ParserError as e:
-        return None  # date wasn't required in this string
+    if allow_fuzzy:
+        try:
+            return parse(text, fuzzy=True)
+        except ParserError as e:
+            return None  # date wasn't required in this string
 
 
 def parse_all_dates(text):

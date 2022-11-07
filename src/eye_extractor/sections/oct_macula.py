@@ -25,7 +25,7 @@ oct_macula_not_section_keywords = frozenset({'today', 'done', 'visit', 'performe
 
 def _find_oct_macula_section_laterality(text, *, restrict_date=None):
     data = {}
-    date = parse_date(text[:30])
+    date = parse_date(text[:30], allow_fuzzy=False)
     if not has_valid_date(restrict_date, data):
         return None
     prev_start = None
