@@ -29,7 +29,8 @@ class Headers:
 
     def remove(self, func):
         """Remove text (e.g., boilerplate) using a function"""
-        self.text = func(self.text)
+        if self.text:
+            self.text = func(self.text)
         self.data = [{k: func(v) for k, v in d.items()} for d in self.data]
 
     def set_text(self, text):
