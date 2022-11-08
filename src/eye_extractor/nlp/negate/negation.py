@@ -22,6 +22,7 @@ NEGWORDS = {
     'without': True,
     'w/out': True,
     'w/o': True,
+    'h/o': True,
     '(-)': True,
     'if': True,
     'possible': True,
@@ -78,6 +79,7 @@ def _handle_negation_with_punctuation(text):
     """Hack to handle punctuation-infused negation words: replace with 'no'"""
     text = text.replace('w/out', 'without')
     text = text.replace('w/o', 'without')
+    text = text.replace('h/o', 'history')
     text = text.replace('(-)', ' no ')
     text = re.sub(r'((?:^|\D\s+)\s*)-([A-Za-z]|$)', r'\g<1> no \g<2>', text)
     return text

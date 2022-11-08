@@ -84,7 +84,6 @@ irf = r'ir\s*f(?:luids?)?'
 MACULAR_EDEMA_PAT = re.compile(
     rf'\b(?:'
     rf'mac(ular?)?\s*edema'
-    rf'|edema'
     rf'|csme'
     rf'|cme'
     rf'|scme'  # popular typo
@@ -141,6 +140,9 @@ def extract_fluid(text, *, headers=None, lateralities=None):
     return data
 
 
+non_macular = {'corneal', 'stromal'}
+
+
 def _extract_fluid_from_oct(text):
     result = []
     for section_dict in find_oct_macula_sections(text):
@@ -165,7 +167,7 @@ def _get_fluid(text, lateralities, source, *, known_laterality=None, known_date=
          ),
     ]:
         for m in pat.finditer(text):
-            if is_negated(m, text, {'corneal'}):  # non-macular
+            if is_negated(m, text, non_macular):  # non-macular
                 continue
             negword = (
                     is_negated(m, text, word_window=4)
@@ -191,7 +193,7 @@ def _get_fluid_in_macula(text, lateralities, source, *,
                          known_laterality=None, priority=1, known_date=None):
     data = []
     for m in FLUID_NOS_PAT.finditer(text):  # in MACULA section, this is IRF
-        if is_negated(m, text, {'corneal', 'subretinal', 'sr', 'sub'}):  # non-macular
+        if is_negated(m, text, {'corneal', 'stromal', 'subretinal', 'sr', 'sub'}):  # non-macular
             continue
         negword = (
                 is_negated(m, text, word_window=4)
