@@ -17,6 +17,8 @@ Types of changes:
 
 ## [Unreleased]
 
+## v20221108 - AMD Release 1
+
 ### Added
 - Boilerplate removal (including from sections)
 - Handling complex bilateralities (e.g., `od > os`)
