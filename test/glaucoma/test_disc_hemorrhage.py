@@ -21,7 +21,7 @@ def test_dh_patterns(pat, text, exp):
     ('dh', None, -1, -1, 1),
     ('OD: dh', None, 1, -1, -1),
     ('Optic disc hemorrhage', None, -1, -1, 1),
-    ('h/o disc hemorrhage', None, -1, -1, 1),  # TODO: how should history be handled?
+    ('h/o disc hemorrhage', None, -1, -1, 0),
 ])
 def test_dh_extract_and_build(text, headers, exp_disc_hem_re, exp_disc_hem_le, exp_disc_hem_unk):
     pre_json = extract_disc_hem(text, headers=headers, lateralities=None)

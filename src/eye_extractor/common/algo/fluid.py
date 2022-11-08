@@ -193,15 +193,19 @@ def _get_fluid_in_macula(text, lateralities, source, *,
                          known_laterality=None, priority=1, known_date=None):
     data = []
     for m in FLUID_NOS_PAT.finditer(text):  # in MACULA section, this is IRF
-        if is_negated(m, text, {'corneal', 'stromal', 'subretinal', 'sr', 'sub'}):  # non-macular
+        if is_negated(m, text, non_macular):
             continue
         negword = (
                 is_negated(m, text, word_window=4)
                 or is_post_negated(m, text, {'not'}, word_window=3)
         )
+        if is_negated(m, text, {'subretinal', 'sr', 'sub'}):  # is sub retinal
+            value = Fluid.NO_SUBRETINAL_FLUID if negword else Fluid.SUBRETINAL_FLUID
+        else:
+            value = Fluid.NO_INTRARETINAL_FLUID if negword else Fluid.INTRARETINAL_FLUID
         data.append(
             create_new_variable(text, m, lateralities, 'fluid', {
-                'value': Fluid.NO_INTRARETINAL_FLUID if negword else Fluid.INTRARETINAL_FLUID,
+                'value': value,
                 'term': m.group(),
                 'label': 'no' if negword else 'yes',
                 'negated': negword,
