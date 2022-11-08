@@ -1,4 +1,5 @@
 from eye_extractor.headers import Headers
+from eye_extractor.nlp.negate.boilerplate import remove_boilerplate
 
 
 def test_headers_iterate():
@@ -20,3 +21,16 @@ def test_headers_iterate():
     assert sections[0][1].strip() == 'fluid os'
     assert sections[1][0] == 'MAC'
     assert sections[1][1].strip() == 'fluid od'
+
+
+def test_headers_remove_boilerplate():
+    """Check that boilerplate is removed from text and section texts."""
+    text = 'Patient presents with symptoms. \nPLAN COMMENTS: Maybe surgery? Risks include macular degeneration.'
+    section = Headers({'COMMENTS': 'Maybe surgery? Risks include macular degeneration.'})
+    section.set_text(text)
+    section.remove(remove_boilerplate)
+    sections = list(section.iterate('COMMENTS', 'PLAN_COMMENTS'))
+    assert sections[0][0] == 'COMMENTS'
+    assert sections[0][1].strip() == 'Maybe surgery?'
+    assert sections[1][0] == 'PLAN_COMMENTS'
+    assert sections[1][1].strip() == 'Maybe surgery?'

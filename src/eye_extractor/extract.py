@@ -44,6 +44,7 @@ def extract_all(text: str, *, data: dict = None, sections: dict = None):
     no_hist_text = remove_history_sections(text)
     # TODO: for treatment-related, may need to look at non-boilerplate removed text
     text = remove_boilerplate(no_hist_text)
+    sections.remove(remove_boilerplate)
     if data is None:
         data = {}
     data['note'] = extract_note_level_info(text, headers=sections, lateralities=lateralities)

@@ -18,7 +18,7 @@ Types of changes:
 ## [Unreleased]
 
 ### Added
-- Boilerplate removal
+- Boilerplate removal (including from sections)
 - Handling complex bilateralities (e.g., `od > os`)
 - Improved identification of the end of a section
 - Documentation to numerous functions
