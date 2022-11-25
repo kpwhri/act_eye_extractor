@@ -113,12 +113,12 @@ class JsonlSearcher:
                     with open(f'{docid}.json', 'w', encoding='utf8') as out:
                         out.write(data)
                     return data
-        print(f'Processed {i+1} records with note id: {docid}.')
+        print(f'Processed {i + 1} records with note id: {docid}.')
 
 
 @click.command()
 @click.argument('path', type=click.Path(file_okay=False, path_type=pathlib.Path))
-@click.argument('docid')
+@click.argument('docid', default=None, required=False)
 def main(path, docid):
     """
     Identify json line related to `docid`.
@@ -128,7 +128,13 @@ def main(path, docid):
     :return:
     """
     with JsonlSearcher(path) as searcher:
-        print(searcher.lookup(docid))
+        while True:
+            if docid is not None:
+                print(searcher.lookup(docid))
+            print('Type `q` or `exit` to quit.')
+            docid = input('docid>> ').strip().lower()
+            if docid in {'q', 'exit', 'quit'}:
+                break
 
 
 if __name__ == '__main__':
