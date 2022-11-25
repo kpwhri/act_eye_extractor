@@ -26,10 +26,10 @@ def load_date_hook(d):
 
 class JsonlSearcher:
     def __init__(self, path, build_new_index_files=False):
+        self.conn = None
         self.path = path
         self.dest_path = self.path / '.index'
         self.idx_path = self.dest_path / 'jsonl.idx'
-        self.conn = None
         self.kind = 1 if build_new_index_files else 0
         if self.dest_path.exists():
             self.reconnect()
@@ -39,13 +39,15 @@ class JsonlSearcher:
             self.populate()
 
     def __del__(self):
-        if self.conn is not None:
-            self.conn.close()
+        self.close()
 
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
+
+    def close(self):
         if self.conn is not None:
             self.conn.close()
 
@@ -99,7 +101,7 @@ class JsonlSearcher:
                         out = open(self.dest_path / f'{curr_json_file}.jsonl', 'w', encoding='utf8')
 
     # retrieve
-    def lookup(self, docid):
+    def lookup(self, docid, write=False):
         i = -1
         for i, (jsonl_file, line_num, kind) in enumerate(self.cur.execute(
                 f'select jsonl_file, line_number, kind from LOOKUP where docid = "{docid}"'
@@ -110,8 +112,9 @@ class JsonlSearcher:
                     if i != line_num:
                         continue
                     data = json.dumps(json.loads(line, object_hook=load_date_hook), default=str, indent=2)
-                    with open(f'{docid}.json', 'w', encoding='utf8') as out:
-                        out.write(data)
+                    if write:
+                        with open(f'{docid}.json', 'w', encoding='utf8') as out:
+                            out.write(data)
                     return data
         print(f'Processed {i + 1} records with note id: {docid}.')
 
