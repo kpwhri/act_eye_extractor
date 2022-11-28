@@ -46,6 +46,17 @@ _dr_type_extract_and_build_cases = [
     ('Proliferative diabetic retinopathy OS', {}, DrType.UNKNOWN, DrType.PDR, DrType.UNKNOWN),
     ('Hx of pdr od', {}, DrType.NONE, DrType.UNKNOWN, DrType.UNKNOWN),  # historical
     ('Uncontrolled Proliferative Diabetic Retinopathy', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.PDR),
+    ('no BDR at that time. Review shows no apparent BDR OD and inconclusive OS', {},
+     DrType.NONE, DrType.UNKNOWN, DrType.UNKNOWN),
+    ('confirm no BDR', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.UNKNOWN),
+    ('no bgdr ou', {}, DrType.NONE, DrType.NONE, DrType.UNKNOWN),
+    ('no bdr ou', {}, DrType.NONE, DrType.NONE, DrType.UNKNOWN),
+    ('nonproliferative diabetic retinopathy ¶ iols ou', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.NPDR),
+    ('¶(1) No diabetic retinopathy.', {},
+     DrType.UNKNOWN, DrType.UNKNOWN, DrType.NONE),
+    ('NPDR : no ', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.NONE),
+    ('NPDR : no ¶ASSESSMENT COMMENTS:  ¶Refractive error ¶Diabetic without retinopathy OU', {},
+     DrType.NONE, DrType.NONE, DrType.UNKNOWN)
 ]
 
 _npdr_severity_extract_and_build_cases = [
