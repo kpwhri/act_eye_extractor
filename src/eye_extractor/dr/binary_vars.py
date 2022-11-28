@@ -73,6 +73,7 @@ DIABETIC_RETINOPATHY_PATS = [
         r')\b',
         re.I
     )),
+    # TODO: 'IRIS RUBEOSIS: normal' means no NVI
     ('nvd_yesno', re.compile(
         r'\b('
         r'nvd|neovascularization of (the )?disc|neovascularization of (the )?optic(al)? disc'
