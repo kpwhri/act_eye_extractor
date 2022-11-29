@@ -1,7 +1,7 @@
 import enum
 import re
 
-from eye_extractor.nlp.negate.negation import is_negated
+from eye_extractor.nlp.negate.negation import has_before, is_negated, is_post_negated
 from eye_extractor.common.severity import extract_severity, Severity
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
@@ -16,15 +16,20 @@ class DrType(enum.IntEnum):
 NPDR_PAT = re.compile(
     r'\b('
     r'npdr'
-    r'|non(\W*)?proliferative\s+(diabetic\s+retinopathy|dr)'
-    r'|bdr'
-    r'|background\s+diabetic\s+retinopathy'
+    r'|(background|non(\W*)?proliferative)\s+(diabetic\s+retinopathy|dr)'
+    r'|bg?dr'
     r')\b',
     re.I
 )
 PDR_PAT = re.compile(
     r'\b('
     r'pdr|proliferative\s+(diabetic\s+retinopathy|dr)'
+    r')\b',
+    re.I
+)
+DR_PAT = re.compile(
+    r'\b('
+    r'(diabetic\s+)?retinopathy|dr'
     r')\b',
     re.I
 )
@@ -47,36 +52,55 @@ def _get_dr_type(text: str, lateralities, source: str) -> dict:
     for pat_label, pat, dr_type, dr_label, sev_var in [
         ('NPDR_PAT', NPDR_PAT, DrType.NPDR, 'nonproliferative diabetic retinopathy', 'nonprolifdr'),
         ('PDR_PAT', PDR_PAT, DrType.PDR, 'proliferative diabetic retinopathy', 'prolifdr'),
+        ('DR_PAT', DR_PAT, None, 'diabetic retinopathy', None),
     ]:
         for m in pat.finditer(text):
-            negated = is_negated(m, text, word_window=3)
+            negated = (
+                is_negated(m, text, word_window=3)
+                or is_post_negated(m, text, terms={'no'}, word_window=3)
+            )
+
             context = f'{text[max(0, m.start() - 100): m.start()]} {text[m.end():min(len(text), m.end() + 100)]}'
             severities = extract_severity(context)
-            if severities:
-                for sev in severities:
+            if has_before(m if isinstance(m, int) else m.start(),
+                          text,
+                          terms={'confirm'},
+                          word_window=2):
+                break
+            if dr_type:  # matches a severity pattern
+                if severities:
+                    for sev in severities:
+                        yield create_new_variable(text, m, lateralities, sev_var, {
+                            'value': sev,
+                            'term': m.group(),
+                            'label': dr_label,
+                            'negated': negated,
+                            'regex': pat_label,
+                            'source': source,
+                        })
+                elif negated:
                     yield create_new_variable(text, m, lateralities, sev_var, {
-                        'value': sev,
+                        'value': Severity.NONE,
                         'term': m.group(),
-                        'label': dr_label,
+                        'label': f'No {dr_label}',
                         'negated': negated,
                         'regex': pat_label,
                         'source': source,
                     })
-            elif negated:
-                yield create_new_variable(text, m, lateralities, sev_var, {
-                    'value': Severity.NONE,
+                yield create_new_variable(text, m, lateralities, 'diabretinop_type', {
+                    'value': DrType.NONE if negated else dr_type,
                     'term': m.group(),
-                    'label': f'No {dr_label}',
+                    'label': f'No {dr_label}' if negated else dr_label,
                     'negated': negated,
                     'regex': pat_label,
                     'source': source,
                 })
-
-            yield create_new_variable(text, m, lateralities, 'diabretinop_type', {
-                'value': DrType.NONE if negated else dr_type,
-                'term': m.group(),
-                'label': f'No {dr_label}' if negated else dr_label,
-                'negated': negated,
-                'regex': pat_label,
-                'source': source,
-            })
+            elif negated:  # matches negated general DR pattern
+                yield create_new_variable(text, m, lateralities, 'diabretinop_type', {
+                    'value': DrType.NONE,
+                    'term': m.group(),
+                    'label': f'No {dr_label}' if negated else dr_label,
+                    'negated': negated,
+                    'regex': pat_label,
+                    'source': source,
+                })
