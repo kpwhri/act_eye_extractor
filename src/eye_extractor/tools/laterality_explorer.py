@@ -59,6 +59,14 @@ def write_laterality_html(outfh, text):
     outfh.write('</p>')
 
 
+def write_key(outfh, *, header_level=3):
+    outfh.write(f'<h{header_level}>Laterality Color Key</h{header_level}>\n')
+    outfh.write('<ul>\n')
+    for lat, bgvalue in LAT_TO_COLOR.items():
+        outfh.write(f'<li><span style="{bgvalue}">{lat.name}: {lat.value}</span></li>\n')
+    outfh.write('</ul>\n')
+
+
 def build_laterality_html_file_from_docid(docid, *corpus_paths, outpath=None):
     if not outpath:
         outpath = pathlib.Path('.') / '.laterality'
@@ -75,6 +83,7 @@ def build_laterality_html_file_from_docid(docid, *corpus_paths, outpath=None):
             prev = ''
         with open(outfile, 'w', encoding='utf8') as out:
             out.write(f'<h1>Run: {curr_dt}</h1>')
+            write_key(out)
             write_laterality_html(out, text)
             out.write(prev)
 

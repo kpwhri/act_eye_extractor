@@ -10,7 +10,7 @@ import re
 import click
 
 from eye_extractor.nlp.character_groups import LINE_START_CHARS_RX
-from eye_extractor.tools.laterality_explorer import write_laterality_html
+from eye_extractor.tools.laterality_explorer import write_laterality_html, write_key
 from eye_extractor.tools.search_jsonl import JsonlSearcher
 
 
@@ -84,6 +84,7 @@ class ReportBuilder:
             text, meta, sect = self.corpus_lookup.lookup(docid)
             out.write(f'<h3 id="text">Text</h3>\n')
             if text:
+                write_key(out)
                 write_laterality_html(out, text)
                 # for line in re.split(LINE_START_CHARS_RX, text):
                 #     out.write(f'<p>{line}</p>\n')
