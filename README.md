@@ -99,9 +99,9 @@ For the following to work, you must:
   * E.g., `set/export PYTHONPATH=C:\eye_extractor\src`
   * E.g., powershell likes `$env:PYTHONPATH=-C:\eye_extractor\src'`
 
-#### Build Step
+#### Extract Step
 
-The build step produces a jsonl file where each line represents all the NLP work on a single note.
+The extract step produces a jsonl file where each line represents all the NLP work on a single note.
 
 Assuming all notes are in the directory: `C:\notes`, and the output info should be in `C:\extract`, run:
 ```
@@ -124,11 +124,11 @@ to tell a run which files to look for.
 
 Each run will create a jsonlines file. To merge these together and build separate variables, see the Extract Step.
 
-#### Extract Step
+#### Build Step
 
-The extract step produces a CSV file with individual eye-related variables from the jsonlines output of the build step.
+The build step produces a CSV file with individual eye-related variables from the jsonlines output of the build step.
 
-1. Ensure that the build output `jsonl` file(s) are in a single directory (let's assume this is `C:\extract\run1`)
+1. Ensure that the extract output `jsonl` file(s) are in a single directory (let's assume this is `C:\extract\run1`)
 2. Let's suppose we want to output the CSV to `C:\build`
 3. `docid`, `studyid`, `date`, `enc_id`, and `train` metadata will be used from the `1.meta` file. To use additional values (e.g., 'department'), add the argument `--add-column department`.
 4. Run: `python src\eye_extractor\build_table.py C:\extract\run1 C:\build`
@@ -141,6 +141,43 @@ The extract step produces a CSV file with individual eye-related variables from 
 Every optometry, ophthalmology, and other note types look distinct based on author, location, etc., etc. 
 While this algorithm has been tuned to particular sites, it is not guaranteed to perform as well in new environments. 
 For this reason, expect to put some effort into fixing variables. One approach might be to look at outputs where all values are missing.
+
+
+### Tools Exploring Results
+
+To run these commands, the `eye_extractor` package must be installed.
+* `cd eye_extractor`
+* `pip install .`
+
+#### Build an HTML Report for a Document 
+
+The `eyex-lookup` command will generate an HTML report for a particular document id.
+It uses an interactive loop which awaits document ids as input.
+This includes information from `jsonl` files, the original text, and the output `csv` file.
+
+    eyex-lookup CORPUS_PATH[, ...] --intermediate-path INTERMEDIATE_PATH --result-path RESULT_PATH
+
+* CORPUS_PATH: 
+  * path to directories of notes that were used in running the extract code
+  * multiple paths can be listed
+  * assumption: documents must have the name `docid.txt`
+* INTERMEDIATE_PATH
+  * the output _directory_ from the `extract` step
+* RESULT_PATH
+  * CSV file output by the `build` step
+
+
+#### Explore the JSONL file only
+
+The `eyex-lookup-jsonl` command returns the `jsonl` text for a particular docid (this is the intermediate output of `extract` step).
+In general, it's better to just use the `eyex-lookup` process above.
+
+    eyex-lookup-json INTERMEDIATE_PATH [DOCID]
+
+* INTERMEDIATE_PATH
+  * the output _directory_ from the `extract` step
+* DOCID (optional)
+  * document id
 
 ### Building a New Variable
 
