@@ -1,3 +1,5 @@
+import json
+
 import pytest
 
 from eye_extractor.dr.binary_vars import get_dr_binary
@@ -378,3 +380,83 @@ def test_build_oct_cme(data, exp_oct_centralmac_re, exp_oct_centralmac_le, exp_o
     assert result['oct_centralmac_re'] == exp_oct_centralmac_re
     assert result['oct_centralmac_le'] == exp_oct_centralmac_le
     assert result['oct_centralmac_unk'] == exp_oct_centralmac_unk
+
+
+_nva_extract_and_build_cases = [
+    # ('mild BDR OU', {}, 'MILD', 'MILD', 'UNKNOWN'),
+]
+
+
+@pytest.mark.parametrize('text, headers, exp_nva_yesno_re, exp_nva_yesno_le, exp_nva_yesno_unk',
+                         _nva_extract_and_build_cases)
+def test_nva_extract_and_build(text,
+                               headers,
+                               exp_nva_yesno_re,
+                               exp_nva_yesno_le,
+                               exp_nva_yesno_unk):
+    pre_json = get_dr_binary(text)
+    post_json = json.loads(json.dumps(pre_json))
+    result = build_nva(post_json)
+    assert result['nva_yesno_re'] == exp_nva_yesno_re
+    assert result['nva_yesno_le'] == exp_nva_yesno_le
+    assert result['nva_yesno_unk'] == exp_nva_yesno_unk
+
+
+_nvi_extract_and_build_cases = [
+    # ('mild BDR OU', {}, 'MILD', 'MILD', 'UNKNOWN'),
+]
+
+
+@pytest.mark.parametrize('text, headers, exp_nvi_yesno_re, exp_nvi_yesno_le, exp_nvi_yesno_unk',
+                         _nvi_extract_and_build_cases)
+def test_nvi_extract_and_build(text,
+                               headers,
+                               exp_nvi_yesno_re,
+                               exp_nvi_yesno_le,
+                               exp_nvi_yesno_unk):
+    pre_json = get_dr_binary(text)
+    post_json = json.loads(json.dumps(pre_json))
+    result = build_nvi(post_json)
+    assert result['nvi_yesno_re'] == exp_nvi_yesno_re
+    assert result['nvi_yesno_le'] == exp_nvi_yesno_le
+    assert result['nvi_yesno_unk'] == exp_nvi_yesno_unk
+
+
+_nvd_extract_and_build_cases = [
+    # ('mild BDR OU', {}, 'MILD', 'MILD', 'UNKNOWN'),
+]
+
+
+@pytest.mark.parametrize('text, headers, exp_nvd_yesno_re, exp_nvd_yesno_le, exp_nvd_yesno_unk',
+                         _nvd_extract_and_build_cases)
+def test_nvd_extract_and_build(text,
+                               headers,
+                               exp_nvd_yesno_re,
+                               exp_nvd_yesno_le,
+                               exp_nvd_yesno_unk):
+    pre_json = get_dr_binary(text)
+    post_json = json.loads(json.dumps(pre_json))
+    result = build_nvd(post_json)
+    assert result['nvd_yesno_re'] == exp_nvd_yesno_re
+    assert result['nvd_yesno_le'] == exp_nvd_yesno_le
+    assert result['nvd_yesno_unk'] == exp_nvd_yesno_unk
+
+
+_nve_extract_and_build_cases = [
+    # ('mild BDR OU', {}, 'MILD', 'MILD', 'UNKNOWN'),
+]
+
+
+@pytest.mark.parametrize('text, headers, exp_nve_yesno_re, exp_nve_yesno_le, exp_nve_yesno_unk',
+                         _nve_extract_and_build_cases)
+def test_nve_extract_and_build(text,
+                               headers,
+                               exp_nve_yesno_re,
+                               exp_nve_yesno_le,
+                               exp_nve_yesno_unk):
+    pre_json = get_dr_binary(text)
+    post_json = json.loads(json.dumps(pre_json))
+    result = build_nve(post_json)
+    assert result['nve_yesno_re'] == exp_nve_yesno_re
+    assert result['nve_yesno_le'] == exp_nve_yesno_le
+    assert result['nve_yesno_unk'] == exp_nve_yesno_unk
