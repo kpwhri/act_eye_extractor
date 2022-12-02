@@ -60,30 +60,6 @@ DIABETIC_RETINOPATHY_PATS = [
         r')\b',
         re.I
     )),
-    ('nva_yesno', re.compile(
-        r'\b('
-        r'neovascularization of( the)? angle|nva|angular neovascularization'
-        r')\b',
-        re.I
-    )),
-    ('nvi_yesno', re.compile(
-        r'\b('
-        r'nvi|neovascularization of( the)? iris|rubeosis|rubeosis iridis'
-        r')\b',
-        re.I
-    )),
-    ('nvd_yesno', re.compile(
-        r'\b('
-        r'nvd|neovascularization of (the )?disc|neovascularization of (the )?optic(al)? disc'
-        r')\b',
-        re.I
-    )),
-    ('nve_yesno', re.compile(
-        r'\b('
-        r'nve|neovascularization elsewhere'
-        r')\b',
-        re.I
-    )),
     ('drtreatment', re.compile(
         r'\b('
         r'PRP|pan retinal photocoagulation|Pars plana vitrectomy'
