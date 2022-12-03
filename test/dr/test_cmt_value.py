@@ -35,7 +35,19 @@ _cmt_value_extract_and_build_cases = [
     ('OD: mild moderate irregularity, no edema, CMT 290; OS: moderate retinal irregularity , no edema, '
      'mild epiretinal membrane , CMT 282',
      {}, 290, 282, -1),
-    ('Central macular thickness: 234 um', {}, -1, -1, 234)
+    ('Central macular thickness: 234 um', {}, -1, -1, 234),
+    ('Acuities (cc) glare OD 20/30', {}, -1, -1, -1),
+    ('OD 4/12', {}, -1, -1, -1),
+    ('C/D: 0.6 OD 0.8 OS', {}, -1, -1, -1),
+    ('OS 1988', {}, -1, -1, -1),
+    ('OD: +0.40 -1.00 x 081 20/30 ¶OS: +1.60 -2.75 x 079 20/40+1', {}, -1, -1, -1),
+    ('CC: OD: 20/20 PH: OD: 20/na', {}, -1, -1, -1),
+    ('¶ ¶TONOMETRY: Tappl OD 14 mmHg OS 17 mmHg', {}, -1, -1, -1),
+    ('¶ ¶Pachymetry: ¶OD: 544/541/540, OS: 534/537/531', {}, -1, -1, -1),
+    ('no hyphema OD*7/8/2012', {}, -1, -1, -1),
+    ('Intravitreal Avastin injection OD (67028', {}, -1, -1, -1),
+    ('OD ¶1/2013:', {}, -1, -1, -1),
+    ('¶2) Hem PVD OD ¶3)', {}, -1, -1, -1),
 ]
 
 
