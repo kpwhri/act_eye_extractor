@@ -59,6 +59,18 @@ def test_build_hemorrhage_type(data, exp_hemorrhage_typ_dr_re, exp_hemorrhage_ty
      HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.INTRARETINAL),
     ('dot blot hemorrhage near inferior margin of GA',
      HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.DOT_BLOT),
+    ('vitreous hemorrhage vs inflammation- iritis/uveitis OD',
+     HemorrhageType.VITREOUS, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
+    ('Hx of vx os for vitreous hemorrhage', HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
+    ('Resolved vitreous hemorrhage OD', HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
+    ('ADDED HX NOTES: ¶OD s/p BRVO, vitreous heme',
+     HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
+    ('¶H/o posterior vitreous detachment with vitreous hemorrhage, left eye.',
+     HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
+    # TODO: Resolve laterality issues to pass below tests.
+    # ('¶VITREOUS:  Minimal vitreous heme ¶ ¶Discs pink OU',
+    #  HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.VITREOUS),
+
 ])
 def test_hemorrhage_type_extract_and_build(text, hemorrhage_type_dr_re, hemorrhage_type_dr_le,
                                            hemorrhage_type_dr_unk):

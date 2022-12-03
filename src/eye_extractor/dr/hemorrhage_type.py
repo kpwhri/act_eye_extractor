@@ -1,7 +1,7 @@
 import enum
 import re
 
-from eye_extractor.nlp.negate.negation import is_negated
+from eye_extractor.nlp.negate.negation import is_negated, has_before
 from eye_extractor.common.severity import extract_severity, Severity
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
@@ -18,31 +18,31 @@ class HemorrhageType(enum.IntEnum):
 
 INTRARETINAL_PAT = re.compile(
     r'\b('
-    r'intraretinal\s*hem(orrhage|e)'
+    r'intraretinal\s*hem(orrhage|e)s?'
     r'|hem(orrhage|e)\s*intraretinal'
     r')\b'
 )
 DOT_BLOT_PAT = re.compile(
     r'\b('
-    r'dot blot\s*hem(orrhage|e)'
+    r'dot blot\s*hem(orrhage|e)s?'
     r'|hem(orrhage|e)\s*dot blot'
     r')\b'
 )
 PRERETINAL_PAT = re.compile(
     r'\b('
-    r'preretinal\s*hem(orrhage|e)'
+    r'preretinal\s*hem(orrhage|e)s?'
     r'|hem(orrhage|e)\s*preretinal'
     r')\b'
 )
 VITREOUS_PAT = re.compile(
     r'\b('
-    r'vitreous\s*hem(orrhage|e)'
+    r'vitreous\s*hem(orrhage|e)s?'
     r'|hem(orrhage|e)\s*vitreous'
     r')\b'
 )
 SUBRETINAL_PAT = re.compile(
     r'\b('
-    r'subretinal\s*hem(orrhage|e)'
+    r'subretinal\s*hem(orrhage|e)s?'
     r'|hem(orrhage|e)\s*subretinal'
     r')\b'
 )
@@ -72,6 +72,12 @@ def _get_hemorrhage_type(text: str, lateralities, source: str) -> dict:
             negated = is_negated(m, text, word_window=3)
             context = f'{text[max(0, m.start() - 100): m.start()]} {text[m.end():min(len(text), m.end() + 100)]}'
             severities = extract_severity(context)
+            if has_before(m if isinstance(m, int) else m.start(),
+                          text,
+                          terms={'hx', 'h/o', 'resolved'},
+                          boundary_chars='',
+                          word_window=5):
+                break
             if sev_var and severities:
                 for sev in severities:
                     yield create_new_variable(text, m, lateralities, sev_var, {

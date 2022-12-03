@@ -12,10 +12,12 @@ from eye_extractor.output.dr import (
     build_laser_panrentinal,
     build_neovasc,
     build_nva,
+    build_nvd,
+    build_nve,
     build_nvi,
     build_oct_cme,
     build_ret_micro,
-    build_sig_edema, build_nvd, build_nve
+    build_sig_edema
 )
 
 
@@ -39,7 +41,6 @@ from eye_extractor.output.dr import (
     ('No d/b hemes, CWS or NVE OU', 0, 'no'),
     ('without NVD, NVE', 0, 'without'),
     ('no NVE Disc 0.45', 0, 'no'),
-    ('IRIS: Normal Appearance, neg Rubeosis, OU', 0, 'neg'),
     ('Mild nonproliferative diabetic retinopathy (362.04)', 1, None),
     ('Plan for surgery: Pars Plana Vitrectomy with Membrane Peel left eye.', 1, None),
     ('Patient presents with: Diabetic macular edema E11.311', 1, None),

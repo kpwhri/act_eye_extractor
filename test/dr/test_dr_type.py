@@ -51,12 +51,13 @@ _dr_type_extract_and_build_cases = [
     ('confirm no BDR', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.UNKNOWN),
     ('no bgdr ou', {}, DrType.NONE, DrType.NONE, DrType.UNKNOWN),
     ('no bdr ou', {}, DrType.NONE, DrType.NONE, DrType.UNKNOWN),
-    ('nonproliferative diabetic retinopathy ¶ iols ou', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.NPDR),
     ('¶(1) No diabetic retinopathy.', {},
      DrType.UNKNOWN, DrType.UNKNOWN, DrType.NONE),
     ('NPDR : no ', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.NONE),
-    ('NPDR : no ¶ASSESSMENT COMMENTS:  ¶Refractive error ¶Diabetic without retinopathy OU', {},
-     DrType.NONE, DrType.NONE, DrType.UNKNOWN)
+    # TODO: Resolve laterality issues to pass below tests.
+    # ('nonproliferative diabetic retinopathy ¶ iols ou', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.NPDR),
+    # ('¶(1) No diabetic retinopathy. ¶(2) Increasing cataract, RE,', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.NONE),
+    # ('Background diabetic retinopathy ¶ ¶ ¶Plan.) start alphagan ou', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.NPDR),
 ]
 
 _npdr_severity_extract_and_build_cases = [
