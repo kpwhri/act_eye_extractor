@@ -5,11 +5,10 @@ Lookup note by document id.
 import csv
 import json
 import pathlib
-import re
 
 import click
 
-from eye_extractor.nlp.character_groups import LINE_START_CHARS_RX
+from eye_extractor.laterality import LateralityLocatorStrategy
 from eye_extractor.tools.laterality_explorer import write_laterality_html, write_key
 from eye_extractor.tools.search_jsonl import JsonlSearcher
 
@@ -67,7 +66,7 @@ class ReportBuilder:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.intermed_lookup.close()
 
-    def lookup(self, docid):
+    def lookup(self, docid, strategy=LateralityLocatorStrategy.DEFAULT):
         with open(f'{docid}.html', 'w', encoding='utf8') as out:
             out.write('<html><body>\n')
             out.write(f'<h1>{docid}</h1>\n')
@@ -85,7 +84,7 @@ class ReportBuilder:
             out.write(f'<h3 id="text">Text</h3>\n')
             if text:
                 write_key(out)
-                write_laterality_html(out, text)
+                write_laterality_html(out, text, strategy=strategy)
                 # for line in re.split(LINE_START_CHARS_RX, text):
                 #     out.write(f'<p>{line}</p>\n')
             out.write(f'<h3 id="meta">Metadata</h3>\n')
@@ -116,13 +115,16 @@ class ReportBuilder:
 @click.argument('corpus_paths', nargs=-1, type=click.Path(exists=True, file_okay=False, path_type=pathlib.Path))
 @click.option('--intermediate-path', type=click.Path(exists=True, file_okay=False, path_type=pathlib.Path))
 @click.option('--result-path', type=click.Path(exists=True, dir_okay=False, path_type=pathlib.Path))
-def main(corpus_paths, intermediate_path=None, result_path=None):
+@click.option('--strategy', type=int, default=LateralityLocatorStrategy.DEFAULT.value,
+              help=f'{",".join(f"{x.value}={x.name}" for x in LateralityLocatorStrategy)}')
+def main(corpus_paths, intermediate_path=None, result_path=None, strategy=1):
     docid = None
+    strategy = LateralityLocatorStrategy(strategy)
     with ReportBuilder(*corpus_paths, intermediate_path=intermediate_path, result_path=result_path) as rb:
         while True:
             if docid is not None:
                 try:
-                    rb.lookup(docid)
+                    rb.lookup(docid, strategy=strategy)
                 except Exception as e:
                     print(f'Failed: {e}')
             print('Type `q` or `exit` to quit.')

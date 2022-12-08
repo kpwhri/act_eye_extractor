@@ -16,6 +16,11 @@ class Laterality(enum.IntEnum):
     UNKNOWN = 0  # keep 0 so that it will test 'False'
 
 
+class LateralityLocatorStrategy(enum.Enum):
+    DEFAULT = 1
+    LINE_BREAK = 2
+
+
 LATERALITY = {
     'OD GREATER THAN OS': Laterality.OU,
     'OD > OS': Laterality.OU,
@@ -198,9 +203,9 @@ def create_new_variable(text, match, lateralities, variable, value, *, known_lat
     return data
 
 
-def get_laterality_for_term(lateralities, match: Match, text):
+def get_laterality_for_term(lateralities, match: Match, text, *, strategy=LateralityLocatorStrategy.DEFAULT):
     """Get laterality for a particular match by its index, so `match` must have been found in `text`"""
-    return lateralities.get_by_index(match.start(), text)
+    return lateralities.get_by_index(match.start(), text, strategy=strategy)
 
 
 class LatLocation:
@@ -234,11 +239,6 @@ class LatLocation:
         yield self.start
         yield self.end
         yield self.is_section_start
-
-
-class LateralityLocatorStrategy(enum.Enum):
-    DEFAULT = 1
-    LINE_BREAK = 2
 
 
 class LateralityLocator:
@@ -325,9 +325,9 @@ class LateralityLocator:
         return match_start, text[:i]
 
     def get_by_index(self, match_start, text, *,
-                     version=LateralityLocatorStrategy.DEFAULT,
+                     strategy=LateralityLocatorStrategy.DEFAULT,
                      next_max=60, prev_max=100):
-        match version:
+        match strategy:
             case LateralityLocatorStrategy.DEFAULT:
                 return self._get_by_index_default(match_start, text, next_max=next_max, prev_max=prev_max)
             case LateralityLocatorStrategy.LINE_BREAK:
