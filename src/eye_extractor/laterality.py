@@ -340,7 +340,7 @@ class LateralityLocator:
                                                     prev_dist, next_max):
         """Refactored repeatedly-called method."""
         prev_commas = self.count_before(match_start, text, prev_lat, count_letters)
-        if next_lat and (next_dist := self.distance(match_start, prev_lat)) < next_max:
+        if next_lat and (next_dist := self.distance(match_start, next_lat)) < next_max:
             next_commas = self.count_after(match_start, text, next_lat, count_letters)
             if next_commas == prev_commas:
                 return prev_lat.laterality if prev_dist < next_dist else next_lat.laterality
