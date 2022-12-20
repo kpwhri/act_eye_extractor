@@ -38,6 +38,7 @@ _focal_extract_and_build_cases = [
     ('', {'MACULA': 'Focal scars ou.'}, 1, 1, -1),
     ('focal scars no new nvd', {}, -1, -1, 1),
     ('old focal tx scars OD', {}, 1, -1, -1),
+    ('¶Macula: choroidal scar OD with focal laser scars', {}, 1, -1, -1),
 ]
 
 _grid_extract_and_build_cases = [
