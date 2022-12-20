@@ -6,7 +6,7 @@ import pathlib
 
 import click
 
-from eye_extractor.laterality import build_laterality_table, Laterality
+from eye_extractor.laterality import build_laterality_table, Laterality, LateralityLocatorStrategy
 from eye_extractor.nlp.character_groups import LINE_START_CHARS
 
 LAT_TO_COLOR = {
@@ -34,6 +34,39 @@ def write_span(outfh, lat, text):
     outfh.write(f'\n<span style="{LAT_TO_COLOR[lat]}">{text}</span>')
 
 
+def write_laterality_html(outfh, text, strategy=LateralityLocatorStrategy.DEFAULT):
+    """Write laterality output for a given bit of text."""
+    latloc = build_laterality_table(text)
+    curr_lat = Laterality.UNKNOWN
+    curr_idx = 0
+    outfh.write('<p>')
+    for i, letter in enumerate(text):
+        new_lat = latloc.get_by_index(i, text, strategy=strategy)
+        if letter in LINE_START_CHARS:
+            if curr_lat is None:
+                continue
+            write_span(outfh, curr_lat, text[curr_idx:i])  # not including newline
+            outfh.write('</p><p>')
+            curr_idx = i + 1  # start from next character
+            curr_lat = Laterality.UNKNOWN
+            continue  # ignore if changed
+        if curr_lat is None or new_lat == curr_lat:
+            continue
+        write_span(outfh, curr_lat, text[curr_idx:i])
+        curr_idx = i
+        curr_lat = new_lat
+    write_span(outfh, curr_lat, text[curr_idx:])
+    outfh.write('</p>')
+
+
+def write_key(outfh, *, header_level=3):
+    outfh.write(f'<h{header_level}>Laterality Color Key</h{header_level}>\n')
+    outfh.write('<ul>\n')
+    for lat, bgvalue in LAT_TO_COLOR.items():
+        outfh.write(f'<li><span style="{bgvalue}">{lat.name}: {lat.value}</span></li>\n')
+    outfh.write('</ul>\n')
+
+
 def build_laterality_html_file_from_docid(docid, *corpus_paths, outpath=None):
     if not outpath:
         outpath = pathlib.Path('.') / '.laterality'
@@ -48,29 +81,10 @@ def build_laterality_html_file_from_docid(docid, *corpus_paths, outpath=None):
                 prev = fh.read()
         else:
             prev = ''
-        latloc = build_laterality_table(text)
-        curr_lat = Laterality.UNKNOWN
-        curr_idx = 0
         with open(outfile, 'w', encoding='utf8') as out:
             out.write(f'<h1>Run: {curr_dt}</h1>')
-            out.write('<p>')
-            for i, letter in enumerate(text):
-                new_lat = latloc.get_by_index(i, text)
-                if letter in LINE_START_CHARS:
-                    if curr_lat is None:
-                        continue
-                    write_span(out, curr_lat, text[curr_idx:i])  # not including newline
-                    out.write('</p><p>')
-                    curr_idx = i + 1  # start from next character
-                    curr_lat = Laterality.UNKNOWN
-                    continue  # ignore if changed
-                if curr_lat is None or new_lat == curr_lat:
-                    continue
-                write_span(out, curr_lat, text[curr_idx:i])
-                curr_idx = i
-                curr_lat = new_lat
-            write_span(out, curr_lat, text[curr_idx:])
-            out.write('</p>')
+            write_key(out)
+            write_laterality_html(out, text)
             out.write(prev)
 
 

@@ -16,6 +16,8 @@ from eye_extractor.laterality import Laterality, build_laterality_table, LATERAL
     ('AMD od > os', 3, Laterality.OU),
     ('AMD od>os', 3, Laterality.OU),
     ('AMD od  >  os', 3, Laterality.OU),
+    ('Gonioscopy: right eye: no NVA left eye: no NVA', 26, Laterality.OD),
+    ('Gonioscopy: right eye: no NVA left eye: no NVA', 43, Laterality.OS),
 ])
 def test_laterality_by_index(text, start_index, exp):
     latloc = build_laterality_table(text)

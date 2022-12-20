@@ -5,6 +5,7 @@ from typing import Match, Optional
 from sortedcontainers import SortedList
 
 from eye_extractor.common.date import parse_nearest_date_to_line_start
+from eye_extractor.nlp.character_groups import LINE_START_CHARS
 
 
 class Laterality(enum.IntEnum):
@@ -13,6 +14,11 @@ class Laterality(enum.IntEnum):
     OS = 2  # left
     OU = 3  # both/bilateral
     UNKNOWN = 0  # keep 0 so that it will test 'False'
+
+
+class LateralityLocatorStrategy(enum.Enum):
+    DEFAULT = 1
+    LINE_BREAK = 2
 
 
 LATERALITY = {
@@ -42,6 +48,7 @@ LATERALITY = {
     'O.S.<O.D.': Laterality.OU,
     'OD': Laterality.OD,
     'O.D.': Laterality.OD,
+    'RIGHT EYE': Laterality.OD,
     'RE': Laterality.OD,
     'R.E.': Laterality.OD,
     'RIGHT': Laterality.OD,
@@ -49,9 +56,12 @@ LATERALITY = {
     'L': Laterality.OS,
     'OS': Laterality.OS,
     'O.S.': Laterality.OS,
+    'LEFT EYE': Laterality.OS,
     'LE': Laterality.OS,
     'L.E.': Laterality.OS,
     'LEFT': Laterality.OS,
+    'BOTH EYE': Laterality.OU,
+    'BOTH EYES': Laterality.OU,
     'BOTH': Laterality.OU,
     # 'BE': Laterality.OU,  # ambiguous
     'OU': Laterality.OU,
@@ -193,9 +203,9 @@ def create_new_variable(text, match, lateralities, variable, value, *, known_lat
     return data
 
 
-def get_laterality_for_term(lateralities, match: Match, text):
+def get_laterality_for_term(lateralities, match: Match, text, *, strategy=LateralityLocatorStrategy.DEFAULT):
     """Get laterality for a particular match by its index, so `match` must have been found in `text`"""
-    return lateralities.get_by_index(match.start(), text)
+    return lateralities.get_by_index(match.start(), text, strategy=strategy)
 
 
 class LatLocation:
@@ -232,6 +242,10 @@ class LatLocation:
 
 
 class LateralityLocator:
+    DEFAULT_COUNT_LETTERS = {
+        ',': 1,
+        '.': 2,
+    } | {x: 3 for x in LINE_START_CHARS}
 
     def __init__(self, lateralities: list[LatLocation] = None, *, default_laterality=Laterality.UNKNOWN):
         if lateralities:
@@ -267,7 +281,7 @@ class LateralityLocator:
         for i, lat in enumerate(self.lateralities):
             if lat.is_section_start:
                 if lat.start < match_start:  # laterality before match index
-                    last_found_lat = None  # reset this value
+                    last_found_lat = lat  # reset this value
                 else:  # laterality section first after match index, so no after
                     return last_found_lat, None
             else:
@@ -277,45 +291,83 @@ class LateralityLocator:
                     return last_found_lat, lat
         return last_found_lat, None  # nothing found after
 
-    def contains_before(self, match_start, text, lat: LatLocation, value) -> int:
-        return text[lat.start:match_start].count(value)
+    def count_before(self, match_start, text, lat: LatLocation, value) -> int:
+        """Count from laterality to match: number of `value` from `lat.start` to `match_start`"""
+        return self.count_all(text[lat.start:match_start], value)
 
-    def contains_after(self, match_start, text, lat: LatLocation, value) -> int:
-        return text[match_start:lat.start].count(value)
+    def count_after(self, match_start, text, lat: LatLocation, value) -> int:
+        """Count from match to laterality: number of `value` between `match_start` and `lat.start`"""
+        return self.count_all(text[match_start:lat.start], value)
+
+    def count_all(self, text, value):
+        return sum([value.get(letter, 1) if isinstance(value, dict) else 1 for letter in text if letter in value])
 
     def distance(self, match_start, lat: LatLocation) -> int:
         return abs(match_start - lat.start)
 
-    def get_by_index(self, match_start, text):
+    def narrow_search_window(self, match_start, text, *, min_count=2, value=LINE_START_CHARS):
+        match_start, text = self.narrow_search_window_pre(match_start, text, min_count=min_count, value=value)
+        match_start, text = self.narrow_search_window_post(match_start, text, min_count=min_count, value=value)
+        return match_start, text
+
+    def narrow_search_window_pre(self, match_start, text, min_count=2, value=LINE_START_CHARS):
+        i = match_start - 1
+        while min_count > 0:
+            if text[i] in value:
+                min_count -= 1
+        return match_start - i, text[i:]
+
+    def narrow_search_window_post(self, match_start, text, min_count=2, value=LINE_START_CHARS):
+        i = match_start + 1
+        while min_count > 0:
+            if text[i] in value:
+                min_count -= 1
+        return match_start, text[:i]
+
+    def get_by_index(self, match_start, text, *,
+                     strategy=LateralityLocatorStrategy.DEFAULT,
+                     next_max=60, prev_max=100):
+        match strategy:
+            case LateralityLocatorStrategy.DEFAULT:
+                return self._get_by_index_default(match_start, text, next_max=next_max, prev_max=prev_max)
+            case LateralityLocatorStrategy.LINE_BREAK:
+                match_start, text = self.narrow_search_window(match_start, text, min_count=2, value=LINE_START_CHARS)
+                return self._get_by_index_default(match_start, text, next_max=next_max, prev_max=prev_max)
+            case _:
+                return self._get_by_index_default(match_start, text, next_max=next_max, prev_max=prev_max)
+
+    def _get_by_index_default_helper_check_prev_lat(self, match_start, text, prev_lat, next_lat, count_letters,
+                                                    prev_dist, next_max):
+        """Refactored repeatedly-called method."""
+        prev_commas = self.count_before(match_start, text, prev_lat, count_letters)
+        if next_lat and (next_dist := self.distance(match_start, next_lat)) < next_max:
+            next_commas = self.count_after(match_start, text, next_lat, count_letters)
+            if next_commas == prev_commas:
+                return prev_lat.laterality if prev_dist < next_dist else next_lat.laterality
+            return prev_lat.laterality if prev_commas < next_commas else next_lat.laterality
+        return prev_lat.laterality
+
+    def _get_by_index_default(self, match_start, text, *, next_max=60, prev_max=100,
+                              count_letters=DEFAULT_COUNT_LETTERS):
         prev_section_lat = self.get_previous_section(match_start, text)
         prev_lat, next_lat = self.get_previous_next_non_section(match_start, text)
-        next_max = 60
-        prev_max = 100
         if prev_section_lat and (prev_section_dist := self.distance(match_start, prev_section_lat)) < prev_max:
             if prev_lat and (prev_dist := self.distance(match_start, prev_lat)) < prev_max:
-                prev_commas = self.contains_before(match_start, text, prev_lat, ',')
-                if next_lat and (next_dist := self.distance(match_start, prev_lat)) < next_max:
-                    next_commas = self.contains_after(match_start, text, next_lat, ',')
-                    if next_commas == prev_commas:
-                        return prev_lat.laterality if prev_dist < next_dist else next_lat.laterality
-                    return prev_lat.laterality if prev_commas < next_commas else next_lat.laterality
-                return prev_lat.laterality
+                return self._get_by_index_default_helper_check_prev_lat(
+                    match_start, text, prev_lat, next_lat, count_letters, prev_dist, next_max
+                )
             elif next_lat and (next_dist := self.distance(match_start, next_lat)) < next_max:
-                next_commas = self.contains_after(match_start, text, next_lat, ',')
-                prev_section_commas = self.contains_before(match_start, text, prev_section_lat, ',')
+                next_commas = self.count_after(match_start, text, next_lat, count_letters)
+                prev_section_commas = self.count_before(match_start, text, prev_section_lat, count_letters)
                 if next_commas == prev_section_commas:
                     return prev_section_lat.laterality
                 return prev_section_lat.laterality if prev_section_commas < next_commas else next_lat.laterality
             return prev_section_lat.laterality
         else:
             if prev_lat and (prev_dist := self.distance(match_start, prev_lat)) < prev_max:
-                prev_commas = self.contains_before(match_start, text, prev_lat, ',')
-                if next_lat and (next_dist := self.distance(match_start, prev_lat)) < next_max:
-                    next_commas = self.contains_after(match_start, text, next_lat, ',')
-                    if next_commas == prev_commas:
-                        return prev_lat.laterality if prev_dist < next_dist else next_lat.laterality
-                    return prev_lat.laterality if prev_commas < next_commas else next_lat.laterality
-                return prev_lat.laterality
+                return self._get_by_index_default_helper_check_prev_lat(
+                    match_start, text, prev_lat, next_lat, count_letters, prev_dist, next_max
+                )
             elif next_lat and (next_dist := self.distance(match_start, next_lat)) < next_max:
                 return next_lat.laterality
         return self.default_laterality
