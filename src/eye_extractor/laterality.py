@@ -280,12 +280,16 @@ class LateralityLocator:
         last_found_lat = None
         for i, lat in enumerate(self.lateralities):
             if lat.is_section_start:
-                if lat.start < match_start:  # laterality before match index
+                if lat.start == match_start:
+                    return lat, None
+                elif lat.start < match_start:  # laterality before match index
                     last_found_lat = lat  # reset this value
                 else:  # laterality section first after match index, so no after
                     return last_found_lat, None
             else:
-                if lat.start < match_start:  # before, so store it
+                if lat.start == match_start:
+                    return lat, None
+                elif lat.start < match_start:  # before, so store it
                     last_found_lat = lat
                 else:  # after, return this and the previous
                     return last_found_lat, lat
