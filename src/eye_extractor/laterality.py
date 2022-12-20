@@ -116,8 +116,11 @@ def simplify_lateralities(lats):
 
 
 def lat_lookup(m, *, group=0):
+    """Lookup laterality for match or string"""
+    if isinstance(m, re.Match):
+        m = m.group(group)
     return LATERALITY[
-        ' '.join(x.strip() for x in m.group(group).upper().strip().strip(':').strip().split())
+        ' '.join(x.strip() for x in m.upper().strip().strip(':').strip().split())
     ]
 
 
