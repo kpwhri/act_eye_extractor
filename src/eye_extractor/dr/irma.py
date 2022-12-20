@@ -26,7 +26,10 @@ def get_irma(text: str, *, headers=None, lateralities=None) -> list:
 
 def _get_irma(text: str, lateralities, source: str) -> dict:
     for m in IRMA_PAT.finditer(text):
-        negated = is_negated(m, text, word_window=3)
+        negated = (
+            is_negated(m, text, word_window=4)
+            or is_negated(m, text, terms={'no'}, word_window=6)
+        )
         context = f'{text[max(0, m.start() - 100): m.start()]} {text[m.end():min(len(text), m.end() + 100)]}'
         severities = extract_severity(context)
         if severities:

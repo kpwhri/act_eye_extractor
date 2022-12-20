@@ -34,6 +34,7 @@ _ven_beading_extract_and_build_cases = [
     ('venous beading temporal and inferior quadrant OD', {}, 'Q2', 'UNKNOWN', 'UNKNOWN'),
     ('nasal quadrant, VB', {}, 'UNKNOWN', 'UNKNOWN', 'Q1'),
     ('VB in all quadrants ou', {}, 'Q4', 'Q4', 'UNKNOWN'),
+    ('(-)heme, MA, HE, CWS, VB, IRMA, NVE OU', {}, 'NONE', 'NONE', 'UNKNOWN'),
 ]
 
 

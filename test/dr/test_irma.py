@@ -34,16 +34,17 @@ _irma_extract_and_build_cases = [
     ('nasal quadrant, IRMA', {}, 'UNKNOWN', 'UNKNOWN', 'Q1'),
     ('IRMA in all quadrants ou', {}, 'Q4', 'Q4', 'UNKNOWN'),
     ('has small area of IRMA right eye', {}, 'MILD', 'UNKNOWN', 'UNKNOWN'),
+    ('(-)heme, MA, HE, CWS, VB, IRMA, NVE OU', {}, 'NONE', 'NONE', 'UNKNOWN'),
 ]
 
 
 @pytest.mark.parametrize('text, headers, exp_irma_re, exp_irma_le, exp_irma_unk',
                          _irma_extract_and_build_cases)
-def test_ven_beading_extract_and_build(text,
-                                       headers,
-                                       exp_irma_re,
-                                       exp_irma_le,
-                                       exp_irma_unk):
+def test_irma_extract_and_build(text,
+                                headers,
+                                exp_irma_re,
+                                exp_irma_le,
+                                exp_irma_unk):
     pre_json = get_irma(text)
     post_json = json.loads(json.dumps(pre_json))
     result = build_irma(post_json)
