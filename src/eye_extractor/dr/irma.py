@@ -6,7 +6,7 @@ from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 IRMA_PAT = re.compile(
     r'\b('
-    r'irma|intraretinal\s+microvascular\s+abnormality'
+    r'irma(?!\s+\w+\s+csn:)|intraretinal\s+microvascular\s+abnormality'
     r')\b',
     re.I
 )

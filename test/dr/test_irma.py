@@ -35,6 +35,7 @@ _irma_extract_and_build_cases = [
     ('IRMA in all quadrants ou', {}, 'Q4', 'Q4', 'UNKNOWN'),
     ('has small area of IRMA right eye', {}, 'MILD', 'UNKNOWN', 'UNKNOWN'),
     ('(-)heme, MA, HE, CWS, VB, IRMA, NVE OU', {}, 'NONE', 'NONE', 'UNKNOWN'),
+    ('¶Irma Smith CSN:', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
 ]
 
 
