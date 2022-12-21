@@ -28,7 +28,7 @@ _cmt_value_extract_and_build_cases = [
     ('OD: erm, CMT 291; OS: erm, CMT 280', {}, 291, 280, -1),
     ('OD CMT 329; +ERM,  OS CMT 465; +ERM;', {}, 329, 465, -1),
     ('CMT OD: 219', {}, 219, -1, -1),
-    pytest.param('CMT OD:265 OS:224', {}, 265, 224, -1, marks=pytest.mark.skip()),
+    ('CMT OD:265 OS:224', {}, 265, 224, -1),
     ('OS: REMAINS DRY CMT 244', {}, -1, 244, -1),
     pytest.param('CMT OD:300 possible epiretinal membrane OS:294 mild epiretinal membrane',
                  {}, 300, 294, -1, marks=pytest.mark.skip()),
