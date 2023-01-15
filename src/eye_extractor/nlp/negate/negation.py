@@ -1,11 +1,19 @@
+import enum
 import re
 from typing import Match, Pattern
 
 from eye_extractor.common.string import replace_punctuation
 
+
+class NegationStatus(enum.IntEnum):
+    UNKNOWN = -1
+    NOT_NEGATED = 0
+    NEGATED = 1
+
+
 NEGWORDS = {
     'no': {
-        'new': False,
+        'new': NegationStatus.UNKNOWN,  # this should be UNKNOWN
         'increased': False,
         'worsening': False,
         None: True,
@@ -35,6 +43,8 @@ NEGWORDS = {
     None: False,
 }
 
+NEGWORD_UNKNOWN_PHRASES = {'no new'}
+
 NEGWORD_SET = frozenset({key for key in NEGWORDS if key})
 
 NEGWORDS_POST = frozenset(
@@ -44,7 +54,7 @@ NEGWORDS_POST = frozenset(
 DEFAULT_BOUNDARY_REGEX = re.compile(r'\b(?:od|os|ou)\b')
 
 
-def _prep_negation_tree(words, fsa):
+def _prep_negation_tree(words, fsa, *, return_unknown=False):
     """Build FSA to make it backwards-compatible with simple set."""
     if isinstance(fsa, dict):
         pass  # desired state
@@ -52,10 +62,10 @@ def _prep_negation_tree(words, fsa):
         fsa = {x: True for x in fsa} | {None: False}
     else:
         raise ValueError(f'Unrecognized type containing negation: {type(fsa)}')
-    return _recurse_negation_tree(words, fsa)
+    return _recurse_negation_tree(words, fsa, return_unknown=return_unknown)
 
 
-def _recurse_negation_tree(words, fsa, level=0):
+def _recurse_negation_tree(words, fsa, level=0, return_unknown=False):
     """
     Use FSA to determine if negation word present; this allows for
         affirmative mentions like 'not only'.
@@ -65,8 +75,10 @@ def _recurse_negation_tree(words, fsa, level=0):
         if word in fsa:
             val = fsa[word]
             if isinstance(val, dict):  # branch node
-                val = _recurse_negation_tree(words[i + 1:], val, level + 1)
-            if val:
+                val = _recurse_negation_tree(words[i + 1:], val, level + 1, return_unknown=return_unknown)
+            if not return_unknown and val == NegationStatus.UNKNOWN:
+                return False
+            elif val:
                 return f'{word} {val}' if isinstance(val, str) else word
             elif level > 0:
                 return False
@@ -92,9 +104,11 @@ def is_any_negated(m: Match | int, text: str):
 def is_negated(m: Match | int, text: str, terms: set[str] | frozenset[str] | dict = NEGWORDS,
                *, word_window: int = 2, char_window: int = 0,
                skip_regex: Pattern = None, boundary_regex: Pattern = DEFAULT_BOUNDARY_REGEX,
-               boundary_chars=':¶', skip_n_boundary_chars=0, lowercase_text=True):
+               boundary_chars=':¶', skip_n_boundary_chars=0,
+               lowercase_text=True, return_unknown=False):
     """Look back from match for specified terms. Stop at `boundary_chars`.
 
+    :param return_unknown:
     :param boundary_regex: create a boundary
     :param skip_n_boundary_chars: stop after N boundary chars;
         if set to 1, will stop when it runs into the second `boundary_chars`
@@ -113,7 +127,7 @@ def is_negated(m: Match | int, text: str, terms: set[str] | frozenset[str] | dic
         word_window=word_window, char_window=char_window, boundary_regex=boundary_regex,
         boundary_chars=boundary_chars, skip_n_boundary_chars=skip_n_boundary_chars,
         skip_regex=skip_regex, lowercase_text=lowercase_text,
-        hack_punctuation=True,
+        hack_punctuation=True, return_unknown=return_unknown,
     )
 
 
@@ -121,7 +135,7 @@ def has_before(end_idx: int, text: str, terms: set[str] | dict,
                *, word_window: int = 2, char_window: int = 0,
                skip_regex: Pattern = None, boundary_regex: Pattern = None,
                boundary_chars=':¶', skip_n_boundary_chars=0, lowercase_text=True,
-               hack_punctuation=False):
+               hack_punctuation=False, return_unknown=False):
     if not char_window:
         char_window = word_window * 10
     context = text[max(0, end_idx - char_window): end_idx]
@@ -139,15 +153,16 @@ def has_before(end_idx: int, text: str, terms: set[str] | dict,
         context = _handle_negation_with_punctuation(context)
     no_punct = replace_punctuation(context)
     words = no_punct.split()
-    return _prep_negation_tree(words[-word_window:], terms)
+    return _prep_negation_tree(words[-word_window:], terms, return_unknown=return_unknown)
 
 
 def is_post_negated(m: Match | int, text: str, terms: set[str] | frozenset[str] | dict = NEGWORDS_POST,
                     *, word_window: int = 2, char_window: int = 0, boundary_regex: Pattern = DEFAULT_BOUNDARY_REGEX,
                     skip_n_boundary_chars=1, skip_regex: Match = None,
-                    boundary_chars=':¶', lowercase_text=True):
+                    boundary_chars=':¶', lowercase_text=True, return_unknown=False):
     """
 
+    :param return_unknown:
     :param boundary_regex:
     :param skip_n_boundary_chars:
     :param skip_regex: remove these before splitting on boundary characters;
@@ -166,7 +181,7 @@ def is_post_negated(m: Match | int, text: str, terms: set[str] | frozenset[str] 
         word_window=word_window, char_window=char_window, boundary_regex=boundary_regex,
         skip_n_boundary_chars=skip_n_boundary_chars, skip_regex=skip_regex,
         boundary_chars=boundary_chars, lowercase_text=lowercase_text,
-        hack_punctuation=True,
+        hack_punctuation=True, return_unknown=return_unknown,
     )
 
 
@@ -174,9 +189,10 @@ def has_after(start_idx: int, text: str, terms: set[str] | dict,
               *, word_window: int = 2, char_window: int = 0, boundary_regex: Pattern = None,
               skip_n_boundary_chars=1, skip_regex: Match = None,
               boundary_chars=':¶', lowercase_text=True,
-              hack_punctuation=False):
+              hack_punctuation=False, return_unknown=False):
     """
 
+    :param return_unknown:
     :param boundary_regex:
     :param hack_punctuation:
     :param start_idx:
@@ -208,4 +224,4 @@ def has_after(start_idx: int, text: str, terms: set[str] | dict,
         context = _handle_negation_with_punctuation(context)
     no_punct = replace_punctuation(context)
     words = no_punct.split()
-    return _prep_negation_tree(words[:word_window], terms)
+    return _prep_negation_tree(words[:word_window], terms, return_unknown=return_unknown)
