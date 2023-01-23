@@ -28,7 +28,7 @@ def _get_ven_beading(text: str, lateralities, source: str) -> dict:
     for m in VEN_BEADING_PAT.finditer(text):
         negated = (
             is_negated(m, text, word_window=3)
-            or is_negated(m, text, terms={'no'}, word_window=5)
+            or is_negated(m, text, terms={'no'}, word_window=7)
         )
         context = f'{text[max(0, m.start() - 100): m.start()]} {text[m.end():min(len(text), m.end() + 100)]}'
         severities = extract_severity(context)
