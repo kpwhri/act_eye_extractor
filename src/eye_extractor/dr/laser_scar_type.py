@@ -5,7 +5,7 @@ from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 FOCAL_PAT = re.compile(
     r'\b('
-    r'focal(\W*\w+){0,3}\W*(laser\W*)?scars'
+    r'focal(\W*\w+){0,3}\W*(laser\W*)?(scars)?'
     r'|(laser\W*)?scars(\W*\w+){0,3}\W*focal'
     r')\b',
     re.I
@@ -42,11 +42,11 @@ def get_laser_scar_type(text: str, *, headers=None, lateralities=None) -> list:
                 data.append(new_var)
             for new_var in _get_laser_scar_type(macula_text, lateralities, 'MACULA'):
                 data.append(new_var)
-    else:
-        if not lateralities:
-            lateralities = build_laterality_table(text)
-        for new_var in _get_laser_scar_type(text, lateralities, 'ALL'):
-            data.append(new_var)
+
+    if not lateralities:
+        lateralities = build_laterality_table(text)
+    for new_var in _get_laser_scar_type(text, lateralities, 'ALL'):
+        data.append(new_var)
     return data
 
 
