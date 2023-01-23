@@ -16,10 +16,10 @@ def get_ven_beading(text: str, *, headers=None, lateralities=None) -> list:
     if not lateralities:
         lateralities = build_laterality_table(text)
     data = []
-    for new_var in _get_ven_beading(text, lateralities, 'ALL'):
-        data.append(new_var)
     if headers:
         pass
+    for new_var in _get_ven_beading(text, lateralities, 'ALL'):
+        data.append(new_var)
 
     return data
 
@@ -35,27 +35,18 @@ def _get_ven_beading(text: str, lateralities, source: str) -> dict:
         if severities:
             for sev in severities:
                 yield create_new_variable(text, m, lateralities, 'venbeading', {
-                    'value': sev,
+                    'value': Severity.NONE if negated else sev,
                     'term': m.group(),
                     'label': 'Venous beading',
                     'negated': negated,
                     'regex': 'VEN_BEADING_PAT',
                     'source': source,
                 })
-        elif negated:
-            yield create_new_variable(text, m, lateralities, 'venbeading', {
-                'value': Severity.NONE,
-                'term': m.group(),
-                'label': 'No venous beading',
-                'negated': negated,
-                'regex': 'VEN_BEADING_PAT',
-                'source': source,
-            })
         else:  # Affirmative without severity quantifier.
             yield create_new_variable(text, m, lateralities, 'venbeading', {
-                'value': Severity.MILD,
+                'value': Severity.NONE if negated else Severity.MILD,
                 'term': m.group(),
-                'label': 'Venous beading',
+                'label': f'{"No v" if negated else "V"}enous beading',
                 'negated': negated,
                 'regex': 'VEN_BEADING_PAT',
                 'source': source,
