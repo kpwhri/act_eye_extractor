@@ -1,6 +1,7 @@
 import pytest
 
-from eye_extractor.nlp.negate.negation import has_after, has_before, _handle_negation_with_punctuation, is_negated
+from eye_extractor.nlp.negate.negation import has_after, has_before, _handle_negation_with_punctuation, is_negated, \
+    NegationStatus
 from eye_extractor.laterality import LATERALITY_PLUS_COLON_PATTERN
 
 
@@ -82,4 +83,8 @@ def test_negwords_prenegation(text, term, exp_negated):
     """Test negwords global"""
     start_index = text.index(term)
     res = is_negated(start_index, text)
-    assert bool(res) is exp_negated
+    match res:
+        case NegationStatus.UNKNOWN:
+            assert res == exp_negated
+        case _:
+            assert bool(res) is exp_negated

@@ -70,7 +70,10 @@ def test_build_hemorrhage_type(data, exp_hemorrhage_typ_dr_re, exp_hemorrhage_ty
     # TODO: Resolve laterality issues to pass below tests.
     # ('¶VITREOUS:  Minimal vitreous heme ¶ ¶Discs pink OU',
     #  HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.VITREOUS),
-
+    ('no new hemorrhage', HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
+    ('no new heme', HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
+    ('no new vitreous hemorrhage', HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
+    ('no new vitreous heme', HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
 ])
 def test_hemorrhage_type_extract_and_build(text, hemorrhage_type_dr_re, hemorrhage_type_dr_le,
                                            hemorrhage_type_dr_unk):
