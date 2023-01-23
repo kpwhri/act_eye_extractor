@@ -41,6 +41,10 @@ _focal_extract_and_build_cases = [
     ('old focal tx scars OD', {}, 1, -1, -1),
     ('¶Macula: choroidal scar OD with focal laser scars', {}, 1, -1, -1),
     ('Macula: focal OU; no CS ME; ERM OS', {}, 1, 1, -1),
+    ('Central macular thickness: 123 um, No SRF, few focal scars', {}, -1, -1, 1),
+    pytest.param('L: classification: macula thin, but normal contour Central macular thickness: 123 um, No SRF, '
+                 'few focal scars',
+                 {}, -1, -1, 1, marks=pytest.mark.skip()),
 ]
 
 _grid_extract_and_build_cases = [
