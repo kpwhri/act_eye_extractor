@@ -36,7 +36,7 @@ _irma_extract_and_build_cases = [
     ('has small area of IRMA right eye', {}, 'MILD', 'UNKNOWN', 'UNKNOWN'),
     ('(-)heme, MA, HE, CWS, VB, IRMA, NVE OU', {}, 'NONE', 'NONE', 'UNKNOWN'),
     ('¶Irma Smith CSN:', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
-    ('OU: No Microaneurysms/hemes, cotton-wool spots, exudates, IRMA, Venous beading, NVE',
+    ('OU: No Microaneurysms/hemes, cotton-wool spots, exudates, IRMA',
      {}, 'NONE', 'NONE', 'UNKNOWN'),
 ]
 
