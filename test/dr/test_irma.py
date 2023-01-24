@@ -38,6 +38,10 @@ _irma_extract_and_build_cases = [
     ('¶Irma Smith CSN:', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
     ('OU: No Microaneurysms/hemes, cotton-wool spots, exudates, IRMA',
      {}, 'NONE', 'NONE', 'UNKNOWN'),
+    ('(-) MAs, Venous Beading, IRMA, CWS', {}, 'UNKNOWN', 'UNKNOWN', 'NONE'),
+    ('no CWS, MA, IRMA', {}, 'UNKNOWN', 'UNKNOWN', 'NONE'),
+    pytest.param('(-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS',
+                 {}, 'UNKNOWN', 'UNKNOWN', 'NONE', marks=pytest.mark.skip()),
 ]
 
 

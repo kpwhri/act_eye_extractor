@@ -40,9 +40,12 @@ _ven_beading_extract_and_build_cases = [
     ('no venous beading;', {}, 'UNKNOWN', 'UNKNOWN', 'NONE'),
     ('Vessels: moderate A/V crossing changes, no venous beading',
      {}, 'UNKNOWN', 'UNKNOWN', 'NONE'),
+    ('no CWS, MA, IRMA, VB', {}, 'UNKNOWN', 'UNKNOWN', 'NONE'),
     # Incorrectly grabbing OD from 'Macula' section. Ideas: control context
     pytest.param('¶Macula: no CSME mild ERM OD ¶Vessels: good caliber and crossings; no venous beading; no plaques or '
                  'emboli', {}, 'UNKNOWN', 'UNKNOWN', 'NONE', marks=pytest.mark.skip()),
+    pytest.param('(-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS',
+                 {}, 'UNKNOWN', 'UNKNOWN', 'NONE', marks=pytest.mark.skip()),
 ]
 
 
