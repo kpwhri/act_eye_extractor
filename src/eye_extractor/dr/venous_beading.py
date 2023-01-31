@@ -13,11 +13,17 @@ VEN_BEADING_PAT = re.compile(
 
 
 def get_ven_beading(text: str, *, headers=None, lateralities=None) -> list:
+    data = []
+    # Extract matches from sections / headers.
+    if headers:
+        for section_header, section_text in headers.iterate('VESSELS'):
+            if not lateralities:
+                lateralities = build_laterality_table(section_text)
+            for new_var in _get_ven_beading(section_text, lateralities, section_header):
+                data.append(new_var)
+    # Extract matches from full text.
     if not lateralities:
         lateralities = build_laterality_table(text)
-    data = []
-    if headers:
-        pass
     for new_var in _get_ven_beading(text, lateralities, 'ALL'):
         data.append(new_var)
 
