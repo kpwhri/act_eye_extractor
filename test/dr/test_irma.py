@@ -40,7 +40,10 @@ _irma_extract_and_build_cases = [
      {}, 'NONE', 'NONE', 'UNKNOWN'),
     ('(-) MAs, Venous Beading, IRMA, CWS', {}, 'UNKNOWN', 'UNKNOWN', 'NONE'),
     ('no CWS, MA, IRMA', {}, 'UNKNOWN', 'UNKNOWN', 'NONE'),
-    pytest.param('(-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS',
+    ('Vessels: good caliber, color, and crossings OU, no plaques or emboli OU (-) MAs, Venous Beading, IRMA, CWS',
+     {}, 'NONE', 'NONE', 'UNKNOWN'),
+    # Incorrectly grabbing OD from 'NVE OD' which only applies to NVE. Confirm intended laterality with Chantelle.
+    pytest.param('Macula: flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS',
                  {}, 'UNKNOWN', 'UNKNOWN', 'NONE', marks=pytest.mark.skip()),
 ]
 
