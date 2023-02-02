@@ -38,13 +38,16 @@ _irma_extract_and_build_cases = [
     ('¶Irma Smith CSN:', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
     ('OU: No Microaneurysms/hemes, cotton-wool spots, exudates, IRMA',
      {}, 'NONE', 'NONE', 'UNKNOWN'),
-    ('(-) MAs, Venous Beading, IRMA, CWS', {}, 'UNKNOWN', 'UNKNOWN', 'NONE'),
-    ('no CWS, MA, IRMA', {}, 'UNKNOWN', 'UNKNOWN', 'NONE'),
     ('Vessels: good caliber, color, and crossings OU, no plaques or emboli OU (-) MAs, Venous Beading, IRMA, CWS',
      {}, 'NONE', 'NONE', 'UNKNOWN'),
-    # Incorrectly grabbing OD from 'NVE OD' which only applies to NVE. Confirm intended laterality with Chantelle.
+    # Unless specified, all conditions in negated list are OU.
+    # Idea: process laterality differently in (negated)? list format.
+    # Incorrectly grabbing OD from 'NVE OD' which only applies to NVE.
     pytest.param('Macula: flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS',
                  {}, 'UNKNOWN', 'UNKNOWN', 'NONE', marks=pytest.mark.skip()),
+    # Since no laterality specified, laterality should be OU.
+    pytest.param('(-) MAs, Venous Beading, IRMA, CWS', {}, 'NONE', 'NONE', 'UNKNOWN', marks=pytest.mark.skip()),
+    pytest.param('no CWS, MA, IRMA', {}, 'NONE', 'NONE', 'UNKNOWN', marks=pytest.mark.skip()),
 ]
 
 

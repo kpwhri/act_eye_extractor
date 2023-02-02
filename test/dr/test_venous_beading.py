@@ -41,7 +41,6 @@ _ven_beading_extract_and_build_cases = [
     ('no venous beading;', {}, 'UNKNOWN', 'UNKNOWN', 'NONE'),
     ('Vessels: moderate A/V crossing changes, no venous beading',
      {}, 'UNKNOWN', 'UNKNOWN', 'NONE'),
-    ('no CWS, MA, IRMA, VB', {}, 'UNKNOWN', 'UNKNOWN', 'NONE'),
     ('Vessels: Normal', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
     ('Macula: focal OU; no CSME; ERM OS Vessels: good caliber and crossings; no venous beading; no plaques or emboli',
      {
@@ -57,12 +56,14 @@ _ven_beading_extract_and_build_cases = [
      'UNKNOWN', 'UNKNOWN', 'NONE'),
     ('Vessels: good caliber, color, and crossings OU, no plaques or emboli OU (-) MAs, Venous Beading, IRMA, CWS',
      {}, 'NONE', 'NONE', 'UNKNOWN'),
-    # Incorrectly grabbing OD from 'NVE OD' which only applies to NVE. Confirm intended laterality with Chantelle.
-    # `next_commas` cutoff value = 3 won't work, only two intervening commas, 1 'value' (should rename) each
-    # `_get_by_index_default_helper_check_prev_lat` not called, would need equivalent for `next_lat`
-    # Idea: process laterality differently in (negated)? list format
+    # Unless specified, all conditions in negated list are OU.
+    # Idea: process laterality differently in (negated)? list format.
+    # Incorrectly grabbing OD from 'NVE OD' which only applies to NVE.
     pytest.param('Macula: flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS',
-                 {}, 'UNKNOWN', 'UNKNOWN', 'NONE', marks=pytest.mark.skip()),
+                 {}, 'NONE', 'NONE', 'UNKNOWN', marks=pytest.mark.skip()),
+    # Since no laterality specified, laterality should be OU.
+    pytest.param('no CWS, MA, IRMA, VB', {}, 'NONE', 'NONE', 'UNKNOWN', marks=pytest.mark.skip()),
+
 ]
 
 
