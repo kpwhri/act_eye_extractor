@@ -42,13 +42,8 @@ _focal_extract_and_build_cases = [
     ('¶Macula: choroidal scar OD with focal laser scars', {}, 1, -1, -1),
     ('Macula: focal OU; no CS ME; ERM OS', {}, 1, 1, -1),
     ('Central macular thickness: 123 um, No SRF, few focal scars', {}, -1, -1, 1),
-    # Incorrectly grabbing OS from earlier section. Confirm with Chantelle intended laterality.
-    # Idea: Implement `prev_commas` cutoff value in `_get_by_index_default_helper_check_prev_lat`
-    # Initial cutoff value < 3
-    # Idea: Use LINE_BREAK LateralityStrategy.
-    pytest.param('L: classification: macula thin, but normal contour Central macular thickness: 123 um, No SRF, '
-                 'few focal scars',
-                 {}, -1, -1, 1, marks=pytest.mark.skip()),
+    ('L: classification: macula thin, but normal contour Central macular thickness: 123 um, No SRF, few focal scars',
+     {}, -1, 1, -1),
 ]
 
 _grid_extract_and_build_cases = [
