@@ -53,6 +53,11 @@ NEGWORDS_POST = frozenset(
 
 DEFAULT_BOUNDARY_REGEX = re.compile(r'\b(?:od|os|ou)\b')
 
+NEGATED_LIST_PATTERN = re.compile(
+    rf'(no\s+|\(-\)\s*)(\w+,\s+)+\w+',
+    re.IGNORECASE
+)
+
 
 def _prep_negation_tree(words, fsa, *, return_unknown=False):
     """Build FSA to make it backwards-compatible with simple set."""
@@ -225,3 +230,11 @@ def has_after(start_idx: int, text: str, terms: set[str] | dict,
     no_punct = replace_punctuation(context)
     words = no_punct.split()
     return _prep_negation_tree(words[:word_window], terms, return_unknown=return_unknown)
+
+
+def _contains_negated_list(text: str) -> bool:
+    """Determine if the given text contains a negated list.
+
+    :param text: Text to search.
+    :return: True if negated list found, False otherwise.
+    """

@@ -38,7 +38,7 @@ def _get_ven_beading(text: str, lateralities, source: str) -> dict:
         )
         context = f'{text[max(0, m.start() - 100): m.start()]} {text[m.end():min(len(text), m.end() + 100)]}'
         severities = extract_severity(context)
-        if severities:
+        if severities:  # With severity quantifier.
             for sev in severities:
                 yield create_new_variable(text, m, lateralities, 'venbeading', {
                     'value': Severity.NONE if negated else sev,
@@ -48,7 +48,7 @@ def _get_ven_beading(text: str, lateralities, source: str) -> dict:
                     'regex': 'VEN_BEADING_PAT',
                     'source': source,
                 })
-        else:  # Affirmative without severity quantifier.
+        else:  # Without severity quantifier.
             yield create_new_variable(text, m, lateralities, 'venbeading', {
                 'value': Severity.NONE if negated else Severity.MILD,
                 'term': m.group(),

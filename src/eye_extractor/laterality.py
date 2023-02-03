@@ -96,7 +96,6 @@ LATERALITY_PLUS_COLON_PATTERN = re.compile(
     rf'\b({laterality_pattern})\W*:'
 )
 
-
 def laterality_finder(text):
     for m in LATERALITY_PATTERN.finditer(text):
         yield lat_lookup(m)
@@ -124,11 +123,20 @@ def lat_lookup(m, *, group=0):
     ]
 
 
-def build_laterality_table(text):
+def build_laterality_table(text: str, search_negated_list: bool = False):
+    """Build table for all lateralities found in text.
+
+    :param text: Text to search for lateralities.
+    :param search_negated_list: If True, search for negated list in text.
+    :return: LateralityLocator table of all found lateralities.
+    """
     latloc = LateralityLocator()
     for m in LATERALITY_PATTERN.finditer(text):
-        is_lat = m.group().endswith(':')
-        latloc.add(lat_lookup(m), m.start(), m.end(), is_lat)
+        is_section_start = m.group().endswith(':')
+        latloc.add(lat_lookup(m), m.start(), m.end(), is_section_start)
+    if search_negated_list:
+        pass
+
     return latloc
 
 
