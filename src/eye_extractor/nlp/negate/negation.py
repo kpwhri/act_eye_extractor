@@ -53,8 +53,9 @@ NEGWORDS_POST = frozenset(
 
 DEFAULT_BOUNDARY_REGEX = re.compile(r'\b(?:od|os|ou)\b')
 
+# TODO: Investigate context after negated lists in notes.
 NEGATED_LIST_PATTERN = re.compile(
-    rf'(no\s+|\(-\)\s*)(\w+,\s+)+\w+',
+    rf'(no\s+|\(-\)\s*)(.*,)(\s+\w*)',  # Will not capture multi-word final list items.
     re.IGNORECASE
 )
 
@@ -232,9 +233,6 @@ def has_after(start_idx: int, text: str, terms: set[str] | dict,
     return _prep_negation_tree(words[:word_window], terms, return_unknown=return_unknown)
 
 
-def _contains_negated_list(text: str) -> bool:
-    """Determine if the given text contains a negated list.
-
-    :param text: Text to search.
-    :return: True if negated list found, False otherwise.
-    """
+# TODO: Add type hinting and docstring.
+def find_negated_list_spans(text: str):
+    return [m.span() for m in NEGATED_LIST_PATTERN.finditer(text)]
