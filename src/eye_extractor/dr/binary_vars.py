@@ -16,12 +16,6 @@ DIABETIC_RETINOPATHY_PATS = [
         r')\b',
         re.I
     )),
-    ('cottonwspot', re.compile(
-        r'\b('
-        r'cotton\W?wool\W?spots?|cwss?|cws?'
-        r')\b',
-        re.I
-    )),
     ('hardexudates', re.compile(
         r'\b('
         r'hard exudates?|he|lipid'

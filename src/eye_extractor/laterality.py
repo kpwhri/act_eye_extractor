@@ -6,7 +6,6 @@ from sortedcontainers import SortedList
 
 from eye_extractor.common.date import parse_nearest_date_to_line_start
 from eye_extractor.nlp.character_groups import LINE_START_CHARS
-from eye_extractor.nlp.negate.negation import contains_negated_list
 
 
 class Laterality(enum.IntEnum):
