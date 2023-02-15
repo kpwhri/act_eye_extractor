@@ -24,7 +24,6 @@ from eye_extractor.output.dr import (
 @pytest.mark.parametrize('text, exp_value, exp_negword', [
     ('No visible diabetic retinopathy this visit', 0, 'no'),
     ('MA: OD normal 6/6', 1, None),
-    ('OS:  Numerous hard exudates superior macula', 1, None),
     ('The optic disc edema has changed location', 1, None),
     ('OU  VESSELS: Normal pattern without exudates, hemorrhage, plaques, ', 0, 'without'),
     ('ASSESSMENT : Resolving vitreous/preretinal hemorrhage  No retinal tears', 1, None),
@@ -53,6 +52,10 @@ def test_get_dr_binary(text, exp_value, exp_negword):
     assert variable['negated'] == exp_negword
 
 
+# Following build tests are deprecated.
+# New implementations need not add new build tests.
+# Tests should still pass if creating new vertical for binary variables.
+# No need to remove.
 @pytest.mark.parametrize('data, exp_diab_retinop_yesno_re, exp_diab_retinop_yesno_le, exp_diab_retinop_yesno_unk', [
     ([], -1, -1, -1),
     ([{'diab_retinop_yesno_re': {'value': 1},

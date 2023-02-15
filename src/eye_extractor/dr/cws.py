@@ -5,7 +5,7 @@ from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 CWS_PAT = re.compile(
     r'\b('
-    r'cotton\W?wool\W?spots?|cwss?|cws?|soft\s+exudates?'
+    r'cotton\W?wool\W?spots?|cws?|soft\s+exudates?'
     r')\b',
     re.I
 )

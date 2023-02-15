@@ -367,6 +367,10 @@ OUTPUT_COLUMNS = {
     'hardexudates_re': [is_in_range(-1, 1)],
     'hardexudates_le': [is_in_range(-1, 1)],
     'hardexudates_unk': [is_in_range(-1, 1)],
+    # exudates
+    'exudates_re': [is_in_range(-1, 1)],
+    'exudates_le': [is_in_range(-1, 1)],
+    'exudates_unk': [is_in_range(-1, 1)],
     # disc_edema_dr
     'disc_edema_dr_re': [is_in_range(-1, 1)],
     'disc_edema_dr_le': [is_in_range(-1, 1)],

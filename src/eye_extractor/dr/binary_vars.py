@@ -16,12 +16,6 @@ DIABETIC_RETINOPATHY_PATS = [
         r')\b',
         re.I
     )),
-    ('hardexudates', re.compile(
-        r'\b('
-        r'hard exudates?|he|lipid'
-        r')\b',
-        re.I
-    )),
     ('disc_edema_DR', re.compile(
         r'\b('
         r'disc edema'

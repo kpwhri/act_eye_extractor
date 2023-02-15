@@ -29,6 +29,10 @@ def build_hard_exudates(data, *, note_date=None):
     return column_from_variable_binary(data, 'hardexudates', restrict_date=note_date)
 
 
+def build_exudates(data, *, note_date=None):
+    return column_from_variable_binary(data, 'exudates', restrict_date=note_date)
+
+
 def build_ven_beading(data, *, note_date=None):
     return column_from_variable_abbr(
         'venbeading', Severity.UNKNOWN, data,
@@ -259,7 +263,8 @@ def build_dr_variables(data):
     results.update(build_dr(curr['binary_vars'], macula_wnl=data['common']['macula_wnl'], note_date=note['date']))
     results.update(build_ret_micro(curr['binary_vars'], note_date=note['date']))
     results.update(build_cottonwspot(curr['cottonwspot'], note_date=note['date']))
-    results.update(build_hard_exudates(curr['binary_vars'], note_date=note['date']))
+    results.update(build_hard_exudates(curr['exudates'], note_date=note['date']))
+    results.update(build_exudates(curr['exudates'], note_date=note['date']))
     results.update(build_disc_edema(curr['binary_vars'], note_date=note['date']))
     results.update(build_ven_beading(curr['venous_beading'], note_date=note['date']))
     results.update(build_hemorrhage(curr['binary_vars'], note_date=note['date']))
