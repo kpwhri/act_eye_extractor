@@ -67,6 +67,8 @@ LATERALITY = {
     'OU': Laterality.OU,
     'O.U.': Laterality.OU,
     'BILATERAL': Laterality.OU,
+    'RT': Laterality.OD,
+    'LT': Laterality.OS,
 }
 
 

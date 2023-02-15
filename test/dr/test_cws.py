@@ -9,6 +9,7 @@ from eye_extractor.output.dr import build_cottonwspot
 _pattern_cases = [
     (CWS_PAT, 'CWS', True),
     (CWS_PAT, 'cotton-wool spots', True),
+    (CWS_PAT, 'soft exudate', True),
 ]
 
 
@@ -25,11 +26,32 @@ def test_cws_patterns(pat, text, exp):
 # Test extract and build.
 _cws_extract_and_build_cases = [
     ('No d/b hemes, CWS or NVE OU', {}, 0, 0, -1),
+    ('there is an isolated CWS in the superior temp. arcade of the RE.', {}, 1, -1, -1),
+    ('Peripheral fundus: breaks R/L with BIO view; BUT, there is an isolated CWS in the superior temp. arcade of the '
+     'RE.', {}, 1, -1, -1),
+    ('PERIPHERAL RETINA: flat; no holes or breaks, R/L, with BIO view; no NVZE noted; isolated CWS, LE', {}, -1, 1, -1),
+    ('MACULA: clr OU\nno hem, no exud, no CWS OU', {}, 0, 0, -1),
+    ('MACULA: clr OU\nno hem, no exud, no\nCWS OU', {}, 0, 0, -1),
+    ('', {'MACULA': 'clr OU\nno hem, no exud, no CWS OU'}, 0, 0, -1),
+    ('MACULA: RT: there was one soft exudate superior to the macula, LT: normal appearance.', {}, 1, -1, -1),
+    ('VESSELS: […] Soft exudates Inf arcade OS', {}, -1, 1, -1),
+    ('PERIPHERAL RETINA: […] there is a small, quarter disc diameter area of what looks like 3 small soft exudates',
+     {}, -1, -1, 1),
     # Unless specified, all conditions in negated list are OU.
     # Idea: process laterality differently in (negated)? list format.
+    # Laterality specified.
+    ('Vessels: (-) MAs, Venous Beading, IRMA, CWS OU\n', {}, 0, 0, -1),
     # Since no laterality specified, laterality should be OU.
     pytest.param('No Microaneurysms/hemes, cotton-wool spots, exudates, IRMA, Venous beading, NVE',
                  {}, 0, 0, -1, marks=pytest.mark.skip()),
+    # Since no laterality specified, laterality should be OU.
+    pytest.param('Vessels: (-) MAs, Venous Beading, IRMA, CWS\n', {}, 0, 0, -1, marks=pytest.mark.skip()),
+    # Since no laterality specified, laterality should be OU.
+    pytest.param('Periphery: RE trace BDR; LE with extensive PRP, but no NVZE/hg/CWS/HE noted today\n',
+                 {}, 0, 0, -1, marks=pytest.mark.skip()),
+    # Since no laterality specified, laterality should be OU.
+    # TODO: Ask Chantelle if 'no CWS OR HE;' counts as negated list.
+    pytest.param('Vessels: scattered MA/dot hgs, but no CWS or HE;', {}, 0, 0, -1, marks=pytest.mark.skip()),
 ]
 
 
