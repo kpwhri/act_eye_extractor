@@ -4,7 +4,7 @@ from eye_extractor.nlp.negate.negation import is_negated, is_post_negated, has_a
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 EXUDATES_PAT = re.compile(
-    r'^(?!hard\s+|soft\s+)exud(ate)?s?',
+    r'(?<!(hard|soft)\s)exud(ate)?s?',
     re.I
 )
 HARD_EXUDATES_PAT = re.compile(
