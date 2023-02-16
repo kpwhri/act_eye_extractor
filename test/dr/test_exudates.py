@@ -78,16 +78,16 @@ def test_exudates_extract_and_build(text,
     assert result['exudates_unk'] == exp_exudates_unk
 
 
-@pytest.mark.parametrize('text, headers, exp_hard_exudates_re, exp_hard_exudates_le, exp_hard_exudates_unk',
+@pytest.mark.parametrize('text, headers, exp_hardexudates_re, exp_hardexudates_le, exp_hardexudates_unk',
                          _hard_exudates_extract_and_build_cases)
 def test_hard_exudates_extract_and_build(text,
                                          headers,
-                                         exp_hard_exudates_re,
-                                         exp_hard_exudates_le,
-                                         exp_hard_exudates_unk):
+                                         exp_hardexudates_re,
+                                         exp_hardexudates_le,
+                                         exp_hardexudates_unk):
     pre_json = get_exudates(text, headers=Headers(headers))
     post_json = json.loads(json.dumps(pre_json))
     result = build_hard_exudates(post_json)
-    assert result['hard_exudates_re'] == exp_hard_exudates_re
-    assert result['hard_exudates_le'] == exp_hard_exudates_le
-    assert result['hard_exudates_unk'] == exp_hard_exudates_unk
+    assert result['hardexudates_re'] == exp_hardexudates_re
+    assert result['hardexudates_le'] == exp_hardexudates_le
+    assert result['hardexudates_unk'] == exp_hardexudates_unk
