@@ -1,14 +1,31 @@
 import json
 import pytest
 
-from eye_extractor.dr.exudates import EXUDATES_PAT, HARD_EXUDATES_PAT, get_exudates
+from eye_extractor.dr.exudates import (
+    EXUDATES_PAT,
+    get_exudates,
+    HARD_EXUDATES_ABBR_PAT,
+    HARD_EXUDATES_PAT
+)
 from eye_extractor.headers import Headers
 from eye_extractor.output.dr import build_exudates, build_hard_exudates
 
 # Test pattern.
 _pattern_cases = [
-    (EXUDATES_PAT, '', True),
-    (HARD_EXUDATES_PAT, '', True),
+    (EXUDATES_PAT, 'exud', True),
+    (EXUDATES_PAT, 'exuds', True),
+    (EXUDATES_PAT, 'exudates', True),
+    (EXUDATES_PAT, 'exudate', True),
+    (EXUDATES_PAT, 'soft exudate', False),
+    (EXUDATES_PAT, 'soft exudates', False),
+    (EXUDATES_PAT, 'hard exudates', False),
+    (EXUDATES_PAT, 'HE', False),
+    (HARD_EXUDATES_PAT, 'Hard exud', True),
+    (HARD_EXUDATES_PAT, 'Hard Exudate', True),
+    (HARD_EXUDATES_PAT, 'hard exudates', True),
+    (HARD_EXUDATES_ABBR_PAT, 'HE', True),
+    (HARD_EXUDATES_ABBR_PAT, 'Angle Van Herick', False),
+    (HARD_EXUDATES_ABBR_PAT, 'He ate a pickle', False),
 ]
 
 
