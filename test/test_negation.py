@@ -90,31 +90,35 @@ def test_negwords_prenegation(text, term, exp_negated):
             assert bool(res) is exp_negated
 
 
-_pattern_cases = [
-    (NEGATED_LIST_PATTERN, 'no plums, carrots', True),
-    (NEGATED_LIST_PATTERN, 'no plums, carrots, oranges', True),
-    (NEGATED_LIST_PATTERN, '(-) plums, carrots, oranges', True),
-    (NEGATED_LIST_PATTERN, '(-)plums, carrots, oranges', True),
-    (NEGATED_LIST_PATTERN, 'novels, cookbooks, diaries', False),
-    (NEGATED_LIST_PATTERN, 'No Microaneurysms/hemes, cotton-wool spots, exudates, IRMA, Venous beading', True),
+_negated_list_pattern_cases = [
+    (NEGATED_LIST_PATTERN, 'no plums, carrots.', True),
+    (NEGATED_LIST_PATTERN, 'no plums, carrots, oranges\n', True),
+    (NEGATED_LIST_PATTERN, '(-) plums, carrots, oranges.\n', True),
+    (NEGATED_LIST_PATTERN, '(-)plums, carrots, oranges.', True),
+    (NEGATED_LIST_PATTERN, 'novels, cookbooks, diaries\n', False),
+    (NEGATED_LIST_PATTERN, 'Novels, cookbooks, diaries.', False),
+    (NEGATED_LIST_PATTERN, 'No Microaneurysms/hemes, cotton-wool spots, exudates, IRMA, Venous beading.', True),
+    (NEGATED_LIST_PATTERN, 'no venous beading', False),
+    (NEGATED_LIST_PATTERN, 'No venous beading.', False),
+    (NEGATED_LIST_PATTERN, 'LE with extensive PRP, but no NVZE/hg/CWS/HE noted today', True),
 ]
 
 
-def _get_pattern_cases():
-    return [(x[0], x[1], x[2]) for x in _pattern_cases]
+def _get_negated_list_pattern_cases():
+    return [(x[0], x[1], x[2]) for x in _negated_list_pattern_cases]
 
 
-@pytest.mark.parametrize('pat, text, exp', _get_pattern_cases())
+@pytest.mark.parametrize('pat, text, exp', _get_negated_list_pattern_cases())
 def test_negated_list_pattern(pat, text, exp):
     m = pat.search(text)
     assert bool(m) == exp
 
 
 _find_negated_list_spans_cases = [
-    ('no plums, carrots, oranges', [(0, 26)]),
-    ('hello there! no plums, carrots, oranges', [(13, 39)]),
-    # TODO: Resolve below test case.
-    # ('Macula: flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS.', [(18, 65)])
+    ('no plums, carrots, oranges.', [(0, 27)]),
+    ('hello there! no plums, carrots, oranges\n', [(13, 40)]),
+    ('Macula: flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS.', [(18, 65)]),
+    ('but no NVZE/hg/CWS/HE noted today', [(4, 21)]),
 ]
 
 

@@ -53,9 +53,13 @@ NEGWORDS_POST = frozenset(
 
 DEFAULT_BOUNDARY_REGEX = re.compile(r'\b(?:od|os|ou)\b')
 
-# TODO: Investigate context after negated lists in notes.
 NEGATED_LIST_PATTERN = re.compile(
-    rf'(no\s+|\(-\)\s*)(.*,)(\s+\w*)',  # Will not capture multi-word final list items.
+    # First pattern: negation separated by commas with space.
+    rf'(no\s+|\(-\)\s*)(.*,)(.*)(?:.|\n)'
+    # Second pattern: negation separated by '/' with no space.
+    # Second pattern has no clear final boundary.
+    # To prevent greedy capture, only single word entities may be final list items.
+    rf'|((no\s+|\(-\)\s*)(.*/)\w*)',
     re.IGNORECASE
 )
 
@@ -235,4 +239,6 @@ def has_after(start_idx: int, text: str, terms: set[str] | dict,
 
 # TODO: Add type hinting and docstring.
 def find_negated_list_spans(text: str):
+    for m in NEGATED_LIST_PATTERN.finditer(text):
+        print(m.group())
     return [m.span() for m in NEGATED_LIST_PATTERN.finditer(text)]
