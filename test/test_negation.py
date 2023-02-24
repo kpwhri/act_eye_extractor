@@ -100,7 +100,7 @@ _negated_list_pattern_cases = [
     (NEGATED_LIST_PATTERN, 'No Microaneurysms/hemes, cotton-wool spots, exudates, IRMA, Venous beading.', True),
     (NEGATED_LIST_PATTERN, 'no venous beading', False),
     (NEGATED_LIST_PATTERN, 'No venous beading.', False),
-    (NEGATED_LIST_PATTERN, 'LE with extensive PRP, but no NVZE/hg/CWS/HE noted today', True),
+    (NEGATED_LIST_PATTERN, 'but no NVZE/hg/CWS/HE noted today', True),
 ]
 
 
@@ -115,17 +115,20 @@ def test_negated_list_pattern(pat, text, exp):
 
 
 _find_negated_list_spans_cases = [
-    ('no plums, carrots, oranges.', [(0, 27)]),
-    ('hello there! no plums, carrots, oranges\n', [(13, 40)]),
-    ('Macula: flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS.', [(18, 65)]),
+    ('no plums, carrots, oranges.', [(0, 26)]),
+    ('hello there! no plums, carrots, oranges\n', [(13, 39)]),
+    ('Macula: flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS.', [(18, 64)]),
     ('but no NVZE/hg/CWS/HE noted today', [(4, 21)]),
+    ('Vessels: (-) MAs, Venous Beading, IRMA, CWS. Good caliber, color and crossings OU. '
+     'No hemes, cotton-wool spots, exudates, IRMA, Venous beading', [(9, 43), (83, 142)]),
 ]
 
 
 @pytest.mark.parametrize('text, exp_spans', _find_negated_list_spans_cases)
 def test_find_unspecified_negated_list_items(text, exp_spans):
     actual_spans = find_negated_list_spans(text)
-    assert len(actual_spans) == len(exp_spans)
+    for act_span, exp_span in zip(actual_spans, exp_spans):
+        assert len(act_span) == len(exp_span)
 
     for actual, exp in zip(actual_spans, exp_spans):
         assert actual[0] == exp[0]

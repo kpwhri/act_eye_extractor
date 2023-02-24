@@ -54,12 +54,10 @@ NEGWORDS_POST = frozenset(
 DEFAULT_BOUNDARY_REGEX = re.compile(r'\b(?:od|os|ou)\b')
 
 NEGATED_LIST_PATTERN = re.compile(
-    # First pattern: negation separated by commas with space.
-    rf'(no\s+|\(-\)\s*)(.*,)(.*)(?:.|\n)'
-    # Second pattern: negation separated by '/' with no space.
-    # Second pattern has no clear final boundary.
-    # To prevent greedy capture, only single word entities may be final list items.
-    rf'|((no\s+|\(-\)\s*)(.*/)\w*)',
+    # First pattern: negation separated by ','.
+    rf'(no\s+|\(-\)\s*)([^.;\n]*,)+[^.;\n]*'
+    # Second pattern: negation separated by '/'.
+    rf'|(no\s+|\(-\)\s*)[^.;\n]*/\w+',
     re.IGNORECASE
 )
 
@@ -239,6 +237,6 @@ def has_after(start_idx: int, text: str, terms: set[str] | dict,
 
 # TODO: Add type hinting and docstring.
 def find_negated_list_spans(text: str):
-    for m in NEGATED_LIST_PATTERN.finditer(text):
-        print(m.group())
+    for m in NEGATED_LIST_PATTERN.finditer(text):  # TODO: Remove line.
+        print(m.group())  # TODO: Remove line.
     return [m.span() for m in NEGATED_LIST_PATTERN.finditer(text)]
