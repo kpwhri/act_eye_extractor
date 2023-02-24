@@ -1,7 +1,7 @@
 import pytest
 
 from eye_extractor.nlp.negate.negation import has_after, has_before, _handle_negation_with_punctuation, is_negated, \
-    NegationStatus, NEGATED_LIST_PATTERN, find_negated_list_spans
+    NegationStatus, NEGATED_LIST_PATTERN, find_unspecified_negated_list_items, _find_negated_list_spans
 from eye_extractor.laterality import LATERALITY_PLUS_COLON_PATTERN
 
 
@@ -116,19 +116,45 @@ def test_negated_list_pattern(pat, text, exp):
 
 _find_negated_list_spans_cases = [
     ('no plums, carrots, oranges.', [(0, 26)]),
-    ('hello there! no plums, carrots, oranges\n', [(13, 39)]),
+    ('hello there! no plums,  carrots,  oranges', [(13, 41)]),
     ('Macula: flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS.', [(18, 64)]),
     ('but no NVZE/hg/CWS/HE noted today', [(4, 21)]),
     ('Vessels: (-) MAs, Venous Beading, IRMA, CWS. Good caliber, color and crossings OU. '
      'No hemes, cotton-wool spots, exudates, IRMA, Venous beading', [(9, 43), (83, 142)]),
+    ('Vessels: (-) MAs, Venous Beading, IRMA, CWS. Good caliber, color and crossings OU. '
+     'LE with extensive PRP, but no NVZE/hg/CWS/HE noted today', [(9, 43), (110, 127)]),
 ]
 
 
 @pytest.mark.parametrize('text, exp_spans', _find_negated_list_spans_cases)
+def test__find_negated_list_spans(text, exp_spans):
+    actual_spans = _find_negated_list_spans(text)
+    assert len(actual_spans) == len(exp_spans)
+
+    for actual, exp in zip(actual_spans, exp_spans):
+        assert actual[0] == exp[0]
+        assert actual[1] == exp[1]
+
+
+_find_unspecified_negated_list_items_cases = [
+    ('no plums, carrots, oranges.', [(3, 8), (10, 17), (19, 26)]),
+    ('hello there! no plums,  carrots,  oranges', [(16, 21), (24, 31), (34, 41)]),
+    ('Macula: flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS.',
+     [(21, 25), (27, 29), (31, 33), (35, 38), (40, 42), (44, 48)]),
+    ('but no NVZE/hg/CWS/HE noted today', [(7, 11), (12, 14), (15, 18), (19, 21)]),
+    ('Vessels: (-) MAs, Venous Beading, IRMA, CWS. Good caliber, color and crossings OU. '
+     'No hemes, cotton-wool spots, exudates, IRMA, Venous beading',
+     [(13, 16), (18, 32), (34, 38), (40, 43), (86, 91), (93, 110), (112, 120), (122, 126), (128, 142)]),
+    ('Vessels: (-) MAs, Venous Beading, IRMA, CWS. Good caliber, color and crossings OU. '
+     'LE with extensive PRP, but no NVZE/hg/CWS/HE noted today',
+     [(13, 16), (18, 32), (34, 38), (40, 43), (113, 117), (118, 120), (121, 124), (125, 127)]),
+]
+
+
+@pytest.mark.parametrize('text, exp_spans', _find_unspecified_negated_list_items_cases)
 def test_find_unspecified_negated_list_items(text, exp_spans):
-    actual_spans = find_negated_list_spans(text)
-    for act_span, exp_span in zip(actual_spans, exp_spans):
-        assert len(act_span) == len(exp_span)
+    actual_spans = find_unspecified_negated_list_items(text)
+    assert len(actual_spans) == len(exp_spans)
 
     for actual, exp in zip(actual_spans, exp_spans):
         assert actual[0] == exp[0]

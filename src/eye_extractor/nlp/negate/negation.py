@@ -3,6 +3,7 @@ import re
 from typing import Match, Pattern
 
 from eye_extractor.common.string import replace_punctuation
+from eye_extractor.laterality import LATERALITY_PATTERN
 
 
 class NegationStatus(enum.IntEnum):
@@ -235,8 +236,48 @@ def has_after(start_idx: int, text: str, terms: set[str] | dict,
     return _prep_negation_tree(words[:word_window], terms, return_unknown=return_unknown)
 
 
-# TODO: Add type hinting and docstring.
-def find_negated_list_spans(text: str):
-    for m in NEGATED_LIST_PATTERN.finditer(text):  # TODO: Remove line.
-        print(m.group())  # TODO: Remove line.
+def _find_negated_list_spans(text: str) -> list[tuple]:
+    """Find index spans for all negated lists in a text.
+
+    :param text: Text to search for negated list.
+    :return: List of all negated list spans as tuples.
+        Start index is inclusive, end index is exclusive.
+    """
     return [m.span() for m in NEGATED_LIST_PATTERN.finditer(text)]
+
+
+def find_unspecified_negated_list_items(text: str) -> list[tuple]:
+    """Find all negated list items in text with unspecified laterality.
+
+    :param text: Text to search for unspecified negated list items.
+    :return: List of all unspecified negated list item spans as tuples. Items may come from multiple negated lists.
+        Start index is inclusive, end index is exclusive.
+    """
+    unspecified_item_spans = []
+    negation_pattern = re.compile(
+        rf'(no\s+|\(-\)\s*)',
+        re.IGNORECASE
+    )
+    negated_list_spans = _find_negated_list_spans(text)
+    negated_lists = [text[start_index:end_index] for start_index, end_index in negated_list_spans]
+    for neg_list, neg_list_span in zip(negated_lists, negated_list_spans):
+        neg_list_start_idx = neg_list_span[0]  # Start of negated list index.
+        # Remove initial negation string.
+        neg_removed = negation_pattern.sub('', neg_list)
+        # Isolate all negated list items. Split `negated_lists` on ',' or '/'.
+        items = [item.strip() for item in re.split(rf'[,/]', neg_removed)]
+        print(items)
+        # Verify negated list item does not have laterality.
+        unspecified_items = [item for item in items if not LATERALITY_PATTERN.search(item)]
+        # Find index spans for each unspecified list item.
+        for unspec_item in unspecified_items:
+            # `unspec_item_span` contains item indices within `neg_list`.
+            unspec_item_span = re.search(unspec_item, neg_list).span()
+            # `adjusted_unspec_item_span` contains item indices within `text`.
+            adjusted_unspec_item_span = (
+                unspec_item_span[0] + neg_list_start_idx
+                , unspec_item_span[1] + neg_list_start_idx
+            )
+            unspecified_item_spans.append(adjusted_unspec_item_span)
+
+    return unspecified_item_spans
