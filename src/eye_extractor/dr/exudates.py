@@ -28,7 +28,7 @@ def get_exudates(text: str, *, headers=None, lateralities=None) -> list:
         pass
     # Extract matches from full text.
     if not lateralities:
-        lateralities = build_laterality_table(text)
+        lateralities = build_laterality_table(text, search_negated_list=True)
     for new_var in _get_exudates(text, lateralities, 'ALL'):
         data.append(new_var)
     return data

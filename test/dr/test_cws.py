@@ -38,20 +38,15 @@ _cws_extract_and_build_cases = [
     ('PERIPHERAL RETINA: […] there is a small, quarter disc diameter area of what looks like 3 small soft exudates',
      {}, -1, -1, 1),
     # Unless specified, all conditions in negated list are OU.
-    # Idea: process laterality differently in (negated)? list format.
     # Laterality specified.
-    ('Vessels: (-) MAs, Venous Beading, IRMA, CWS OU\n', {}, 0, 0, -1),
+    ('Vessels: (-) MAs, Venous Beading, IRMA, CWS OU', {}, 0, 0, -1),
     # Since no laterality specified, laterality should be OU.
-    pytest.param('No Microaneurysms/hemes, cotton-wool spots, exudates, IRMA, Venous beading, NVE',
-                 {}, 0, 0, -1, marks=pytest.mark.skip()),
-    # Since no laterality specified, laterality should be OU.
-    pytest.param('Vessels: (-) MAs, Venous Beading, IRMA, CWS\n', {}, 0, 0, -1, marks=pytest.mark.skip()),
-    # Since no laterality specified, laterality should be OU.
-    pytest.param('Periphery: RE trace BDR; LE with extensive PRP, but no NVZE/hg/CWS/HE noted today\n',
-                 {}, 0, 0, -1, marks=pytest.mark.skip()),
-    # Since no laterality specified, laterality should be OU.
-    # TODO: Ask Chantelle if 'no CWS OR HE;' counts as negated list.
-    pytest.param('Vessels: scattered MA/dot hgs, but no CWS or HE;', {}, 0, 0, -1, marks=pytest.mark.skip()),
+    ('No Microaneurysms/hemes, cotton-wool spots, exudates, IRMA, Venous beading, NVE',
+     {}, 0, 0, -1),
+    ('Vessels: (-) MAs, Venous Beading, IRMA, CWS', {}, 0, 0, -1),
+    ('Periphery: RE trace BDR; LE with extensive PRP, but no NVZE/hg/CWS/HE noted today\n', {}, 0, 0, -1),
+    # TODO: Ask Chantelle if 'no CWS OR HE;' should be 'OU'.
+    ('Vessels: scattered MA/dot hgs, but no CWS or HE;', {}, -1, -1, 0),
 ]
 
 

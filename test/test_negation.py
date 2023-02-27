@@ -2,7 +2,7 @@ import pytest
 
 from eye_extractor.nlp.negate.negation import has_after, has_before, _handle_negation_with_punctuation, is_negated, \
     NegationStatus, NEGATED_LIST_PATTERN, find_unspecified_negated_list_items, _find_negated_list_spans
-from eye_extractor.laterality import LATERALITY_PLUS_COLON_PATTERN
+from eye_extractor.laterality import LATERALITY_PATTERN, LATERALITY_PLUS_COLON_PATTERN
 
 
 @pytest.mark.parametrize(
@@ -153,7 +153,7 @@ _find_unspecified_negated_list_items_cases = [
 
 @pytest.mark.parametrize('text, exp_spans', _find_unspecified_negated_list_items_cases)
 def test_find_unspecified_negated_list_items(text, exp_spans):
-    actual_spans = find_unspecified_negated_list_items(text)
+    actual_spans = find_unspecified_negated_list_items(text, LATERALITY_PATTERN)
     assert len(actual_spans) == len(exp_spans)
 
     for actual, exp in zip(actual_spans, exp_spans):

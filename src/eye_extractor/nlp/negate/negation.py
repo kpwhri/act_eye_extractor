@@ -3,7 +3,6 @@ import re
 from typing import Match, Pattern
 
 from eye_extractor.common.string import replace_punctuation
-from eye_extractor.laterality import LATERALITY_PATTERN
 
 
 class NegationStatus(enum.IntEnum):
@@ -246,10 +245,11 @@ def _find_negated_list_spans(text: str) -> list[tuple]:
     return [m.span() for m in NEGATED_LIST_PATTERN.finditer(text)]
 
 
-def find_unspecified_negated_list_items(text: str) -> list[tuple]:
+def find_unspecified_negated_list_items(text: str, lat_pattern: re.Pattern) -> list[tuple]:
     """Find all negated list items in text with unspecified laterality.
 
     :param text: Text to search for unspecified negated list items.
+    :param lat_pattern: Laterality pattern used to determine list item laterality.
     :return: List of all unspecified negated list item spans as tuples. Items may come from multiple negated lists.
         Start index is inclusive, end index is exclusive.
     """
@@ -266,9 +266,8 @@ def find_unspecified_negated_list_items(text: str) -> list[tuple]:
         neg_removed = negation_pattern.sub('', neg_list)
         # Isolate all negated list items. Split `negated_lists` on ',' or '/'.
         items = [item.strip() for item in re.split(rf'[,/]', neg_removed)]
-        print(items)
         # Verify negated list item does not have laterality.
-        unspecified_items = [item for item in items if not LATERALITY_PATTERN.search(item)]
+        unspecified_items = [item for item in items if not lat_pattern.search(item)]
         # Find index spans for each unspecified list item.
         for unspec_item in unspecified_items:
             # `unspec_item_span` contains item indices within `neg_list`.

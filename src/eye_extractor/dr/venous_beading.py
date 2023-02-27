@@ -16,16 +16,15 @@ def get_ven_beading(text: str, *, headers=None, lateralities=None) -> list:
     data = []
     # Extract matches from sections / headers.
     if headers:
-        for section_header, section_text in headers.iterate('VESSELS'):
-            if not lateralities:
-                lateralities = build_laterality_table(section_text)
+        for section_header, section_text in headers.iterate('MACULA', 'VESSELS'):
+            lateralities = build_laterality_table(section_text, search_negated_list=True)
             for new_var in _get_ven_beading(section_text, lateralities, section_header):
                 data.append(new_var)
-    # Extract matches from full text.
-    if not lateralities:
-        lateralities = build_laterality_table(text)
-    for new_var in _get_ven_beading(text, lateralities, 'ALL'):
-        data.append(new_var)
+    # Extract matches from full text. Split into snippets on ';' (isolates lateralities).
+    for snippet in text.split(';'):
+        lateralities = build_laterality_table(snippet, search_negated_list=True)
+        for new_var in _get_ven_beading(snippet, lateralities, 'ALL'):
+            data.append(new_var)
 
     return data
 

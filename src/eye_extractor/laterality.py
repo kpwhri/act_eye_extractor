@@ -6,6 +6,7 @@ from sortedcontainers import SortedList
 
 from eye_extractor.common.date import parse_nearest_date_to_line_start
 from eye_extractor.nlp.character_groups import LINE_START_CHARS
+from eye_extractor.nlp.negate.negation import find_unspecified_negated_list_items
 
 
 class Laterality(enum.IntEnum):
@@ -137,10 +138,10 @@ def build_laterality_table(text: str, search_negated_list: bool = False):
     for m in LATERALITY_PATTERN.finditer(text):
         is_section_start = m.group().endswith(':')
         latloc.add(lat_lookup(m), m.start(), m.end(), is_section_start)
-    # if search_negated_list:
-    #     if list_items := find_unspecified_negated_list_items(text):
-    #         for start_index, end_index in list_items:
-    #             latloc.add(Laterality.OU, start_index, end_index, False)
+    if search_negated_list:
+        if list_items := find_unspecified_negated_list_items(text, LATERALITY_PATTERN):
+            for start_index, end_index in list_items:
+                latloc.add(Laterality.OU, start_index, end_index, False)
 
     return latloc
 

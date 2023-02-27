@@ -57,23 +57,20 @@ _ven_beading_extract_and_build_cases = [
     ('Vessels: good caliber, color, and crossings OU, no plaques or emboli OU (-) MAs, Venous Beading, IRMA, CWS',
      {}, 'NONE', 'NONE', 'UNKNOWN'),
     # Unless specified, all conditions in negated list are OU.
-    # Idea: process laterality differently in (negated)? list format.
     # Since no laterality specified, laterality should be OU.
-    pytest.param('no CWS, MA, IRMA, VB', {}, 'NONE', 'NONE', 'UNKNOWN', marks=pytest.mark.skip()),
-    pytest.param('(-) MAs, Venous Beading, IRMA, CWS', {}, 'NONE', 'NONE', 'UNKNOWN', marks=pytest.mark.skip()),
-    # Incorrectly grabbing OD from 'NVE OD' which only applies to NVE.
-    pytest.param('Macula: flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS',
-                 {}, 'NONE', 'NONE', 'UNKNOWN', marks=pytest.mark.skip()),
-    pytest.param('Macula: flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS',
-                 {
-                     'MACULA': 'flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS'
-                 },
-                 'NONE', 'NONE', 'UNKNOWN', marks=pytest.mark.skip()),
-    pytest.param('',
-                 {
-                     'MACULA': 'flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS'
-                 },
-                 'NONE', 'NONE', 'UNKNOWN', marks=pytest.mark.skip()),
+    ('no CWS, MA, IRMA, VB', {}, 'NONE', 'NONE', 'UNKNOWN'),
+    ('(-) MAs, Venous Beading, IRMA, CWS', {}, 'NONE', 'NONE', 'UNKNOWN'),
+    ('Macula: flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS', {}, 'NONE', 'NONE', 'UNKNOWN'),
+    ('Macula: flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS',
+     {
+         'MACULA': 'flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS'
+     },
+     'NONE', 'NONE', 'UNKNOWN'),
+    ('',
+     {
+         'MACULA': 'flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS'
+     },
+     'NONE', 'NONE', 'UNKNOWN'),
 
 ]
 

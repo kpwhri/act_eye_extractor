@@ -13,13 +13,18 @@ IRMA_PAT = re.compile(
 
 
 def get_irma(text: str, *, headers=None, lateralities=None) -> list:
-    if not lateralities:
-        lateralities = build_laterality_table(text)
     data = []
-    for new_var in _get_irma(text, lateralities, 'ALL'):
-        data.append(new_var)
+    # Extract matches from sections / headers.
     if headers:
-        pass
+        for section_header, section_text in headers.iterate('MACULA'):
+            lateralities = build_laterality_table(section_text, search_negated_list=True)
+            for new_var in _get_irma(section_text, lateralities, section_header):
+                data.append(new_var)
+    # Extract matches from full text. Split into snippets on ';' (isolates lateralities).
+    for snippet in text.split(';'):
+        lateralities = build_laterality_table(snippet, search_negated_list=True)
+        for new_var in _get_irma(snippet, lateralities, 'ALL'):
+            data.append(new_var)
 
     return data
 
