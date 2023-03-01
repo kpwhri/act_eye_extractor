@@ -53,8 +53,8 @@ _hard_exudates_extract_and_build_cases = [
     # Unless specified, all conditions in negated list are OU.
     # Since no laterality specified, laterality should be OU.
     ('Periphery: RE trace BDR; LE with extensive PRP, but no NVZE/hg/CWS/HE noted today\n', {}, 0, 0, -1),
-    # TODO: Ask Chantelle if 'no CWS OR HE;' should be 'OU'.
-    ('Vessels: scattered MA/dot hgs, but no CWS or HE;', {}, -1, -1, 0),
+    # 'or' counts as separator in two item negated list, laterality should be OU.
+    ('Vessels: scattered MA/dot hgs, but no CWS or HE;', {}, 0, 0, -1),
 ]
 
 

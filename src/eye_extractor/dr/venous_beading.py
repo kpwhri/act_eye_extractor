@@ -17,9 +17,11 @@ def get_ven_beading(text: str, *, headers=None, lateralities=None) -> list:
     # Extract matches from sections / headers.
     if headers:
         for section_header, section_text in headers.iterate('MACULA', 'VESSELS'):
-            lateralities = build_laterality_table(section_text, search_negated_list=True)
-            for new_var in _get_ven_beading(section_text, lateralities, section_header):
-                data.append(new_var)
+            # Split into snippets on ';' (isolates lateralities).
+            for section_snippet in section_text.split(';'):
+                lateralities = build_laterality_table(section_snippet, search_negated_list=True)
+                for new_var in _get_ven_beading(section_snippet, lateralities, section_header):
+                    data.append(new_var)
     # Extract matches from full text. Split into snippets on ';' (isolates lateralities).
     for snippet in text.split(';'):
         lateralities = build_laterality_table(snippet, search_negated_list=True)

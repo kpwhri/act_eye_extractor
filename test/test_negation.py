@@ -1,7 +1,17 @@
 import pytest
 
-from eye_extractor.nlp.negate.negation import has_after, has_before, _handle_negation_with_punctuation, is_negated, \
-    NegationStatus, NEGATED_LIST_PATTERN, find_unspecified_negated_list_items, _find_negated_list_spans
+from eye_extractor.nlp.negate.negation import (
+    find_unspecified_negated_list_items,
+    has_after,
+    has_before,
+    is_negated,
+    NegationStatus,
+    NEGATED_LIST_PATTERN_COMMA,
+    NEGATED_LIST_PATTERN_OR,
+    NEGATED_LIST_PATTERN_SLASH,
+    _find_negated_list_spans,
+    _handle_negation_with_punctuation,
+)
 from eye_extractor.laterality import LATERALITY_PATTERN, LATERALITY_PLUS_COLON_PATTERN
 
 
@@ -91,16 +101,19 @@ def test_negwords_prenegation(text, term, exp_negated):
 
 
 _negated_list_pattern_cases = [
-    (NEGATED_LIST_PATTERN, 'no plums, carrots.', True),
-    (NEGATED_LIST_PATTERN, 'no plums, carrots, oranges\n', True),
-    (NEGATED_LIST_PATTERN, '(-) plums, carrots, oranges.\n', True),
-    (NEGATED_LIST_PATTERN, '(-)plums, carrots, oranges.', True),
-    (NEGATED_LIST_PATTERN, 'novels, cookbooks, diaries\n', False),
-    (NEGATED_LIST_PATTERN, 'Novels, cookbooks, diaries.', False),
-    (NEGATED_LIST_PATTERN, 'No Microaneurysms/hemes, cotton-wool spots, exudates, IRMA, Venous beading.', True),
-    (NEGATED_LIST_PATTERN, 'no venous beading', False),
-    (NEGATED_LIST_PATTERN, 'No venous beading.', False),
-    (NEGATED_LIST_PATTERN, 'but no NVZE/hg/CWS/HE noted today', True),
+    (NEGATED_LIST_PATTERN_COMMA, 'no plums, carrots.', True),
+    (NEGATED_LIST_PATTERN_COMMA, 'no plums, carrots, oranges\n', True),
+    (NEGATED_LIST_PATTERN_COMMA, '(-) plums, carrots, oranges.\n', True),
+    (NEGATED_LIST_PATTERN_COMMA, '(-)plums, carrots, oranges.', True),
+    (NEGATED_LIST_PATTERN_COMMA, 'novels, cookbooks, diaries\n', False),
+    (NEGATED_LIST_PATTERN_COMMA, 'Novels, cookbooks, diaries.', False),
+    (NEGATED_LIST_PATTERN_COMMA, 'No Microaneurysms/hemes, cotton-wool spots, exudates, IRMA, Venous beading.', True),
+    (NEGATED_LIST_PATTERN_COMMA, 'no venous beading', False),
+    (NEGATED_LIST_PATTERN_SLASH, 'no venous beading', False),
+    (NEGATED_LIST_PATTERN_SLASH, 'but no NVZE/hg/CWS/HE noted today', True),
+    (NEGATED_LIST_PATTERN_OR, 'no venous beading', False),
+    (NEGATED_LIST_PATTERN_OR, 'no pate or horseradish', True),
+    (NEGATED_LIST_PATTERN_OR, 'but no CWS or HE', True),
 ]
 
 
@@ -115,14 +128,17 @@ def test_negated_list_pattern(pat, text, exp):
 
 
 _find_negated_list_spans_cases = [
-    ('no plums, carrots, oranges.', [(0, 26)]),
-    ('hello there! no plums,  carrots,  oranges', [(13, 41)]),
-    ('Macula: flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS.', [(18, 64)]),
-    ('but no NVZE/hg/CWS/HE noted today', [(4, 21)]),
+    ('no plums, carrots, oranges.', [(0, 26, ',')]),
+    ('hello there! no plums,  carrots,  oranges', [(13, 41, ',')]),
+    ('Macula: flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS.', [(18, 64, ',')]),
+    ('but no NVZE/hg/CWS/HE noted today', [(4, 21, '/')]),
     ('Vessels: (-) MAs, Venous Beading, IRMA, CWS. Good caliber, color and crossings OU. '
-     'No hemes, cotton-wool spots, exudates, IRMA, Venous beading', [(9, 43), (83, 142)]),
+     'No hemes, cotton-wool spots, exudates, IRMA, Venous beading', [(9, 43, ','), (83, 142, ',')]),
     ('Vessels: (-) MAs, Venous Beading, IRMA, CWS. Good caliber, color and crossings OU. '
-     'LE with extensive PRP, but no NVZE/hg/CWS/HE noted today', [(9, 43), (110, 127)]),
+     'LE with extensive PRP, but no NVZE/hg/CWS/HE noted today', [(9, 43, ','), (110, 127, '/')]),
+    ('hello, (-)pate or horseradish please', [(7, 29, ' or ')]),
+    ('Vessels: scattered MA/dot hgs, but no CWS or HE; no plaques or emboli noted',
+     [(35, 47, ' or '), (49, 69, ' or ')]),
 ]
 
 
@@ -134,6 +150,7 @@ def test__find_negated_list_spans(text, exp_spans):
     for actual, exp in zip(actual_spans, exp_spans):
         assert actual[0] == exp[0]
         assert actual[1] == exp[1]
+        assert actual[2] == exp[2]
 
 
 _find_unspecified_negated_list_items_cases = [
@@ -141,6 +158,8 @@ _find_unspecified_negated_list_items_cases = [
     ('hello there! no plums,  carrots,  oranges', [(16, 21), (24, 31), (34, 41)]),
     ('Macula: flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS.',
      [(21, 25), (27, 29), (31, 33), (35, 38), (40, 42), (44, 48)]),
+    ('No Microaneurysms/hemes, cotton-wool spots, exudates, IRMA, Venous beading.',
+     [(3, 23), (25, 42), (44, 52), (54, 58), (60, 74)]),
     ('but no NVZE/hg/CWS/HE noted today', [(7, 11), (12, 14), (15, 18), (19, 21)]),
     ('Vessels: (-) MAs, Venous Beading, IRMA, CWS. Good caliber, color and crossings OU. '
      'No hemes, cotton-wool spots, exudates, IRMA, Venous beading',
@@ -148,6 +167,8 @@ _find_unspecified_negated_list_items_cases = [
     ('Vessels: (-) MAs, Venous Beading, IRMA, CWS. Good caliber, color and crossings OU. '
      'LE with extensive PRP, but no NVZE/hg/CWS/HE noted today',
      [(13, 16), (18, 32), (34, 38), (40, 43), (113, 117), (118, 120), (121, 124), (125, 127)]),
+    ('Vessels: scattered MA/dot hgs, but no CWS or HE; no plaques or emboli noted',
+     [(38, 41), (45, 47), (52, 59), (63, 69)]),
 ]
 
 
