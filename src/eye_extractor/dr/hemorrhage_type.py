@@ -24,8 +24,9 @@ INTRARETINAL_PAT = re.compile(
 )
 DOT_BLOT_PAT = re.compile(
     r'\b('
-    r'dot blot\s*hem(orrhage|e)s?'
-    r'|hem(orrhage|e)\s*dot blot'
+    r'd(ot)?\W+b(lot)?\s*hem(orrhage|e)s?'
+    r'|dot\s*hem(orrhage|e)'
+    r'|blot\s*hem(orrhage|e)'
     r')\b'
 )
 PRERETINAL_PAT = re.compile(
@@ -80,6 +81,7 @@ def _get_hemorrhage_type(text: str, lateralities, source: str) -> dict:
                           boundary_chars='',
                           word_window=5):
                 break
+            # Severity found & positive instance.
             if sev_var and severities:
                 for sev in severities:
                     yield create_new_variable(text, m, lateralities, sev_var, {
@@ -90,6 +92,7 @@ def _get_hemorrhage_type(text: str, lateralities, source: str) -> dict:
                         'regex': f'{hem_label.upper()}_PAT',
                         'source': source,
                     })
+            # Severity found & negative instance.
             elif negated:
                 yield create_new_variable(text, m, lateralities, sev_var, {
                     'value': Severity.NONE,
@@ -99,6 +102,7 @@ def _get_hemorrhage_type(text: str, lateralities, source: str) -> dict:
                     'regex': f'{hem_label.upper()}_PAT',
                     'source': source,
                 })
+            # Severity not found, both positive and negative instance.
             yield create_new_variable(text, m, lateralities, 'hemorrhage_typ_dr', {
                 'value': HemorrhageType.NONE if negated else hem_type,
                 'term': m.group(),
