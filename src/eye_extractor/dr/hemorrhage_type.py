@@ -20,32 +20,37 @@ INTRARETINAL_PAT = re.compile(
     r'\b('
     r'intraretinal\s*hem(orrhage|e)s?'
     r'|hem(orrhage|e)\s*intraretinal'
-    r')\b'
+    r')\b',
+    re.IGNORECASE
 )
 DOT_BLOT_PAT = re.compile(
     r'\b('
-    r'd(ot)?\W+b(lot)?\s*hem(orrhage|e)s?'
-    r'|dot\s*hem(orrhage|e)'
-    r'|blot\s*hem(orrhage|e)'
-    r')\b'
+    r'd(ot)?(\W+|\s+and\s+)b(lot)?\s*hem(orrhage|e)s?'
+    r'|dot\s*hem(orrhage|e)?s?'
+    r'|blot\s*hem(orrhage|e)?'
+    r')\b',
+    re.IGNORECASE
 )
 PRERETINAL_PAT = re.compile(
     r'\b('
     r'preretinal\s*hem(orrhage|e)s?'
     r'|hem(orrhage|e)\s*preretinal'
-    r')\b'
+    r')\b',
+    re.IGNORECASE
 )
 VITREOUS_PAT = re.compile(
     r'\b('
     r'vitreous\s*hem(orrhage|e)s?'
     r'|hem(orrhage|e)\s*vitreous'
-    r')\b'
+    r')\b',
+    re.IGNORECASE
 )
 SUBRETINAL_PAT = re.compile(
     r'\b('
     r'subretinal\s*hem(orrhage|e)s?'
     r'|hem(orrhage|e)\s*subretinal'
-    r')\b'
+    r')\b',
+    re.IGNORECASE
 )
 
 
