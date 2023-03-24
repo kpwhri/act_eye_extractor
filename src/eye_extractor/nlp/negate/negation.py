@@ -292,7 +292,7 @@ def find_unspecified_negated_list_items(text: str, lat_pattern: re.Pattern) -> l
         neg_list_start_idx = neg_list_span[0]  # Start of negated list index.
         sep = neg_list_span[2]
         # Remove initial negation string.
-        neg_removed = negation_pattern.sub('', neg_list)
+        neg_removed = negation_pattern.sub('', neg_list, count=1)
         # Isolate all negated list items. Split `negated_lists` on separator.
         items = [item.strip() for item in re.split(rf'{sep}', neg_removed)]
         # Verify negated list item does not have laterality.
