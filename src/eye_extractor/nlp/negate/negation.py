@@ -300,12 +300,14 @@ def find_unspecified_negated_list_items(text: str, lat_pattern: re.Pattern) -> l
         # Find index spans for each unspecified list item.
         for unspec_item in unspecified_items:
             # `unspec_item_span` contains item indices within `neg_list`.
-            unspec_item_span = re.search(unspec_item, neg_list).span()
-            # `adjusted_unspec_item_span` contains item indices within `text`.
-            adjusted_unspec_item_span = (
-                unspec_item_span[0] + neg_list_start_idx
-                , unspec_item_span[1] + neg_list_start_idx
-            )
-            unspecified_item_spans.append(adjusted_unspec_item_span)
+            unspec_match = re.search(unspec_item, neg_list)
+            if unspec_match:
+                unspec_item_span = unspec_match.span()
+                # `adjusted_unspec_item_span` contains item indices within `text`.
+                adjusted_unspec_item_span = (
+                    unspec_item_span[0] + neg_list_start_idx
+                    , unspec_item_span[1] + neg_list_start_idx
+                )
+                unspecified_item_spans.append(adjusted_unspec_item_span)
 
     return unspecified_item_spans
