@@ -55,21 +55,21 @@ DEFAULT_BOUNDARY_REGEX = re.compile(r'\b(?:od|os|ou)\b')
 
 # Negated list of variable size separated by ','.
 NEGATED_LIST_PATTERN_COMMA = re.compile(
-    rf'(no\s+|\(-\)\s*)([^.;\n]*,)+[^.;\n]*',
+    rf'(no\s+|\(-\)\s*)([^¶.;\n]*,)+\s+[^¶.;\n]+',
     re.IGNORECASE
 )
 
 # Negated list of two items separated by 'or'.
 # Final list item may not contain any spaces.
 NEGATED_LIST_PATTERN_OR = re.compile(
-    rf'(no\s+|\(-\)\s*)[^.;\n]*\s+or\s+\w+',
+    rf'(no\s+|\(-\)\s*)[^¶.;\n]+\s+or\s+\w+',
     re.IGNORECASE
 )
 
 # Negated list of variable size separated by '/'.
 # Final list item may not contain any spaces.
 NEGATED_LIST_PATTERN_SLASH = re.compile(
-    rf'(no\s+|\(-\)\s*)[^.;\n]*/\w+',
+    rf'(no\s+|\(-\)\s*)[^¶.;\n]+/\w+',
     re.IGNORECASE
 )
 
@@ -300,14 +300,12 @@ def find_unspecified_negated_list_items(text: str, lat_pattern: re.Pattern) -> l
         # Find index spans for each unspecified list item.
         for unspec_item in unspecified_items:
             # `unspec_item_span` contains item indices within `neg_list`.
-            unspec_match = re.search(unspec_item, neg_list)
-            if unspec_match:
-                unspec_item_span = unspec_match.span()
-                # `adjusted_unspec_item_span` contains item indices within `text`.
-                adjusted_unspec_item_span = (
-                    unspec_item_span[0] + neg_list_start_idx
-                    , unspec_item_span[1] + neg_list_start_idx
-                )
-                unspecified_item_spans.append(adjusted_unspec_item_span)
+            unspec_item_span = re.search(re.escape(unspec_item), neg_list).span()
+            # `adjusted_unspec_item_span` contains item indices within `text`.
+            adjusted_unspec_item_span = (
+                unspec_item_span[0] + neg_list_start_idx
+                , unspec_item_span[1] + neg_list_start_idx
+            )
+            unspecified_item_spans.append(adjusted_unspec_item_span)
 
     return unspecified_item_spans

@@ -109,7 +109,7 @@ _negated_list_pattern_cases = [
     (NEGATED_LIST_PATTERN_COMMA, 'Novels, cookbooks, diaries.', False),
     (NEGATED_LIST_PATTERN_COMMA, 'No Microaneurysms/hemes, cotton-wool spots, exudates, IRMA, Venous beading.', True),
     (NEGATED_LIST_PATTERN_COMMA, 'no venous beading', False),
-    (NEGATED_LIST_PATTERN_COMMA, '¶ There was no wound leak, ¶ so no suturing was needed.', True),
+    (NEGATED_LIST_PATTERN_COMMA, '¶ There was no wound leak, ¶ so no suturing was needed.', False),
     (NEGATED_LIST_PATTERN_SLASH, 'no venous beading', False),
     (NEGATED_LIST_PATTERN_SLASH, 'but no NVZE/hg/CWS/HE noted today', True),
     (NEGATED_LIST_PATTERN_OR, 'no venous beading', False),
@@ -140,7 +140,6 @@ _find_negated_list_spans_cases = [
     ('hello, (-)pate or horseradish please', [(7, 29, ' or ')]),
     ('Vessels: scattered MA/dot hgs, but no CWS or HE; no plaques or emboli noted',
      [(35, 47, ' or '), (49, 69, ' or ')]),
-    ('¶ There was no wound leak, ¶ so no suturing was needed.', [(12, 54, ',')]),
 ]
 
 
@@ -172,7 +171,6 @@ _find_unspecified_negated_list_items_cases = [
     ('Vessels: scattered MA/dot hgs, but no CWS or HE; no plaques or emboli noted',
      [(38, 41), (45, 47), (52, 59), (63, 69)]),
     ('Lost my shape, trying to act casual', []),
-    ('¶ There was no wound leak, ¶ so no suturing was needed.', [(15, 25), (27, 54)]),
 ]
 
 
