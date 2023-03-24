@@ -6,6 +6,7 @@ from sortedcontainers import SortedList
 
 from eye_extractor.common.date import parse_nearest_date_to_line_start
 from eye_extractor.nlp.character_groups import LINE_START_CHARS
+from eye_extractor.nlp.negate.negation import find_unspecified_negated_list_items
 
 
 class Laterality(enum.IntEnum):
@@ -67,6 +68,8 @@ LATERALITY = {
     'OU': Laterality.OU,
     'O.U.': Laterality.OU,
     'BILATERAL': Laterality.OU,
+    'RT': Laterality.OD,
+    'LT': Laterality.OS,
 }
 
 
@@ -124,11 +127,22 @@ def lat_lookup(m, *, group=0):
     ]
 
 
-def build_laterality_table(text):
+def build_laterality_table(text: str, search_negated_list: bool = False):
+    """Build table for all lateralities found in text.
+
+    :param text: Text to search for lateralities.
+    :param search_negated_list: If True, search for negated list in text. If found, add to table.
+    :return: LateralityLocator table of all found lateralities.
+    """
     latloc = LateralityLocator()
     for m in LATERALITY_PATTERN.finditer(text):
-        is_lat = m.group().endswith(':')
-        latloc.add(lat_lookup(m), m.start(), m.end(), is_lat)
+        is_section_start = m.group().endswith(':')
+        latloc.add(lat_lookup(m), m.start(), m.end(), is_section_start)
+    if search_negated_list:
+        if list_items := find_unspecified_negated_list_items(text, LATERALITY_PATTERN):
+            for start_index, end_index in list_items:
+                latloc.add(Laterality.OU, start_index, end_index, False)
+
     return latloc
 
 

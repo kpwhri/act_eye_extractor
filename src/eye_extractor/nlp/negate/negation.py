@@ -53,6 +53,33 @@ NEGWORDS_POST = frozenset(
 
 DEFAULT_BOUNDARY_REGEX = re.compile(r'\b(?:od|os|ou)\b')
 
+# Negated list of variable size separated by ','.
+NEGATED_LIST_PATTERN_COMMA = re.compile(
+    rf'(no\s+|\(-\)\s*)([^.;\n]*,)+[^.;\n]*',
+    re.IGNORECASE
+)
+
+# Negated list of two items separated by 'or'.
+# Final list item may not contain any spaces.
+NEGATED_LIST_PATTERN_OR = re.compile(
+    rf'(no\s+|\(-\)\s*)[^.;\n]*\s+or\s+\w+',
+    re.IGNORECASE
+)
+
+# Negated list of variable size separated by '/'.
+# Final list item may not contain any spaces.
+NEGATED_LIST_PATTERN_SLASH = re.compile(
+    rf'(no\s+|\(-\)\s*)[^.;\n]*/\w+',
+    re.IGNORECASE
+)
+
+NEGATED_LIST_PATTERNS = [
+    {'pattern': NEGATED_LIST_PATTERN_COMMA, 'sep': ','},
+    # Surround `sep` with spaces to prevent accidental capture. Example - 'oranges'.
+    {'pattern': NEGATED_LIST_PATTERN_OR, 'sep': ' or '},
+    {'pattern': NEGATED_LIST_PATTERN_SLASH, 'sep': '/'},
+]
+
 
 def _prep_negation_tree(words, fsa, *, return_unknown=False):
     """Build FSA to make it backwards-compatible with simple set."""
@@ -225,3 +252,60 @@ def has_after(start_idx: int, text: str, terms: set[str] | dict,
     no_punct = replace_punctuation(context)
     words = no_punct.split()
     return _prep_negation_tree(words[:word_window], terms, return_unknown=return_unknown)
+
+
+def _find_negated_list_spans(text: str) -> list[tuple[int, int, str]]:
+    """Find index spans for all negated lists in a text.
+
+    :param text: Text to search for negated list.
+    :return: List of all negated list spans as tuples with three elements.
+        1) Start index (inclusive), 2) end index (exclusive), 3) separator.
+    """
+    matches = []
+    cursor = 0
+    for pattern_dict in NEGATED_LIST_PATTERNS:
+        for match in pattern_dict['pattern'].finditer(text):
+            start_index, end_index = match.span()
+            if start_index >= cursor:
+                cursor = end_index
+                matches.append((start_index, end_index, pattern_dict['sep']))
+
+    return matches
+
+
+def find_unspecified_negated_list_items(text: str, lat_pattern: re.Pattern) -> list[tuple]:
+    """Find all negated list items in text with unspecified laterality.
+
+    :param text: Text to search for unspecified negated list items.
+    :param lat_pattern: Laterality pattern used to determine list item laterality.
+    :return: List of all unspecified negated list item spans as tuples. Items may come from multiple negated lists.
+        Start index is inclusive, end index is exclusive.
+    """
+    unspecified_item_spans = []
+    negation_pattern = re.compile(
+        rf'(no\s+|\(-\)\s*)',
+        re.IGNORECASE
+    )
+    negated_list_spans = _find_negated_list_spans(text)
+    negated_lists = [text[start_index:end_index] for start_index, end_index, _ in negated_list_spans]
+    for neg_list, neg_list_span in zip(negated_lists, negated_list_spans):
+        neg_list_start_idx = neg_list_span[0]  # Start of negated list index.
+        sep = neg_list_span[2]
+        # Remove initial negation string.
+        neg_removed = negation_pattern.sub('', neg_list)
+        # Isolate all negated list items. Split `negated_lists` on separator.
+        items = [item.strip() for item in re.split(rf'{sep}', neg_removed)]
+        # Verify negated list item does not have laterality.
+        unspecified_items = [item for item in items if not lat_pattern.search(item)]
+        # Find index spans for each unspecified list item.
+        for unspec_item in unspecified_items:
+            # `unspec_item_span` contains item indices within `neg_list`.
+            unspec_item_span = re.search(unspec_item, neg_list).span()
+            # `adjusted_unspec_item_span` contains item indices within `text`.
+            adjusted_unspec_item_span = (
+                unspec_item_span[0] + neg_list_start_idx
+                , unspec_item_span[1] + neg_list_start_idx
+            )
+            unspecified_item_spans.append(adjusted_unspec_item_span)
+
+    return unspecified_item_spans

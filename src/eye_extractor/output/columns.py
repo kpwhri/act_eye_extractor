@@ -359,10 +359,18 @@ OUTPUT_COLUMNS = {
     'ret_microaneurysm_re': [is_in_range(-1, 1)],
     'ret_microaneurysm_le': [is_in_range(-1, 1)],
     'ret_microaneurysm_unk': [is_in_range(-1, 1)],
+    # Cotton wool spots
+    'cottonwspot_re': [is_in_range(-1, 1)],
+    'cottonwspot_le': [is_in_range(-1, 1)],
+    'cottonwspot_unk': [is_in_range(-1, 1)],
     # hardexudates
     'hardexudates_re': [is_in_range(-1, 1)],
     'hardexudates_le': [is_in_range(-1, 1)],
     'hardexudates_unk': [is_in_range(-1, 1)],
+    # exudates
+    'exudates_re': [is_in_range(-1, 1)],
+    'exudates_le': [is_in_range(-1, 1)],
+    'exudates_unk': [is_in_range(-1, 1)],
     # disc_edema_dr
     'disc_edema_dr_re': [is_in_range(-1, 1)],
     'disc_edema_dr_le': [is_in_range(-1, 1)],
@@ -415,10 +423,18 @@ OUTPUT_COLUMNS = {
     'oct_centralmac_re': [is_in_range(-1, 1)],
     'oct_centralmac_le': [is_in_range(-1, 1)],
     'oct_centralmac_unk': [is_in_range(-1, 1)],
-    # Laser scar types
+    # Focal laser scar type.
     'focal_dr_laser_scar_type_re': [is_in_range(-1, 1)],
     'focal_dr_laser_scar_type_le': [is_in_range(-1, 1)],
     'focal_dr_laser_scar_type_unk': [is_in_range(-1, 1)],
+    # Grid laser scar type.
+    'grid_dr_laser_scar_type_re': [is_in_range(-1, 1)],
+    'grid_dr_laser_scar_type_le': [is_in_range(-1, 1)],
+    'grid_dr_laser_scar_type_unk': [is_in_range(-1, 1)],
+    # Macular laser scar type.
+    'macular_dr_laser_scar_type_re': [is_in_range(-1, 1)],
+    'macular_dr_laser_scar_type_le': [is_in_range(-1, 1)],
+    'macular_dr_laser_scar_type_unk': [is_in_range(-1, 1)],
     # Diabetic retinopathy type
     'diabretinop_type_re': [is_in_range(-1, 2)],
     'diabretinop_type_le': [is_in_range(-1, 2)],
@@ -467,14 +483,4 @@ OUTPUT_COLUMNS = {
     'irma_re': [is_string_in_enum(Severity)],
     'irma_le': [is_string_in_enum(Severity)],
     'irma_unk': [is_string_in_enum(Severity)],
-    # missing dr
-    'grid_dr_laser_scar_type_re': [],
-    'grid_dr_laser_scar_type_le': [],
-    'grid_dr_laser_scar_type_unk': [],
-    'macular_dr_laser_scar_type_re': [],
-    'macular_dr_laser_scar_type_le': [],
-    'macular_dr_laser_scar_type_unk': [],
-    'cottonwspot_re': [],
-    'cottonwspot_le': [],
-    'cottonwspot_unk': [],
 }

@@ -13,46 +13,47 @@ VEN_BEADING_PAT = re.compile(
 
 
 def get_ven_beading(text: str, *, headers=None, lateralities=None) -> list:
-    if not lateralities:
-        lateralities = build_laterality_table(text)
     data = []
-    for new_var in _get_ven_beading(text, lateralities, 'ALL'):
-        data.append(new_var)
+    # Extract matches from sections / headers.
     if headers:
-        pass
+        for section_header, section_text in headers.iterate('MACULA', 'VESSELS'):
+            # Split into snippets on ';' (isolates lateralities).
+            for section_snippet in section_text.split(';'):
+                lateralities = build_laterality_table(section_snippet, search_negated_list=True)
+                for new_var in _get_ven_beading(section_snippet, lateralities, section_header):
+                    data.append(new_var)
+    # Extract matches from full text. Split into snippets on ';' (isolates lateralities).
+    for snippet in text.split(';'):
+        lateralities = build_laterality_table(snippet, search_negated_list=True)
+        for new_var in _get_ven_beading(snippet, lateralities, 'ALL'):
+            data.append(new_var)
 
     return data
 
 
 def _get_ven_beading(text: str, lateralities, source: str) -> dict:
     for m in VEN_BEADING_PAT.finditer(text):
-        negated = is_negated(m, text, word_window=3)
+        negated = (
+            is_negated(m, text, word_window=3)
+            or is_negated(m, text, terms={'no'}, word_window=7)
+        )
         context = f'{text[max(0, m.start() - 100): m.start()]} {text[m.end():min(len(text), m.end() + 100)]}'
         severities = extract_severity(context)
-        if severities:
+        if severities:  # With severity quantifier.
             for sev in severities:
                 yield create_new_variable(text, m, lateralities, 'venbeading', {
-                    'value': sev,
+                    'value': Severity.NONE if negated else sev,
                     'term': m.group(),
                     'label': 'Venous beading',
                     'negated': negated,
                     'regex': 'VEN_BEADING_PAT',
                     'source': source,
                 })
-        elif negated:
+        else:  # Without severity quantifier.
             yield create_new_variable(text, m, lateralities, 'venbeading', {
-                'value': Severity.NONE,
+                'value': Severity.NONE if negated else Severity.MILD,
                 'term': m.group(),
-                'label': 'No venous beading',
-                'negated': negated,
-                'regex': 'VEN_BEADING_PAT',
-                'source': source,
-            })
-        else:  # Affirmative without severity quantifier.
-            yield create_new_variable(text, m, lateralities, 'venbeading', {
-                'value': Severity.MILD,
-                'term': m.group(),
-                'label': 'Venous beading',
+                'label': f'{"No v" if negated else "V"}enous beading',
                 'negated': negated,
                 'regex': 'VEN_BEADING_PAT',
                 'source': source,

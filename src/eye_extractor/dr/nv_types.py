@@ -1,33 +1,32 @@
 import re
 
-from eye_extractor.nlp.negate.negation import is_negated, is_post_negated
+from eye_extractor.nlp.negate.negation import is_negated, is_post_negated, has_after
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
-
 NVA_PAT = re.compile(
-        r'\b('
-        r'(angular\s+)neovascularization\s+of(\s+the)?\s+angle'
-        r'|nva(?!\W+\d.\d{2}\W*m)(?!\W+\d{2}/\d{2})'
-        r')\b',
-        re.I
+    r'\b('
+    r'(angular\s+)neovascularization\s+of(\s+the)?\s+angle'
+    r'|nva(?!\W+\d.\d{2}\W*m)(?!\W+\d{2}/\d{2})'
+    r')\b',
+    re.I
 )
 NVI_PAT = re.compile(
-        r'\b('
-        r'nvi|neovascularization of( the)? iris|rubeosis|rubeosis iridis'
-        r')\b',
-        re.I
+    r'\b('
+    r'nvi|neovascularization of( the)? iris|rubeosis|rubeosis iridis'
+    r')\b',
+    re.I
 )
 NVD_PAT = re.compile(
-        r'\b('
-        r'nvz?d|neovascularization of (the )?disc|neovascularization of (the )?optic(al)? disc'
-        r')\b',
-        re.I
+    r'\b('
+    r'nvz?d|neovascularization of (the )?disc|neovascularization of (the )?optic(al)? disc'
+    r')\b',
+    re.I
 )
 NVE_PAT = re.compile(
-        r'\b('
-        r'nvz?e|neovascularization elsewhere'
-        r')\b',
-        re.I
+    r'\b('
+    r'nvz?e|neovascularization elsewhere'
+    r')\b',
+    re.I
 )
 
 
@@ -56,11 +55,16 @@ def _get_nv_types(text: str, lateralities):
                 or is_negated(m, text, terms={'no'}, word_window=8)
                 or is_post_negated(m, text, terms={'normal', 'neg', 'deferred', 'no', 'nc'}, word_window=2)
             )
+            if has_after(m if isinstance(m, int) else m.start(),
+                         text,
+                         terms={'decreased'},
+                         word_window=3):
+                break
             yield create_new_variable(text, m, lateralities, variable, {
-                    'value': 0 if negated else 1,
-                    'term': m.group(),
-                    'label': 'no' if negated else 'yes',
-                    'negated': negated,
-                    'regex': f'{variable}_PAT',
-                    'source': 'ALL'
+                'value': 0 if negated else 1,
+                'term': m.group(),
+                'label': 'no' if negated else 'yes',
+                'negated': negated,
+                'regex': f'{variable}_PAT',
+                'source': 'ALL'
             })

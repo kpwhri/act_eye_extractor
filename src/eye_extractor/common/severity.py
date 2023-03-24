@@ -65,7 +65,7 @@ Q3_PAT = re.compile(
 
 Q4_PAT = re.compile(
     r'\b('
-    r'all\s+quadrant(s)?'
+    r'all(\s+4)?\s+quadrant(s)?'
     r')\b',
     re.I
 )

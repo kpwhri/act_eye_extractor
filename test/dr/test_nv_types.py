@@ -13,6 +13,7 @@ _nva_extract_and_build_cases = [
     ('NVA 20/25 OU', {}, -1, -1, -1),
     ('OD: 20/25 NVA: 0.34 M ¶OS: 20/35 NVA: 0.34 M', {}, -1, -1, -1),
     ('RE: 20/30- NVA: 0.37- M LE: 20/30- NVA: 0.37- M', {}, -1, -1, -1),
+    ('Her NVA has decreased since last exam.', {}, -1, -1, -1),  # Sections: gonioscopy, history of present illness, angle
 ]
 
 

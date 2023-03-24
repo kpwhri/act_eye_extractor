@@ -6,27 +6,35 @@ from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 IRMA_PAT = re.compile(
     r'\b('
-    r'irma|intraretinal\s+microvascular\s+abnormality'
+    r'irma(?!\s+\w+\s+csn:)|intraretinal\s+microvascular\s+abnormality'
     r')\b',
     re.I
 )
 
 
 def get_irma(text: str, *, headers=None, lateralities=None) -> list:
-    if not lateralities:
-        lateralities = build_laterality_table(text)
     data = []
-    for new_var in _get_irma(text, lateralities, 'ALL'):
-        data.append(new_var)
+    # Extract matches from sections / headers.
     if headers:
-        pass
+        for section_header, section_text in headers.iterate('MACULA'):
+            lateralities = build_laterality_table(section_text, search_negated_list=True)
+            for new_var in _get_irma(section_text, lateralities, section_header):
+                data.append(new_var)
+    # Extract matches from full text. Split into snippets on ';' (isolates lateralities).
+    for snippet in text.split(';'):
+        lateralities = build_laterality_table(snippet, search_negated_list=True)
+        for new_var in _get_irma(snippet, lateralities, 'ALL'):
+            data.append(new_var)
 
     return data
 
 
 def _get_irma(text: str, lateralities, source: str) -> dict:
     for m in IRMA_PAT.finditer(text):
-        negated = is_negated(m, text, word_window=3)
+        negated = (
+            is_negated(m, text, word_window=4)
+            or is_negated(m, text, terms={'no'}, word_window=6)
+        )
         context = f'{text[max(0, m.start() - 100): m.start()]} {text[m.end():min(len(text), m.end() + 100)]}'
         severities = extract_severity(context)
         if severities:

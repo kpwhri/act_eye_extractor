@@ -2,6 +2,7 @@ import json
 import pytest
 
 from eye_extractor.dr.venous_beading import get_ven_beading, VEN_BEADING_PAT
+from eye_extractor.headers import Headers
 from eye_extractor.output.dr import build_ven_beading
 
 # Test pattern.
@@ -34,6 +35,43 @@ _ven_beading_extract_and_build_cases = [
     ('venous beading temporal and inferior quadrant OD', {}, 'Q2', 'UNKNOWN', 'UNKNOWN'),
     ('nasal quadrant, VB', {}, 'UNKNOWN', 'UNKNOWN', 'Q1'),
     ('VB in all quadrants ou', {}, 'Q4', 'Q4', 'UNKNOWN'),
+    ('(-)heme, MA, HE, CWS, VB, IRMA, NVE OU', {}, 'NONE', 'NONE', 'UNKNOWN'),
+    ('OU: No Microaneurysms/hemes, cotton-wool spots, exudates, IRMA, Venous beading',
+     {}, 'NONE', 'NONE', 'UNKNOWN'),
+    ('no venous beading;', {}, 'UNKNOWN', 'UNKNOWN', 'NONE'),
+    ('Vessels: moderate A/V crossing changes, no venous beading',
+     {}, 'UNKNOWN', 'UNKNOWN', 'NONE'),
+    ('Vessels: Normal', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+    ('Macula: focal OU; no CSME; ERM OS Vessels: good caliber and crossings; no venous beading; no plaques or emboli',
+     {
+         'Macula': 'focal OU; no CSME; ERM OS',
+         'Vessels': 'good caliber and crossings; no venous beading; no plaques or emboli'
+     },
+     'UNKNOWN', 'UNKNOWN', 'NONE'),
+    ('¶Macula: no CSME mild ERM OD ¶Vessels: good caliber and crossings; no venous beading; no plaques or emboli',
+     {
+         'Macula': 'no CSME mild ERM OD',
+         'Vessels': 'good caliber and crossings; no venous beading; no plaques or emboli'
+     },
+     'UNKNOWN', 'UNKNOWN', 'NONE'),
+    ('Vessels: good caliber, color, and crossings OU, no plaques or emboli OU (-) MAs, Venous Beading, IRMA, CWS',
+     {}, 'NONE', 'NONE', 'UNKNOWN'),
+    # Unless specified, all conditions in negated list are OU.
+    # Since no laterality specified, laterality should be OU.
+    ('no CWS, MA, IRMA, VB', {}, 'NONE', 'NONE', 'UNKNOWN'),
+    ('(-) MAs, Venous Beading, IRMA, CWS', {}, 'NONE', 'NONE', 'UNKNOWN'),
+    ('Macula: flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS', {}, 'NONE', 'NONE', 'UNKNOWN'),
+    ('Macula: flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS',
+     {
+         'MACULA': 'flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS'
+     },
+     'NONE', 'NONE', 'UNKNOWN'),
+    ('',
+     {
+         'MACULA': 'flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS'
+     },
+     'NONE', 'NONE', 'UNKNOWN'),
+
 ]
 
 
@@ -44,7 +82,7 @@ def test_ven_beading_extract_and_build(text,
                                        exp_venbeading_re,
                                        exp_venbeading_le,
                                        exp_venbeading_unk):
-    pre_json = get_ven_beading(text)
+    pre_json = get_ven_beading(text, headers=Headers(headers))
     post_json = json.loads(json.dumps(pre_json))
     result = build_ven_beading(post_json)
     assert result['venbeading_re'] == exp_venbeading_re

@@ -48,34 +48,76 @@ def test_build_hemorrhage_type(data, exp_hemorrhage_typ_dr_re, exp_hemorrhage_ty
     assert result['hemorrhage_typ_dr_le'] == exp_hemorrhage_typ_dr_le
 
 
-@pytest.mark.parametrize('text, hemorrhage_type_dr_re, hemorrhage_type_dr_le, hemorrhage_type_dr_unk', [
+@pytest.mark.parametrize('text, headers, hemorrhage_type_dr_re, hemorrhage_type_dr_le, hemorrhage_type_dr_unk', [
     ('Acute left retinal tear with small vitreous hemorrhage',
-     HemorrhageType.UNKNOWN, HemorrhageType.VITREOUS, HemorrhageType.UNKNOWN),
+     {}, HemorrhageType.UNKNOWN, HemorrhageType.VITREOUS, HemorrhageType.UNKNOWN),
     ('OD: preretinal hemorrhage extending from temporal periphery',
-     HemorrhageType.PRERETINAL, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
+     {}, HemorrhageType.PRERETINAL, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
     ('subretinal hemorrhage from his macular degeneration',
-     HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.SUBRETINAL),
+     {}, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.SUBRETINAL),
     ('swelling and intraretinal hemorrhage',
-     HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.INTRARETINAL),
+     {}, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.INTRARETINAL),
     ('dot blot hemorrhage near inferior margin of GA',
-     HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.DOT_BLOT),
+     {}, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.DOT_BLOT),
     ('vitreous hemorrhage vs inflammation- iritis/uveitis OD',
-     HemorrhageType.VITREOUS, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
-    ('Hx of vx os for vitreous hemorrhage', HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
-    ('Resolved vitreous hemorrhage OD', HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
+     {}, HemorrhageType.VITREOUS, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
+    ('Hx of vx os for vitreous hemorrhage', {}, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
+    ('Resolved vitreous hemorrhage OD', {}, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
     ('ADDED HX NOTES: ¶OD s/p BRVO, vitreous heme',
-     HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
+     {}, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
     ('¶H/o posterior vitreous detachment with vitreous hemorrhage, left eye.',
-     HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
+     {}, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
     # TODO: Resolve laterality issues to pass below tests.
     # ('¶VITREOUS:  Minimal vitreous heme ¶ ¶Discs pink OU',
-    #  HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.VITREOUS),
-    ('no new hemorrhage', HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
-    ('no new heme', HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
-    ('no new vitreous hemorrhage', HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
-    ('no new vitreous heme', HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
+    #  {}, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.VITREOUS),
+    ('no new hemorrhage', {}, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
+    ('no new heme', {}, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
+    ('no new vitreous hemorrhage', {}, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
+    ('no new vitreous heme', {}, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
+    ('post pole with occasional dot/blot heme',
+     {}, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.DOT_BLOT),
+    ('PERIPHERAL RETINA: Normal appearance/flat; occasional dot heme',
+     {}, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.DOT_BLOT),
+    ('PERIPHERAL RETINA: Normal appearance/flat; dot heme OS>OD',
+     {}, HemorrhageType.DOT_BLOT, HemorrhageType.DOT_BLOT, HemorrhageType.UNKNOWN),
+    ('PERIPHERAL RETINA: Normal appearance/flat; dot heme OU',
+     {}, HemorrhageType.DOT_BLOT, HemorrhageType.DOT_BLOT, HemorrhageType.UNKNOWN),
+    ('MACULA: Occasional small blot heme in post pole OU',
+     {}, HemorrhageType.DOT_BLOT, HemorrhageType.DOT_BLOT, HemorrhageType.UNKNOWN),
+    ('VESSELS: isolated dot heme inf arcade OD',
+     {}, HemorrhageType.DOT_BLOT, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
+    ('VESSELS:isolated dot heme inf arcade OD',
+     {}, HemorrhageType.DOT_BLOT, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
+    ('Scattered dot blot hemes and MAs', {}, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.DOT_BLOT),
+    ('MACULA: 1 dot heme OD, otherwise WNL OU',
+     {}, HemorrhageType.DOT_BLOT, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
+    ('PERIPHERAL RETINA: Rare dot hemes OU.',
+     {}, HemorrhageType.DOT_BLOT, HemorrhageType.DOT_BLOT, HemorrhageType.UNKNOWN),
+    ('VESSELS: WNL OU occasional isolated dot/blot heme OU',
+     {}, HemorrhageType.DOT_BLOT, HemorrhageType.DOT_BLOT, HemorrhageType.UNKNOWN),
+    ('VESSELS: WNL OU isolated dot/blot heme OU',
+     {}, HemorrhageType.DOT_BLOT, HemorrhageType.DOT_BLOT, HemorrhageType.UNKNOWN),
+    ('Tiny dot hem sup nasal off disc OD', {}, HemorrhageType.DOT_BLOT, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
+    ('Macula: Dot and Blot hemorrhages OU',
+     {}, HemorrhageType.DOT_BLOT, HemorrhageType.DOT_BLOT, HemorrhageType.UNKNOWN),
+    # Chantelle says OU, previously in note both eyes were dilated and examined.
+    # Unsure how to implement with OU with current, shallow approach.
+    ('MACULA: rare tiny dot hem in arcades, no exud; string of 4 ~0.25dd size blot hem in a line nasal to disc OD. '
+     'rare dot hem, no exud.', {}, HemorrhageType.DOT_BLOT, HemorrhageType.UNKNOWN, HemorrhageType.DOT_BLOT),
+    ('Mac - rare dot heme os but hazy view',
+     {}, HemorrhageType.UNKNOWN, HemorrhageType.DOT_BLOT, HemorrhageType.UNKNOWN),
+    ('Mac - Normal x for rare dot heme od',
+     {}, HemorrhageType.DOT_BLOT, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
+    ('MACULA: sm dot hem nsl to fov, some focal scarring OD',
+     {}, HemorrhageType.DOT_BLOT, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
+    ('MACULA - dot heme OD',
+     {}, HemorrhageType.DOT_BLOT, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
+    ('Macula paramacular laser marks,blot heme',
+     {}, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.DOT_BLOT),
+    ('VESSELS: 2-3 dot heme OU', {}, HemorrhageType.DOT_BLOT, HemorrhageType.DOT_BLOT, HemorrhageType.UNKNOWN),
+    ('Macula show few dot hemorrhages.', {}, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.DOT_BLOT),
 ])
-def test_hemorrhage_type_extract_and_build(text, hemorrhage_type_dr_re, hemorrhage_type_dr_le,
+def test_hemorrhage_type_extract_and_build(text, headers, hemorrhage_type_dr_re, hemorrhage_type_dr_le,
                                            hemorrhage_type_dr_unk):
     data = get_hemorrhage_type(text)
     data = json.loads(json.dumps(data))  # simulate write to/reading from file
@@ -99,18 +141,6 @@ _intraretinal_severity_extract_and_build_cases = [
     ('intraretinal heme in all quadrants ou', {}, 'Q4', 'Q4', 'UNKNOWN'),
 ]
 
-_dot_blot_severity_extract_and_build_cases = [
-    ('mild dot blot hemorrhage OU', {}, 'MILD', 'MILD', 'UNKNOWN'),
-    ('Mild - moderate dot blot heme OD', {}, 'MODERATE', 'UNKNOWN', 'UNKNOWN'),
-    ('no dot blot hemorrhage ou', {}, 'NONE', 'NONE', 'UNKNOWN'),
-    ('moderate dot blot heme OS', {}, 'UNKNOWN', 'MODERATE', 'UNKNOWN'),
-    ('severe dot blot hemorrhage', {}, 'UNKNOWN', 'UNKNOWN', 'SEVERE'),
-    ('dot blot heme severity=3Q OS', {}, 'UNKNOWN', 'Q3', 'UNKNOWN'),
-    ('dot blot hemorrhage temporal and inferior quadrant OD', {}, 'Q2', 'UNKNOWN', 'UNKNOWN'),
-    ('nasal quadrant, hemorrhage dot blot', {}, 'UNKNOWN', 'UNKNOWN', 'Q1'),
-    ('dot blot heme in all quadrants ou', {}, 'Q4', 'Q4', 'UNKNOWN'),
-]
-
 
 @pytest.mark.parametrize('text, headers, exp_intraretinal_hem_re, exp_intraretinal_hem_le, '
                          'exp_intraretinal_hem_unk',
@@ -126,6 +156,19 @@ def test_intraretinal_severity_extract_and_build(text,
     assert result['intraretinal_hem_re'] == exp_intraretinal_hem_re
     assert result['intraretinal_hem_le'] == exp_intraretinal_hem_le
     assert result['intraretinal_hem_unk'] == exp_intraretinal_hem_unk
+
+
+_dot_blot_severity_extract_and_build_cases = [
+    ('mild dot blot hemorrhage OU', {}, 'MILD', 'MILD', 'UNKNOWN'),
+    ('Mild - moderate dot blot heme OD', {}, 'MODERATE', 'UNKNOWN', 'UNKNOWN'),
+    ('no dot blot hemorrhage ou', {}, 'NONE', 'NONE', 'UNKNOWN'),
+    ('moderate dot blot heme OS', {}, 'UNKNOWN', 'MODERATE', 'UNKNOWN'),
+    ('severe dot blot hemorrhage', {}, 'UNKNOWN', 'UNKNOWN', 'SEVERE'),
+    ('dot blot heme severity=3Q OS', {}, 'UNKNOWN', 'Q3', 'UNKNOWN'),
+    ('dot blot hemorrhage temporal and inferior quadrant OD', {}, 'Q2', 'UNKNOWN', 'UNKNOWN'),
+    ('dot blot heme in all quadrants ou', {}, 'Q4', 'Q4', 'UNKNOWN'),
+    ('*scattered d/b hemes in all 4 quadrants (-)CWS', {}, 'UNKNOWN', 'UNKNOWN', 'Q4'),
+]
 
 
 @pytest.mark.parametrize('text, headers, exp_dotblot_hem_re, exp_dotblot_hem_le, '
