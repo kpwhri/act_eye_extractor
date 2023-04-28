@@ -3,14 +3,6 @@ import re
 from eye_extractor.nlp.negate.negation import is_negated
 from eye_extractor.laterality import build_laterality_table, create_new_variable, Laterality, LateralityLocator
 
-# Old pattern, too greedy.
-# CMT_VALUE_PAT = re.compile(
-#     r'\b('
-#     r'(?:OD\W*|OS\W*|CMT\s*|central macular thickness[ :]*)(?P<digit>\d{3,4})(?!/|\.|\W*mmhg)(um)?'
-#     r')\b',
-#     re.I
-# )
-
 CMT_VALUE_OD_OS_UNK_PAT = re.compile(
     r'\b('
     r'(CMT|central macular thickness:?)\s+'
@@ -20,7 +12,6 @@ CMT_VALUE_OD_OS_UNK_PAT = re.compile(
     r')\b',
     re.I
 )
-
 CMT_VALUE_OD_SEP_OS_PAT = re.compile(
     r'\b('
     r'(CMT|central macular thickness:?)\s+'
@@ -71,6 +62,7 @@ def _create_new_cmt_var(text: str,
                                    'regex': pat_label,
                                    'source': source,
                                },
+                               # If `known_laterality == Laterality.UNKNOWN`, laterality will be searched for.
                                known_laterality=match2lat[match_name])
 
 
