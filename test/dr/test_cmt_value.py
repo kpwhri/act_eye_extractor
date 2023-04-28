@@ -1,22 +1,22 @@
 import json
 import pytest
 
-from eye_extractor.dr.cmt_value import CMT_VALUE_PAT, get_cmt_value
+from eye_extractor.dr.cmt_value import CMT_VALUE_OD_OS_UNK_PAT, get_cmt_value
 from eye_extractor.output.dr import build_cmt_value
 
 # Test pattern.
 _pattern_cases = [
-    (CMT_VALUE_PAT, 'CMT 244', True),
-    (CMT_VALUE_PAT, 'Central macular thickness: 234 um', True),
-    (CMT_VALUE_PAT, 'CMT OD: 265', True),
-    (CMT_VALUE_PAT, 'CMT OS 250', True),
-    (CMT_VALUE_PAT, 'CMT OD:265 OS:224', True),
-    (CMT_VALUE_PAT, 'Tonometry: TA OD:17 OS:17', False),
-    (CMT_VALUE_PAT, 'NCT: OD:11 OS:19', False),
-    (CMT_VALUE_PAT, 'Applanation Tonometry: 18 OD 12 OS', False),
-    (CMT_VALUE_PAT, 'OD: +125-240*103\nOS: +050-090*065\n', False),
-    (CMT_VALUE_PAT, 'TONOMETRY:\nTa OD: 14 OS 18', False),
-    (CMT_VALUE_PAT, 'OD CMT 123', True),
+    (CMT_VALUE_OD_OS_UNK_PAT, 'CMT 244', True),
+    (CMT_VALUE_OD_OS_UNK_PAT, 'Central macular thickness: 234 um', True),
+    (CMT_VALUE_OD_OS_UNK_PAT, 'CMT OD: 265', True),
+    (CMT_VALUE_OD_OS_UNK_PAT, 'CMT OS 250', True),
+    (CMT_VALUE_OD_OS_UNK_PAT, 'CMT OD:265 OS:224', True),
+    (CMT_VALUE_OD_OS_UNK_PAT, 'Tonometry: TA OD:17 OS:17', False),
+    (CMT_VALUE_OD_OS_UNK_PAT, 'NCT: OD:11 OS:19', False),
+    (CMT_VALUE_OD_OS_UNK_PAT, 'Applanation Tonometry: 18 OD 12 OS', False),
+    (CMT_VALUE_OD_OS_UNK_PAT, 'OD: +125-240*103\nOS: +050-090*065\n', False),
+    (CMT_VALUE_OD_OS_UNK_PAT, 'TONOMETRY:\nTa OD: 14 OS 18', False),
+    (CMT_VALUE_OD_OS_UNK_PAT, 'OD CMT 123', True),
 
 ]
 
@@ -37,11 +37,11 @@ _cmt_value_extract_and_build_cases = [
     ('CMT OD:265 OS:224', {}, 265, 224, -1),
     ('CMT 343', {}, -1, -1, 343),
     ('Central macular thickness: 234 um', {}, -1, -1, 234),
+    ('CMT OD:300 possible epiretinal membrane OS:294', {}, 300, 294, -1),
     # ('OD: erm, CMT 291; OS: erm, CMT 280', {}, 291, 280, -1),
     # ('OD CMT 329; +ERM,  OS CMT 465; +ERM;', {}, 329, 465, -1),
     # ('OS: REMAINS DRY CMT 244', {}, -1, 244, -1),
-    # pytest.param('CMT OD:300 possible epiretinal membrane OS:294',
-    #              {}, 300, 294, -1, marks=pytest.mark.skip()),
+
     # ('OD: mild moderate irregularity, no edema, CMT 290; OS: moderate retinal irregularity , no edema, '
     #  'mild epiretinal membrane , CMT 282',
     #  {}, 290, 282, -1),
