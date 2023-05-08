@@ -54,6 +54,7 @@ _dr_type_extract_and_build_cases = [
     ('¶(1) No diabetic retinopathy.', {},
      DrType.UNKNOWN, DrType.UNKNOWN, DrType.NONE),
     ('NPDR : no ', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.NONE),
+    ('very severe NPDR ou', {}, DrType.NPDR, DrType.NPDR, DrType.UNKNOWN),
     # TODO: Resolve laterality issues to pass below tests.
     # ('nonproliferative diabetic retinopathy ¶ iols ou', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.NPDR),
     # ('¶(1) No diabetic retinopathy. ¶(2) Increasing cataract, RE,', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.NONE),
@@ -65,7 +66,8 @@ _npdr_severity_extract_and_build_cases = [
     ('Mild - moderate non-proliferative DR OD', {}, 'MODERATE', 'UNKNOWN', 'UNKNOWN'),
     ('no NPDR ou', {}, 'NONE', 'NONE', 'UNKNOWN'),
     ('moderate background diabetic retinopathy OS', {}, 'UNKNOWN', 'MODERATE', 'UNKNOWN'),
-    ('severe NPDR', {}, 'UNKNOWN', 'UNKNOWN', 'SEVERE')
+    ('severe NPDR', {}, 'UNKNOWN', 'UNKNOWN', 'SEVERE'),
+    ('very severe NPDR ou', {}, 'VERY SEVERE', 'VERY SEVERE', 'UNKNOWN'),
 ]
 
 _pdr_severity_extract_and_build_cases = [
