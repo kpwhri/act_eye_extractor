@@ -25,7 +25,7 @@ def test_ven_beading_patterns(pat, text, exp):
 
 # Test extract and build.
 _ven_beading_extract_and_build_cases = [
-    ('venous beading ou', {}, 'NOS', 'NOS', 'UNKNOWN'),
+    ('venous beading ou', {}, 'YES NOS', 'YES NOS', 'UNKNOWN'),
     ('mild VB OU', {}, 'MILD', 'MILD', 'UNKNOWN'),
     ('Mild - moderate venous beading OD', {}, 'MODERATE', 'UNKNOWN', 'UNKNOWN'),
     ('no venous beading ou', {}, 'NONE', 'NONE', 'UNKNOWN'),

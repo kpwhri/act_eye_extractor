@@ -139,7 +139,7 @@ _intraretinal_severity_extract_and_build_cases = [
     ('intraretinal hemorrhage temporal and inferior quadrant OD', {}, 'Q2', 'UNKNOWN', 'UNKNOWN'),
     ('nasal quadrant, hemorrhage intraretinal', {}, 'UNKNOWN', 'UNKNOWN', 'Q1'),
     ('intraretinal heme in all quadrants ou', {}, 'Q4', 'Q4', 'UNKNOWN'),
-    ('swelling and intraretinal hemorrhage', {}, 'UNKNOWN', 'UNKNOWN', 'NOS'),
+    ('swelling and intraretinal hemorrhage', {}, 'UNKNOWN', 'UNKNOWN', 'YES NOS'),
 ]
 
 
@@ -169,7 +169,7 @@ _dot_blot_severity_extract_and_build_cases = [
     ('dot blot hemorrhage temporal and inferior quadrant OD', {}, 'Q2', 'UNKNOWN', 'UNKNOWN'),
     ('dot blot heme in all quadrants ou', {}, 'Q4', 'Q4', 'UNKNOWN'),
     ('*scattered d/b hemes in all 4 quadrants (-)CWS', {}, 'UNKNOWN', 'UNKNOWN', 'Q4'),
-    ('occasional dot/blot heme', {}, 'UNKNOWN', 'UNKNOWN', 'NOS'),
+    ('occasional dot/blot heme', {}, 'UNKNOWN', 'UNKNOWN', 'YES NOS'),
 ]
 
 

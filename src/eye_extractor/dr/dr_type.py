@@ -89,7 +89,7 @@ def _get_dr_type(text: str, lateralities, source: str) -> dict:
                     })
                 else:  # Affirmative without severity quantifier.
                     yield create_new_variable(text, m, lateralities, sev_var, {
-                        'value': Severity.NOS,
+                        'value': Severity.YES_NOS,
                         'term': m.group(),
                         'label': dr_label,
                         'negated': negated,

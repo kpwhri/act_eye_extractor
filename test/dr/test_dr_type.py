@@ -68,7 +68,7 @@ _npdr_severity_extract_and_build_cases = [
     ('moderate background diabetic retinopathy OS', {}, 'UNKNOWN', 'MODERATE', 'UNKNOWN'),
     ('severe NPDR', {}, 'UNKNOWN', 'UNKNOWN', 'SEVERE'),
     ('very severe NPDR ou', {}, 'VERY SEVERE', 'VERY SEVERE', 'UNKNOWN'),
-    ('NPDR OS', {}, 'UNKNOWN', 'NOS', 'UNKNOWN'),
+    ('NPDR OS', {}, 'UNKNOWN', 'YES NOS', 'UNKNOWN'),
 ]
 
 _pdr_severity_extract_and_build_cases = [
