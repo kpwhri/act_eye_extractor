@@ -43,7 +43,7 @@ def test_severity_patterns(pat, text, exp):
 
 
 # Test extract and build.
-_dr_severity_extract_cases = [
+_severity_extract_cases = [
     ('very mild', [Severity.MILD]),
     ('mild - moderate', [Severity.MODERATE, Severity.MILD]),
     ('moderate', [Severity.MODERATE]),
@@ -56,7 +56,7 @@ _dr_severity_extract_cases = [
 
 
 @pytest.mark.parametrize('text, labels',
-                         _dr_severity_extract_cases)
+                         _severity_extract_cases)
 def test_extract_severity(text, labels):
     severities = extract_severity(text)
     for i, sev in enumerate(severities):

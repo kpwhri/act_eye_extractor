@@ -58,7 +58,7 @@ def _get_irma(text: str, lateralities, source: str) -> dict:
             })
         else:  # Affirmative without severity quantifier.
             yield create_new_variable(text, m, lateralities, 'irma', {
-                'value': Severity.MILD,
+                'value': Severity.NOS,
                 'term': m.group(),
                 'label': 'IRMA',
                 'negated': negated,

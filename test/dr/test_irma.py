@@ -24,7 +24,7 @@ def test_irma_patterns(pat, text, exp):
 
 # Test extract and build.
 _irma_extract_and_build_cases = [
-    ('OD: area of IRMA just nasal to disc', {}, 'MILD', 'UNKNOWN', 'UNKNOWN'),
+    ('OD: area of IRMA just nasal to disc', {}, 'NOS', 'UNKNOWN', 'UNKNOWN'),
     ('mild IRMA OU', {}, 'MILD', 'MILD', 'UNKNOWN'),
     ('Mild - moderate IRMA OD', {}, 'MODERATE', 'UNKNOWN', 'UNKNOWN'),
     ('no intraretinal microvascular abnormality ou', {}, 'NONE', 'NONE', 'UNKNOWN'),
@@ -34,7 +34,7 @@ _irma_extract_and_build_cases = [
     ('IRMA temporal and inferior quadrant OD', {}, 'Q2', 'UNKNOWN', 'UNKNOWN'),
     ('nasal quadrant, IRMA', {}, 'UNKNOWN', 'UNKNOWN', 'Q1'),
     ('IRMA in all quadrants ou', {}, 'Q4', 'Q4', 'UNKNOWN'),
-    ('has small area of IRMA right eye', {}, 'MILD', 'UNKNOWN', 'UNKNOWN'),
+    ('has small area of IRMA right eye', {}, 'NOS', 'UNKNOWN', 'UNKNOWN'),
     ('(-)heme, MA, HE, CWS, VB, IRMA, NVE OU', {}, 'NONE', 'NONE', 'UNKNOWN'),
     ('¶Irma Smith CSN:', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
     ('OU: No Microaneurysms/hemes, cotton-wool spots, exudates, IRMA',

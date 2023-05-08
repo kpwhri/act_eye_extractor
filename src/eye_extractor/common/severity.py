@@ -13,6 +13,7 @@ class Severity(enum.IntEnum):
     MODERATE = 6
     SEVERE = 7
     VERY_SEVERE = 8
+    NOS = 9
 
 
 SEVERITY_PAT = re.compile(

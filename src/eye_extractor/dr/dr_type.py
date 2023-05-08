@@ -87,6 +87,15 @@ def _get_dr_type(text: str, lateralities, source: str) -> dict:
                         'regex': pat_label,
                         'source': source,
                     })
+                else:  # Affirmative without severity quantifier.
+                    yield create_new_variable(text, m, lateralities, sev_var, {
+                        'value': Severity.NOS,
+                        'term': m.group(),
+                        'label': dr_label,
+                        'negated': negated,
+                        'regex': pat_label,
+                        'source': source,
+                    })
                 yield create_new_variable(text, m, lateralities, 'diabretinop_type', {
                     'value': DrType.NONE if negated else dr_type,
                     'term': m.group(),
