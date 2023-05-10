@@ -1,3 +1,5 @@
+from enum import Enum
+
 from eye_extractor.amd.amd import AMD
 from eye_extractor.amd.cnv import ChoroidalNeoVasc
 from eye_extractor.amd.dry import DrySeverity
@@ -69,9 +71,9 @@ def build_amd(data, *, is_amd=None, lat=Laterality.UNKNOWN, note_date=None, macu
     wnl_lat = macula_is_wnl(macula_wnl, note_date)
     if wnl_lat == Laterality.OU:
         return {
-            'amd_re': AMD.NO,
-            'amd_le': AMD.NO,
-            'amd_unk': AMD.NO,
+            'amd_re': AMD.NO.value,
+            'amd_le': AMD.NO.value,
+            'amd_unk': AMD.NO.value,
         }
     results = {
         'amd_re': AMD.UNKNOWN,
@@ -91,6 +93,7 @@ def build_amd(data, *, is_amd=None, lat=Laterality.UNKNOWN, note_date=None, macu
         results['amd_re'] = AMD.NO
     if wnl_lat == Laterality.OS:
         results['amd_le'] = AMD.NO
+    results = {key: (val.value if isinstance(val, Enum) else val) for key, val in results.items()}
     return results
 
 
