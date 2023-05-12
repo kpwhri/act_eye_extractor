@@ -3,7 +3,7 @@ from eye_extractor.amd.scar import Scar
 from eye_extractor.amd.wet import WetSeverity
 from eye_extractor.common.algo.fluid import Fluid
 from eye_extractor.common.algo.treatment import Treatment
-from eye_extractor.common.severity import Severity
+from eye_extractor.common.severity import Risk, Severity
 from eye_extractor.exam.gonio import Gonio
 from eye_extractor.glaucoma.dx import GlaucomaType
 from eye_extractor.glaucoma.preglaucoma import Preglaucoma
@@ -464,9 +464,9 @@ OUTPUT_COLUMNS = {
     'nonprolifdr_le': [is_string_in_enum(Severity)],
     'nonprolifdr_unk': [is_string_in_enum(Severity)],
     # Proliferative DR severity
-    'prolifdr_re': [is_string_in_enum(Severity)],
-    'prolifdr_le': [is_string_in_enum(Severity)],
-    'prolifdr_unk': [is_string_in_enum(Severity)],
+    'prolifdr_re': [is_string_in_enum(Risk)],
+    'prolifdr_le': [is_string_in_enum(Risk)],
+    'prolifdr_unk': [is_string_in_enum(Risk)],
     # Intraretinal hemorrhage severity
     'intraretinal_hem_re': [is_string_in_enum(Severity)],
     'intraretinal_hem_le': [is_string_in_enum(Severity)],

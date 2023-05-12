@@ -2,6 +2,43 @@ import enum
 import re
 
 
+class Risk(enum.IntEnum):
+    UNKNOWN = -1
+    NONE = 0
+    LOW_RISK = 1
+    HIGH_RISK = 2
+    YES_NOS = 3
+
+
+LOW_RISK_PAT = re.compile(
+    r'\b('
+    r'low\s+risk'
+    r')\b',
+    re.I
+)
+HIGH_RISK_PAT = re.compile(
+    r'\b('
+    r'high\s+risk'
+    r')\b',
+    re.I
+)
+
+RISK_PATS = [
+    (HIGH_RISK_PAT, Risk.HIGH_RISK),
+    (LOW_RISK_PAT, Risk.LOW_RISK),
+]
+
+
+def extract_risk(text: str) -> list[Risk]:
+    risks = []
+
+    for pat, risk in RISK_PATS:
+        for _ in pat.finditer(text):
+            risks.append(risk)
+
+    return risks
+
+
 class Severity(enum.IntEnum):
     UNKNOWN = -1
     NONE = 0

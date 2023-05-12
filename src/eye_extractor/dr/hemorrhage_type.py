@@ -86,8 +86,8 @@ def _get_hemorrhage_type(text: str, lateralities, source: str) -> dict:
                           boundary_chars='',
                           word_window=5):
                 break
-            # Severity found & positive instance.
             if sev_var:
+                # Severity found & positive instance.
                 if severities:
                     for sev in severities:
                         yield create_new_variable(text, m, lateralities, sev_var, {
@@ -108,7 +108,8 @@ def _get_hemorrhage_type(text: str, lateralities, source: str) -> dict:
                         'regex': f'{hem_label.upper()}_PAT',
                         'source': source,
                     })
-                else:  # Affirmative without severity quantifier.
+                # Affirmative without severity quantifier.
+                else:
                     yield create_new_variable(text, m, lateralities, sev_var, {
                         'value': Severity.YES_NOS,
                         'term': m.group(),

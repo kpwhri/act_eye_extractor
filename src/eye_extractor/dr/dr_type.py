@@ -2,7 +2,7 @@ import enum
 import re
 
 from eye_extractor.nlp.negate.negation import has_before, is_negated, is_post_negated
-from eye_extractor.common.severity import extract_severity, Severity
+from eye_extractor.common.severity import extract_risk, extract_severity, Risk, Severity
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 
@@ -51,7 +51,7 @@ def get_dr_type(text: str, *, headers=None, lateralities=None) -> list:
 def _get_dr_type(text: str, lateralities, source: str) -> dict:
     for pat_label, pat, dr_type, dr_label, sev_var in [
         ('NPDR_PAT', NPDR_PAT, DrType.NPDR, 'nonproliferative diabetic retinopathy', 'nonprolifdr'),
-        ('PDR_PAT', PDR_PAT, DrType.PDR, 'proliferative diabetic retinopathy', 'prolifdr'),
+        ('PDR_PAT', PDR_PAT, DrType.PDR, 'proliferative diabetic retinopathy', None),
         ('DR_PAT', DR_PAT, None, 'diabetic retinopathy', None),
     ]:
         for m in pat.finditer(text):
@@ -67,7 +67,8 @@ def _get_dr_type(text: str, lateralities, source: str) -> dict:
                           terms={'confirm'},
                           word_window=2):
                 break
-            if dr_type:  # matches a severity pattern
+            if sev_var:
+                # Severity found & positive instance.
                 if severities:
                     for sev in severities:
                         yield create_new_variable(text, m, lateralities, sev_var, {
@@ -78,6 +79,7 @@ def _get_dr_type(text: str, lateralities, source: str) -> dict:
                             'regex': pat_label,
                             'source': source,
                         })
+                # Severity found & negative instance.
                 elif negated:
                     yield create_new_variable(text, m, lateralities, sev_var, {
                         'value': Severity.NONE,
@@ -87,7 +89,8 @@ def _get_dr_type(text: str, lateralities, source: str) -> dict:
                         'regex': pat_label,
                         'source': source,
                     })
-                else:  # Affirmative without severity quantifier.
+                # Affirmative without severity quantifier.
+                else:
                     yield create_new_variable(text, m, lateralities, sev_var, {
                         'value': Severity.YES_NOS,
                         'term': m.group(),
@@ -96,6 +99,8 @@ def _get_dr_type(text: str, lateralities, source: str) -> dict:
                         'regex': pat_label,
                         'source': source,
                     })
+            # Severity not found and negative instance.
+            if negated:
                 yield create_new_variable(text, m, lateralities, 'diabretinop_type', {
                     'value': DrType.NONE if negated else dr_type,
                     'term': m.group(),
@@ -104,12 +109,69 @@ def _get_dr_type(text: str, lateralities, source: str) -> dict:
                     'regex': pat_label,
                     'source': source,
                 })
-            elif negated:  # matches negated general DR pattern
+            # Severity not found and positive instance.
+            elif dr_type:
                 yield create_new_variable(text, m, lateralities, 'diabretinop_type', {
-                    'value': DrType.NONE,
+                    'value': dr_type,
                     'term': m.group(),
-                    'label': f'No {dr_label}' if negated else dr_label,
+                    'label': dr_label,
                     'negated': negated,
                     'regex': pat_label,
                     'source': source,
                 })
+
+
+def get_pdr(text: str, *, headers=None, lateralities=None) -> list:
+    if not lateralities:
+        lateralities = build_laterality_table(text)
+    data = []
+    for new_var in _get_pdr(text, lateralities, 'ALL'):
+        data.append(new_var)
+    if headers:
+        pass
+
+    return data
+
+
+# TODO: Create factory class for `get_<variable>` functions.
+def _get_pdr(text: str, lateralities, source: str) -> dict:
+    for m in PDR_PAT.finditer(text):
+        negated = (
+            is_negated(m, text, word_window=3)
+            or is_post_negated(m, text, terms={'no'}, word_window=3)
+        )
+        context = f'{text[max(0, m.start() - 100): m.start()]} {text[m.end():min(len(text), m.end() + 100)]}'
+        risks = extract_risk(context)
+        if has_before(m if isinstance(m, int) else m.start(),
+                      text,
+                      terms={'confirm'},
+                      word_window=2):
+            break
+        if risks:
+            for risk in risks:
+                yield create_new_variable(text, m, lateralities, 'prolifdr', {
+                    'value': risk,
+                    'term': m.group(),
+                    'label': 'proliferative diabetic retinopathy',
+                    'negated': negated,
+                    'regex': 'PDR_PAT',
+                    'source': source,
+                })
+        elif negated:
+            yield create_new_variable(text, m, lateralities, 'prolifdr', {
+                'value': Risk.NONE,
+                'term': m.group(),
+                'label': 'No proliferative diabetic retinopathy',
+                'negated': negated,
+                'regex': 'PDR_PAT',
+                'source': source,
+            })
+        else:  # Affirmative without severity quantifier.
+            yield create_new_variable(text, m, lateralities, 'prolifdr', {
+                'value': Risk.YES_NOS,
+                'term': m.group(),
+                'label': 'proliferative diabetic retinopathy',
+                'negated': negated,
+                'regex': 'PDR_PAT',
+                'source': source,
+            })
