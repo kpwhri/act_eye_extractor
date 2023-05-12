@@ -1,7 +1,7 @@
 from eye_extractor.dr.binary_vars import get_dr_binary
 from eye_extractor.dr.cmt_value import get_cmt_value
 from eye_extractor.dr.cws import get_cottonwspot
-from eye_extractor.dr.dr_type import get_dr_type
+from eye_extractor.dr.dr_type import get_dr_type, get_pdr
 from eye_extractor.dr.exudates import get_exudates
 from eye_extractor.dr.hemorrhage_type import get_hemorrhage_type
 from eye_extractor.dr.irma import get_irma
@@ -21,5 +21,6 @@ def extract_dr_variables(text: str, *, headers=None, lateralities=None) -> dict:
         'irma': get_irma(text, headers=headers, lateralities=lateralities),
         'laser_scar_type': get_laser_scar_type(text, headers=headers, lateralities=lateralities),
         'nv_types': get_nv_types(text, headers=headers, lateralities=lateralities),
+        'pdr': get_pdr(text, headers=headers, lateralities=lateralities),
         'venous_beading': get_ven_beading(text, headers=headers, lateralities=lateralities),
     }

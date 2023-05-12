@@ -2,6 +2,43 @@ import enum
 import re
 
 
+class Risk(enum.IntEnum):
+    UNKNOWN = -1
+    NONE = 0
+    LOW_RISK = 1
+    HIGH_RISK = 2
+    YES_NOS = 3
+
+
+LOW_RISK_PAT = re.compile(
+    r'\b('
+    r'low\s+risk'
+    r')\b',
+    re.I
+)
+HIGH_RISK_PAT = re.compile(
+    r'\b('
+    r'high\s+risk'
+    r')\b',
+    re.I
+)
+
+RISK_PATS = [
+    (HIGH_RISK_PAT, Risk.HIGH_RISK),
+    (LOW_RISK_PAT, Risk.LOW_RISK),
+]
+
+
+def extract_risk(text: str) -> list[Risk]:
+    risks = []
+
+    for pat, risk in RISK_PATS:
+        for _ in pat.finditer(text):
+            risks.append(risk)
+
+    return risks
+
+
 class Severity(enum.IntEnum):
     UNKNOWN = -1
     NONE = 0
@@ -12,28 +49,9 @@ class Severity(enum.IntEnum):
     MILD = 5
     MODERATE = 6
     SEVERE = 7
+    VERY_SEVERE = 8
+    YES_NOS = 9
 
-
-MILD_PAT = re.compile(
-    r'\b('
-    r'mild'
-    r')\b',
-    re.I
-)
-
-MODERATE_PAT = re.compile(
-    r'\b('
-    r'moderate'
-    r')\b',
-    re.I
-)
-
-SEVERE_PAT = re.compile(
-    r'\b('
-    r'severe'
-    r')\b',
-    re.I
-)
 
 SEVERITY_PAT = re.compile(
     r'\b('
@@ -41,36 +59,57 @@ SEVERITY_PAT = re.compile(
     r')\b',
     re.I
 )
-
 Q1_PAT = re.compile(
     r'\b('
     r'\w+\s+quadrant'
     r')\b',
     re.I
 )
-
 Q2_PAT = re.compile(
     r'\b('
     r'\w+(\s+and|,)\s+\w+\s+quadrant(s)?'
     r')\b',
     re.I
 )
-
 Q3_PAT = re.compile(
     r'\b('
     r'\w+\s*,\s+\w+(\s+and|,)\s+\w+\s+quadrant(s)?'
     r')\b',
     re.I
 )
-
 Q4_PAT = re.compile(
     r'\b('
     r'all(\s+4)?\s+quadrant(s)?'
     r')\b',
     re.I
 )
+MILD_PAT = re.compile(
+    r'\b('
+    r'mild'
+    r')\b',
+    re.I
+)
+MODERATE_PAT = re.compile(
+    r'\b('
+    r'moderate'
+    r')\b',
+    re.I
+)
+SEVERE_PAT = re.compile(
+    r'\b('
+    r'(?<!very\s)severe'  # Negative lookbehind cannot contain a quantifier.
+    r')\b',
+    re.I
+)
+VERY_SEVERE_PAT = re.compile(
+    r'\b('
+    r'very\s+severe'
+    r')\b',
+    re.I
+)
 
 SEVERITY_PATS = [
+    (VERY_SEVERE_PAT, Severity.VERY_SEVERE),
     (SEVERE_PAT, Severity.SEVERE),
     (MODERATE_PAT, Severity.MODERATE),
     (MILD_PAT, Severity.MILD),

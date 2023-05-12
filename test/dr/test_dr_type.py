@@ -5,8 +5,9 @@ from eye_extractor.common.severity import Severity
 from eye_extractor.dr.dr_type import (
     DrType,
     get_dr_type,
+    get_pdr,
     NPDR_PAT,
-    PDR_PAT
+    PDR_PAT,
 )
 from eye_extractor.output.dr import build_dr_type, build_npdr_severity, build_pdr_severity
 
@@ -54,26 +55,11 @@ _dr_type_extract_and_build_cases = [
     ('¶(1) No diabetic retinopathy.', {},
      DrType.UNKNOWN, DrType.UNKNOWN, DrType.NONE),
     ('NPDR : no ', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.NONE),
+    ('very severe NPDR ou', {}, DrType.NPDR, DrType.NPDR, DrType.UNKNOWN),
     # TODO: Resolve laterality issues to pass below tests.
     # ('nonproliferative diabetic retinopathy ¶ iols ou', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.NPDR),
     # ('¶(1) No diabetic retinopathy. ¶(2) Increasing cataract, RE,', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.NONE),
     # ('Background diabetic retinopathy ¶ ¶ ¶Plan.) start alphagan ou', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.NPDR),
-]
-
-_npdr_severity_extract_and_build_cases = [
-    ('mild BDR OU', {}, 'MILD', 'MILD', 'UNKNOWN'),
-    ('Mild - moderate non-proliferative DR OD', {}, 'MODERATE', 'UNKNOWN', 'UNKNOWN'),
-    ('no NPDR ou', {}, 'NONE', 'NONE', 'UNKNOWN'),
-    ('moderate background diabetic retinopathy OS', {}, 'UNKNOWN', 'MODERATE', 'UNKNOWN'),
-    ('severe NPDR', {}, 'UNKNOWN', 'UNKNOWN', 'SEVERE')
-]
-
-_pdr_severity_extract_and_build_cases = [
-    ('mild PDR OU', {}, 'MILD', 'MILD', 'UNKNOWN'),
-    ('Mild - moderate proliferative DR OD', {}, 'MODERATE', 'UNKNOWN', 'UNKNOWN'),
-    ('no PDR ou', {}, 'NONE', 'NONE', 'UNKNOWN'),
-    ('moderate proliferative diabetic retinopathy OS', {}, 'UNKNOWN', 'MODERATE', 'UNKNOWN'),
-    ('severe proliferative DR', {}, 'UNKNOWN', 'UNKNOWN', 'SEVERE')
 ]
 
 
@@ -93,6 +79,18 @@ def test_dr_type_extract_and_build(text,
     assert result['diabretinop_type_unk'] == exp_diabretinop_type_unk
 
 
+_npdr_severity_extract_and_build_cases = [
+    ('mild BDR OU', {}, 'MILD', 'MILD', 'UNKNOWN'),
+    ('Mild - moderate non-proliferative DR OD', {}, 'MODERATE', 'UNKNOWN', 'UNKNOWN'),
+    ('no NPDR ou', {}, 'NONE', 'NONE', 'UNKNOWN'),
+    ('moderate background diabetic retinopathy OS', {}, 'UNKNOWN', 'MODERATE', 'UNKNOWN'),
+    ('severe NPDR', {}, 'UNKNOWN', 'UNKNOWN', 'SEVERE'),
+    ('very severe NPDR ou', {}, 'VERY SEVERE', 'VERY SEVERE', 'UNKNOWN'),
+    ('NPDR OS', {}, 'UNKNOWN', 'YES NOS', 'UNKNOWN'),
+    ('PDR OU', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+]
+
+
 @pytest.mark.parametrize('text, headers, exp_nonprolifdr_re, exp_nonprolifdr_le, '
                          'exp_nonprolifdr_unk',
                          _npdr_severity_extract_and_build_cases)
@@ -109,6 +107,21 @@ def test_npdr_severity_extract_and_build(text,
     assert result['nonprolifdr_unk'] == exp_nonprolifdr_unk
 
 
+_pdr_severity_extract_and_build_cases = [
+    ('PDR OU', {}, 'YES NOS', 'YES NOS', 'UNKNOWN'),
+    ('Mild - moderate proliferative DR OD', {}, 'YES NOS', 'UNKNOWN', 'UNKNOWN'),
+    ('no PDR ou', {}, 'NONE', 'NONE', 'UNKNOWN'),
+    ('moderate proliferative diabetic retinopathy OS', {}, 'UNKNOWN', 'YES NOS', 'UNKNOWN'),
+    ('proliferative DR', {}, 'UNKNOWN', 'UNKNOWN', 'YES NOS'),
+    ('PRP OU for PDR', {}, 'YES NOS', 'YES NOS', 'UNKNOWN'),
+    ('New PDR os', {}, 'UNKNOWN', 'YES NOS', 'UNKNOWN'),
+    ('Stable proliferative diabetic retinopathy of both eyes', {}, 'YES NOS', 'YES NOS', 'UNKNOWN'),
+    ('Proliferative diabetic retinopathy of right eye', {}, 'YES NOS', 'UNKNOWN', 'UNKNOWN'),
+    ('Low risk proliferative diabetic retinopathy OU', {}, 'LOW RISK', 'LOW RISK', 'UNKNOWN'),  # Synthetic.
+    ('High risk PDR OS', {}, 'UNKNOWN', 'HIGH RISK', 'UNKNOWN'),  # Synthetic.
+]
+
+
 @pytest.mark.parametrize('text, headers, exp_prolifdr_re, exp_prolifdr_le, '
                          'exp_prolifdr_unk',
                          _pdr_severity_extract_and_build_cases)
@@ -117,7 +130,7 @@ def test_pdr_severity_extract_and_build(text,
                                         exp_prolifdr_re,
                                         exp_prolifdr_le,
                                         exp_prolifdr_unk):
-    pre_json = get_dr_type(text)
+    pre_json = get_pdr(text)
     post_json = json.loads(json.dumps(pre_json))
     result = build_pdr_severity(post_json)
     assert result['prolifdr_re'] == exp_prolifdr_re

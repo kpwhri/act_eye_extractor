@@ -86,27 +86,38 @@ def _get_hemorrhage_type(text: str, lateralities, source: str) -> dict:
                           boundary_chars='',
                           word_window=5):
                 break
-            # Severity found & positive instance.
-            if sev_var and severities:
-                for sev in severities:
+            if sev_var:
+                # Severity found & positive instance.
+                if severities:
+                    for sev in severities:
+                        yield create_new_variable(text, m, lateralities, sev_var, {
+                            'value': sev,
+                            'term': m.group(),
+                            'label': f'{hem_label} hemorrhage',
+                            'negated': negated,
+                            'regex': f'{hem_label.upper()}_PAT',
+                            'source': source,
+                        })
+                # Severity found & negative instance.
+                elif negated:
                     yield create_new_variable(text, m, lateralities, sev_var, {
-                        'value': sev,
+                        'value': Severity.NONE,
+                        'term': m.group(),
+                        'label': f'No {hem_label} hemorrhage',
+                        'negated': negated,
+                        'regex': f'{hem_label.upper()}_PAT',
+                        'source': source,
+                    })
+                # Affirmative without severity quantifier.
+                else:
+                    yield create_new_variable(text, m, lateralities, sev_var, {
+                        'value': Severity.YES_NOS,
                         'term': m.group(),
                         'label': f'{hem_label} hemorrhage',
                         'negated': negated,
                         'regex': f'{hem_label.upper()}_PAT',
                         'source': source,
                     })
-            # Severity found & negative instance.
-            elif negated:
-                yield create_new_variable(text, m, lateralities, sev_var, {
-                    'value': Severity.NONE,
-                    'term': m.group(),
-                    'label': f'No {hem_label} hemorrhage',
-                    'negated': negated,
-                    'regex': f'{hem_label.upper()}_PAT',
-                    'source': source,
-                })
             # Severity not found, both positive and negative instance.
             yield create_new_variable(text, m, lateralities, 'hemorrhage_typ_dr', {
                 'value': HemorrhageType.NONE if negated else hem_type,

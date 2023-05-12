@@ -25,7 +25,7 @@ def test_ven_beading_patterns(pat, text, exp):
 
 # Test extract and build.
 _ven_beading_extract_and_build_cases = [
-    ('venous beading ou', {}, 'MILD', 'MILD', 'UNKNOWN'),
+    ('venous beading ou', {}, 'YES NOS', 'YES NOS', 'UNKNOWN'),
     ('mild VB OU', {}, 'MILD', 'MILD', 'UNKNOWN'),
     ('Mild - moderate venous beading OD', {}, 'MODERATE', 'UNKNOWN', 'UNKNOWN'),
     ('no venous beading ou', {}, 'NONE', 'NONE', 'UNKNOWN'),
@@ -54,12 +54,12 @@ _ven_beading_extract_and_build_cases = [
          'Vessels': 'good caliber and crossings; no venous beading; no plaques or emboli'
      },
      'UNKNOWN', 'UNKNOWN', 'NONE'),
-    ('Vessels: good caliber, color, and crossings OU, no plaques or emboli OU (-) MAs, Venous Beading, IRMA, CWS',
-     {}, 'NONE', 'NONE', 'UNKNOWN'),
     # Unless specified, all conditions in negated list are OU.
     # Since no laterality specified, laterality should be OU.
     ('no CWS, MA, IRMA, VB', {}, 'NONE', 'NONE', 'UNKNOWN'),
     ('(-) MAs, Venous Beading, IRMA, CWS', {}, 'NONE', 'NONE', 'UNKNOWN'),
+    ('Vessels: good caliber, color, and crossings OU, no plaques or emboli OU (-) MAs, Venous Beading, IRMA, CWS',
+     {}, 'NONE', 'NONE', 'UNKNOWN'),
     ('Macula: flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS', {}, 'NONE', 'NONE', 'UNKNOWN'),
     ('Macula: flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS',
      {

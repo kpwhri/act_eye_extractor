@@ -3,7 +3,7 @@ from enum import IntEnum
 from eye_extractor.common.algo.fluid import Fluid, fluid_prioritization, rename_fluid
 from eye_extractor.common.algo.treatment import Treatment
 from eye_extractor.common.drug.antivegf import AntiVegf, rename_antivegf
-from eye_extractor.common.severity import Severity
+from eye_extractor.common.severity import Risk, Severity
 from eye_extractor.dr.dr_type import DrType
 from eye_extractor.dr.hemorrhage_type import HemorrhageType
 from eye_extractor.output.common import macula_is_wnl
@@ -156,10 +156,10 @@ def build_npdr_severity(data, *, note_date=None):
 
 def build_pdr_severity(data, *, note_date=None):
     return column_from_variable_abbr(
-        'prolifdr', Severity.UNKNOWN, data,
+        'prolifdr', Risk.UNKNOWN, data,
         restrict_date=note_date,
         enum_to_str=True,
-        transformer_func=Severity,
+        transformer_func=Risk,
     )
 
 
@@ -285,7 +285,7 @@ def build_dr_variables(data):
     results.update(build_nve(curr['nv_types'], note_date=note['date']))
     results.update(build_dr_type(curr['dr_type'], note_date=note['date']))
     results.update(build_npdr_severity(curr['dr_type'], note_date=note['date']))
-    results.update(build_pdr_severity(curr['dr_type'], note_date=note['date']))
+    results.update(build_pdr_severity(curr['pdr'], note_date=note['date']))
     results.update(build_dr_tx(data['common']['treatment'], note_date=note['date']))
     results.update(build_edema(curr['binary_vars'], note_date=note['date']))
     results.update(build_sig_edema(curr['binary_vars'], note_date=note['date']))

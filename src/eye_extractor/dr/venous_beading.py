@@ -51,7 +51,7 @@ def _get_ven_beading(text: str, lateralities, source: str) -> dict:
                 })
         else:  # Without severity quantifier.
             yield create_new_variable(text, m, lateralities, 'venbeading', {
-                'value': Severity.NONE if negated else Severity.MILD,
+                'value': Severity.NONE if negated else Severity.YES_NOS,
                 'term': m.group(),
                 'label': f'{"No v" if negated else "V"}enous beading',
                 'negated': negated,

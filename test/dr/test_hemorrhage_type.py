@@ -15,7 +15,7 @@ from eye_extractor.output.dr import build_dot_blot_severity, build_hemorrhage_ty
 ])
 def test_get_hemorrhage_type(text, exp_value, exp_negword):
     data = get_hemorrhage_type(text)
-    variable = list(data[0].values())[0]
+    variable = list(data[-1].values())[0]  # 'hemorrhage_typ_dr' will be last variable added to `data`.
 
     assert len(data) > 0
     assert variable['value'] == exp_value
@@ -139,6 +139,7 @@ _intraretinal_severity_extract_and_build_cases = [
     ('intraretinal hemorrhage temporal and inferior quadrant OD', {}, 'Q2', 'UNKNOWN', 'UNKNOWN'),
     ('nasal quadrant, hemorrhage intraretinal', {}, 'UNKNOWN', 'UNKNOWN', 'Q1'),
     ('intraretinal heme in all quadrants ou', {}, 'Q4', 'Q4', 'UNKNOWN'),
+    ('swelling and intraretinal hemorrhage', {}, 'UNKNOWN', 'UNKNOWN', 'YES NOS'),
 ]
 
 
@@ -168,6 +169,7 @@ _dot_blot_severity_extract_and_build_cases = [
     ('dot blot hemorrhage temporal and inferior quadrant OD', {}, 'Q2', 'UNKNOWN', 'UNKNOWN'),
     ('dot blot heme in all quadrants ou', {}, 'Q4', 'Q4', 'UNKNOWN'),
     ('*scattered d/b hemes in all 4 quadrants (-)CWS', {}, 'UNKNOWN', 'UNKNOWN', 'Q4'),
+    ('occasional dot/blot heme', {}, 'UNKNOWN', 'UNKNOWN', 'YES NOS'),
 ]
 
 
