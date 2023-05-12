@@ -34,6 +34,7 @@ class Headers:
         self.data = [{k: func(v) for k, v in d.items()} for d in self.data]
 
     def set_text(self, text):
+        """Setting a base text allows expanded search if target header was not found."""
         self.text = text
 
     def add(self, d):
@@ -83,12 +84,22 @@ class Headers:
         return bool(self.data and sum(len(x) for x in self.data) > 0)
 
 
-def extract_headers_and_text(text):
+def extract_headers_and_text(text, *, search_missing_headers=False):
+    """
+    Search for headers in text using the `HEADER_PAT`.
+
+    :param text:
+    :param search_missing_headers: set `True` to allow for searching additional patterns
+    :return: Header
+    """
     result = {}
     it = iter(x[::-1].strip() for x in HEADER_PAT.split(text[::-1])[:-1])
     for value, key in zip(it, it):
         result[key] = value.split('.')[0]
-    return Headers(result)
+    headers = Headers(result)
+    if search_missing_headers:
+        headers.set_text(text)
+    return headers
 
 
 def get_data_from_headers(text):
