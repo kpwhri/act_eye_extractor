@@ -35,8 +35,6 @@ DR_PAT = re.compile(
 )
 
 
-# TODO: Add 'VERY_SEVERE' to NPDR.
-# TODO: Decouple PDR and create new severity categories: unspecified, no, low risk, high risk.
 def get_dr_type(text: str, *, headers=None, lateralities=None) -> list:
     if not lateralities:
         lateralities = build_laterality_table(text)
