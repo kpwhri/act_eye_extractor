@@ -4,12 +4,6 @@ from eye_extractor.nlp.negate.negation import is_negated, is_post_negated
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 DIABETIC_RETINOPATHY_PATS = [
-    ('diab_retinop_yesno', re.compile(
-        r'\b('
-        r'diabetic retinopathy|dr|npdr'
-        r')\b',
-        re.I
-    )),
     ('ret_microaneurysm', re.compile(
         r'\b('
         r'mas?|retinal mas?|retinal micro\W?aneurisms?'

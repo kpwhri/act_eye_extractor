@@ -4,7 +4,7 @@ from eye_extractor.dr.binary_vars import get_dr_binary
 from eye_extractor.output.dr import (
     build_cottonwspot,
     build_disc_edema,
-    build_dr,
+    build_dr_yesno,
     build_edema,
     build_hard_exudates,
     build_hemorrhage,
@@ -22,7 +22,6 @@ from eye_extractor.output.dr import (
 
 
 @pytest.mark.parametrize('text, exp_value, exp_negword', [
-    ('No visible diabetic retinopathy this visit', 0, 'no'),
     ('MA: OD normal 6/6', 1, None),
     ('The optic disc edema has changed location', 1, None),
     ('OU  VESSELS: Normal pattern without exudates, hemorrhage, plaques, ', 0, 'without'),
@@ -37,7 +36,6 @@ from eye_extractor.output.dr import (
     ('Normal blood cells without NVD', 0, 'without'),
     ('without NVD, NVE', 0, 'without'),
     ('no NVE Disc 0.45', 0, 'no'),
-    ('Mild nonproliferative diabetic retinopathy (362.04)', 1, None),
     ('Plan for surgery: Pars Plana Vitrectomy with Membrane Peel left eye.', 1, None),
     ('Patient presents with: Diabetic macular edema E11.311', 1, None),
     ('No CSME', 0, 'no'),
@@ -69,8 +67,8 @@ def test_get_dr_binary(text, exp_value, exp_negword):
     ([{'diab_retinop_yesno_unk': {'value': 1}}], -1, -1, 1),
     ([{'diab_retinop_yesno_unk': {'value': 0}}], -1, -1, 0)
 ])
-def test_build_dr(data, exp_diab_retinop_yesno_re, exp_diab_retinop_yesno_le, exp_diab_retinop_yesno_unk):
-    result = build_dr(data)
+def test_build_dr_yesno(data, exp_diab_retinop_yesno_re, exp_diab_retinop_yesno_le, exp_diab_retinop_yesno_unk):
+    result = build_dr_yesno(data)
     assert result['diab_retinop_yesno_re'] == exp_diab_retinop_yesno_re
     assert result['diab_retinop_yesno_le'] == exp_diab_retinop_yesno_le
     assert result['diab_retinop_yesno_unk'] == exp_diab_retinop_yesno_unk

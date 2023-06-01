@@ -19,6 +19,7 @@ _dr_type_pattern_cases = [
     (NPDR_PAT, 'Non proliferative diabetic retinopathy', True),
     (NPDR_PAT, 'NONPROLIFERATIVE DIABETIC RETINOPATHY', True),
     (NPDR_PAT, 'BDR', True),
+    (NPDR_PAT, 'bgdr', True),
     (NPDR_PAT, 'non-proliferative DR)', True),
     (PDR_PAT, 'PDR', True),
     (PDR_PAT, 'Proliferative Diabetic Retinopathy', True),

@@ -11,7 +11,7 @@ from eye_extractor.output.labels import DRTreatment
 from eye_extractor.output.variable import column_from_variable_binary, column_from_variable_abbr, build_lat_suffixes
 
 
-def build_dr(data, *, macula_wnl=None, note_date=None):
+def build_dr_yesno(data, *, macula_wnl=None, note_date=None):
     if macula_is_wnl(macula_wnl, note_date):
         return build_lat_suffixes('diab_retinop_yesno', 0)
     return column_from_variable_binary(data, 'diab_retinop_yesno', restrict_date=note_date)
@@ -260,7 +260,7 @@ def build_dr_variables(data):
     curr = data['dr']
     note = data['note']
     results = {}
-    results.update(build_dr(curr['binary_vars'], macula_wnl=data['common']['macula_wnl'], note_date=note['date']))
+    results.update(build_dr_yesno(curr['dr_yesno'], macula_wnl=data['common']['macula_wnl'], note_date=note['date']))
     results.update(build_ret_micro(curr['binary_vars'], note_date=note['date']))
     results.update(build_cottonwspot(curr['cottonwspot'], note_date=note['date']))
     results.update(build_hard_exudates(curr['exudates'], note_date=note['date']))

@@ -2,6 +2,7 @@ from eye_extractor.dr.binary_vars import get_dr_binary
 from eye_extractor.dr.cmt_value import get_cmt_value
 from eye_extractor.dr.cws import get_cottonwspot
 from eye_extractor.dr.dr_type import get_dr_type, get_pdr
+from eye_extractor.dr.dr_yesno import get_dr_yesno
 from eye_extractor.dr.exudates import get_exudates
 from eye_extractor.dr.hemorrhage_type import get_hemorrhage_type
 from eye_extractor.dr.irma import get_irma
@@ -16,6 +17,7 @@ def extract_dr_variables(text: str, *, headers=None, lateralities=None) -> dict:
         'cmt_value': get_cmt_value(text, headers=headers, lateralities=lateralities),
         'cottonwspot': get_cottonwspot(text, headers=headers, lateralities=lateralities),
         'dr_type': get_dr_type(text, headers=headers, lateralities=lateralities),
+        'dr_yesno': get_dr_yesno(text, headers=headers, lateralities=lateralities),
         'exudates': get_exudates(text, headers=headers, lateralities=lateralities),
         'hemorrhage_type': get_hemorrhage_type(text, headers=headers, lateralities=lateralities),
         'irma': get_irma(text, headers=headers, lateralities=lateralities),
