@@ -74,6 +74,7 @@ _cmt_value_extract_and_build_cases = [
     ('IOP by applanation OD 10 OS 17\n', {}, -1, -1, -1),
     ('low OS @ 19,17. OD @ 20 mm last 4 exams', {}, -1, -1, -1),
     ('»»Average thickness: OD: 21» OS: 89', {}, -1, -1, -1),
+    ('NCT: OD: 12 OS: 12', {}, -1, -1, -1),
 ]
 
 

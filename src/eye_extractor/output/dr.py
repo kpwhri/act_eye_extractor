@@ -13,7 +13,7 @@ from eye_extractor.output.variable import column_from_variable_binary, column_fr
 
 def build_dr(data, *, macula_wnl=None, note_date=None):
     if macula_is_wnl(macula_wnl, note_date):
-        return build_lat_suffixes('diab_retinop_yesno', 1)
+        return build_lat_suffixes('diab_retinop_yesno', 0)
     return column_from_variable_binary(data, 'diab_retinop_yesno', restrict_date=note_date)
 
 
