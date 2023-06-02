@@ -1,6 +1,6 @@
 import re
 
-from eye_extractor.nlp.negate.negation import is_negated, is_post_negated, has_before
+from eye_extractor.nlp.negate.negation import has_after, has_before, is_negated, is_post_negated
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 DR_YESNO_PAT = re.compile(
@@ -38,8 +38,14 @@ def _get_dr_yesno(text: str, lateralities, source: str) -> dict:
         for m in pat.finditer(text):
             if has_before(m if isinstance(m, int) else m.start(),
                           text,
-                          terms={'confirm'},
-                          word_window=2):
+                          terms={'confirm', 'surgeon', 'tablet', 'exam'},
+                          word_window=2,
+                          boundary_chars='¶'):
+                break
+            elif has_after(m if isinstance(m, int) else m.start(),
+                           text,
+                           terms={'exam'},
+                           word_window=6):
                 break
             negated = (
                 is_negated(m, text, word_window=3)
