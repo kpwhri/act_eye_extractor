@@ -55,18 +55,17 @@ def _get_dr_type(text: str, lateralities, source: str) -> dict:
         ('DR_PAT', DR_PAT, None, 'diabetic retinopathy', None),
     ]:
         for m in pat.finditer(text):
-            negated = (
-                is_negated(m, text, word_window=3)
-                or is_post_negated(m, text, terms={'no'}, word_window=3)
-            )
-
-            context = f'{text[max(0, m.start() - 100): m.start()]} {text[m.end():min(len(text), m.end() + 100)]}'
-            severities = extract_severity(context)
             if has_before(m if isinstance(m, int) else m.start(),
                           text,
                           terms={'confirm'},
                           word_window=2):
                 break
+            negated = (
+                is_negated(m, text, word_window=3)
+                or is_post_negated(m, text, terms={'no'}, word_window=3)
+            )
+            context = f'{text[max(0, m.start() - 100): m.start()]} {text[m.end():min(len(text), m.end() + 100)]}'
+            severities = extract_severity(context)
             if sev_var:
                 # Severity found & positive instance.
                 if severities:

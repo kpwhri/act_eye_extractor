@@ -11,13 +11,13 @@ from eye_extractor.ro.rvo import RvoType
 
 def build_rao(data, *, macula_wnl=None, note_date=None):
     if macula_is_wnl(macula_wnl, note_date):
-        return build_lat_suffixes('rao_yesno', 1)
+        return build_lat_suffixes('rao_yesno', 0)
     return column_from_variable_binary(data, 'rao_yesno', restrict_date=note_date)
 
 
 def build_rvo(data, *, macula_wnl=None, note_date=None):
     if macula_is_wnl(macula_wnl, note_date):
-        return build_lat_suffixes('rvo_yesno', 1)
+        return build_lat_suffixes('rvo_yesno', 0)
     return column_from_variable_binary(data, 'rvo_yesno', restrict_date=note_date)
 
 
