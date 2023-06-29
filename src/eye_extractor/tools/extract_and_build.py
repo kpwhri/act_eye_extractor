@@ -16,7 +16,8 @@ from eye_extractor.extract import extract_variable_from_text
 @click.command()
 @click.argument('files', nargs=-1, type=click.Path(exists=True, dir_okay=False, path_type=Path))
 @table_output_opts(False)
-def extract_and_build(files: list[Path], outdir=None, date_column='note_date', add_columns=None):
+def extract_and_build(files: tuple[Path], outdir=None, date_column='note_date', add_columns=None):
+    """Run extract and build on a list of files"""
     if outdir is None:
         outdir = Path('.')
     curr_dt = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
