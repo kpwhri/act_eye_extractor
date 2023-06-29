@@ -17,6 +17,10 @@ Types of changes:
 
 ## [Unreleased]
 
+### Added
+- Tool to run `extract` and `build` steps on a single file (`eyex-extract-build`)
+
+
 ## v20221108 - AMD Release 1
 
 ### Added

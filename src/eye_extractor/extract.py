@@ -17,6 +17,7 @@ from loguru import logger
 from eye_extractor.amd.algorithm import extract_amd_variables
 from eye_extractor.cataract.algorithm import extract_cataract_variables
 from eye_extractor.cataract.cataract_surgery import get_cataract_surgery
+from eye_extractor.clickargs import outdir_opt
 from eye_extractor.common.algo.extract import extract_common_algorithms
 from eye_extractor.common.noteinfo import extract_note_level_info
 from eye_extractor.corpusio import read_from_params
@@ -71,7 +72,7 @@ def extract_all(text: str, *, data: dict = None, sections: dict = None):
 
 @click.command()
 @click.argument('directories', nargs=-1, type=click.Path(exists=True, file_okay=False, path_type=pathlib.Path))
-@click.option('--outdir', type=click.Path(file_okay=False, path_type=pathlib.Path), default=None)
+@outdir_opt
 @click.option('--filelist', type=click.Path(dir_okay=False, path_type=pathlib.Path), default=None)
 @click.option('--search-missing-headers', is_flag=True, default=False,
               help='If a requested header is not found, attempt to find it in the text.')

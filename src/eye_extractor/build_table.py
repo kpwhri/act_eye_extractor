@@ -9,6 +9,7 @@ import click
 from loguru import logger
 
 from eye_extractor.builders.build_history import build_history
+from eye_extractor.clickargs import table_output_opts
 from eye_extractor.common.json import loads_json
 from eye_extractor.laterality import Laterality
 from eye_extractor.output.amd import build_amd_variables
@@ -58,9 +59,7 @@ def process_data(data, *, add_columns=None, date_column='note_date'):
 
 @click.command()
 @click.argument('jsonl_file', type=click.Path(exists=True, path_type=pathlib.Path))
-@click.argument('outdir', type=click.Path(file_okay=False, path_type=pathlib.Path))
-@click.option('--date-column', default='note_date')
-@click.option('--add-column', 'add_columns', multiple=True, help='Additional columns to include in output.')
+@table_output_opts(True)
 def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path, date_column='note_date', add_columns=None):
     """
 
