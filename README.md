@@ -99,6 +99,20 @@ For the following to work, you must:
   * E.g., `set/export PYTHONPATH=C:\eye_extractor\src`
   * E.g., powershell likes `$env:PYTHONPATH=-C:\eye_extractor\src'`
 
+#### Build and Extract Steps on a Single File
+
+To quickly debug or analyze results against a single file, you can use the cli `eyex-extract-build` and then supply a list of files.
+
+```
+    eyex-extract-build file1.txt file2.txt --outdir C:\output
+```
+
+This command will result in two files for each input file:
+* `file1_[timestamp].extract.json` -> output of extract step for file1
+* `file1_[timestamp].build.json` -> output of build step for file1 (as json, not csv)
+* `file2_[timestamp].extract.json` -> output of extract step for file2
+* `file2_[timestamp].build.json` -> output of build step for file2 (as json, not csv)
+
 #### Extract Step
 
 The extract step produces a jsonl file where each line represents all the NLP work on a single note.
@@ -194,6 +208,25 @@ These are the steps for adding a new variable (and the variable is assumed to be
 4. Create a 'builder' function in `src/output/category.py` and ensure this is called by `extract.py`
 5. Add the variable to the `columns.py` file.
 
+
+## Tool Scripts
+
+A number of scripts are available to provide support in debugging. These can be run directly from their location in the `eye_extractor.tools` package, or run from the command line once the package has been installed using `pip install .`
+
+1. `eyex-lookup`: lookup a note and information about it by its document id
+   * `CORPUS_PATHS+`: paths to all corpora
+   * `--intermediate-path PATH`: path to the output file (jsonl) of the extract step
+   * `--result-path PATH`: path to the output file (csv) of the build step
+   * `--strategy`: ignore this unless you know what you browse the relevant code
+2. `eyex-lookup-jsonl`: retrieve the intermediate representation of a target document id
+   * NB: the first run will take longer while indexes are setup; subsequent runs should be like lightning
+   * `INTERMEDIATE_PATH`: path to directory containing intermediate jsonl files
+   * `DOCID`: the desired document id (okay not to supply; will run in a loop)
+3. `eyex-extract-build`: run the extract/build process on a single (or single set of) documents
+   * `FILEPATH+`: paths to all files to proces
+   * `--outdir PATH`: output directory (defaults to current directory)
+   * `--date-column`: specify the column used for dates (defaults to `note_date`)
+   * `--add-column`: additional columns to include in output
 
 
 ## Versions

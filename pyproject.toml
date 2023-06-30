@@ -33,7 +33,7 @@ dev = ['pytest']
 [project.scripts]
 eyex-lookup = "eye_extractor.tools.lookup:main"
 eyex-lookup-jsonl = "eye_extractor.tools.search_jsonl:main"
-eyex-extract-build = "eye_extractor.tools.extract_and_build:extract_and_buildd"
+eyex-extract-build = "eye_extractor.tools.extract_and_build:extract_and_build"
 
 [project.urls]
 Home = 'https://github.com/kpwhri/act_eye_extractor'
