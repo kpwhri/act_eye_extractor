@@ -8,6 +8,7 @@ date_column_opt = click.option('--date-column', default='note_date')
 add_column_opt = click.option('--add-column', 'add_columns', multiple=True,
                               help='Additional columns to include in output.')
 outdir_arg = click.argument('outdir', type=click.Path(file_okay=False, path_type=Path))
+files_arg = click.argument('files', nargs=-1, type=click.Path(exists=True, dir_okay=False, path_type=Path))
 
 
 def table_output_opts(use_arg=False):
