@@ -5,14 +5,16 @@ import json
 from pathlib import Path
 
 import click
+from eye_extractor.history.perhx import create_personal_history
 
 from eye_extractor.clickargs import files_arg, outdir_opt
 from eye_extractor.corpusio import read_file
 from eye_extractor.history.famhx import create_family_history
 from eye_extractor.utils import get_dt
 
-FUNCTIONS = {  # must accept 3 args: text, metadata, sections
+FUNCTIONS = {  # must accept 2 args: text, sections
     'famhx': create_family_history,
+    'perhx': create_personal_history,
 }
 
 
@@ -25,9 +27,9 @@ def run_function_on_file(files: tuple[Path], outdir: Path, functions: tuple[str]
     if outdir is None:
         outdir = Path('.')
     for file in files:
-        _, text, data, sections = read_file(file, file.parent)
+        _, text, metadata, sections = read_file(file, file.parent)
         for function in functions:
-            result = FUNCTIONS[function](text, data, sections)
+            result = FUNCTIONS[function](text, sections)
             with open(outdir / f'{file.stem}_{get_dt()}.{function}.json', 'w') as fh:
                 json.dump(result, fh, indent=2)
 

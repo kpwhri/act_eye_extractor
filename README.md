@@ -233,6 +233,7 @@ A number of scripts are available to provide support in debugging. These can be 
    * `--function FUNCTION`: specify functions you want to run; for each function, use a new `--function` flag
      * [available functions](src/eye_extractor/tools/run_function_on_text.py):
        * `famhx`: extract family history data
+       * `perhx`: extract personal history
 
 
 ## Versions
