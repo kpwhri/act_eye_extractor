@@ -42,7 +42,7 @@ def extract_all(text: str, *, data: dict = None, sections: dict = None):
         sections = extract_headers_and_text(text)
     lateralities = build_laterality_table(text)
     orig_text = text
-    no_hist_text = remove_history_sections(text)
+    no_hist_text = remove_history_sections(text, include_problem_list=True)
     # TODO: for treatment-related, may need to look at non-boilerplate removed text
     text = remove_boilerplate(no_hist_text)
     sections.remove(remove_boilerplate)

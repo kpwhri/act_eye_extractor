@@ -20,7 +20,7 @@ Types of changes:
 ### Added
 - Tool to run `extract` and `build` steps on a single file (`eyex-extract-build`)
 - Tool to run built functions against individual files (`eyex-run-function`)
-
+- Problem list to items to be removed as part of the history section
 
 ## v20221108 - AMD Release 1
 

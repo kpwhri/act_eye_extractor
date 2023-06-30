@@ -25,7 +25,7 @@ HISTORY_SECTION_PAT = re.compile(
 
 PROBLEM_LIST = re.compile(
     rf'(?:'
-    rf'(?:patient\s*)?active\s*problem\s*list'
+    rf'(?:patient\s*)?active\s*problem\s*list[^A-Za-z0-9]+'
     rf')',
     re.I
 )
@@ -43,9 +43,11 @@ STOP_BEFORE_REGEX = re.compile(
 
 PROBLEM_LIST_STOP_BEFORE = re.compile(
     rf'(?:'
-    rf'[{LINE_START_CHARS_RX}] *[{LINE_START_CHARS_RX}]'
+    rf'[{LINE_START_CHARS_RX}][^A-Za-z0-9{LINE_START_CHARS_RX}]*[{LINE_START_CHARS_RX}]'
+    rf'|===='
+    rf'|ALLERGIES|PATIENT HISTORY|Current Medications|REVIEW OF SYSTEMS|Medical History'
     rf')',
-    re.I
+    # non case sensitivity
 )
 
 
@@ -122,15 +124,16 @@ def retrieve_history_sections(text):
         }
 
 
-def remove_history_sections(text):
+def remove_history_sections(text, include_problem_list=True):
     """
     Remove entire history sections from text.
+    :param include_problem_list:
     :param text:
     :return:
     """
     results = []
     prev_end = 0
-    for _1, start_index, _, end_index in _find_history_sections(text):
+    for _1, start_index, _, end_index in _find_history_sections(text, include_problem_list=include_problem_list):
         results.append(text[prev_end: start_index])
         prev_end = end_index
     results.append(text[prev_end:])
