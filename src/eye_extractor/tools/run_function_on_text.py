@@ -31,6 +31,13 @@ FUNCTIONS = {  # must accept 2 args: text, sections
 @click.option('--function', 'functions', multiple=True, type=click.Choice(FUNCTIONS),
               help=f'Specify functions to test. Available: {", ".join(FUNCTIONS)}.')
 def run_function_on_file(files: tuple[Path], outdir: Path, functions: tuple[str]):
+    """
+    Run specified functions on the specified files
+    :param files:
+    :param outdir:
+    :param functions:
+    :return:
+    """
     if outdir is None:
         outdir = Path('.')
     for file in files:

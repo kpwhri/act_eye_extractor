@@ -47,15 +47,15 @@ PROBLEM_LIST_STOP_BEFORE = re.compile(
     rf'|===='
     rf'|ALLERGIES|PATIENT HISTORY|Current Medications|REVIEW OF SYSTEMS|Medical History'
     rf')',
-    # non case sensitivity
+    # case sensitive
 )
 
 
 def get_problem_list(text):
     """
-
+    Iterator for problem list and surrounding text; distinguished by result[-1] (true=is_problem_list)
     :param text:
-    :return: (text, start, end, is_problem_list: bool)
+    :return: (text, start_header, end_header, end_section_text, is_problem_list: bool)
     """
     prev_end = 0
     for m in PROBLEM_LIST.finditer(text):
@@ -69,6 +69,11 @@ def get_problem_list(text):
 
 
 def get_problem_list_for_json(text):
+    """
+    DEBUG: get problem list and text
+    :param text:
+    :return:
+    """
     problist = []
     textlist = []
     for header, start, start_sect, end_sect, is_problist in get_problem_list(text):
@@ -141,6 +146,11 @@ def remove_history_sections(text, include_problem_list=True):
 
 
 def get_history_sections_to_be_removed(text):
+    """
+    DEBUG: retrieve history sections to be removed along with associated text
+    :param text:
+    :return:
+    """
     results = []
     hx_sections = []
     prev_end = 0
@@ -156,5 +166,5 @@ def get_history_sections_to_be_removed(text):
         hx_sections.append(text[prev_start: prev_end])
     return {
         'hx': hx_sections,
-        'text': ''.join(results)
+        'text': results,
     }
