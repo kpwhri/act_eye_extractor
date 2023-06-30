@@ -77,6 +77,7 @@ Code for Extracting Eye-related information from Optometry, Ophthalmology, and S
 2. *Build* a CSV file from the `jsonl` file
 
 The reasons for this two-stage approach is multiple:
+
 * Allow debugging (more info can be included in `jsonl` file)
 * Simplify construction of variables which rely on a wide amount of inputs.
 
@@ -85,29 +86,32 @@ The reasons for this two-stage approach is multiple:
 Running the application will provide a JSONL file of all extracted variables and a CSV file of final summary values.
 
 For the following to work, you must:
+
 * Install Python 3.10+ (most recent version recommended)
 * Install required packages: `pip install requirements.txt`
 * Assemble a directory/folder (on the file system) with relevant notes
-  * Only optometry, ophthalmology, and cataract surgery notes
-  * Other types of notes may produce FPs
-  * The note should be in a file labeled something like `1.txt`
-  * Metadata associated with the note can be included in the same file as `1.meta`
-    * This should be in json format with simple key-value pairs (please include `note_id` and `date`):
-      * `{'note_id': 1, 'date': '2022-02-22 00:00:00'}`
-  * (Optional) The notes can be pre-sectioned using something like `sectag` into a json file called `1.sect`
+    * Only optometry, ophthalmology, and cataract surgery notes
+    * Other types of notes may produce FPs
+    * The note should be in a file labeled something like `1.txt`
+    * Metadata associated with the note can be included in the same file as `1.meta`
+        * This should be in json format with simple key-value pairs (please include `note_id` and `date`):
+            * `{'note_id': 1, 'date': '2022-02-22 00:00:00'}`
+    * (Optional) The notes can be pre-sectioned using something like `sectag` into a json file called `1.sect`
 * Ensure that the project root (`/src`) is on the PYTHONPATH
-  * E.g., `set/export PYTHONPATH=C:\eye_extractor\src`
-  * E.g., powershell likes `$env:PYTHONPATH=-C:\eye_extractor\src'`
+    * E.g., `set/export PYTHONPATH=C:\eye_extractor\src`
+    * E.g., powershell likes `$env:PYTHONPATH=-C:\eye_extractor\src'`
 
 #### Build and Extract Steps on a Single File
 
-To quickly debug or analyze results against a single file, you can use the cli `eyex-extract-build` and then supply a list of files.
+To quickly debug or analyze results against a single file, you can use the cli `eyex-extract-build` and then supply a
+list of files.
 
 ```
     eyex-extract-build file1.txt file2.txt --outdir C:\output
 ```
 
 This command will result in two files for each input file:
+
 * `file1_[timestamp].extract.json` -> output of extract step for file1
 * `file1_[timestamp].build.json` -> output of build step for file1 (as json, not csv)
 * `file2_[timestamp].extract.json` -> output of extract step for file2
@@ -118,16 +122,17 @@ This command will result in two files for each input file:
 The extract step produces a jsonl file where each line represents all the NLP work on a single note.
 
 Assuming all notes are in the directory: `C:\notes`, and the output info should be in `C:\extract`, run:
+
 ```
    python src\eye_extractor\extract.py C:\notes --outdir C:\extract\run0
 ```
 
-NB: it is best practice to place each run into a separate directory (e.g., the addition of `run0` to the path). 
+NB: it is best practice to place each run into a separate directory (e.g., the addition of `run0` to the path).
 This will simplify running the extract step.
 
-To speed up processing, one option is to run this across multiple subsets of notes. 
-These notes could be placed in different directories, or be split among different filelists. 
-A filelist is a file with one file listed per line (full path, including filename). Add a filelist 
+To speed up processing, one option is to run this across multiple subsets of notes.
+These notes could be placed in different directories, or be split among different filelists.
+A filelist is a file with one file listed per line (full path, including filename). Add a filelist
 to tell a run which files to look for.
 
 ```
@@ -144,26 +149,27 @@ The build step produces a CSV file with individual eye-related variables from th
 
 1. Ensure that the extract output `jsonl` file(s) are in a single directory (let's assume this is `C:\extract\run1`)
 2. Let's suppose we want to output the CSV to `C:\build`
-3. `docid`, `studyid`, `date`, `enc_id`, and `train` metadata will be used from the `1.meta` file. To use additional values (e.g., 'department'), add the argument `--add-column department`.
+3. `docid`, `studyid`, `date`, `enc_id`, and `train` metadata will be used from the `1.meta` file. To use additional
+   values (e.g., 'department'), add the argument `--add-column department`.
 4. Run: `python src\eye_extractor\build_table.py C:\extract\run1 C:\build`
 5. The resulting CSV will have a single `note_id`/`docid` per line.
 6. You can interpret the output variables by generating a data dictionary from the `output/columns.py` file.
 
-
 #### Performance Expectations
 
-Every optometry, ophthalmology, and other note types look distinct based on author, location, etc., etc. 
-While this algorithm has been tuned to particular sites, it is not guaranteed to perform as well in new environments. 
-For this reason, expect to put some effort into fixing variables. One approach might be to look at outputs where all values are missing.
-
+Every optometry, ophthalmology, and other note types look distinct based on author, location, etc., etc.
+While this algorithm has been tuned to particular sites, it is not guaranteed to perform as well in new environments.
+For this reason, expect to put some effort into fixing variables. One approach might be to look at outputs where all
+values are missing.
 
 ### Tools Exploring Results
 
 To run these commands, the `eye_extractor` package must be installed.
+
 * `cd eye_extractor`
 * `pip install .`
 
-#### Build an HTML Report for a Document 
+#### Build an HTML Report for a Document
 
 The `eyex-lookup` command will generate an HTML report for a particular document id.
 It uses an interactive loop which awaits document ids as input.
@@ -171,27 +177,27 @@ This includes information from `jsonl` files, the original text, and the output 
 
     eyex-lookup CORPUS_PATH[, ...] --intermediate-path INTERMEDIATE_PATH --result-path RESULT_PATH
 
-* CORPUS_PATH: 
-  * path to directories of notes that were used in running the extract code
-  * multiple paths can be listed
-  * assumption: documents must have the name `docid.txt`
+* CORPUS_PATH:
+    * path to directories of notes that were used in running the extract code
+    * multiple paths can be listed
+    * assumption: documents must have the name `docid.txt`
 * INTERMEDIATE_PATH
-  * the output _directory_ from the `extract` step
+    * the output _directory_ from the `extract` step
 * RESULT_PATH
-  * CSV file output by the `build` step
-
+    * CSV file output by the `build` step
 
 #### Explore the JSONL file only
 
-The `eyex-lookup-jsonl` command returns the `jsonl` text for a particular docid (this is the intermediate output of `extract` step).
+The `eyex-lookup-jsonl` command returns the `jsonl` text for a particular docid (this is the intermediate output
+of `extract` step).
 In general, it's better to just use the `eyex-lookup` process above.
 
     eyex-lookup-json INTERMEDIATE_PATH [DOCID]
 
 * INTERMEDIATE_PATH
-  * the output _directory_ from the `extract` step
+    * the output _directory_ from the `extract` step
 * DOCID (optional)
-  * document id
+    * document id
 
 ### Building a New Variable
 
@@ -199,42 +205,46 @@ These are the steps for adding a new variable (and the variable is assumed to be
 
 1. Create a new file with the variable name in `src/category/variable.py`
 2. Ensure the extract method is included in `extract.py`
-   1. More correctly, the `extract.py` usually calls a `src/category/algorithm.py` which then calls `./variable.py`
+    1. More correctly, the `extract.py` usually calls a `src/category/algorithm.py` which then calls `./variable.py`
 3. Create a relevant test file: `test/category/test_variable.py`
-   1. What to test?
-      1. Ensure regular expressions match expected values
-      2. Test that the expected json is build from the `extract` step
-      3. Test extraction/building in a single step
+    1. What to test?
+        1. Ensure regular expressions match expected values
+        2. Test that the expected json is build from the `extract` step
+        3. Test extraction/building in a single step
 4. Create a 'builder' function in `src/output/category.py` and ensure this is called by `extract.py`
 5. Add the variable to the `columns.py` file.
 
-
 ## Tool Scripts
 
-A number of scripts are available to provide support in debugging. These can be run directly from their location in the `eye_extractor.tools` package, or run from the command line once the package has been installed using `pip install .`
+A number of scripts are available to provide support in debugging. These can be run directly from their location in
+the `eye_extractor.tools` package, or run from the command line once the package has been installed
+using `pip install .`
 
 1. `eyex-lookup`: lookup a note and information about it by its document id
-   * `CORPUS_PATHS+`: paths to all corpora
-   * `--intermediate-path PATH`: path to the output file (jsonl) of the extract step
-   * `--result-path PATH`: path to the output file (csv) of the build step
-   * `--strategy`: ignore this unless you know what you browse the relevant code
+    * `CORPUS_PATHS+`: paths to all corpora
+    * `--intermediate-path PATH`: path to the output file (jsonl) of the extract step
+    * `--result-path PATH`: path to the output file (csv) of the build step
+    * `--strategy`: ignore this unless you know what you browse the relevant code
 2. `eyex-lookup-jsonl`: retrieve the intermediate representation of a target document id
-   * NB: the first run will take longer while indexes are setup; subsequent runs should be like lightning
-   * `INTERMEDIATE_PATH`: path to directory containing intermediate jsonl files
-   * `DOCID`: the desired document id (okay not to supply; will run in a loop)
+    * NB: the first run will take longer while indexes are setup; subsequent runs should be like lightning
+    * `INTERMEDIATE_PATH`: path to directory containing intermediate jsonl files
+    * `DOCID`: the desired document id (okay not to supply; will run in a loop)
 3. `eyex-extract-build`: run the extract/build process on a single (or single set of) documents
-   * `FILEPATH+`: paths to all files to proces
-   * `--outdir PATH`: output directory (defaults to current directory)
-   * `--date-column`: specify the column used for dates (defaults to `note_date`)
-   * `--add-column`: additional columns to include in output
+    * `FILEPATH+`: paths to all files to proces
+    * `--outdir PATH`: output directory (defaults to current directory)
+    * `--date-column`: specify the column used for dates (defaults to `note_date`)
+    * `--add-column`: additional columns to include in output
 4. `eyex-run-function`: run function(s) (e.g., famhx, etc.) on a given set of files to ensure expected behavior
-   * `FILEPATH+`: paths to all files to process
-   * `--outdir PATH`: output directory (defaults to current directory)
-   * `--function FUNCTION`: specify functions you want to run; for each function, use a new `--function` flag
-     * [available functions](src/eye_extractor/tools/run_function_on_text.py):
-       * `famhx`: extract family history data
-       * `perhx`: extract personal history
-
+    * `FILEPATH+`: paths to all files to process
+    * `--outdir PATH`: output directory (defaults to current directory)
+    * `--function FUNCTION`: specify functions you want to run; for each function, use a new `--function` flag
+        * [available functions](src/eye_extractor/tools/run_function_on_text.py):
+            * `famhx`: extract family history data
+            * `perhx`: extract personal history
+            * `hxtext`: get history text
+            * `hxsects`: get history sections
+            * `removehx`: get text without history sections
+            * `problist`: get problem list (along with text context)
 
 ## Versions
 
@@ -246,7 +256,8 @@ See https://github.com/kpwhri/eye_extractor/releases.
 
 ## Roadmap
 
-See the [open issues](https://github.com/kpwhri/eye_extractor/issues) for a list of proposed features (and known issues).
+See the [open issues](https://github.com/kpwhri/eye_extractor/issues) for a list of proposed features (and known
+issues).
 
 
 
