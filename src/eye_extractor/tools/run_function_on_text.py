@@ -5,6 +5,8 @@ import json
 from pathlib import Path
 
 import click
+
+from eye_extractor.nlp.negate.boilerplate import get_boilerplate
 from eye_extractor.sections.history import get_history_sections_to_be_removed, remove_history_sections, \
     retrieve_history_sections, get_problem_list_for_json
 
@@ -22,6 +24,7 @@ FUNCTIONS = {  # must accept 2 args: text, sections
     'hxsects': lambda x, y: list(retrieve_history_sections(x)),
     'removehx': lambda x, y: remove_history_sections(x),
     'problist': lambda x, y: get_problem_list_for_json(x),
+    'boilerplate': lambda x, y: get_boilerplate(x),
 }
 
 

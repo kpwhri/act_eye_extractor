@@ -245,6 +245,7 @@ using `pip install .`
             * `hxsects`: get history sections
             * `removehx`: get text without history sections
             * `problist`: get problem list (along with text context)
+            * `boilerplate`: get boilerplate matches
 
 ## Versions
 
