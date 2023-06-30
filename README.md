@@ -227,6 +227,12 @@ A number of scripts are available to provide support in debugging. These can be 
    * `--outdir PATH`: output directory (defaults to current directory)
    * `--date-column`: specify the column used for dates (defaults to `note_date`)
    * `--add-column`: additional columns to include in output
+4. `eyex-run-function`: run function(s) (e.g., famhx, etc.) on a given set of files to ensure expected behavior
+   * `FILEPATH+`: paths to all files to process
+   * `--outdir PATH`: output directory (defaults to current directory)
+   * `--function FUNCTION`: specify functions you want to run; for each function, use a new `--function` flag
+     * [available functions](src/eye_extractor/tools/run_function_on_text.py):
+       * `famhx`: extract family history data
 
 
 ## Versions
