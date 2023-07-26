@@ -4,8 +4,8 @@ from eye_extractor.dr.binary_vars import get_dr_binary
 from eye_extractor.output.dr import (
     build_cottonwspot,
     build_disc_edema,
+    build_dme_yesno,
     build_dr_yesno,
-    build_edema,
     build_hard_exudates,
     build_hemorrhage,
     build_laser_scars,
@@ -331,8 +331,8 @@ def test_build_nve(data, exp_nve_yesno_re, exp_nve_yesno_le, exp_nve_yesno_unk):
     ([{'dmacedema_yesno_unk': {'value': 1}}], -1, -1, 1),
     ([{'dmacedema_yesno_unk': {'value': 0}}], -1, -1, 0)
 ])
-def test_build_edema(data, exp_dmacedema_yesno_re, exp_dmacedema_yesno_le, exp_dmacedema_yesno_unk):
-    result = build_edema(data)
+def test_build_dme_yesno(data, exp_dmacedema_yesno_re, exp_dmacedema_yesno_le, exp_dmacedema_yesno_unk):
+    result = build_dme_yesno(data)
     assert result['dmacedema_yesno_re'] == exp_dmacedema_yesno_re
     assert result['dmacedema_yesno_le'] == exp_dmacedema_yesno_le
     assert result['dmacedema_yesno_unk'] == exp_dmacedema_yesno_unk
