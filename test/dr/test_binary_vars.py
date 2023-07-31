@@ -37,7 +37,6 @@ from eye_extractor.output.dr import (
     ('without NVD, NVE', 0, 'without'),
     ('no NVE Disc 0.45', 0, 'no'),
     ('Plan for surgery: Pars Plana Vitrectomy with Membrane Peel left eye.', 1, None),
-    ('Patient presents with: Diabetic macular edema E11.311', 1, None),
     ('No CSME', 0, 'no'),
     ('OD: erm, CMT 291; OS: erm, CMT 280 No change', 1, None),
 ])

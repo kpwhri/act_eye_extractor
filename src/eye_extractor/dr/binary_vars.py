@@ -48,12 +48,6 @@ DIABETIC_RETINOPATHY_PATS = [
         r')\b',
         re.I
     )),
-    ('dmacedema_yesno', re.compile(
-        r'\b('
-        r'DME|diabetic macular edema'
-        r')\b',
-        re.I
-    )),
     ('dmacedema_clinsignif', re.compile(
         r'\b('
         r'CSME|clinically significant (diabetic )?macular edema'
