@@ -287,7 +287,7 @@ def build_dr_variables(data):
     results.update(build_npdr_severity(curr['dr_type'], note_date=note['date']))
     results.update(build_pdr_severity(curr['pdr'], note_date=note['date']))
     results.update(build_dr_tx(data['common']['treatment'], note_date=note['date']))
-    results.update(build_dme_yesno(curr['binary_vars'], note_date=note['date']))
+    results.update(build_dme_yesno(curr['dme_yesno'], note_date=note['date']))
     results.update(build_sig_edema(curr['binary_vars'], note_date=note['date']))
     results.update(build_oct_cme(curr['binary_vars'], note_date=note['date']))
     results.update(build_dme_tx(data['common']['treatment'], note_date=note['date']))

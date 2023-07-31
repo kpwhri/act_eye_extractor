@@ -41,7 +41,7 @@ def test_dme_yesno_extract_and_build(text,
                                      exp_dmacedema_yesno_re,
                                      exp_dmacedema_yesno_le,
                                      exp_dmacedema_yesno_unk):
-    pre_json = get_variable(text, get_dme_yesno, headers=Headers(headers))
+    pre_json = get_dme_yesno(text, headers=Headers(headers))
     post_json = json.loads(json.dumps(pre_json))
     result = build_dme_yesno(post_json)
     assert result['dmacedema_yesno_re'] == exp_dmacedema_yesno_re

@@ -1,5 +1,6 @@
 import re
 
+from eye_extractor.common.get_variable import get_variable
 from eye_extractor.nlp.negate.negation import is_negated, is_post_negated
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
@@ -13,7 +14,11 @@ DME_YESNO_PAT = re.compile(
 )
 
 
-def get_dme_yesno(text: str, lateralities, source: str) -> dict:
+def get_dme_yesno(text: str, *, headers=None, lateralities=None) -> list:
+    return get_variable(text, _get_dme_yesno, headers=headers, lateralities=lateralities)
+
+
+def _get_dme_yesno(text: str, lateralities, source: str) -> dict:
     for m in DME_YESNO_PAT.finditer(text):
         negated = is_negated(m, text, word_window=3)
         yield create_new_variable(text, m, lateralities, 'dmacedema_yesno', {
