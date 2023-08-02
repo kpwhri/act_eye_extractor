@@ -1,6 +1,7 @@
 import datetime
 import re
 
+from dateutil.parser import parse
 import pytest
 
 from eye_extractor.common.date import parse_date, parse_date_after, parse_date_before, parse_all_dates, \
@@ -45,7 +46,7 @@ def test_parse_date_before(pattern, text, exp):
 @pytest.mark.parametrize('text, exp', [
     ('04/16/2012 that 22 january 2022', [datetime.date(2012, 4, 16), datetime.date(2022, 1, 22)]),
     ('(E11.3211)', []),
-    ('2008', [datetime.date(2008, 8, 1)])
+    ('2008', [parse('2008').date()])  # Returns month / day from current date.
 ])
 def test_parse_all_dates(text, exp):
     dates = parse_all_dates(text)

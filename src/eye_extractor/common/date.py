@@ -115,7 +115,7 @@ def parse_all_dates(text):
             curr_year = data.get('year')
             if i == 6:  # if only year found
                 try:
-                    curr = parse(text[m.end() - 20: m.end() + 1], fuzzy=True)
+                    curr = parse(text[m.end() - 20: m.end() + 1], fuzzy=True)  # Returns month / day from current date.
                     if isinstance(curr, datetime.datetime):
                         curr = curr.date()
                 except ParserError as e:
