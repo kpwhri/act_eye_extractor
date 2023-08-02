@@ -27,10 +27,10 @@ def get_index_of_next_section_start(text, start_index, *, max_length=None,
     # look for next section
     for m in NEWLINE_SECTION_PAT.finditer(text, pos=start_index):
         if max_length and m.start() - start_index > max_length:
-            return max_length
+            return max_length + start_index
         section_name = m.group('header').strip().upper()
         if section_name in skip_sections:
             continue
         else:
-            return m.start()  # return start of entire pattern
+            return m.start()  # return start of entire pattern; already includes start_index
     return len(text)
