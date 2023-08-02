@@ -37,7 +37,9 @@ _dme_yesno_extract_and_build_cases = [
     ('Hx; Avastin OD for DME', {}, 0, -1, -1),
     ('• Mild nonproliferative diabetic retinopathy of right eye with macular edema', {}, 1, -1, -1),
     ('Next, this week. s/p persistant R DME.', {}, 1, -1, -1),
-    ('A:-persistant DME OD', {}, 1, -1, -1),  # '-persistant' -> 'no persistant' in '_handle_negation_with_punctuation'
+    # '-persistant' -> 'no persistant' in '_handle_negation_with_punctuation'
+    # Can't fix, -[noun] is meant as negation elswhere.
+    ('A:-persistant DME OD', {}, 1, -1, -1),
     ('CMT 256 with tr drusen & steepened contour OS. No DME OU', {}, 0, 0, -1),
     ('ASSESSMENT: hx of dme', {}, -1, -1, 0),
     ('', {'ASSESSMENT': 'hx of dme'}, -1, -1, 0),

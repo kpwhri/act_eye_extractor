@@ -21,7 +21,7 @@ def get_dme_yesno(text: str, *, headers=None, lateralities=None) -> list:
 
 def _get_dme_yesno(text: str, lateralities, source: str) -> dict:
     for m in DME_YESNO_PAT.finditer(text):
-        negated = is_negated(m, text, word_window=3)
+        negated = is_negated(m, text, word_window=4)
         yield create_new_variable(text, m, lateralities, 'dmacedema_yesno', {
             'value': 0 if negated else 1,
             'term': m.group(),
