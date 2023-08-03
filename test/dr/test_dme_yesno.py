@@ -50,30 +50,33 @@ _dme_yesno_extract_and_build_cases = [
     ('MACULA: no csme od; 1+edema temporal macula OS with exudates', {}, 0, -1, -1),
     ('', {'MACULA': 'no csme od; 1+edema temporal macula OS with exudates'}, 0, -1, -1),
     # ('defer CE given risk of exacerbating DME', {}, -1, -1, -1),
-    # ('maculas without DME OU', {}, 0, 0, -1),
-    # ('MACULA: without DME OU', {}, 0, 0, -1),
-    # ('', {'MACULA': 'without DME OU'}, 0, 0, -1),
-    # ('Macula: no DME noted', {}, -1, -1, 0),
-    # ('', {'Macula': 'no DME noted'}, -1, -1, 0),
+    ('maculas without DME OU', {}, 0, 0, -1),
+    ('MACULA: without DME OU', {}, 0, 0, -1),
+    ('', {'MACULA': 'without DME OU'}, 0, 0, -1),
+    ('Macula: no DME noted', {}, -1, -1, 0),
+    ('', {'Macula': 'no DME noted'}, -1, -1, 0),
+    ('Macula:\nOD: clear, no significant edema, hg or RPE changes, (-)DME\n'
+     'OS: clear, no significant edema, hg or RPE changes, (-)DME', {}, 0, 0, -1),
+    ('', {'Macula': 'OD: clear, no significant edema, hg or RPE changes, (-)DME\n'
+     'OS: clear, no significant edema, hg or RPE changes, (-)DME'}, 0, 0, -1),
+    ('PLAN: findings reviewed; likely cnvm although cannot r/o DME or small BRVO.', {}, -1, -1, -1),
+    ('', {'PLAN': 'findings reviewed; likely cnvm although cannot r/o DME or small BRVO.'}, -1, -1, -1),
+    ('Hx of DME OU', {}, 0, 0, -1),
+    ('', {'SUBJECTIVE': 'The patient notes vision is stable. Hx of DME OU.'}, 0, 0, -1),
+    ('Diabetic macular edema', {}, -1, -1, 1),
+    ('Diabetic macular edema OS', {}, -1, 1, -1),
+    ('1. DM with Hx DME OU', {}, 0, 0, -1),
+    ('»H/o NPDR with DME OU', {}, 0, 0, -1),
+    ('Indication: DME', {}, -1, -1, -1),
+    ('2.DM2 with h/o NPDR & DME OU', {}, 0, 0, -1),
+    ('Possible early DME OS', {}, -1, -1, -1),
+    ('MACULA: blot heme superior arcade OD, no CSME OU.', {}, 0, 0, -1),
+    ('', {'MACULA': 'blot heme superior arcade OD, no CSME OU.'}, 0, 0, -1),
+    # TODO: Resolve laterality issues to pass below tests.
     # ('Stromal edema OD causing mild blurring of vision. No diabetic macular edema.', {}, -1, -1, 0),
-    # ('Macula:\nOD: clear, no significant edema, hg or RPE changes, (-)DME\n'
-    #  'OS: clear, no significant edema, hg or RPE changes, (-)DME', {}, 0, 0, -1),
-    # ('', {'Macula': 'OD: clear, no significant edema, hg or RPE changes, (-)DME\n'
-    #  'OS: clear, no significant edema, hg or RPE changes, (-)DME'}, 0, 0, -1),
-    # ('Yes- Diabetes: Hx BDR, Hx DME - right eye: sp PRP OD', {}, 0, -1, -1),
-    # ('PLAN: findings reviewed; likely cnvm although cannot r/o DME or small BRVO.', {}, -1, -1, -1),
-    # ('', {'PLAN': 'findings reviewed; likely cnvm although cannot r/o DME or small BRVO.'}, -1, -1, -1),
+    # ('Yes- Diabetes: Hx BDR, Hx DME - right eye: sp PRP OD', {}, 0, -1, -1),  # not discovering `next_lat`
+    # `_get_by_index_default` doesn't detect three intervening commas.
     # ('Macula: no DME, but minimal, dry RPE changes, LE; no gray membranes;', {}, -1, -1, 0),
-    # ('Hx of DME OU', {}, 0, 0, -1),
-    # ('', {'SUBJECTIVE': 'The patient notes vision is stable. Hx of DME OU.'}, 0, 0, -1),
-    # ('Diabetic macular edema', {}, -1, -1, 1),
-    # ('Patient Active Problem List:\nDiabetic macular edema', {}, -1, -1, -1),
-    # ('Diabetic macular edema OS', {}, -1, 0, -1),
-    # ('1. DM with Hx DME OU', {}, 0, 0, -1),
-    # ('»H/o NPDR with DME OU', {}, 0, 0, -1),
-    # ('Indication: DME', {}, -1, -1, -1),
-    # ('2.DM2 with h/o NPDR & DME OU', {}, 0, 0, -1),
-    # ('Possible early DME OS', {}, -1, -1, -1),
 ]
 
 
