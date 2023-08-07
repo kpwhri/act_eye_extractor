@@ -2,6 +2,8 @@ import json
 
 import pytest
 
+from eye_extractor.dr.ret_micro import RET_MICRO_PAT
+
 
 # Test pattern.
 _pattern_cases = [

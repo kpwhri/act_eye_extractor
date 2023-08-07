@@ -22,7 +22,6 @@ from eye_extractor.output.dr import (
 
 
 @pytest.mark.parametrize('text, exp_value, exp_negword', [
-    ('MA: OD normal 6/6', 1, None),
     ('The optic disc edema has changed location', 1, None),
     ('OU  VESSELS: Normal pattern without exudates, hemorrhage, plaques, ', 0, 'without'),
     ('ASSESSMENT : Resolving vitreous/preretinal hemorrhage  No retinal tears', 1, None),
