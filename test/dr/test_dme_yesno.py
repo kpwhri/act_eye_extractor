@@ -1,7 +1,6 @@
 import json
 import pytest
 
-from eye_extractor.common.get_variable import get_variable
 from eye_extractor.dr.dme_yesno import DME_YESNO_PAT, get_dme_yesno
 from eye_extractor.headers import Headers
 from eye_extractor.output.dr import build_dme_yesno
