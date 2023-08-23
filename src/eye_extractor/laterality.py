@@ -354,6 +354,12 @@ class LateralityLocator:
             case LateralityLocatorStrategy.LINE_BREAK:
                 match_start, text = self.narrow_search_window(match_start, text, min_count=2, value=LINE_START_CHARS)
                 return self._get_by_index_default(match_start, text, next_max=next_max, prev_max=prev_max)
+            # case LateralityLocatorStrategy.SENENCE:
+            #     self.get_sentence_only
+            #     return self._get_by_index_default()
+            # case LateralityLocatorStrategy.SENENCE_AND_LIMIT_NEXT:
+            #     self.get_sentence_only
+            #     return self._get_by_index_default(limit_next=True);
             case _:
                 return self._get_by_index_default(match_start, text, next_max=next_max, prev_max=prev_max)
 
