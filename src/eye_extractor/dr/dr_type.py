@@ -1,7 +1,8 @@
 import enum
 import re
 
-from eye_extractor.nlp.negate.negation import has_before, is_negated, is_post_negated
+from eye_extractor.dr.dr_yesno import DR_YESNO_PAT
+from eye_extractor.nlp.negate.negation import has_before, has_after, is_negated, is_post_negated
 from eye_extractor.common.severity import extract_risk, extract_severity, Risk, Severity
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
@@ -9,8 +10,9 @@ from eye_extractor.laterality import build_laterality_table, create_new_variable
 class DrType(enum.IntEnum):
     UNKNOWN = -1
     NONE = 0
-    NPDR = 1
-    PDR = 2
+    YES_NOS = 1
+    NPDR = 2
+    PDR = 3
 
 
 NPDR_PAT = re.compile(
@@ -27,11 +29,17 @@ PDR_PAT = re.compile(
     r')\b',
     re.I
 )
-DR_PAT = re.compile(
+DR_NOS_PAT = re.compile(
     r'\b('
-    r'(diabetic\s+)?retinopathy|dr'
+    r'diabetic\s+retinopathy'
     r')\b',
     re.I
+)
+# Separate pattern to capture case-sensitive abbreviations.
+DR_NOS_ABBR_PAT = re.compile(
+    r'\b('
+    r'DR|dr'
+    r')\b',
 )
 
 
@@ -52,14 +60,28 @@ def _get_dr_type(text: str, lateralities, source: str) -> dict:
     for pat_label, pat, dr_type, dr_label, sev_var in [
         ('NPDR_PAT', NPDR_PAT, DrType.NPDR, 'nonproliferative diabetic retinopathy', 'nonprolifdr'),
         ('PDR_PAT', PDR_PAT, DrType.PDR, 'proliferative diabetic retinopathy', None),
-        ('DR_PAT', DR_PAT, None, 'diabetic retinopathy', None),
+        ('DR_NOS_PAT', DR_NOS_PAT, DrType.YES_NOS, 'diabetic retinopathy', None),
+        ('DR_NOS_ABBR_PAT', DR_NOS_ABBR_PAT, DrType.YES_NOS, 'diabetic retinopathy', None),
     ]:
+
         for m in pat.finditer(text):
             if has_before(m if isinstance(m, int) else m.start(),
                           text,
                           terms={'confirm'},
                           word_window=2):
                 break
+            if dr_type is DrType.YES_NOS:
+                if has_before(m if isinstance(m, int) else m.start(),
+                              text,
+                              terms={'confirm', 'surgeon', 'tablet', 'exam'},
+                              word_window=2,
+                              boundary_chars='¶'):
+                    break
+                elif has_after(m if isinstance(m, int) else m.start(),
+                               text,
+                               terms={'exam'},
+                               word_window=6):
+                    break
             negated = (
                 is_negated(m, text, word_window=3)
                 or is_post_negated(m, text, terms={'no'}, word_window=3)
@@ -101,15 +123,15 @@ def _get_dr_type(text: str, lateralities, source: str) -> dict:
             # Severity not found and negative instance.
             if negated:
                 yield create_new_variable(text, m, lateralities, 'diabretinop_type', {
-                    'value': DrType.NONE if negated else dr_type,
+                    'value': DrType.NONE,
                     'term': m.group(),
                     'label': f'No {dr_label}' if negated else dr_label,
                     'negated': negated,
                     'regex': pat_label,
                     'source': source,
                 })
-            # Severity not found and positive instance.
-            elif dr_type:
+            # Severity not found, positive instance.
+            else:
                 yield create_new_variable(text, m, lateralities, 'diabretinop_type', {
                     'value': dr_type,
                     'term': m.group(),

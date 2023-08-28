@@ -57,6 +57,12 @@ _dr_type_extract_and_build_cases = [
      DrType.UNKNOWN, DrType.UNKNOWN, DrType.NONE),
     ('NPDR : no ', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.NONE),
     ('very severe NPDR ou', {}, DrType.NPDR, DrType.NPDR, DrType.UNKNOWN),
+    ('DR os', {}, DrType.UNKNOWN, DrType.YES_NOS, DrType.UNKNOWN),  # synthetic
+    ('diabetic retinopathy OU', {}, DrType.YES_NOS, DrType.YES_NOS, DrType.UNKNOWN),  # synthetic
+    ("See DR. Bowers' April 19, 2023 exam", {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.UNKNOWN),
+    ('recommended by Dr. Bowers', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.UNKNOWN),
+    ('w/Dr Bowers', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.UNKNOWN),
+    ('ASPIRIN TABLET DR 100MG PO', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.UNKNOWN),
     # TODO: Resolve laterality issues to pass below tests.
     # ('nonproliferative diabetic retinopathy ¶ iols ou', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.NPDR),
     # ('¶(1) No diabetic retinopathy. ¶(2) Increasing cataract, RE,', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.NONE),
