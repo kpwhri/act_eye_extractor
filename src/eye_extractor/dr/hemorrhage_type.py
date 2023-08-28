@@ -9,11 +9,12 @@ from eye_extractor.laterality import build_laterality_table, create_new_variable
 class HemorrhageType(enum.IntEnum):
     UNKNOWN = -1
     NONE = 0
-    INTRARETINAL = 1
-    DOT_BLOT = 2
-    PRERETINAL = 3
-    VITREOUS = 4
-    SUBRETINAL = 5
+    YES_NOS = 1
+    INTRARETINAL = 2
+    DOT_BLOT = 3
+    PRERETINAL = 4
+    VITREOUS = 5
+    SUBRETINAL = 6
 
 
 INTRARETINAL_PAT = re.compile(
@@ -52,6 +53,12 @@ SUBRETINAL_PAT = re.compile(
     r')\b',
     re.IGNORECASE
 )
+HEME_NOS_PAT = re.compile(
+    r'\b('
+    r'hem(orrhage|e)'
+    r')\b',
+    re.I
+)
 
 
 def get_hemorrhage_type(text: str, *, headers=None, lateralities=None) -> list:
@@ -73,6 +80,7 @@ def _get_hemorrhage_type(text: str, lateralities, source: str) -> dict:
         (PRERETINAL_PAT, HemorrhageType.PRERETINAL, 'preretinal', None),
         (VITREOUS_PAT, HemorrhageType.VITREOUS, 'vitreous', None),
         (SUBRETINAL_PAT, HemorrhageType.SUBRETINAL, 'subretinal', None),
+        (HEME_NOS_PAT, HemorrhageType.YES_NOS, 'NOS', None),
     ]:
         for m in pat.finditer(text):
             negated = is_negated(m, text, word_window=3, return_unknown=True)
@@ -84,7 +92,7 @@ def _get_hemorrhage_type(text: str, lateralities, source: str) -> dict:
                           text,
                           terms={'hx', 'h/o', 'resolved'},
                           boundary_chars='',
-                          word_window=5):
+                          word_window=6):
                 break
             if sev_var:
                 # Severity found & positive instance.

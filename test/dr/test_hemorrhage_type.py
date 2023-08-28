@@ -15,7 +15,7 @@ from eye_extractor.output.dr import build_dot_blot_severity, build_hemorrhage_ty
 ])
 def test_get_hemorrhage_type(text, exp_value, exp_negword):
     data = get_hemorrhage_type(text)
-    variable = list(data[-1].values())[0]  # 'hemorrhage_typ_dr' will be last variable added to `data`.
+    variable = list(data[-2].values())[0]  # 'hemorrhage_typ_dr' will be last variable added to `data`.
 
     assert len(data) > 0
     assert variable['value'] == exp_value
@@ -26,19 +26,19 @@ def test_get_hemorrhage_type(text, exp_value, exp_negword):
     ([], HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),
     ([{'hemorrhage_typ_dr_re': 0}],
      HemorrhageType.NONE, HemorrhageType.UNKNOWN),
-    ([{'hemorrhage_typ_dr_re': 1,
-       'hemorrhage_typ_dr_le': 1}],
+    ([{'hemorrhage_typ_dr_re': 2,
+       'hemorrhage_typ_dr_le': 2}],
      HemorrhageType.INTRARETINAL,
      HemorrhageType.INTRARETINAL),
-    ([{'hemorrhage_typ_dr_re': 2,
-       'hemorrhage_typ_dr_le': 3}],
+    ([{'hemorrhage_typ_dr_re': 3,
+       'hemorrhage_typ_dr_le': 4}],
      HemorrhageType.DOT_BLOT,
      HemorrhageType.PRERETINAL),
-    ([{'hemorrhage_typ_dr_le': 4}],
+    ([{'hemorrhage_typ_dr_le': 5}],
      HemorrhageType.UNKNOWN,
      HemorrhageType.VITREOUS),
     ([{'hemorrhage_typ_dr_re': 0,
-       'hemorrhage_typ_dr_le': 5}],
+       'hemorrhage_typ_dr_le': 6}],
      HemorrhageType.NONE,
      HemorrhageType.SUBRETINAL)
 ])
@@ -116,6 +116,11 @@ def test_build_hemorrhage_type(data, exp_hemorrhage_typ_dr_re, exp_hemorrhage_ty
      {}, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.DOT_BLOT),
     ('VESSELS: 2-3 dot heme OU', {}, HemorrhageType.DOT_BLOT, HemorrhageType.DOT_BLOT, HemorrhageType.UNKNOWN),
     ('Macula show few dot hemorrhages.', {}, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN, HemorrhageType.DOT_BLOT),
+    ('MACULA - heme OD', {}, HemorrhageType.YES_NOS, HemorrhageType.UNKNOWN, HemorrhageType.UNKNOWN),  # synthetic
+    ('VESSELS: WNL OU isolated heme OU',
+     {}, HemorrhageType.YES_NOS, HemorrhageType.YES_NOS, HemorrhageType.UNKNOWN),  # synthetic
+    ('Acute left retinal tear with small hemorrhage',
+     {}, HemorrhageType.UNKNOWN, HemorrhageType.YES_NOS, HemorrhageType.UNKNOWN)  # synthetic
 ])
 def test_hemorrhage_type_extract_and_build(text, headers, hemorrhage_type_dr_re, hemorrhage_type_dr_le,
                                            hemorrhage_type_dr_unk):
