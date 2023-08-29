@@ -16,7 +16,8 @@ DME_YESNO_PAT = re.compile(
 
 def get_dme_yesno(text: str, *, headers=None, lateralities=None) -> list:
     return get_variable(text, _get_dme_yesno, headers=headers,
-                        target_headers=['ASSESSMENT', 'MACULA', 'PLAN', 'SUBJECTIVE'], lateralities=lateralities)
+                        target_headers=['ASSESSMENT', 'MACULA', 'PLAN', 'SUBJECTIVE'], lateralities=lateralities,
+                        split_char='.')
 
 
 def _get_dme_yesno(text: str, lateralities, source: str) -> dict:
