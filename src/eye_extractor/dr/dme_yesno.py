@@ -2,7 +2,7 @@ import re
 
 from eye_extractor.common.get_variable import get_variable
 from eye_extractor.nlp.negate.negation import has_before, is_negated
-from eye_extractor.laterality import create_new_variable
+from eye_extractor.laterality import create_new_variable, LateralityLocatorStrategy
 
 DME_YESNO_PAT = re.compile(
     r'\b('

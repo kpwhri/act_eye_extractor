@@ -20,6 +20,7 @@ class Laterality(enum.IntEnum):
 class LateralityLocatorStrategy(enum.Enum):
     DEFAULT = 1
     LINE_BREAK = 2
+    SENTENCE = 3
 
 
 LATERALITY = {
@@ -180,7 +181,8 @@ def get_immediate_next_or_prev_laterality_from_table(table, index, *, max_skips=
     return lat, start, end
 
 
-def create_variable(data, text, match, lateralities, variable, value, *, known_laterality=None):
+def create_variable(data, text, match, lateralities, variable, value, *, known_laterality=None,
+                    strategy=LateralityLocatorStrategy.DEFAULT):
     # dates: this will probably significantly increase processing time
     if isinstance(value, dict) and value.get('date', None) is None:  # skip if alternative way of finding date
         value['date'] = parse_nearest_date_to_line_start(match.start(), text)
@@ -190,12 +192,14 @@ def create_variable(data, text, match, lateralities, variable, value, *, known_l
         lat = get_laterality_for_term(
             lateralities or build_laterality_table(text),
             match,
-            text
+            text,
+            strategy=strategy
         )
     add_laterality_to_variable(data, lat, variable, value)
 
 
-def create_new_variable(text, match, lateralities, variable, value, *, known_laterality=None):
+def create_new_variable(text, match, lateralities, variable, value, *, known_laterality=None,
+                        strategy=LateralityLocatorStrategy.DEFAULT):
     """
     Create a new variable (usually passed to a list called data). Wrapper around `create_variable`.
 
@@ -216,7 +220,7 @@ def create_new_variable(text, match, lateralities, variable, value, *, known_lat
     data = {}
     # assign 'value' to each of the lateralities, suffixing '_re', '_le', '_unk'
     create_variable(data, text, match, lateralities, variable, value,
-                    known_laterality=known_laterality)
+                    known_laterality=known_laterality, strategy=strategy)
     return data
 
 
@@ -333,16 +337,18 @@ class LateralityLocator:
 
     def narrow_search_window_pre(self, match_start, text, min_count=2, value=LINE_START_CHARS):
         i = match_start - 1
-        while min_count > 0:
+        while min_count > 0 and i > -1:
             if text[i] in value:
                 min_count -= 1
-        return match_start - i, text[i:]
+            i -= 1
+        return match_start - i - 1, text[i+1:]
 
     def narrow_search_window_post(self, match_start, text, min_count=2, value=LINE_START_CHARS):
         i = match_start + 1
-        while min_count > 0:
+        while min_count > 0 and i < len(text):
             if text[i] in value:
                 min_count -= 1
+            i += 1
         return match_start, text[:i]
 
     def get_by_index(self, match_start, text, *,
@@ -351,12 +357,16 @@ class LateralityLocator:
         match strategy:
             case LateralityLocatorStrategy.DEFAULT:
                 return self._get_by_index_default(match_start, text, next_max=next_max, prev_max=prev_max)
+            # Any `LateralityLocatorStrategy` that attempts to split text to prevent laterality capture will fail.
+            # Laterality already exists in `LateralityLocator` by this point in execution, and will be returned by
+            # `LateralityLocator._get_by_index_default` despite splitting text.
+            # TODO: Remove `LateralityLocatorStrategy`.
             case LateralityLocatorStrategy.LINE_BREAK:
                 match_start, text = self.narrow_search_window(match_start, text, min_count=2, value=LINE_START_CHARS)
                 return self._get_by_index_default(match_start, text, next_max=next_max, prev_max=prev_max)
-            # case LateralityLocatorStrategy.SENENCE:
-            #     self.get_sentence_only
-            #     return self._get_by_index_default()
+            case LateralityLocatorStrategy.SENTENCE:
+                match_start, text = self.narrow_search_window(match_start, text, min_count=1, value='.')
+                return self._get_by_index_default(match_start, text, next_max=next_max, prev_max=prev_max)
             # case LateralityLocatorStrategy.SENENCE_AND_LIMIT_NEXT:
             #     self.get_sentence_only
             #     return self._get_by_index_default(limit_next=True);
