@@ -71,12 +71,9 @@ _dme_yesno_extract_and_build_cases = [
     ('Possible early DME OS', {}, -1, -1, -1),
     ('MACULA: blot heme superior arcade OD, no CSME OU.', {}, 0, 0, -1),
     ('', {'MACULA': 'blot heme superior arcade OD, no CSME OU.'}, 0, 0, -1),
-    # TODO: Resolve laterality issues to pass below tests.
-    # Potentially narrow context to sentence. Introduce new `LateralityLocatorStrategy.SENTENCE`.
     ('Stromal edema OD causing mild blurring of vision. No diabetic macular edema.', {}, -1, -1, 0),
-    # In `get_previous_next_non_section` introduce new check under `if lat.is_section_start` to check for '-' before
-    # section start, if exists proceed as if not section.
-    # ('Yes- Diabetes: Hx BDR, Hx DME - right eye: sp PRP OD', {}, 0, -1, -1),  # not discovering `next_lat`
+    ('Yes- Diabetes: Hx BDR, Hx DME - right eye: sp PRP OD', {}, 0, -1, -1),
+    # TODO: Resolve laterality issues to pass below tests.
     # `_get_by_index_default` doesn't detect three intervening commas.
     # Potentially introduce new strategy `LateralityLocatorStrategy.LIMIT_NEXT`.
     # ('Macula: no DME, but minimal, dry RPE changes, LE; no gray membranes;', {}, -1, -1, 0),

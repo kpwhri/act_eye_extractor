@@ -305,6 +305,9 @@ class LateralityLocator:
                     return lat, None
                 elif lat.start < match_start:  # laterality before match index
                     last_found_lat = lat  # reset this value
+                # Laterality after match and not section start
+                elif (lat.start > match_start) and ('-' in text[lat.start - 3: lat.start]):
+                    return last_found_lat, lat
                 else:  # laterality section first after match index, so no after
                     return last_found_lat, None
             else:
