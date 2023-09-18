@@ -73,10 +73,7 @@ _dme_yesno_extract_and_build_cases = [
     ('', {'MACULA': 'blot heme superior arcade OD, no CSME OU.'}, 0, 0, -1),
     ('Stromal edema OD causing mild blurring of vision. No diabetic macular edema.', {}, -1, -1, 0),
     ('Yes- Diabetes: Hx BDR, Hx DME - right eye: sp PRP OD', {}, 0, -1, -1),
-    # TODO: Resolve laterality issues to pass below tests.
-    # `_get_by_index_default` doesn't detect three intervening commas.
-    # Potentially introduce new strategy `LateralityLocatorStrategy.LIMIT_NEXT`.
-    # ('Macula: no DME, but minimal, dry RPE changes, LE; no gray membranes;', {}, -1, -1, 0),
+    ('Macula: no DME, but minimal, dry RPE changes, LE; no gray membranes;', {}, -1, -1, 0),
 ]
 
 

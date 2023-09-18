@@ -274,6 +274,7 @@ class LateralityLocator:
         else:
             self.lateralities = SortedList([], key=lambda x: x[1])
         self.default_laterality = default_laterality
+        self.char_max = 3
 
     def add_laterality(self, laterality: LatLocation):
         self.lateralities.add(laterality)
@@ -387,6 +388,16 @@ class LateralityLocator:
             return prev_lat.laterality if prev_commas < next_commas else next_lat.laterality
         return prev_lat.laterality
 
+    def _get_by_index_default_helper_check_next_lat(self, match_start, text, prev_lat, next_lat, count_letters):
+        """Refactored repeatedly-called method."""
+        if not prev_lat:
+            next_commas = self.count_after(match_start, text, next_lat, count_letters)
+            if next_commas < self.char_max:
+                return next_lat.laterality
+            else:
+                return self.default_laterality
+        return next_lat.laterality
+
     def _get_by_index_default(self, match_start, text, *, next_max=60, prev_max=100,
                               count_letters=DEFAULT_COUNT_LETTERS):
         prev_section_lat = self.get_previous_section(match_start, text)
@@ -408,8 +419,10 @@ class LateralityLocator:
                 return self._get_by_index_default_helper_check_prev_lat(
                     match_start, text, prev_lat, next_lat, count_letters, prev_dist, next_max
                 )
-            elif next_lat and (next_dist := self.distance(match_start, next_lat)) < next_max:
-                return next_lat.laterality
+            elif next_lat and (self.distance(match_start, next_lat)) < next_max:
+                return self._get_by_index_default_helper_check_next_lat(
+                    match_start, text, prev_lat, next_lat, count_letters
+                )
         return self.default_laterality
 
     def __iter__(self):

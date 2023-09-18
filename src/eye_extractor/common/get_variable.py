@@ -3,7 +3,7 @@ from typing import Callable
 from eye_extractor.laterality import build_laterality_table
 
 
-def _split_and_get_variable(text: str, get_helper: Callable, split_char: str):
+def _split_and_get_variable(text: str, get_helper: Callable, split_char: str, search_negated_list: bool = False):
     """Helper function to split text on a given character and process chunks independently.
 
     Given `text`, split on `split_char` and search for variables using `get_helper` on each chunk independently.
@@ -17,7 +17,7 @@ def _split_and_get_variable(text: str, get_helper: Callable, split_char: str):
     if len(split_char) != 1:
         raise ValueError('`split_char` must be one character long.')
     for snippet in text.split(split_char):
-        lateralities = build_laterality_table(snippet, search_negated_list=True)
+        lateralities = build_laterality_table(snippet, search_negated_list=search_negated_list)
         for new_var in get_helper(snippet, lateralities, 'ALL'):
             data.append(new_var)
 
@@ -49,7 +49,7 @@ def get_variable(text: str, get_helper: Callable, *,
                 data.append(new_var)
     # Extract matches from full text.
     if split_char:
-        data = data + _split_and_get_variable(text, get_helper, split_char)
+        data = data + _split_and_get_variable(text, get_helper, split_char, search_negated_list=search_negated_list)
     else:
         if not lateralities:
             lateralities = build_laterality_table(text, search_negated_list=search_negated_list)
