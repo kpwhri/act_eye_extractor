@@ -1,7 +1,7 @@
 import re
 
 from eye_extractor.common.get_variable import get_variable
-from eye_extractor.nlp.negate.negation import has_before, is_negated
+from eye_extractor.nlp.negate.negation import has_before, is_negated, NEGWORD_UNKNOWN_PHRASES
 from eye_extractor.laterality import create_new_variable, LateralityLocatorStrategy
 
 DME_YESNO_PAT = re.compile(
@@ -27,8 +27,10 @@ def _get_dme_yesno(text: str, lateralities, source: str) -> dict:
                       terms={'r/o', 'indication', 'possible'},
                       word_window=2,
                       boundary_chars='¶'):
-            break
-        negated = is_negated(m, text, word_window=4)
+            continue
+        negated = is_negated(m, text, word_window=4, return_unknown=True)
+        if negated in NEGWORD_UNKNOWN_PHRASES:
+            continue
         yield create_new_variable(text, m, lateralities, 'dmacedema_yesno', {
             'value': 0 if negated else 1,
             'term': m.group(),

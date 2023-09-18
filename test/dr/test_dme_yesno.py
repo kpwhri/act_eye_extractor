@@ -48,7 +48,7 @@ _dme_yesno_extract_and_build_cases = [
     ('»Comment: no DME seen today,', {}, -1, -1, 0),
     ('MACULA: no csme od; 1+edema temporal macula OS', {}, 0, -1, -1),
     ('', {'MACULA': 'no csme od; 1+edema temporal macula OS'}, 0, -1, -1),
-    # ('defer CE given risk of exacerbating DME', {}, -1, -1, -1),
+    ('defer CE given risk of exacerbating DME', {}, -1, -1, -1),
     ('maculas without DME OU', {}, 0, 0, -1),
     ('MACULA: without DME OU', {}, 0, 0, -1),
     ('', {'MACULA': 'without DME OU'}, 0, 0, -1),
