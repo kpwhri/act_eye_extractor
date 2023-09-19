@@ -9,7 +9,7 @@ from eye_extractor.output.dr import build_ret_micro
 
 # Test pattern.
 _pattern_cases = [
-    (RET_MICRO_PAT, 'ma', True),
+    (RET_MICRO_PAT, 'ma', False),
     (RET_MICRO_PAT, 'retinal ma', True),
     (RET_MICRO_PAT, 'retinal microaneurysm', True),
 ]

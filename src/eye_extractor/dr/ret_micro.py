@@ -7,8 +7,7 @@ from eye_extractor.laterality import create_new_variable
 
 RET_MICRO_PAT = re.compile(
     r'\b('
-    r'mas?'
-    r'|retinal mas?'
+    r'retinal mas?'
     r'|retinal micro\W?aneurysms?'
     r')\b',
     re.I
