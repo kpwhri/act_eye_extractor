@@ -9,6 +9,7 @@ from eye_extractor.dr.hemorrhage_type import get_hemorrhage_type
 from eye_extractor.dr.irma import get_irma
 from eye_extractor.dr.laser_scar_type import get_laser_scar_type
 from eye_extractor.dr.nv_types import get_nv_types
+from eye_extractor.dr.ret_micro import get_ret_micro
 from eye_extractor.dr.venous_beading import get_ven_beading
 
 
@@ -26,5 +27,6 @@ def extract_dr_variables(text: str, *, headers=None, lateralities=None) -> dict:
         'laser_scar_type': get_laser_scar_type(text, headers=headers, lateralities=lateralities),
         'nv_types': get_nv_types(text, headers=headers, lateralities=lateralities),
         'pdr': get_pdr(text, headers=headers, lateralities=lateralities),
+        'ret_micro': get_ret_micro(text, headers=headers, lateralities=lateralities),
         'venous_beading': get_ven_beading(text, headers=headers, lateralities=lateralities),
     }

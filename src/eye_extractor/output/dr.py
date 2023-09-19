@@ -18,7 +18,12 @@ def build_dr_yesno(data, *, macula_wnl=None, note_date=None):
 
 
 def build_ret_micro(data, *, note_date=None):
-    return column_from_variable_binary(data, 'ret_microaneurysm', restrict_date=note_date)
+    return column_from_variable_abbr(
+        'ret_microaneurysm', Severity.UNKNOWN, data,
+        restrict_date=note_date,
+        transformer_func=Severity,
+        enum_to_str=True,
+    )
 
 
 def build_cottonwspot(data, *, note_date=None):
@@ -261,7 +266,7 @@ def build_dr_variables(data):
     note = data['note']
     results = {}
     results.update(build_dr_yesno(curr['dr_yesno'], macula_wnl=data['common']['macula_wnl'], note_date=note['date']))
-    results.update(build_ret_micro(curr['binary_vars'], note_date=note['date']))
+    results.update(build_ret_micro(curr['ret_micro'], note_date=note['date']))
     results.update(build_cottonwspot(curr['cottonwspot'], note_date=note['date']))
     results.update(build_hard_exudates(curr['exudates'], note_date=note['date']))
     results.update(build_exudates(curr['exudates'], note_date=note['date']))

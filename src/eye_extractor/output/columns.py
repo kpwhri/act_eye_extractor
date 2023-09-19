@@ -356,9 +356,9 @@ OUTPUT_COLUMNS = {
     'diab_retinop_yesno_le': [is_in_range(-1, 1)],
     'diab_retinop_yesno_unk': [is_in_range(-1, 1)],
     # ret_microaneurysm
-    'ret_microaneurysm_re': [is_in_range(-1, 1)],
-    'ret_microaneurysm_le': [is_in_range(-1, 1)],
-    'ret_microaneurysm_unk': [is_in_range(-1, 1)],
+    'ret_microaneurysm_re': [is_string_in_enum(Severity)],
+    'ret_microaneurysm_le': [is_string_in_enum(Severity)],
+    'ret_microaneurysm_unk': [is_string_in_enum(Severity)],
     # Cotton wool spots
     'cottonwspot_re': [is_in_range(-1, 1)],
     'cottonwspot_le': [is_in_range(-1, 1)],
