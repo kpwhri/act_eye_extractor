@@ -27,7 +27,7 @@ def test_ret_micro_patterns(pat, text, exp):
 
 # Test extract and build.
 _ret_micro_extract_and_build_cases = [
-    ('retinal microaneurysm ou', {}, 'YES NOS', 'YES NOS', 'UNKNOWN'),
+    ('retinal microaneurysm ou', {}, 'YES NOS', 'YES NOS', 'UNKNOWN'),  # synthetic
     ('Pupillary Dilation: by MA above', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
     ('>> Will Bowers, MA', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
     ('Will Ma, Ophthalmic Tech', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
@@ -42,7 +42,8 @@ _ret_micro_extract_and_build_cases = [
     ('Pupillary Dilation: yes, by MA', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
     ('CC: as per MA notes;', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
     ('Tonometry: as per MA', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
-
+    ('moderate retinal micro-aneurysm os', {}, 'UNKNOWN', 'MODERATE', 'UNKNOWN'),  # synthetic
+    ('VERY SEVERE RETINAL MAS', {}, 'UNKNOWN', 'UNKNOWN', 'VERY SEVERE'),  # synthetic
 ]
 
 
