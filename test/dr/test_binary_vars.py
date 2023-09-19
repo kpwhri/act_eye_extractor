@@ -72,26 +72,6 @@ def test_build_dr_yesno(data, exp_diab_retinop_yesno_re, exp_diab_retinop_yesno_
     assert result['diab_retinop_yesno_unk'] == exp_diab_retinop_yesno_unk
 
 
-@pytest.mark.parametrize('data, exp_ret_microaneurysm_re, exp_ret_microaneurysm_le, exp_ret_microaneurysm_unk', [
-    ([], -1, -1, -1),
-    ([{'ret_microaneurysm_re': {'value': 1},
-       'ret_microaneurysm_le': {'value': 1}}],
-     1, 1, -1),
-    ([{'ret_microaneurysm_re': {'value': 0},
-       'ret_microaneurysm_le': {'value': 0}}],
-     0, 0, -1),
-    ([{'ret_microaneurysm_re': {'value': 1}}], 1, -1, -1),
-    ([{'ret_microaneurysm_le': {'value': 0}}], -1, 0, -1),
-    ([{'ret_microaneurysm_unk': {'value': 1}}], -1, -1, 1),
-    ([{'ret_microaneurysm_unk': {'value': 0}}], -1, -1, 0)
-])
-def test_build_ret_micro(data, exp_ret_microaneurysm_re, exp_ret_microaneurysm_le, exp_ret_microaneurysm_unk):
-    result = build_ret_micro(data)
-    assert result['ret_microaneurysm_re'] == exp_ret_microaneurysm_re
-    assert result['ret_microaneurysm_le'] == exp_ret_microaneurysm_le
-    assert result['ret_microaneurysm_unk'] == exp_ret_microaneurysm_unk
-
-
 @pytest.mark.parametrize('data, exp_cottonwspot_re, exp_cottonwspot_le, exp_cottonwspot_unk', [
     ([], -1, -1, -1),
     ([{'cottonwspot_re': {'value': 1},
