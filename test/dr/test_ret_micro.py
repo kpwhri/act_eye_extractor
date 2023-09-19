@@ -28,6 +28,21 @@ def test_ret_micro_patterns(pat, text, exp):
 # Test extract and build.
 _ret_micro_extract_and_build_cases = [
     ('retinal microaneurysm ou', {}, 'YES NOS', 'YES NOS', 'UNKNOWN'),
+    ('Pupillary Dilation: by MA above', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+    ('>> Will Bowers, MA', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+    ('Will Ma, Ophthalmic Tech', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+    ('Signed by: Will Bowers, MA', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+    ('Signed by: William Ian Bowers, MA', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+    ('MA HCC 59: MAJOR DEPRESSIVE, BIPOLAR, AND PARANOID DISORDERS-', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+    ('MA HCC 52: DEMENTIA WITHOUT COMPLICATION-', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+    ('\n>> Will Bowers, MA\n', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+    ('MA: OD normal 6/6 , OS normal 6/6', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+    ('HRT II linear C/D 0.37 / 0.37 on 4/20/1492»MA: OD normal 6/6 , OS normal 6/6',
+     {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+    ('Pupillary Dilation: yes, by MA', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+    ('CC: as per MA notes;', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+    ('Tonometry: as per MA', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+
 ]
 
 
