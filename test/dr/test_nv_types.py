@@ -2,8 +2,28 @@ import json
 
 import pytest
 
-from eye_extractor.dr.nv_types import get_nv_types
-from eye_extractor.output.dr import build_nva, build_nvd, build_nve, build_nvi
+from eye_extractor.dr.nv_types import get_neovasc, get_nv_types
+from eye_extractor.output.dr import build_neovasc, build_nva, build_nvd, build_nve, build_nvi
+
+_neovasc_extract_and_build_cases = [
+    ('Corneal neovascularization, unspecified.', {}, -1, -1, 1)
+]
+
+
+@pytest.mark.parametrize('text, headers, exp_neovasc_yesno_re, exp_neovasc_yesno_le, exp_neovasc_yesno_unk',
+                         _neovasc_extract_and_build_cases)
+def test_neovasc_extract_and_build(text,
+                                   headers,
+                                   exp_neovasc_yesno_re,
+                                   exp_neovasc_yesno_le,
+                                   exp_neovasc_yesno_unk):
+    pre_json = get_neovasc(text)
+    post_json = json.loads(json.dumps(pre_json))
+    result = build_neovasc(post_json)
+    assert result['neovasc_yesno_re'] == exp_neovasc_yesno_re
+    assert result['neovasc_yesno_le'] == exp_neovasc_yesno_le
+    assert result['neovasc_yesno_unk'] == exp_neovasc_yesno_unk
+
 
 _nva_extract_and_build_cases = [
     ('Gonioscopy: right eye: no NVA', {}, 0, -1, -1),
@@ -13,7 +33,8 @@ _nva_extract_and_build_cases = [
     ('NVA 20/25 OU', {}, -1, -1, -1),
     ('OD: 20/25 NVA: 0.34 M ¶OS: 20/35 NVA: 0.34 M', {}, -1, -1, -1),
     ('RE: 20/30- NVA: 0.37- M LE: 20/30- NVA: 0.37- M', {}, -1, -1, -1),
-    ('Her NVA has decreased since last exam.', {}, -1, -1, -1),  # Sections: gonioscopy, history of present illness, angle
+    ('Her NVA has decreased since last exam.', {}, -1, -1, -1),
+    # Sections: gonioscopy, history of present illness, angle
 ]
 
 

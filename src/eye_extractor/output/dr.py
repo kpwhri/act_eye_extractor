@@ -283,7 +283,7 @@ def build_dr_variables(data):
     results.update(build_focal_laser_scar_type(curr['laser_scar_type'], note_date=note['date']))
     results.update(build_grid_laser_scar_type(curr['laser_scar_type'], note_date=note['date']))
     results.update(build_macular_laser_scar_type(curr['laser_scar_type'], note_date=note['date']))
-    results.update(build_neovasc(curr['binary_vars'], note_date=note['date']))
+    results.update(build_neovasc(curr['nv_types'], note_date=note['date']))
     results.update(build_nva(curr['nv_types'], note_date=note['date']))
     results.update(build_nvi(curr['nv_types'], note_date=note['date']))
     results.update(build_nvd(curr['nv_types'], note_date=note['date']))

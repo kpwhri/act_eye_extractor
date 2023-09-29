@@ -1,5 +1,6 @@
 import re
 
+from eye_extractor.common.get_variable import get_variable
 from eye_extractor.nlp.negate.negation import is_negated, is_post_negated, has_after
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
@@ -28,6 +29,14 @@ NVE_PAT = re.compile(
     r')\b',
     re.I
 )
+
+
+def get_neovasc(text: str, *, headers=None, lateralities=None) -> list:
+    return get_variable(text, _get_neovasc, headers=headers, lateralities=lateralities)
+
+
+def _get_neovasc(text: str, lateralities, source: str) -> dict:
+    pass
 
 
 def get_nv_types(text: str, *, headers=None, lateralities=None) -> list:
