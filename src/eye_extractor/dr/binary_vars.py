@@ -28,14 +28,6 @@ DIABETIC_RETINOPATHY_PATS = [
         r')\b',
         re.I
     )),
-    # ('neovasc_yesno', re.compile(
-    #     r'\b('
-    #     r'NV|Neovascularization|neovascularization of( the)? angle|neovascularization'
-    #     r'|neovascularization of (the )?disc|neovascularization of the optic disc'
-    #     r'|NVA|NVI|NVD|NVE'
-    #     r')\b',
-    #     re.I
-    # )),
     ('drtreatment', re.compile(
         r'\b('
         r'PRP|pan retinal photocoagulation|Pars plana vitrectomy'

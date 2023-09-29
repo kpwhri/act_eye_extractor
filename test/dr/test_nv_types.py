@@ -6,7 +6,11 @@ from eye_extractor.dr.nv_types import get_neovasc, get_nv_types
 from eye_extractor.output.dr import build_neovasc, build_nva, build_nvd, build_nve, build_nvi
 
 _neovasc_extract_and_build_cases = [
-    ('Corneal neovascularization, unspecified.', {}, -1, -1, 1)
+    ('Corneal neovascularization, unspecified.', {}, -1, -1, 1),
+    ('no NVD OD', {}, 0, -1, -1),
+    ('Normal blood cells without NVD', {}, -1, -1, 0),
+    ('without NVD, NVE', {}, -1, -1, 0),
+    ('no NVE Disc 0.35', {}, -1, -1, 0),
 ]
 
 

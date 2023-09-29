@@ -30,6 +30,15 @@ NVE_PAT = re.compile(
     re.I
 )
 
+# ('neovasc_yesno', re.compile(
+    #     r'\b('
+    #     r'NV|Neovascularization|neovascularization of( the)? angle|neovascularization'
+    #     r'|neovascularization of (the )?disc|neovascularization of the optic disc'
+    #     r'|NVA|NVI|NVD|NVE'
+    #     r')\b',
+    #     re.I
+    # )),
+
 
 def get_neovasc(text: str, *, headers=None, lateralities=None) -> list:
     return get_variable(text, _get_neovasc, headers=headers, lateralities=lateralities)
