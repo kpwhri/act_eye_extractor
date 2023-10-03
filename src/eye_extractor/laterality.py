@@ -136,6 +136,9 @@ def build_laterality_table(text: str, search_negated_list: bool = False):
     :return: LateralityLocator table of all found lateralities.
     """
     latloc = LateralityLocator()
+    # TODO: Bug - `LATERALITY_PATTERN` sub-patterns that end with '.' won't capture if followed by non-alphanumeric.
+    # Above caused by '.)\b' - period (non-alphanumeric) followed by word boundary.
+    # Word boundary, '\b', requires alphanumeric next to non-alphanumeric. So '.' followed by whitespace does not match.
     for m in LATERALITY_PATTERN.finditer(text):
         is_section_start = m.group().endswith(':')
         latloc.add(lat_lookup(m), m.start(), m.end(), is_section_start)

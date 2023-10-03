@@ -13,7 +13,11 @@ NV_PAT = re.compile(
 NVA_PAT = re.compile(
     r'\b('
     r'(angular\s+)neovascularization\s+of(\s+the)?\s+angle'
-    r'|nva(?!\W+\d.\d{2}\W*m)(?!\W+\d{2}/\d{2})'
+    r'|nva'
+    r'(?!\W+\d.\d{2}\W*m)'
+    r'(?!\W+\d.\d{2}/\d.\d{2})'  # near visual acuity - ex: 'NVA 0.30/0.43 M'
+    r'(?!\W+\d{2}/\d{2})'  # near visual acuity - ex: 20/20
+    r'(?!\W+rs\d{2})'  # near visual acuity - RS
     r')\b',
     re.I
 )
@@ -36,16 +40,8 @@ NVE_PAT = re.compile(
     re.I
 )
 
-# ('neovasc_yesno', re.compile(
-    #     r'\b('
-    #     r'NV|Neovascularization|neovascularization of( the)? angle|neovascularization'
-    #     r'|neovascularization of (the )?disc|neovascularization of the optic disc'
-    #     r'|NVA|NVI|NVD|NVE'
-    #     r')\b',
-    #     re.I
-    # )),
 
-
+# TODO: Merge `get_neovasc` and `get_nv_types` into one function.
 def get_neovasc(text: str, *, headers=None, lateralities=None) -> list:
     return get_variable(text, _get_neovasc, headers=headers, lateralities=lateralities)
 
@@ -68,7 +64,7 @@ def _get_neovasc(text: str, lateralities, source: str) -> dict:
                          text,
                          terms={'decreased'},
                          word_window=3):
-                break
+                continue
             yield create_new_variable(text, m, lateralities, 'neovasc_yesno', {
                 'value': 0 if negated else 1,
                 'term': m.group(),
