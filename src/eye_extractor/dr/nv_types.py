@@ -1,7 +1,7 @@
 import re
 
 from eye_extractor.common.get_variable import get_variable
-from eye_extractor.nlp.negate.negation import is_negated, is_post_negated, has_after
+from eye_extractor.nlp.negate.negation import has_after, has_before, is_negated, is_post_negated
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 NV_PAT = re.compile(
@@ -40,6 +40,14 @@ NVE_PAT = re.compile(
     re.I
 )
 
+NVA_IGNORE_CAPTURE_FSA = {
+    'change': {
+        'in': True,
+        None: False
+    },
+    None: False
+}
+
 
 # TODO: Merge `get_neovasc` and `get_nv_types` into one function.
 def get_neovasc(text: str, *, headers=None, lateralities=None) -> list:
@@ -60,6 +68,11 @@ def _get_neovasc(text: str, lateralities, source: str) -> dict:
                 or is_negated(m, text, terms={'no'}, word_window=8)
                 or is_post_negated(m, text, terms={'normal', 'neg', 'deferred', 'no', 'nc'}, word_window=2)
             )
+            if pat_label is 'NVA_PAT' and has_before(m if isinstance(m, int) else m.start(),
+                                                     text,
+                                                     terms=NVA_IGNORE_CAPTURE_FSA,
+                                                     word_window=3):
+                continue
             if has_after(m if isinstance(m, int) else m.start(),
                          text,
                          terms={'decreased'},
