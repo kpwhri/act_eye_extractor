@@ -51,7 +51,7 @@ _neovasc_extract_and_build_cases = [
     ('Best corrected acuities with above refraction:\nRE: 20/30- NVA: 0.24 M\nLE: 20/20 NVA: 0.40 M', {}, -1, -1, -1),
     ('Best corrected acuities with above refraction:\nRE: 20/30- NI PH NVA: 0.50 M\nLE: 20/20- NVA: 0.40 M',
      {}, -1, -1, -1),
-    ('NVI: none', {}, -1, -1, -1),
+    ('NVI: none', {}, -1, -1, 0),
     ('IRIS: Normal Appearance, neg Rubeosis, OD.', {}, 0, -1, -1),
     ('Best corrected acuities with above refraction:\nRE: 20/30 NVA: 0.24 M\nLE: 20/200 NVA: <1.75 M', {}, -1, -1, -1),
     ('Best corrected acuities with above refraction:\nRE: 20/30 NVA: 0.24 M\nLE: 20/20 NVA: 0.40 M', {}, -1, -1, -1),

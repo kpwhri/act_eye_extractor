@@ -51,6 +51,10 @@ NVA_PRE_IGNORE = {
         'tracking': True,
         None: False
     },
+    'difficulty': {
+        'with': True,
+        None: False
+    },
     None: False
 }
 
@@ -77,7 +81,7 @@ def _get_neovasc(text: str, lateralities, source: str) -> dict:
             negated = (
                 is_negated(m, text, word_window=4)
                 or is_negated(m, text, terms={'no'}, word_window=8)
-                or is_post_negated(m, text, terms={'normal', 'neg', 'deferred', 'no', 'nc'}, word_window=2)
+                or is_post_negated(m, text, terms={'normal', 'neg', 'deferred', 'no', 'nc', 'none'}, word_window=2)
             )
             if has_after(m if isinstance(m, int) else m.start(),
                          text,
