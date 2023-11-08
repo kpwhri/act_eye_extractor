@@ -56,6 +56,10 @@ NVA_PRE_IGNORE = {
         'with': True,
         None: False
     },
+    'decrease': {
+        'in': True,
+        None: False
+    },
     None: False
 }
 
