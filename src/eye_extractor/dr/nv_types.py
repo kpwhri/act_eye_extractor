@@ -47,6 +47,10 @@ NVA_PRE_IGNORE = {
         'in': True,
         None: False
     },
+    'problem': {
+        'tracking': True,
+        None: False
+    },
     None: False
 }
 
@@ -84,7 +88,7 @@ def _get_neovasc(text: str, lateralities, source: str) -> dict:
                 if has_before(m if isinstance(m, int) else m.start(),
                               text,
                               terms=NVA_PRE_IGNORE,
-                              word_window=3):
+                              word_window=6):
                     continue
                 elif has_after(m if isinstance(m, int) else m.start(),
                                text,
