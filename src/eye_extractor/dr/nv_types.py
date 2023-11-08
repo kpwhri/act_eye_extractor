@@ -4,16 +4,18 @@ from eye_extractor.common.get_variable import get_variable
 from eye_extractor.nlp.negate.negation import has_after, has_before, is_negated, is_post_negated
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
+# Patterns.
 NV_PAT = re.compile(
     r'\b('
     r'neovascularization'
-    r'\b)',
+    r')\b',
     re.I
 )
 NVA_PAT = re.compile(
     r'\b('
-    r'(angular\s+)neovascularization\s+of(\s+the)?\s+angle'
-    r'|nva'
+    r'(?<!20/\*{3}\W)'  # near visual acuity - ex: 'RE: 20/*** NVA'
+    r'(neovascularization\s+of(\s+the)?\s+angle'
+    r'|nva)'
     r'(?!\W+\d.\d{2}\W*m)'
     r'(?!\W+\d.\d{2}/\d.\d{2})'  # near visual acuity - ex: 'NVA 0.30/0.43 M'
     r'(?!\W+\d{2}/\d{2})'  # near visual acuity - ex: 20/20
@@ -39,7 +41,7 @@ NVE_PAT = re.compile(
     r')\b',
     re.I
 )
-
+# Context FSAs.
 NVA_PRE_IGNORE = {
     'change': {
         'in': True,
