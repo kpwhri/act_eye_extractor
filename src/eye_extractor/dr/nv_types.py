@@ -145,6 +145,17 @@ def _get_nv_types(text: str, lateralities):
                          terms={'decreased'},
                          word_window=3):
                 break
+            if pat_label is 'NVA_PAT':
+                if has_before(m if isinstance(m, int) else m.start(),
+                              text,
+                              terms=NVA_PRE_IGNORE,
+                              word_window=6):
+                    continue
+                elif has_after(m if isinstance(m, int) else m.start(),
+                               text,
+                               terms=NVA_POST_IGNORE,
+                               word_window=2):
+                    continue
             yield create_new_variable(text, m, lateralities, variable, {
                 'value': 0 if negated else 1,
                 'term': m.group(),
