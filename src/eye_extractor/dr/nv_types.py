@@ -138,7 +138,7 @@ def _get_neovasc(text: str, lateralities, source: str) -> dict:
                 elif has_after(m if isinstance(m, int) else m.start(),
                                text,
                                terms=NVA_POST_IGNORE,
-                               word_window=2):
+                               word_window=4):
                     continue
             yield create_new_variable(text, m, lateralities, 'neovasc_yesno', {
                 'value': 0 if negated else 1,
@@ -177,7 +177,7 @@ def _get_nv_types(text: str, lateralities):
             )
             if has_after(m if isinstance(m, int) else m.start(),
                          text,
-                         terms={'decreased'},
+                         terms={'decreased', 'none'},
                          word_window=3):
                 break
             if pat_label is 'NVA_PAT':
