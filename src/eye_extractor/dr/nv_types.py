@@ -17,6 +17,7 @@ NVA_PAT = re.compile(
     r'(?<!20/\W)'  # near visual acuity - ex: 'OS: 20/\nNVA'
     r'(?<!20/\W{2})'  # near visual acuity - ex: 'OS: 20/\n\nNVA'
     r'(?<!\d{2}/\d{2}-\d\W)'  # near visual acuity - ex: '20/50-1\nNVA'
+    r'(?<!20/NA\s{2})'
     r'(neovascularization\s+of(\s+the)?\s+angle'
     r'|nva)'
     r'(?!\W+\d.\d{2}\W*m)'

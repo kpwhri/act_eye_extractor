@@ -139,7 +139,7 @@ _nva_extract_and_build_cases = [
     ('SNELLEN VISUAL ACUITY\nCC specs OD: 20/40-2 OS: 20/30-2\nph OD: 20/45-3 OS: 20/50-1\nNVA', {}, -1, -1, -1),
     ('Pt states that vision has decreased OU, notes things seem dimmer NVA and DVA.', {}, -1, -1, -1),
     ('Pt. states she has been having trouble with her NVA', {}, -1, -1, -1),
-    ('Visual acuity: Snellen\nCC: OD: 20/30-1 PH: OD: 20/NI\nOS: 20/40 PH: OS: 20/NA\nNVA:\nOD: 20/50\nOS: 20/30',
+    ('Visual acuity: Snellen\nCC: OD: 20/30-1 PH: OD: 20/NI\nOS: 20/40 PH: OS: 20/NA\n\nNVA:\nOD: 20/50\nOS: 20/30',
      {}, -1, -1, -1),
     ('Pt c/o tearing OS>OD. Pt c/o decreased NVA OU', {}, -1, -1, -1),
     ('Patient presents with: OU blurry DVA and NVA,', {}, -1, -1, -1),
