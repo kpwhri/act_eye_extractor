@@ -24,6 +24,7 @@ NVA_PAT = re.compile(
     r'(?!\W+\d.\d{2}/\d.\d{2})'  # near visual acuity - ex: 'NVA 0.30/0.43 M'
     r'(?!\W+\d{2}/\d{2})'  # near visual acuity - ex: 20/20
     r'(?!\W+rs\d{2})'  # near visual acuity - RS
+    r'(?!\W+o[dsu]\W+20/\d{2})'
     r')\b',
     re.I
 )
@@ -65,14 +66,21 @@ NVA_PRE_IGNORE = {
     },
     'trouble': {
         'with': True,
+        'watching': {
+            'television': True,
+            None: False,
+        },
         None: False,
     },
+    'decreased': True,
+    'dva': True,
     None: False,
 }
 
 NVA_POST_IGNORE = {
     'good': True,
     'dva': True,
+    'decrease': True,
     None: False
 }
 
