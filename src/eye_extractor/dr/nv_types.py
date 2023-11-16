@@ -22,7 +22,7 @@ NVA_PAT = re.compile(
     r'(?!\W+\d.\d{2}\W*m)'
     r'(?!\W+\d.\d{2}/\d.\d{2})'  # near visual acuity - ex: 'NVA 0.30/0.43 M'
     r'(?!\W+\d{2}/\d{2})'  # near visual acuity - ex: 20/20
-    r'(?!\W+rs\d{2})'  # near visual acuity - RS
+    r'(?!\W+rs\s?\d{2})'  # near visual acuity - RS
     r'(?!\W+o[dsu]\W+20/\d{2})'  # near visual acuity - ex: 'NVA OU: 20/20'
     r'(?!\W+\d\W+m)'  # near visual acuity - ex: 'NVA: < 3 M'
     r')\b',
@@ -74,6 +74,19 @@ NVA_PRE_IGNORE = {
     },
     'decreased': True,
     'dva': True,
+    'not': {
+        'seeing': {
+            'as': {
+                'well': {
+                    'with': True,
+                    None: False,
+                },
+                None: False,
+            },
+            None: False,
+        },
+        None: False
+    },
     None: False,
 }
 
