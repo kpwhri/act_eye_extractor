@@ -15,6 +15,7 @@ NVA_PAT = re.compile(
     r'\b('
     r'(?<!20/\*{3}\W)'  # near visual acuity - ex: 'RE: 20/*** NVA'
     r'(?<!20/\W)'  # near visual acuity - ex: 'OS: 20/\nNVA'
+    r'(?<!20/\W{2})'  # near visual acuity - ex: 'OS: 20/\n\nNVA'
     r'(?<!\d{2}/\d{2}-\d\W)'  # near visual acuity - ex: '20/50-1\nNVA'
     r'(neovascularization\s+of(\s+the)?\s+angle'
     r'|nva)'
@@ -61,11 +62,16 @@ NVA_PRE_IGNORE = {
         'in': True,
         None: False
     },
-    None: False
+    'trouble': {
+        'with': True,
+        None: False,
+    },
+    None: False,
 }
 
 NVA_POST_IGNORE = {
     'good': True,
+    'dva': True,
     None: False
 }
 
@@ -154,7 +160,7 @@ def _get_nv_types(text: str, lateralities):
                 elif has_after(m if isinstance(m, int) else m.start(),
                                text,
                                terms=NVA_POST_IGNORE,
-                               word_window=2):
+                               word_window=3):  # `has_after` word_window includes current match
                     continue
             yield create_new_variable(text, m, lateralities, variable, {
                 'value': 0 if negated else 1,
