@@ -186,7 +186,9 @@ def _get_nv_types(text: str, lateralities):
             negated = (
                 is_negated(m, text, word_window=4)
                 or is_negated(m, text, terms={'no'}, word_window=8)
-                or is_post_negated(m, text, terms={'normal', 'neg', 'deferred', 'no', 'nc', 'none'}, word_window=2)
+                or is_post_negated(m, text,
+                                   terms={'normal', 'neg', 'deferred', 'no', 'nc', 'none'},
+                                   word_window=3)
             )
             if has_after(m if isinstance(m, int) else m.start(),
                          text,
