@@ -186,13 +186,13 @@ _nvi_extract_and_build_cases = [
     ('IRIS RUBEOSIS: no', {}, -1, -1, 0),
     # TODO: Fix `LATERALITY_PATTERN` bug to pass below case.
     pytest.param('Iris: flat and unremarkable, O.U. (-)TI defects, (-)NVI', {}, 0, 0, -1, marks=pytest.mark.skip()),
-    ('NVI: none', {}, -1, -1, -1),
+    ('NVI: none', {}, -1, -1, 0),
     ('IRIS: Normal Appearance, neg Rubeosis, OD.', {}, 0, -1, -1),
     ('Iris: flat, even (-)NVI/TIDs', {}, -1, -1, 0),
     # new
     ('Iris/rubeosis - Not performed', {}, -1, -1, -1),
     ('IRIS RUBEOSIS: n/a', {}, -1, -1, -1),
-    ('IRIS RUBEOSIS: none seen', {}, -1, -1, -1),
+    ('IRIS RUBEOSIS: none seen', {}, -1, -1, 0),
     ('Rubeosis: R eye: No L eye: No', {}, 0, 0, -1),
     ('IRIS RUBEOSIS: ', {}, -1, -1, -1),  # Uncertain of correct value, might change.
     ('Iris/rubeosis - nt', {}, -1, -1, -1),
