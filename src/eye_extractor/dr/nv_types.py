@@ -32,7 +32,10 @@ NVA_PAT = re.compile(
 )
 NVI_PAT = re.compile(
     r'\b('
-    r'nvi|neovascularization of( the)? iris|rubeosis|rubeosis iridis'
+    r'nvi'
+    r'|neovascularization of( the)? iris'
+    r'|rubeosis'
+    r'|rubeosis iridis'
     r')\b',
     re.I
 )

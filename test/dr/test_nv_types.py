@@ -189,6 +189,26 @@ _nvi_extract_and_build_cases = [
     ('NVI: none', {}, -1, -1, -1),
     ('IRIS: Normal Appearance, neg Rubeosis, OD.', {}, 0, -1, -1),
     ('Iris: flat, even (-)NVI/TIDs', {}, -1, -1, 0),
+    ('Iris/rubeosis - Not performed', {}, -1, -1, -1),
+    ('IRIS RUBEOSIS: n/a', {}, -1, -1, -1),
+    ('IRIS RUBEOSIS: none seen', {}, -1, -1, -1),
+    ('Rubeosis: R eye: No L eye: No', {}, 0, 0, -1),
+    ('IRIS RUBEOSIS: ', {}, -1, -1, -1),  # Uncertain of correct value, might change.
+    ('Iris/rubeosis - nt', {}, -1, -1, -1),
+    ('IRIS: Normal Appearance, neg Rubeosis, OD. Coloboma OS', {}, 0, -1, -1),
+    ('Will follow for rubeosis', {}, -1, -1, -1),
+    ('IRIS RUBEOSIS: OD No OS NO', {}, 0, 0, -1),
+    ('RUBEOSIS: n', {}, -1, -1, 0),
+    ('IRIS RUBEOSIS: abnormal Hazy view OD;normal OS', {}, -1, 0, -1),
+    ('IRIS RUBEOSIS: Not seen OU', {}, 0, 0, -1),
+    ('IRIS RUBEOSIS: none', {}, -1, -1, 0),
+    ('NVI with SLE: n', {}, -1, -1, 0),
+    ('RUBEOSIS: None Seen', {}, -1, -1, 0),
+    ('RUBEOSIS: None', {}, -1, -1, 0),
+    ('IRIS RUBEOSIS: NT', {}, -1, -1, -1),
+    ('NVI with SLE:', {}, -1, -1, -1),
+    ('NVI with SLE: none seen', {}, -1, -1, 0),
+    ('Iris/rubeosis - WNL', {}, -1, -1, 0),
 ]
 
 
