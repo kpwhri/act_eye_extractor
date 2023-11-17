@@ -189,6 +189,7 @@ _nvi_extract_and_build_cases = [
     ('NVI: none', {}, -1, -1, -1),
     ('IRIS: Normal Appearance, neg Rubeosis, OD.', {}, 0, -1, -1),
     ('Iris: flat, even (-)NVI/TIDs', {}, -1, -1, 0),
+    # new
     ('Iris/rubeosis - Not performed', {}, -1, -1, -1),
     ('IRIS RUBEOSIS: n/a', {}, -1, -1, -1),
     ('IRIS RUBEOSIS: none seen', {}, -1, -1, -1),

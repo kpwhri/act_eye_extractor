@@ -107,12 +107,21 @@ NVA_POST_IGNORE = {
     None: False
 }
 
+NVI_POST_IGNORE = {
+    'not': {
+        'performed': True,
+        None: False,
+    },
+    None: False,
+}
+
 
 # TODO: Merge `get_neovasc` and `get_nv_types` into one function.
 def get_neovasc(text: str, *, headers=None, lateralities=None) -> list:
     return get_variable(text, _get_neovasc, headers=headers, lateralities=lateralities)
 
 
+# TODO: Merge NVI changes into `get_neovasc`.
 def _get_neovasc(text: str, lateralities, source: str) -> dict:
     for pat_label, pat in [
         ('NV_PAT', NV_PAT),
@@ -193,6 +202,12 @@ def _get_nv_types(text: str, lateralities):
                                text,
                                terms=NVA_POST_IGNORE,
                                word_window=4):  # `has_after` word_window includes current match
+                    continue
+            if pat_label is 'NVI_PAT':
+                if has_after(m if isinstance(m, int) else m.start(),
+                             text,
+                             terms=NVI_POST_IGNORE,
+                             word_window=3):
                     continue
             yield create_new_variable(text, m, lateralities, variable, {
                 'value': 0 if negated else 1,
