@@ -51,6 +51,7 @@ NVE_PAT = re.compile(
     r')\b',
     re.I
 )
+
 # Context FSAs.
 NVA_PRE_IGNORE = {
     'change': {
@@ -94,7 +95,6 @@ NVA_PRE_IGNORE = {
     },
     None: False,
 }
-
 NVA_POST_IGNORE = {
     'good': True,
     'dva': True,
@@ -106,12 +106,22 @@ NVA_POST_IGNORE = {
     },
     None: False
 }
-
+NVI_PRE_IGNORE = {
+    'will': {
+        'follow': {
+            'for': True,
+            None: False,
+        },
+        None: False,
+    },
+    None: False,
+}
 NVI_POST_IGNORE = {
     'not': {
         'performed': True,
         None: False,
     },
+    'nt': True,
     'n/a': True,
     None: False,
 }
@@ -135,7 +145,7 @@ def _get_neovasc(text: str, lateralities, source: str) -> dict:
             negated = (
                 is_negated(m, text, word_window=4)
                 or is_negated(m, text, terms={'no'}, word_window=8)
-                or is_post_negated(m, text, terms={'normal', 'neg', 'deferred', 'no', 'nc', 'none'}, word_window=2)
+                or is_post_negated(m, text, terms={'normal', 'neg', 'deferred', 'no', 'nc', 'none', 'n'}, word_window=2)
             )
             if has_after(m if isinstance(m, int) else m.start(),
                          text,
@@ -187,7 +197,19 @@ def _get_nv_types(text: str, lateralities):
                 is_negated(m, text, word_window=4)
                 or is_negated(m, text, terms={'no'}, word_window=8)
                 or is_post_negated(m, text,
-                                   terms={'normal', 'neg', 'deferred', 'no', 'nc', 'none'},
+                                   terms={'normal': True,
+                                          'neg': True,
+                                          'deferred': True,
+                                          'no': True,
+                                          'nc': True,
+                                          'none': True,
+                                          'n': True,
+                                          'not': {
+                                              'seen': True,
+                                              None: False
+                                          },
+                                          'wnl': True,
+                                          None: False},
                                    word_window=3)
             )
             if has_after(m if isinstance(m, int) else m.start(),
@@ -207,6 +229,11 @@ def _get_nv_types(text: str, lateralities):
                                word_window=4):  # `has_after` word_window includes current match
                     continue
             if pat_label is 'NVI_PAT':
+                if has_before(m if isinstance(m, int) else m.start(),
+                              text,
+                              terms=NVI_PRE_IGNORE,
+                              word_window=3):
+                    continue
                 if has_after(m if isinstance(m, int) else m.start(),
                              text,
                              terms=NVI_POST_IGNORE,
