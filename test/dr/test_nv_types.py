@@ -9,6 +9,14 @@ from eye_extractor.output.dr import build_neovasc, build_nva, build_nvd, build_n
 # Test pattern.
 _pattern_cases = [
     (NVA_PAT, 'NVA: 0.30/0.43 M', False),
+    (NVI_HEADER_PAT, 'IRIS RUBEOSIS:', True),
+    (NVI_HEADER_PAT, 'iris rubeosis', False),
+    (NVI_HEADER_PAT, 'IRIS RUBEOSIS', False),
+    (NVI_HEADER_PAT, 'IRIS:', False),
+    (NVI_HEADER_PAT, 'NVI with SLE: n', True),
+    (NVI_HEADER_PAT, 'NVI with SLE:', True),
+    (NVI_HEADER_PAT, 'NVI with SLE', False),
+
 ]
 
 
