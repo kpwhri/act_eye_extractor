@@ -174,18 +174,10 @@ def _get_neovasc(text: str, lateralities, source: str) -> dict:
 
 
 def get_nv_types(text: str, *, headers=None, lateralities=None) -> list:
-    if not lateralities:
-        lateralities = build_laterality_table(text)
-    data = []
-    for new_var in _get_nv_types(text, lateralities):
-        data.append(new_var)
-    if headers:
-        pass
-
-    return data
+    return get_variable(text, _get_nv_types, headers=headers, lateralities=lateralities)
 
 
-def _get_nv_types(text: str, lateralities):
+def _get_nv_types(text: str, lateralities, source: str):
     for pat_label, pat, variable in [
         ('NVA_PAT', NVA_PAT, 'nva_yesno'),
         ('NVI_PAT', NVI_PAT, 'nvi_yesno'),
@@ -245,5 +237,5 @@ def _get_nv_types(text: str, lateralities):
                 'label': 'no' if negated else 'yes',
                 'negated': negated,
                 'regex': pat_label,
-                'source': 'ALL'
+                'source': source
             })

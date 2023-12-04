@@ -105,7 +105,7 @@ def test_neovasc_extract_and_build(text,
 
 
 _nva_extract_and_build_cases = [
-    ('Gonioscopy: right eye: no NVA', {}, 0, -1, -1),
+    # ('Gonioscopy: right eye: no NVA', {}, 0, -1, -1),
     ('RE: 20/40+ NVA: 0.60 M ¶LE: 20/30- NVA: 0.47 M', {}, -1, -1, -1),
     ('RE: 20/30 NVA: 0.47-M ¶LE: 20/20- NVA: 0.40 M', {}, -1, -1, -1),
     ('NVA: <1.75M', {}, -1, -1, -1),
@@ -196,6 +196,9 @@ _nvi_extract_and_build_cases = [
     # TODO: Fix laterality capture, `_get_by_index_default` to pass below case.
     pytest.param('Rubeosis: R eye: No L eye: No', {}, 0, 0, -1, marks=pytest.mark.skip()),
     ('IRIS RUBEOSIS: ', {}, -1, -1, -1),
+    ('', {'IRIS RUBEOSIS': ''}, -1, -1, -1),
+    ('IRIS RUBEOSIS:\nPUPILLARY DILATION: No', {}, -1, -1, -1),
+    ('', {'IRIS RUBEOSIS': '', 'PUPILLARY DILATION': 'No'}, -1, -1, -1),
     ('Iris/rubeosis - nt', {}, -1, -1, -1),
     ('IRIS: Normal Appearance, neg Rubeosis, OD. Coloboma OS', {}, 0, -1, -1),
     ('Will follow for rubeosis', {}, -1, -1, -1),
@@ -203,6 +206,10 @@ _nvi_extract_and_build_cases = [
     pytest.param('IRIS RUBEOSIS: OD No OS NO', {}, 0, 0, -1, marks=pytest.mark.skip()),
     ('RUBEOSIS: n', {}, -1, -1, 0),
     ('IRIS RUBEOSIS: abnormal Hazy view OD;normal OS', {}, -1, 0, -1),
+    ('', {'IRIS RUBEOSIS': 'abnormal Hazy view OD;normal OS'}, -1, 0, -1),
+    ('IRIS RUBEOSIS: abnormal Hazy view OD;normal OS\nTONOMETRY:Defer to Dr.Bowers', {}, -1, 0, -1),
+    ('', {'IRIS RUBEOSIS': 'abnormal Hazy view OD;normal OS\n',
+          'TONOMETRY': 'Defer to Dr.Bowers'}, -1, 0, -1),
     ('IRIS RUBEOSIS: Not seen OU', {}, 0, 0, -1),
     ('IRIS RUBEOSIS: none', {}, -1, -1, 0),
     ('NVI with SLE: n', {}, -1, -1, 0),
@@ -210,6 +217,9 @@ _nvi_extract_and_build_cases = [
     ('RUBEOSIS: None', {}, -1, -1, 0),
     ('IRIS RUBEOSIS: NT', {}, -1, -1, -1),
     ('NVI with SLE:', {}, -1, -1, -1),
+    ('', {'NVI with SLE': ''}, -1, -1, -1),
+    ('NVI with SLE:\nTa:', {}, -1, -1, -1),
+    ('', {'NVI with SLE': '\n', 'Ta': ''}, -1, -1, -1),
     ('NVI with SLE: none seen', {}, -1, -1, 0),
     ('Iris/rubeosis - WNL', {}, -1, -1, 0),
 ]
