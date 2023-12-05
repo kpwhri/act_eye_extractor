@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from eye_extractor.dr.nv_types import get_neovasc, get_nv_types, NVA_PAT
+from eye_extractor.dr.nv_types import get_neovasc, get_nv_types, NVA_PAT, NVI_HEADER_PAT
 from eye_extractor.output.dr import build_neovasc, build_nva, build_nvd, build_nve, build_nvi
 
 
@@ -25,7 +25,7 @@ def _get_pattern_cases():
 
 
 @pytest.mark.parametrize('pat, text, exp', _get_pattern_cases())
-def test_ret_micro_patterns(pat, text, exp):
+def test_neovasc_patterns(pat, text, exp):
     m = pat.search(text)
     assert bool(m) == exp
 

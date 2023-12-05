@@ -30,6 +30,13 @@ NVA_PAT = re.compile(
     r')\b',
     re.I
 )
+NVI_HEADER_PAT = re.compile(
+    r'\b('
+    r'iris\s+rubeosis:'
+    r'|nvi\s+with\s+sle:'
+    r')(\s|$)',
+    re.I
+)
 NVI_PAT = re.compile(
     r'\b('
     r'nvi'
