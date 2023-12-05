@@ -4,8 +4,8 @@ from eye_extractor.dr.binary_vars import get_dr_binary
 from eye_extractor.output.dr import (
     build_cottonwspot,
     build_disc_edema,
+    build_dme_yesno,
     build_dr_yesno,
-    build_edema,
     build_hard_exudates,
     build_hemorrhage,
     build_laser_scars,
@@ -22,7 +22,6 @@ from eye_extractor.output.dr import (
 
 
 @pytest.mark.parametrize('text, exp_value, exp_negword', [
-    ('MA: OD normal 6/6', 1, None),
     ('The optic disc edema has changed location', 1, None),
     ('OU  VESSELS: Normal pattern without exudates, hemorrhage, plaques, ', 0, 'without'),
     ('ASSESSMENT : Resolving vitreous/preretinal hemorrhage  No retinal tears', 1, None),
@@ -31,13 +30,7 @@ from eye_extractor.output.dr import (
                  marks=pytest.mark.skip(reason="Unhandled instance of negation.")),
     ('Dilated OD M/N- c/d 0.5 OU, macula clear, laser scars around atrophic hole', 1, None),
     ('Hx of BRVO OD with PRP', 1, None),
-    ('Corneal neovascularization, unspecified.', 1, None),
-    ('no NVD OD', 0, 'no'),
-    ('Normal blood cells without NVD', 0, 'without'),
-    ('without NVD, NVE', 0, 'without'),
-    ('no NVE Disc 0.45', 0, 'no'),
     ('Plan for surgery: Pars Plana Vitrectomy with Membrane Peel left eye.', 1, None),
-    ('Patient presents with: Diabetic macular edema E11.311', 1, None),
     ('No CSME', 0, 'no'),
     ('OD: erm, CMT 291; OS: erm, CMT 280 No change', 1, None),
 ])
@@ -72,26 +65,6 @@ def test_build_dr_yesno(data, exp_diab_retinop_yesno_re, exp_diab_retinop_yesno_
     assert result['diab_retinop_yesno_re'] == exp_diab_retinop_yesno_re
     assert result['diab_retinop_yesno_le'] == exp_diab_retinop_yesno_le
     assert result['diab_retinop_yesno_unk'] == exp_diab_retinop_yesno_unk
-
-
-@pytest.mark.parametrize('data, exp_ret_microaneurysm_re, exp_ret_microaneurysm_le, exp_ret_microaneurysm_unk', [
-    ([], -1, -1, -1),
-    ([{'ret_microaneurysm_re': {'value': 1},
-       'ret_microaneurysm_le': {'value': 1}}],
-     1, 1, -1),
-    ([{'ret_microaneurysm_re': {'value': 0},
-       'ret_microaneurysm_le': {'value': 0}}],
-     0, 0, -1),
-    ([{'ret_microaneurysm_re': {'value': 1}}], 1, -1, -1),
-    ([{'ret_microaneurysm_le': {'value': 0}}], -1, 0, -1),
-    ([{'ret_microaneurysm_unk': {'value': 1}}], -1, -1, 1),
-    ([{'ret_microaneurysm_unk': {'value': 0}}], -1, -1, 0)
-])
-def test_build_ret_micro(data, exp_ret_microaneurysm_re, exp_ret_microaneurysm_le, exp_ret_microaneurysm_unk):
-    result = build_ret_micro(data)
-    assert result['ret_microaneurysm_re'] == exp_ret_microaneurysm_re
-    assert result['ret_microaneurysm_le'] == exp_ret_microaneurysm_le
-    assert result['ret_microaneurysm_unk'] == exp_ret_microaneurysm_unk
 
 
 @pytest.mark.parametrize('data, exp_cottonwspot_re, exp_cottonwspot_le, exp_cottonwspot_unk', [
@@ -331,8 +304,8 @@ def test_build_nve(data, exp_nve_yesno_re, exp_nve_yesno_le, exp_nve_yesno_unk):
     ([{'dmacedema_yesno_unk': {'value': 1}}], -1, -1, 1),
     ([{'dmacedema_yesno_unk': {'value': 0}}], -1, -1, 0)
 ])
-def test_build_edema(data, exp_dmacedema_yesno_re, exp_dmacedema_yesno_le, exp_dmacedema_yesno_unk):
-    result = build_edema(data)
+def test_build_dme_yesno(data, exp_dmacedema_yesno_re, exp_dmacedema_yesno_le, exp_dmacedema_yesno_unk):
+    result = build_dme_yesno(data)
     assert result['dmacedema_yesno_re'] == exp_dmacedema_yesno_re
     assert result['dmacedema_yesno_le'] == exp_dmacedema_yesno_le
     assert result['dmacedema_yesno_unk'] == exp_dmacedema_yesno_unk

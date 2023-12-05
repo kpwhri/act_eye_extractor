@@ -71,6 +71,10 @@ def test_skip_regex_before():
     ('2 (-)CVN', '2  no CVN'),
     ('2 (-) CVN', '2  no  CVN'),
     ('DM w/out NPDR OU', 'DM without NPDR OU'),
+    ('OD: -cnv', 'OD:  no cnv'),
+    ('-CSME OS', ' no CSME OS'),
+    ('-PED', ' no PED'),
+    pytest.param('-persistant DME OD', '-persistant DME OD', marks=pytest.mark.skip(reason="'-' not negator")),
 ])
 def test_handle_negation_with_punctuation(text, exp):
     """Hacky way to handle negation in punctuation"""

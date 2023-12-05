@@ -4,12 +4,6 @@ from eye_extractor.nlp.negate.negation import is_negated, is_post_negated
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 DIABETIC_RETINOPATHY_PATS = [
-    ('ret_microaneurysm', re.compile(
-        r'\b('
-        r'mas?|retinal mas?|retinal micro\W?aneurisms?'
-        r')\b',
-        re.I
-    )),
     ('disc_edema_DR', re.compile(
         r'\b('
         r'disc edema'
@@ -34,23 +28,9 @@ DIABETIC_RETINOPATHY_PATS = [
         r')\b',
         re.I
     )),
-    ('neovasc_yesno', re.compile(
-        r'\b('
-        r'NV|Neovascularization|neovascularization of( the)? angle|neovascularization'
-        r'|neovascularization of (the )?disc|neovascularization of the optic disc'
-        r'|NVA|NVI|NVD|NVE'
-        r')\b',
-        re.I
-    )),
     ('drtreatment', re.compile(
         r'\b('
         r'PRP|pan retinal photocoagulation|Pars plana vitrectomy'
-        r')\b',
-        re.I
-    )),
-    ('dmacedema_yesno', re.compile(
-        r'\b('
-        r'DME|diabetic macular edema'
         r')\b',
         re.I
     )),

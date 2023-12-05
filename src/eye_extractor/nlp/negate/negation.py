@@ -38,12 +38,19 @@ NEGWORDS = {
     'resolution': True,
     'cleared': True,
     'hx': True,
-    'risk': True,
+    'risk': {
+        'of': {
+            'exacerbating': NegationStatus.UNKNOWN,
+            'worsening': NegationStatus.UNKNOWN,
+            None: True,
+        },
+        None: True,
+    },
     'history': True,
     None: False,
 }
 
-NEGWORD_UNKNOWN_PHRASES = {'no new'}
+NEGWORD_UNKNOWN_PHRASES = {'no new', 'risk of exacerbating', 'risk of worsening'}
 
 NEGWORD_SET = frozenset({key for key in NEGWORDS if key})
 

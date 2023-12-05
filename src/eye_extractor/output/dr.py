@@ -18,7 +18,12 @@ def build_dr_yesno(data, *, macula_wnl=None, note_date=None):
 
 
 def build_ret_micro(data, *, note_date=None):
-    return column_from_variable_binary(data, 'ret_microaneurysm', restrict_date=note_date)
+    return column_from_variable_abbr(
+        'ret_microaneurysm', Severity.UNKNOWN, data,
+        restrict_date=note_date,
+        transformer_func=Severity,
+        enum_to_str=True,
+    )
 
 
 def build_cottonwspot(data, *, note_date=None):
@@ -194,7 +199,7 @@ def build_dr_tx(data, *, note_date=None):
     )
 
 
-def build_edema(data, *, note_date=None):
+def build_dme_yesno(data, *, note_date=None):
     return column_from_variable_binary(data, 'dmacedema_yesno', restrict_date=note_date)
 
 
@@ -261,7 +266,7 @@ def build_dr_variables(data):
     note = data['note']
     results = {}
     results.update(build_dr_yesno(curr['dr_yesno'], macula_wnl=data['common']['macula_wnl'], note_date=note['date']))
-    results.update(build_ret_micro(curr['binary_vars'], note_date=note['date']))
+    results.update(build_ret_micro(curr['ret_micro'], note_date=note['date']))
     results.update(build_cottonwspot(curr['cottonwspot'], note_date=note['date']))
     results.update(build_hard_exudates(curr['exudates'], note_date=note['date']))
     results.update(build_exudates(curr['exudates'], note_date=note['date']))
@@ -278,7 +283,7 @@ def build_dr_variables(data):
     results.update(build_focal_laser_scar_type(curr['laser_scar_type'], note_date=note['date']))
     results.update(build_grid_laser_scar_type(curr['laser_scar_type'], note_date=note['date']))
     results.update(build_macular_laser_scar_type(curr['laser_scar_type'], note_date=note['date']))
-    results.update(build_neovasc(curr['binary_vars'], note_date=note['date']))
+    results.update(build_neovasc(curr['nv_types'], note_date=note['date']))
     results.update(build_nva(curr['nv_types'], note_date=note['date']))
     results.update(build_nvi(curr['nv_types'], note_date=note['date']))
     results.update(build_nvd(curr['nv_types'], note_date=note['date']))
@@ -287,7 +292,7 @@ def build_dr_variables(data):
     results.update(build_npdr_severity(curr['dr_type'], note_date=note['date']))
     results.update(build_pdr_severity(curr['pdr'], note_date=note['date']))
     results.update(build_dr_tx(data['common']['treatment'], note_date=note['date']))
-    results.update(build_edema(curr['binary_vars'], note_date=note['date']))
+    results.update(build_dme_yesno(curr['dme_yesno'], note_date=note['date']))
     results.update(build_sig_edema(curr['binary_vars'], note_date=note['date']))
     results.update(build_oct_cme(curr['binary_vars'], note_date=note['date']))
     results.update(build_dme_tx(data['common']['treatment'], note_date=note['date']))

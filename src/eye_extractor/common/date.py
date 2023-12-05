@@ -45,7 +45,10 @@ DATE_PAT4b = re.compile(
 )
 
 DATE_PAT5 = re.compile(
-    r'\b(?P<year>\d{4})\b'
+    r'\b('
+    r'(?<!\w\d{2}\.)'  # Prevent ICD-10 code capture
+    r'(?P<year>\d{4})'
+    r')\b'
 )
 
 MONTHS = {
@@ -108,11 +111,13 @@ def parse_all_dates(text):
         for m in pat.finditer(text):
             data = m.groupdict()
             curr_day = data.get('day', 17)  # default to 17, close to mid-month
-            curr_month = data.get('month', None) or _get_month(data.get('month_name', None))
+            curr_month = data.get('month', None) or _get_month(data.get('month_name', None))  # default to 2 (Feb)
             curr_year = data.get('year')
-            if i == 5:  # if only year found
+            if i == 6:  # if only year found
                 try:
-                    curr = parse(text[m.end() - 20: m.end() + 1], fuzzy=True)
+                    curr = parse(text[m.end() - 20: m.end() + 1], fuzzy=True)  # Returns month / day from current date.
+                    if isinstance(curr, datetime.datetime):
+                        curr = curr.date()
                 except ParserError as e:
                     logger.error(f'Failed to parse datetime (just year) in: {text[m.end() - 20: m.end() + 1]}')
                     continue

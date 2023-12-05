@@ -20,6 +20,7 @@ class Laterality(enum.IntEnum):
 class LateralityLocatorStrategy(enum.Enum):
     DEFAULT = 1
     LINE_BREAK = 2
+    SENTENCE = 3
 
 
 LATERALITY = {
@@ -135,6 +136,9 @@ def build_laterality_table(text: str, search_negated_list: bool = False):
     :return: LateralityLocator table of all found lateralities.
     """
     latloc = LateralityLocator()
+    # TODO: Bug - `LATERALITY_PATTERN` sub-patterns that end with '.' won't capture if followed by non-alphanumeric.
+    # Above caused by '.)\b' - period (non-alphanumeric) followed by word boundary.
+    # Word boundary, '\b', requires alphanumeric next to non-alphanumeric. So '.' followed by whitespace does not match.
     for m in LATERALITY_PATTERN.finditer(text):
         is_section_start = m.group().endswith(':')
         latloc.add(lat_lookup(m), m.start(), m.end(), is_section_start)
@@ -180,7 +184,8 @@ def get_immediate_next_or_prev_laterality_from_table(table, index, *, max_skips=
     return lat, start, end
 
 
-def create_variable(data, text, match, lateralities, variable, value, *, known_laterality=None):
+def create_variable(data, text, match, lateralities, variable, value, *, known_laterality=None,
+                    strategy=LateralityLocatorStrategy.DEFAULT):
     # dates: this will probably significantly increase processing time
     if isinstance(value, dict) and value.get('date', None) is None:  # skip if alternative way of finding date
         value['date'] = parse_nearest_date_to_line_start(match.start(), text)
@@ -190,12 +195,14 @@ def create_variable(data, text, match, lateralities, variable, value, *, known_l
         lat = get_laterality_for_term(
             lateralities or build_laterality_table(text),
             match,
-            text
+            text,
+            strategy=strategy
         )
     add_laterality_to_variable(data, lat, variable, value)
 
 
-def create_new_variable(text, match, lateralities, variable, value, *, known_laterality=None):
+def create_new_variable(text, match, lateralities, variable, value, *, known_laterality=None,
+                        strategy=LateralityLocatorStrategy.DEFAULT):
     """
     Create a new variable (usually passed to a list called data). Wrapper around `create_variable`.
 
@@ -216,7 +223,7 @@ def create_new_variable(text, match, lateralities, variable, value, *, known_lat
     data = {}
     # assign 'value' to each of the lateralities, suffixing '_re', '_le', '_unk'
     create_variable(data, text, match, lateralities, variable, value,
-                    known_laterality=known_laterality)
+                    known_laterality=known_laterality, strategy=strategy)
     return data
 
 
@@ -270,6 +277,7 @@ class LateralityLocator:
         else:
             self.lateralities = SortedList([], key=lambda x: x[1])
         self.default_laterality = default_laterality
+        self.char_max = 3
 
     def add_laterality(self, laterality: LatLocation):
         self.lateralities.add(laterality)
@@ -301,6 +309,9 @@ class LateralityLocator:
                     return lat, None
                 elif lat.start < match_start:  # laterality before match index
                     last_found_lat = lat  # reset this value
+                # Laterality after match and not section start
+                elif (lat.start > match_start) and ('-' in text[lat.start - 3: lat.start]):
+                    return last_found_lat, lat
                 else:  # laterality section first after match index, so no after
                     return last_found_lat, None
             else:
@@ -333,16 +344,18 @@ class LateralityLocator:
 
     def narrow_search_window_pre(self, match_start, text, min_count=2, value=LINE_START_CHARS):
         i = match_start - 1
-        while min_count > 0:
+        while min_count > 0 and i > -1:
             if text[i] in value:
                 min_count -= 1
-        return match_start - i, text[i:]
+            i -= 1
+        return match_start - i - 1, text[i+1:]
 
     def narrow_search_window_post(self, match_start, text, min_count=2, value=LINE_START_CHARS):
         i = match_start + 1
-        while min_count > 0:
+        while min_count > 0 and i < len(text):
             if text[i] in value:
                 min_count -= 1
+            i += 1
         return match_start, text[:i]
 
     def get_by_index(self, match_start, text, *,
@@ -351,9 +364,19 @@ class LateralityLocator:
         match strategy:
             case LateralityLocatorStrategy.DEFAULT:
                 return self._get_by_index_default(match_start, text, next_max=next_max, prev_max=prev_max)
+            # Any `LateralityLocatorStrategy` that attempts to split text to prevent laterality capture will fail.
+            # Laterality already exists in `LateralityLocator` by this point in execution, and will be returned by
+            # `LateralityLocator._get_by_index_default` despite splitting text.
+            # TODO: Remove `LateralityLocatorStrategy`.
             case LateralityLocatorStrategy.LINE_BREAK:
                 match_start, text = self.narrow_search_window(match_start, text, min_count=2, value=LINE_START_CHARS)
                 return self._get_by_index_default(match_start, text, next_max=next_max, prev_max=prev_max)
+            case LateralityLocatorStrategy.SENTENCE:
+                match_start, text = self.narrow_search_window(match_start, text, min_count=1, value='.')
+                return self._get_by_index_default(match_start, text, next_max=next_max, prev_max=prev_max)
+            # case LateralityLocatorStrategy.SENENCE_AND_LIMIT_NEXT:
+            #     self.get_sentence_only
+            #     return self._get_by_index_default(limit_next=True);
             case _:
                 return self._get_by_index_default(match_start, text, next_max=next_max, prev_max=prev_max)
 
@@ -367,6 +390,16 @@ class LateralityLocator:
                 return prev_lat.laterality if prev_dist < next_dist else next_lat.laterality
             return prev_lat.laterality if prev_commas < next_commas else next_lat.laterality
         return prev_lat.laterality
+
+    def _get_by_index_default_helper_check_next_lat(self, match_start, text, prev_lat, next_lat, count_letters):
+        """Refactored repeatedly-called method."""
+        if not prev_lat:
+            next_commas = self.count_after(match_start, text, next_lat, count_letters)
+            if next_commas < self.char_max:
+                return next_lat.laterality
+            else:
+                return self.default_laterality
+        return next_lat.laterality
 
     def _get_by_index_default(self, match_start, text, *, next_max=60, prev_max=100,
                               count_letters=DEFAULT_COUNT_LETTERS):
@@ -389,8 +422,10 @@ class LateralityLocator:
                 return self._get_by_index_default_helper_check_prev_lat(
                     match_start, text, prev_lat, next_lat, count_letters, prev_dist, next_max
                 )
-            elif next_lat and (next_dist := self.distance(match_start, next_lat)) < next_max:
-                return next_lat.laterality
+            elif next_lat and (self.distance(match_start, next_lat)) < next_max:
+                return self._get_by_index_default_helper_check_next_lat(
+                    match_start, text, prev_lat, next_lat, count_letters
+                )
         return self.default_laterality
 
     def __iter__(self):
