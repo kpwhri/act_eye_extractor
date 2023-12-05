@@ -4,6 +4,8 @@ from eye_extractor.amd.wet import WetSeverity
 from eye_extractor.common.algo.fluid import Fluid
 from eye_extractor.common.algo.treatment import Treatment
 from eye_extractor.common.severity import Risk, Severity
+from eye_extractor.dr.dr_type import DrType
+from eye_extractor.dr.hemorrhage_type import HemorrhageType
 from eye_extractor.exam.gonio import Gonio
 from eye_extractor.glaucoma.dx import GlaucomaType
 from eye_extractor.glaucoma.preglaucoma import Preglaucoma
@@ -380,9 +382,9 @@ OUTPUT_COLUMNS = {
     'hemorrhage_dr_le': [is_in_range(-1, 1)],
     'hemorrhage_dr_unk': [is_in_range(-1, 1)],
     # hemorrhage_typ_dr
-    'hemorrhage_typ_dr_re': [is_in_range(-1, 6)],
-    'hemorrhage_typ_dr_le': [is_in_range(-1, 6)],
-    'hemorrhage_typ_dr_unk': [is_in_range(-1, 6)],
+    'hemorrhage_typ_dr_re': [is_int_in_enum(HemorrhageType)],
+    'hemorrhage_typ_dr_le': [is_int_in_enum(HemorrhageType)],
+    'hemorrhage_typ_dr_unk': [is_int_in_enum(HemorrhageType)],
     # laser scars
     'dr_laser_scars_re': [is_in_range(-1, 1)],
     'dr_laser_scars_le': [is_in_range(-1, 1)],
@@ -436,9 +438,9 @@ OUTPUT_COLUMNS = {
     'macular_dr_laser_scar_type_le': [is_in_range(-1, 1)],
     'macular_dr_laser_scar_type_unk': [is_in_range(-1, 1)],
     # Diabetic retinopathy type
-    'diabretinop_type_re': [is_in_range(-1, 2)],
-    'diabretinop_type_le': [is_in_range(-1, 2)],
-    'diabretinop_type_unk': [is_in_range(-1, 2)],
+    'diabretinop_type_re': [is_int_in_enum(DrType)],
+    'diabretinop_type_le': [is_int_in_enum(DrType)],
+    'diabretinop_type_unk': [is_int_in_enum(DrType)],
     # Presence of fluid
     'fluid_dr_re': [is_int_in_enum(Fluid)],
     'fluid_dr_le': [is_int_in_enum(Fluid)],
