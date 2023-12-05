@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from eye_extractor.dr.nv_types import get_neovasc, get_nv_types, NVA_PAT, NVI_HEADER_PAT
+from eye_extractor.dr.nv_types import get_nv_types, NVA_PAT, NVI_HEADER_PAT
 from eye_extractor.output.dr import build_neovasc, build_nva, build_nvd, build_nve, build_nvi
 
 
@@ -104,7 +104,7 @@ def test_neovasc_extract_and_build(text,
                                    exp_neovasc_yesno_re,
                                    exp_neovasc_yesno_le,
                                    exp_neovasc_yesno_unk):
-    pre_json = get_neovasc(text)
+    pre_json = get_nv_types(text)
     post_json = json.loads(json.dumps(pre_json))
     result = build_neovasc(post_json)
     assert result['neovasc_yesno_re'] == exp_neovasc_yesno_re
