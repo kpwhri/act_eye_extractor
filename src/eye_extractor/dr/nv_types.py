@@ -135,13 +135,17 @@ NVI_POST_IGNORE = {
 
 
 def get_nv_types(text: str, *, headers=None, lateralities=None) -> list:
-    return get_variable(text, _get_nv_types, headers=headers, lateralities=lateralities)
+    return get_variable(text, _get_nv_types,
+                        headers=headers,
+                        # target_headers=['IRIS RUBEOSIS' 'NVI with SLE'],
+                        lateralities=lateralities)
 
 
 def _get_nv_types(text: str, lateralities, source: str):
     for pat_label, pat, variable in [
         ('NV_PAT', NV_PAT, None),
         ('NVA_PAT', NVA_PAT, 'nva_yesno'),
+        # ('NVI_HEADER_PAT', NVI_HEADER_PAT, 'nvi_yesno'),
         ('NVI_PAT', NVI_PAT, 'nvi_yesno'),
         ('NVD_PAT', NVD_PAT, 'nvd_yesno'),
         ('NVE_PAT', NVE_PAT, 'nve_yesno'),
