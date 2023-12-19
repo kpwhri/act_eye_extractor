@@ -56,18 +56,29 @@ def rename_subretfluid(var: Fluid):
 
 
 def fluid_prioritization(new_value: Fluid, curr_value: Fluid | None):
-    if curr_value is None:  # may start as None
+    """
+    Defines how to reconcile/harmonise multiple fluid values in same note and laterality.
+    """
+    if curr_value is None:  # may start as None, so accept the new value
         return new_value
-    elif curr_value == new_value:
+    elif curr_value == new_value:  # if both are the same, no need for further processing
         return curr_value
     elif {curr_value, new_value} == {Fluid.SUBRETINAL_FLUID, Fluid.INTRARETINAL_FLUID}:
+        # merge subret and intraret
         return Fluid.SUB_AND_INTRARETINAL_FLUID
     elif curr_value == Fluid.SUB_AND_INTRARETINAL_FLUID and new_value in {
-        Fluid.SUBRETINAL_FLUID, Fluid.INTRARETINAL_FLUID
+        Fluid.SUBRETINAL_FLUID, Fluid.INTRARETINAL_FLUID, Fluid.SUB_AND_INTRARETINAL_FLUID,
     }:
+        # keep merged if any existing sub-item is being added
         return curr_value
     elif {curr_value, new_value} == {Fluid.NO_SUBRETINAL_FLUID, Fluid.NO_INTRARETINAL_FLUID}:
+        # merge no subret and no intraret
         return Fluid.NO_SUB_AND_INTRARETINAL_FLUID
+    elif curr_value == Fluid.NO_SUB_AND_INTRARETINAL_FLUID and new_value in {
+        Fluid.NO_SUBRETINAL_FLUID, Fluid.NO_INTRARETINAL_FLUID, Fluid.NO_SUB_AND_INTRARETINAL_FLUID,
+    }:
+        # keep merged if any existing sub-item is being added
+        return curr_value
     elif curr_value.value in {0, 10, 20, 30, -1} and new_value in {1, 11, 21, 31}:
         # group negatives/positives
         # -1=Unknown fluid is the lowest of the 'no' so it will override negatives in next line
