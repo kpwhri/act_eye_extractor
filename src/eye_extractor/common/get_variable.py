@@ -42,7 +42,7 @@ def get_variable(text: str, get_helper: Callable, *,
     """
     data = []
     # Extract matches from sections / headers.
-    if headers:
+    if target_headers:
         for section_header, section_text in headers.iterate(*target_headers):
             lateralities = build_laterality_table(section_text, search_negated_list=search_negated_list)
             for new_var in get_helper(section_text, lateralities, section_header):

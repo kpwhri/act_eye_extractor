@@ -1,4 +1,5 @@
 import re
+import sys
 
 from eye_extractor.common.get_variable import get_variable
 from eye_extractor.nlp.negate.negation import has_after, has_before, is_negated, is_post_negated
@@ -135,10 +136,7 @@ NVI_POST_IGNORE = {
 
 
 def get_nv_types(text: str, *, headers=None, lateralities=None) -> list:
-    return get_variable(text, _get_nv_types,
-                        headers=headers,
-                        # target_headers=['IRIS RUBEOSIS' 'NVI with SLE'],
-                        lateralities=lateralities)
+    return get_variable(text, _get_nv_types, headers=headers, lateralities=lateralities)
 
 
 def _get_nv_types(text: str, lateralities, source: str):

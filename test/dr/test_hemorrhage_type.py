@@ -192,3 +192,33 @@ def test_dot_blot_severity_extract_and_build(text,
     assert result['dotblot_hem_re'] == exp_dotblot_hem_re
     assert result['dotblot_hem_le'] == exp_dotblot_hem_le
     assert result['dotblot_hem_unk'] == exp_dotblot_hem_unk
+
+
+_preretinal_severity_extract_and_build_cases = [
+    ('mild preretinal hemorrhage OU', {}, 'MILD', 'MILD', 'UNKNOWN'),  # synthetic
+    ('Mild - moderate preretinal heme OD', {}, 'MODERATE', 'UNKNOWN', 'UNKNOWN'),  # synthetic
+    ('no preretinal hemorrhage ou', {}, 'NONE', 'NONE', 'UNKNOWN'),  # synthetic
+    ('moderate preretinal heme OS', {}, 'UNKNOWN', 'MODERATE', 'UNKNOWN'),  # synthetic
+    ('severe preretinal hemorrhage', {}, 'UNKNOWN', 'UNKNOWN', 'SEVERE'),  # synthetic
+    ('preretinal heme severity=3Q OS', {}, 'UNKNOWN', 'Q3', 'UNKNOWN'),  # synthetic
+    ('preretinal hemorrhage temporal and inferior quadrant OD', {}, 'Q2', 'UNKNOWN', 'UNKNOWN'),  # synthetic
+    ('nasal quadrant, hemorrhage preretinal', {}, 'UNKNOWN', 'UNKNOWN', 'Q1'),  # synthetic
+    ('preretinal heme in all quadrants ou', {}, 'Q4', 'Q4', 'UNKNOWN'),  # synthetic
+    ('swelling and preretinal hemorrhage', {}, 'UNKNOWN', 'UNKNOWN', 'YES NOS'),  # synthetic
+]
+
+
+@pytest.mark.parametrize('text, headers, exp_preretinal_hem_re, exp_preretinal_hem_le, '
+                         'exp_preretinal_hem_unk',
+                         _preretinal_severity_extract_and_build_cases)
+def test_preretinal_severity_extract_and_build(text,
+                                               headers,
+                                               exp_preretinal_hem_re,
+                                               exp_preretinal_hem_le,
+                                               exp_preretinal_hem_unk):
+    pre_json = get_hemorrhage_type(text)
+    post_json = json.loads(json.dumps(pre_json))
+    result = build_preretinal_severity(post_json)
+    assert result['preretinal_hem_re'] == exp_preretinal_hem_re
+    assert result['preretinal_hem_le'] == exp_preretinal_hem_le
+    assert result['preretinal_hem_unk'] == exp_preretinal_hem_unk
