@@ -3,7 +3,12 @@ import json
 import pytest
 
 from eye_extractor.dr.hemorrhage_type import get_hemorrhage_type, HemorrhageType
-from eye_extractor.output.dr import build_dot_blot_severity, build_hemorrhage_type, build_intraretinal_severity
+from eye_extractor.output.dr import (
+    build_dot_blot_severity,
+    build_hemorrhage_type,
+    build_intraretinal_severity,
+    build_preretinal_severity,
+)
 
 
 @pytest.mark.parametrize('text, exp_value, exp_negword', [

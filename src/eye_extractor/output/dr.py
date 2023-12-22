@@ -81,6 +81,15 @@ def build_dot_blot_severity(data, *, note_date=None):
     )
 
 
+def build_preretinal_severity(data, *, note_date=None):
+    return column_from_variable_abbr(
+        'preretinal_hem', Severity.UNKNOWN, data,
+        restrict_date=note_date,
+        transformer_func=Severity,
+        enum_to_str=True,
+    )
+
+
 def build_irma(data, *, note_date=None):
     return column_from_variable_abbr(
         'irma', Severity.UNKNOWN, data,
@@ -276,6 +285,7 @@ def build_dr_variables(data):
     results.update(build_hemorrhage_type(curr['hemorrhage_type'], note_date=note['date']))
     results.update(build_intraretinal_severity(curr['hemorrhage_type'], note_date=note['date']))
     results.update(build_dot_blot_severity(curr['hemorrhage_type'], note_date=note['date']))
+    results.update(build_preretinal_severity(curr['hemorrhage_type'], note_date=note['date']))
     results.update(build_irma(curr['irma'], note_date=note['date']))
     results.update(build_fluid(data['common']['treatment'], note_date=note['date']))
     results.update(build_laser_scars(curr['binary_vars'], note_date=note['date']))
