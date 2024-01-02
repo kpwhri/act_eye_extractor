@@ -481,6 +481,9 @@ OUTPUT_COLUMNS = {
     'preretinal_hem_re': [is_string_in_enum(Severity)],
     'preretinal_hem_le': [is_string_in_enum(Severity)],
     'preretinal_hem_unk': [is_string_in_enum(Severity)],
+    # Vitreous hemorrhage severity
+
+    # Subretinal hemorrhage severity
     # Venous beading severity
     'venbeading_re': [is_string_in_enum(Severity)],
     'venbeading_le': [is_string_in_enum(Severity)],
