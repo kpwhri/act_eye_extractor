@@ -78,7 +78,7 @@ def _get_hemorrhage_type(text: str, lateralities, source: str) -> dict:
         (INTRARETINAL_PAT, HemorrhageType.INTRARETINAL, 'intraretinal', 'intraretinal_hem'),
         (DOT_BLOT_PAT, HemorrhageType.DOT_BLOT, 'dot blot', 'dotblot_hem'),
         (PRERETINAL_PAT, HemorrhageType.PRERETINAL, 'preretinal', 'preretinal_hem'),
-        (VITREOUS_PAT, HemorrhageType.VITREOUS, 'vitreous', None),
+        (VITREOUS_PAT, HemorrhageType.VITREOUS, 'vitreous', 'vitreous_hem'),
         (SUBRETINAL_PAT, HemorrhageType.SUBRETINAL, 'subretinal', None),
         (HEME_NOS_PAT, HemorrhageType.YES_NOS, 'NOS', None),
     ]:
