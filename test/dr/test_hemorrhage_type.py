@@ -8,6 +8,7 @@ from eye_extractor.output.dr import (
     build_hemorrhage_type,
     build_intraretinal_severity,
     build_preretinal_severity,
+    build_subretinal_severity,
     build_vitreous_severity,
 )
 
@@ -258,3 +259,33 @@ def test_vitreous_severity_extract_and_build(text,
     assert result['vitreous_hem_re'] == exp_vitreous_hem_re
     assert result['vitreous_hem_le'] == exp_vitreous_hem_le
     assert result['vitreous_hem_unk'] == exp_vitreous_hem_unk
+
+
+_subretinal_severity_extract_and_build_cases = [
+    ('mild subretinal hemorrhage OU', {}, 'MILD', 'MILD', 'UNKNOWN'),  # synthetic
+    ('Mild - moderate subretinal heme OD', {}, 'MODERATE', 'UNKNOWN', 'UNKNOWN'),  # synthetic
+    ('no subretinal hemorrhage ou', {}, 'NONE', 'NONE', 'UNKNOWN'),  # synthetic
+    ('moderate subretinal heme OS', {}, 'UNKNOWN', 'MODERATE', 'UNKNOWN'),  # synthetic
+    ('severe subretinal hemorrhage', {}, 'UNKNOWN', 'UNKNOWN', 'SEVERE'),  # synthetic
+    ('subretinal heme severity=3Q OS', {}, 'UNKNOWN', 'Q3', 'UNKNOWN'),  # synthetic
+    ('subretinal hemorrhage temporal and inferior quadrant OD', {}, 'Q2', 'UNKNOWN', 'UNKNOWN'),  # synthetic
+    ('nasal quadrant, hemorrhage subretinal', {}, 'UNKNOWN', 'UNKNOWN', 'Q1'),  # synthetic
+    ('subretinal heme in all quadrants ou', {}, 'Q4', 'Q4', 'UNKNOWN'),  # synthetic
+    ('swelling and subretinal hemorrhage', {}, 'UNKNOWN', 'UNKNOWN', 'YES NOS'),  # synthetic
+]
+
+
+@pytest.mark.parametrize('text, headers, exp_subretinal_hem_dr_re, exp_subretinal_hem_dr_le, '
+                         'exp_subretinal_hem_dr_unk',
+                         _subretinal_severity_extract_and_build_cases)
+def test_subretinal_severity_extract_and_build(text,
+                                               headers,
+                                               exp_subretinal_hem_dr_re,
+                                               exp_subretinal_hem_dr_le,
+                                               exp_subretinal_hem_dr_unk):
+    pre_json = get_hemorrhage_type(text)
+    post_json = json.loads(json.dumps(pre_json))
+    result = build_subretinal_severity(post_json)
+    assert result['subretinal_hem_dr_re'] == exp_subretinal_hem_dr_re
+    assert result['subretinal_hem_dr_le'] == exp_subretinal_hem_dr_le
+    assert result['subretinal_hem_dr_unk'] == exp_subretinal_hem_dr_unk

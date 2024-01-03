@@ -99,6 +99,10 @@ def build_vitreous_severity(data, *, note_date=None):
     )
 
 
+def build_subretinal_severity(data, *, note_date=None):
+    pass
+
+
 def build_irma(data, *, note_date=None):
     return column_from_variable_abbr(
         'irma', Severity.UNKNOWN, data,
