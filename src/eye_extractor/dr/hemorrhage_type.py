@@ -79,7 +79,7 @@ def _get_hemorrhage_type(text: str, lateralities, source: str) -> dict:
         (DOT_BLOT_PAT, HemorrhageType.DOT_BLOT, 'dot blot', 'dotblot_hem'),
         (PRERETINAL_PAT, HemorrhageType.PRERETINAL, 'preretinal', 'preretinal_hem'),
         (VITREOUS_PAT, HemorrhageType.VITREOUS, 'vitreous', 'vitreous_hem'),
-        (SUBRETINAL_PAT, HemorrhageType.SUBRETINAL, 'subretinal', None),
+        (SUBRETINAL_PAT, HemorrhageType.SUBRETINAL, 'subretinal', 'subretinal_hem_dr'),
         (HEME_NOS_PAT, HemorrhageType.YES_NOS, 'NOS', None),
     ]:
         for m in pat.finditer(text):
