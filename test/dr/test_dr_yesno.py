@@ -56,6 +56,7 @@ _dr_yesno_extract_and_build_cases = [
     ('¶(1) No diabetic retinopathy.', {}, -1, -1, 0),
     ('NPDR : no', {}, -1, -1, 0),
     ("See DR. Bowers' April 19, 2023 exam", {}, -1, -1, -1),
+    ("See DR. Cronkite's April 19, 2023 exam", {}, -1, -1, -1),
     ('recommended by Dr. Bowers', {}, -1, -1, -1),
     ('Primary Eye Care Provider: Dr, Bowers', {}, -1, -1, -1),
     ('Surgeon: dr. Bowers', {}, -1, -1, -1),
@@ -70,6 +71,7 @@ _dr_yesno_extract_and_build_cases = [
     ('Dr. Bowers will interpret results.', {}, -1, -1, -1),
     ('Hx of ce with iol os by Dr. Bowers', {}, -1, -1, -1),
     ('is here for an annual eye exam per dr.Bowers, OPH MD', {}, -1, -1, -1),
+    ('REFERRED BY: DR. BOWERS for pco os and cataract od.', {}, -1, -1, -1),
 ]
 
 

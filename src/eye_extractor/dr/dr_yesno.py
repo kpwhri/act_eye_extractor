@@ -3,6 +3,7 @@ import re
 from eye_extractor.nlp.negate.negation import has_after, has_before, is_negated, is_post_negated
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
+# Patterns.
 DR_YESNO_PAT = re.compile(
     r'\b('
     r'diabetic\s+retinopathy'
@@ -15,6 +16,15 @@ DR_YESNO_ABBR_PAT = re.compile(
     r'(N?P|BG?)?DR|(n?p|bg?)?dr'
     r')\b',
 )
+
+# Context FSAs.
+DR_YESNO_ABBR_PRE_IGNORE = {
+    'referred': {
+        'by': True,
+        None: False,
+    },
+    None: False,
+}
 
 
 def get_dr_yesno(text: str, *, headers=None, lateralities=None) -> list:
@@ -41,12 +51,19 @@ def _get_dr_yesno(text: str, lateralities, source: str) -> dict:
                           terms={'confirm', 'surgeon', 'tablet', 'exam'},
                           word_window=2,
                           boundary_chars='¶'):
-                break
+                continue
             elif has_after(m if isinstance(m, int) else m.start(),
                            text,
                            terms={'exam'},
-                           word_window=6):
-                break
+                           word_window=7):
+                continue
+            if pat_label is 'DR_YESNO_ABBR_PAT':
+                if has_before(m if isinstance(m, int) else m.start(),
+                              text,
+                              terms=DR_YESNO_ABBR_PRE_IGNORE,
+                              word_window=3,
+                              boundary_chars='¶'):
+                    continue
             negated = (
                 is_negated(m, text, word_window=3)
                 or is_post_negated(m, text, terms={'no'}, word_window=3)
