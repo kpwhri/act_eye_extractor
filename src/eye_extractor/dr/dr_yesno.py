@@ -13,7 +13,8 @@ DR_YESNO_PAT = re.compile(
 # Separate pattern to capture case-sensitive abbreviations.
 DR_YESNO_ABBR_PAT = re.compile(
     r'\b('
-    r'(N?P|BG?)?DR|(n?p|bg?)?dr'
+    r'(N?P|BG?)?DR'
+    r'|(n?p|bg?)?dr'
     r')\b',
 )
 

@@ -11,6 +11,7 @@ _pattern_cases = [
     (DR_YESNO_PAT, 'Diabetic retinopathy', True),
     (DR_YESNO_PAT, 'DIABETIC RETINOPATHY', True),
     (DR_YESNO_ABBR_PAT, 'DR', True),
+    (DR_YESNO_ABBR_PAT, 'DR.', True),
     (DR_YESNO_ABBR_PAT, 'dr', True),
     (DR_YESNO_ABBR_PAT, 'BDR', True),
     (DR_YESNO_ABBR_PAT, 'bdr', True),
@@ -35,6 +36,7 @@ def test_dr_yesno_patterns(pat, text, exp):
     assert bool(m) == exp
 
 
+# TODO: Use relevant tests for `test_dr_type.py`
 # Test extract and build.
 _dr_yesno_extract_and_build_cases = [
     ('No visible diabetic retinopathy this visit', {}, -1, -1, 0),
@@ -72,6 +74,47 @@ _dr_yesno_extract_and_build_cases = [
     ('Hx of ce with iol os by Dr. Bowers', {}, -1, -1, -1),
     ('is here for an annual eye exam per dr.Bowers, OPH MD', {}, -1, -1, -1),
     ('REFERRED BY: DR. BOWERS for pco os and cataract od.', {}, -1, -1, -1),
+    ('FOLLOWUP WITH DR. BOWERS Mar. 23, 2016 AND FOLLOWUP DR. CRONKITE 3 MONTH', {}, -1, -1, -1),
+    ('FOLLOWUP WITH DR. CRONKITE IN APRIL AND DR.BOWERS 2-3 MONTHS', {}, -1, -1, -1),
+    ('Manifest Refraction: DR. OPPENHEIMER 8-7-11', {}, -1, -1, -1),
+    ('PLAN:\n\nrx given for dr redo OD only @ d and n', {}, -1, -1, -1),
+    ('FOR DR HOUSE TO REVIEW AND ADVISE PT', {}, -1, -1, -1),
+    ('Exam- Dilation No here for focus appt sees dr bowers for avastin injections', {}, -1, -1, -1),
+    ('Plan:\n\nreturn dr cronkite for exudative od', {}, -1, -1, -1),
+    ('TONOMETRY: Tappl deferred to DR.', {}, -1, -1, -1),
+    ('CC: CB PER DR. BOWERS TO R/O SRNVM OD WITH OCT.', {}, -1, -1, -1),
+    ('REFERRED BY: DR. HOUSE FOR CATARACT EVAL.', {}, -1, -1, -1),
+    ('REFRACTION : Manifest. DR. CRONKITE 7-3-16', {}, -1, -1, -1),
+    ('Diabetic Retinopathy And .mlsc Vitreous Hemorrhage requires refresh', {}, -1, -1, -1),
+    ('New optical Rx: DR. OPPENHEIMER 10-23-77', {}, -1, -1, -1),
+    ('DR. WALKER PT.', {}, -1, -1, -1),
+    ('PT STATES DID HAVE AVASTIN INJECTION OS WITH DR. BOWERS 2-14-20 WITH DR. BOWERS.', {}, -1, -1, -1),
+    ('she was also noted to have BDR.', {}, -1, -1, 1),
+    # Laterality might change, asked Chantelle.
+    # Chantelle says OU, but inferred that from context.
+    # Let's see if preceding 'R/L' captures as OU.
+    ('Peripheral fundus: flat; no holes or breaks R/L with BIO view; +ve BDR; no NVZE', {}, -1, -1, 1),
+    ('been noted to have BDR, O.U., w/o CSME or NVZ', {}, 1, 1, -1),
+    ('Peripheral fundus: flat; no holes or breaks, R/L, with BIO view; but, +ve BDR, O.U., with d/b hgs, minimal HE, '
+     'RE; d/b hgs, no HE, LE; no NVZE, R/L', {}, 1, 1, -1),
+    ('362.03 Nonproliferative diabetic retinopathy NOS (primary encounter diagnosis)', {}, -1, -1, 1),
+    ('Peripheral fundus: flat, w/o holes or breaks, R/L, with BIO view; but, +ve BDR, L>R; no NVZE', {}, 1, 1, -1),
+    ('ASSESSMENT:\n\nMacuar edema OS likely due to CRVO vs extensive DMR,', {}, -1, -1, 1),
+    ('(362.01) Background diabetic retinopathy(362.01)', {}, -1, -1, 1),
+    ('PAST EYE HISTORY:\n\n\nNonproliferative diabetic retinopathy NOS - Primary', {}, -1, -1, 1),
+    ("Recommendations: Digital SV - near- remake , dr's change , no prism in near glasses", {}, -1, -1, -1),
+    ("No prism in reading glasses- dr's change remake", {}, -1, -1, -1),
+    ('is here for the retinal evaluation per dr.cronkite, OD.', {}, -1, -1, -1),
+    ('• Eye Examination\n\nCAT EVAL- DR. OPPENHEIMER', {}, -1, -1, -1),
+    ('TONOMETRY: Not Assessed, defer to dr. for Tappl glaucoma evaluation', {}, -1, -1, -1),
+    ('Visual Field ordered by: dr. Bowers', {}, -1, -1, -1),
+    ('PAST OCULAR HISTORY OF:\n\nMild nonproliferative diabetic retinopathy OU', {}, 1, 1, -1),
+    ('H/o NPDR with DME OU', {}, 0, 0, -1),
+    ('3.DM 2 controlled with mild NPDR (+)nCSME OU//Pt ed', {}, 1, 1, -1),
+    ('3.DM 2 controlled with mild NPDR and mild nCSME OU//Pt ed', {}, 1, 1, -1),
+    ('INTRAOCULAR PRESSURE ( IOP ) DEFERRED TO DR. mmhg', {}, -1, -1, -1),
+    ('is here refer from DR Bowers for cataract evaluation', {}, -1, -1, -1),
+    ('Date of last exam: 10/23/77 with DR Oppenheimer', {}, -1, -1, -1),
 ]
 
 

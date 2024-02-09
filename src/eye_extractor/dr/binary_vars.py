@@ -10,6 +10,7 @@ DIABETIC_RETINOPATHY_PATS = [
         r')\b',
         re.I
     )),
+    # TODO: Replace with `HEME_NOS_PAT`
     ('hemorrhage_dr', re.compile(
         r'\b('
         r'hemorrhage'

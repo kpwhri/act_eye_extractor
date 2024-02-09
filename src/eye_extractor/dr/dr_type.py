@@ -29,12 +29,14 @@ PDR_PAT = re.compile(
     r')\b',
     re.I
 )
+# TODO: Replace with `DR_YESNO_PAT`
 DR_NOS_PAT = re.compile(
     r'\b('
     r'diabetic\s+retinopathy'
     r')\b',
     re.I
 )
+# TODO: Replace with `DR_YESNO_ABBR_PAT`
 # Separate pattern to capture case-sensitive abbreviations.
 DR_NOS_ABBR_PAT = re.compile(
     r'\b('
