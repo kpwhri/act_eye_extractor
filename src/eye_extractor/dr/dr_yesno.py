@@ -29,6 +29,10 @@ DR_YESNO_ABBR_PRE_IGNORE = {
 
 DR_YESNO_ABBR_POST_IGNORE = {
     'redo': True,
+    'to': {
+        'review': True,
+        None: False,
+    },
     None: False,
 }
 
@@ -73,7 +77,7 @@ def _get_dr_yesno(text: str, lateralities, source: str) -> dict:
                 if has_after(m if isinstance(m, int) else m.start(),
                              text,
                              terms=DR_YESNO_ABBR_POST_IGNORE,
-                             word_window=2,
+                             word_window=4,
                              boundary_chars='¶'):
                     continue
             negated = (
