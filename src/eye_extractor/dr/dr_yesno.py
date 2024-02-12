@@ -19,6 +19,14 @@ DR_YESNO_ABBR_PAT = re.compile(
 )
 
 # Context FSAs.
+DR_YESNO_POST_IGNORE = {
+    'exam': True,
+    'requires': {
+        'refresh': True,
+        None: False,
+    },
+    None: False,
+}
 DR_YESNO_ABBR_PRE_IGNORE = {
     'referred': {
         'by': True,
@@ -28,7 +36,6 @@ DR_YESNO_ABBR_PRE_IGNORE = {
     'sees': True,
     None: False,
 }
-
 DR_YESNO_ABBR_POST_IGNORE = {
     'redo': True,
     'to': {
@@ -66,8 +73,8 @@ def _get_dr_yesno(text: str, lateralities, source: str) -> dict:
                 continue
             elif has_after(m if isinstance(m, int) else m.start(),
                            text,
-                           terms={'exam'},
-                           word_window=7):
+                           terms=DR_YESNO_POST_IGNORE,
+                           word_window=8):
                 continue
             if pat_label is 'DR_YESNO_ABBR_PAT':
                 if has_before(m if isinstance(m, int) else m.start(),
