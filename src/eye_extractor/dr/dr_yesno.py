@@ -24,6 +24,8 @@ DR_YESNO_ABBR_PRE_IGNORE = {
         'by': True,
         None: False,
     },
+    'return': True,
+    'sees': True,
     None: False,
 }
 
