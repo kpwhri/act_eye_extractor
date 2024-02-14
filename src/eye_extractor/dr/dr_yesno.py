@@ -92,7 +92,11 @@ def _get_dr_yesno(text: str, lateralities, source: str) -> dict:
                     continue
             negated = (
                 is_negated(m, text, word_window=3)
-                or is_post_negated(m, text, terms={'no'}, word_window=3)
+                or is_post_negated(m, text,
+                                   terms={'no'},
+                                   word_window=1,
+                                   boundary_chars=';¶',
+                                   skip_n_boundary_chars=0)
             )
             yield create_new_variable(text, m, lateralities, variable, {
                 'value': 0 if negated else 1,

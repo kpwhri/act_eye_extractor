@@ -11,7 +11,7 @@ _pattern_cases = [
     (DR_YESNO_PAT, 'Diabetic retinopathy', True),
     (DR_YESNO_PAT, 'DIABETIC RETINOPATHY', True),
     (DR_YESNO_ABBR_PAT, 'DR', True),
-    (DR_YESNO_ABBR_PAT, 'DR.', True),
+    (DR_YESNO_ABBR_PAT, 'DR.', False),
     (DR_YESNO_ABBR_PAT, 'dr', True),
     (DR_YESNO_ABBR_PAT, 'BDR', True),
     (DR_YESNO_ABBR_PAT, 'bdr', True),
@@ -90,10 +90,7 @@ _dr_yesno_extract_and_build_cases = [
     ('DR. WALKER PT.', {}, -1, -1, -1),
     ('PT STATES DID HAVE AVASTIN INJECTION OS WITH DR. BOWERS 2-14-20 WITH DR. BOWERS.', {}, -1, -1, -1),
     ('she was also noted to have BDR.', {}, -1, -1, 1),
-    # Laterality might change, asked Chantelle.
-    # Chantelle says OU, but inferred that from context.
-    # Let's see if preceding 'R/L' captures as OU.
-    ('Peripheral fundus: flat; no holes or breaks R/L with BIO view; +ve BDR; no NVZE', {}, -1, -1, 1),
+    ('Peripheral fundus: flat; no holes or breaks R/L with BIO view; +ve BDR; no NVZE', {}, 1, 1, -1),
     ('been noted to have BDR, O.U., w/o CSME or NVZ', {}, 1, 1, -1),
     ('Peripheral fundus: flat; no holes or breaks, R/L, with BIO view; but, +ve BDR, O.U., with d/b hgs, minimal HE, '
      'RE; d/b hgs, no HE, LE; no NVZE, R/L', {}, 1, 1, -1),

@@ -54,6 +54,7 @@ LATERALITY = {
     'RE': Laterality.OD,
     'R.E.': Laterality.OD,
     'RIGHT': Laterality.OD,
+    'R/L': Laterality.OU,
     'R': Laterality.OD,
     'L': Laterality.OS,
     'OS': Laterality.OS,
