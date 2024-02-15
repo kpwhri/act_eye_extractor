@@ -15,7 +15,8 @@ DR_YESNO_ABBR_PAT = re.compile(
     r'\b('
     r'DR(?!\.)'
     r'|(N?P|BG?)DR'
-    r'|(n?p|bg?)?dr'
+    r'|DMR'
+    r'|(n?p|bg?)?dm?r'
     r')\b',
 )
 

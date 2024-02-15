@@ -23,6 +23,10 @@ _pattern_cases = [
     (DR_YESNO_ABBR_PAT, 'pdr', True),
     (DR_YESNO_ABBR_PAT, 'Dr', False),
     (DR_YESNO_ABBR_PAT, 'Dr.', False),
+    (DR_YESNO_ABBR_PAT, 'DMR', True),
+    (DR_YESNO_ABBR_PAT, 'dmr', True),
+    (DR_YESNO_ABBR_PAT, 'DMR.', True),
+    (DR_YESNO_ABBR_PAT, 'dmr.', True),
 ]
 
 
@@ -97,7 +101,7 @@ _dr_yesno_extract_and_build_cases = [
      'RE; d/b hgs, no HE, LE; no NVZE, R/L', {}, 1, 1, -1),
     ('362.03 Nonproliferative diabetic retinopathy NOS (primary encounter diagnosis)', {}, -1, -1, 1),
     ('Peripheral fundus: flat, w/o holes or breaks, R/L, with BIO view; but, +ve BDR, L>R; no NVZE', {}, 1, 1, -1),
-    ('ASSESSMENT:\n\nMacuar edema OS likely due to CRVO vs extensive DMR,', {}, -1, -1, 1),
+    ('ASSESSMENT:\n\nMacuar edema OS likely due to CRVO vs extensive DMR,', {}, -1, 1, -1),
     ('(362.01) Background diabetic retinopathy(362.01)', {}, -1, -1, 1),
     ('PAST EYE HISTORY:\n\n\nNonproliferative diabetic retinopathy NOS - Primary', {}, -1, -1, 1),
     ("Recommendations: Digital SV - near- remake , dr's change , no prism in near glasses", {}, -1, -1, -1),
