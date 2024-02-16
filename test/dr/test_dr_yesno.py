@@ -27,6 +27,7 @@ _pattern_cases = [
     (DR_YESNO_ABBR_PAT, 'dmr', True),
     (DR_YESNO_ABBR_PAT, 'DMR.', True),
     (DR_YESNO_ABBR_PAT, 'dmr.', True),
+    (DR_YESNO_ABBR_PAT, "dr's", False),
 ]
 
 
