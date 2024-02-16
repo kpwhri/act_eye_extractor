@@ -32,6 +32,11 @@ DR_YESNO_POST_IGNORE = {
     None: False,
 }
 DR_YESNO_ABBR_PRE_IGNORE = {
+    'last': {
+        'exam': True,
+        None: False,
+    },
+    'refer': True,
     'referred': {
         'by': True,
         None: False,
@@ -84,7 +89,7 @@ def _get_dr_yesno(text: str, lateralities, source: str) -> dict:
                 if has_before(m if isinstance(m, int) else m.start(),
                               text,
                               terms=DR_YESNO_ABBR_PRE_IGNORE,
-                              word_window=3,
+                              word_window=4,
                               boundary_chars='¶'):
                     continue
                 if has_after(m if isinstance(m, int) else m.start(),
