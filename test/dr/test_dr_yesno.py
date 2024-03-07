@@ -154,6 +154,10 @@ _dr_yesno_extract_and_build_cases = [
     ('Chief complaint: PO CEIOL/DR OPPENHEIMER MD. LEEX', {}, -1, -1, -1),
     ('L CE IOL 23/10/77 DR BOWERS MD', {}, -1, -1, -1),
     ('Manifest Refraction: DR. CRONKITE 2-29-24', {}, -1, -1, -1),
+    ('•»Background diabetic retinopathy»362.01', {}, -1, -1, 1),
+    ('yes- Other: Background diabetic retinopathy', {}, -1, -1, 1),
+    ('INJECT PER DR CRONKITE INSTRUCTIONS', {}, -1, -1, -1),
+    ('(250.01) Type I diabetes mellitus (primary encounter diagnosis) - controlled without retinopathy', {}, -1, -1, 0),
 ]
 
 
