@@ -22,7 +22,22 @@ DR_YESNO_ABBR_PAT = re.compile(
     r')\b',
 )
 
+
 # Context FSAs.
+DR_YESNO_PRE_IGNORE = {
+    'confirm': True,
+    'does': {
+        'patient': {
+            'have': True,
+            None: False,
+        },
+        None: False,
+    },
+    'exam': True,
+    'surgeon': True,
+    'tablet': True,
+    None: False
+}
 DR_YESNO_POST_IGNORE = {
     'exam': True,
     'requires': {
@@ -35,6 +50,13 @@ DR_YESNO_ABBR_PRE_IGNORE = {
     'last': {
         'exam': True,
         None: False,
+    },
+    'recent': {
+        'dfe': {
+            'w/': True,
+            None: False,
+        },
+        None: False
     },
     'refer': True,
     'referred': {
@@ -76,8 +98,8 @@ def _get_dr_yesno(text: str, lateralities, source: str) -> dict:
         for m in pat.finditer(text):
             if has_before(m if isinstance(m, int) else m.start(),
                           text,
-                          terms={'confirm', 'surgeon', 'tablet', 'exam'},
-                          word_window=2,
+                          terms=DR_YESNO_PRE_IGNORE,
+                          word_window=3,
                           boundary_chars='¶'):
                 continue
             elif has_after(m if isinstance(m, int) else m.start(),
