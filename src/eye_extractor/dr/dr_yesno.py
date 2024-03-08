@@ -21,6 +21,11 @@ DR_YESNO_ABBR_PAT = re.compile(
     r'|dmr'
     r')\b',
 )
+DR_YESNO_NEG_PAT = re.compile(
+    r'\b('
+    r'without\s+retinopathy'
+    r')\b'
+)
 
 
 # Context FSAs.
@@ -47,10 +52,12 @@ DR_YESNO_POST_IGNORE = {
     None: False,
 }
 DR_YESNO_ABBR_PRE_IGNORE = {
+    'f/u': True,
     'last': {
         'exam': True,
         None: False,
     },
+    'per': True,
     'recent': {
         'dfe': {
             'w/': True,
@@ -92,6 +99,7 @@ def get_dr_yesno(text: str, *, headers=None, lateralities=None) -> list:
 
 def _get_dr_yesno(text: str, lateralities, source: str) -> dict:
     for pat_label, pat, variable in [
+        ('DR_YESNO_NEG_PAT', DR_YESNO_NEG_PAT, 'diab_retinop_yesno'),
         ('DR_YESNO_PAT', DR_YESNO_PAT, 'diab_retinop_yesno'),
         ('DR_YESNO_ABBR_PAT', DR_YESNO_ABBR_PAT, 'diab_retinop_yesno'),
     ]:
@@ -120,19 +128,29 @@ def _get_dr_yesno(text: str, lateralities, source: str) -> dict:
                              word_window=4,
                              boundary_chars='¶'):
                     continue
-            negated = (
-                is_negated(m, text, word_window=3)
-                or is_post_negated(m, text,
-                                   terms={'no'},
-                                   word_window=1,
-                                   boundary_chars=';¶',
-                                   skip_n_boundary_chars=0)
-            )
-            yield create_new_variable(text, m, lateralities, variable, {
-                'value': 0 if negated else 1,
-                'term': m.group(),
-                'label': 'No' if negated else 'Yes',
-                'negated': negated,
-                'regex': pat_label,
-                'source': source,
-            })
+            if pat_label is 'DR_YESNO_NEG_PAT':
+                yield create_new_variable(text, m, lateralities, variable, {
+                    'value': 0,
+                    'term': m.group(),
+                    'label': 'No',
+                    'negated': None,
+                    'regex': pat_label,
+                    'source': source,
+                })
+            else:
+                negated = (
+                    is_negated(m, text, word_window=4, boundary_chars=':¶)')
+                    or is_post_negated(m, text,
+                                       terms={'no'},
+                                       word_window=1,
+                                       boundary_chars=';¶',
+                                       skip_n_boundary_chars=0)
+                )
+                yield create_new_variable(text, m, lateralities, variable, {
+                    'value': 0 if negated else 1,
+                    'term': m.group(),
+                    'label': 'No' if negated else 'Yes',
+                    'negated': negated,
+                    'regex': pat_label,
+                    'source': source,
+                })

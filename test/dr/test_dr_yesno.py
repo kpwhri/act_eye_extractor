@@ -127,7 +127,7 @@ _dr_yesno_extract_and_build_cases = [
     ('posed the following question: "does patient have diabetic retinopathy"', {}, -1, -1, -1),
     ('no background diabetic retinopathy (BDR)at that time.', {}, -1, -1, 0),
     ('no BDR at this time.', {}, -1, -1, 0),
-    ('History.) follow up for DR', {}, -1, -1, 1),
+    ('History.) follow up for DR', {}, -1, -1, 1),  # Expected outcome might change based on Chantelle's response.
     ('History.) follow up after injection by DR. House', {}, -1, -1, -1),
     ("Remake dr's change", {}, -1, -1, -1),
     ('Manifest Refraction 10/23/2077: DR. OPPENHEIMER', {}, -1, -1, -1),
