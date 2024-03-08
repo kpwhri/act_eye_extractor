@@ -52,6 +52,11 @@ DR_YESNO_POST_IGNORE = {
     None: False,
 }
 DR_YESNO_ABBR_PRE_IGNORE = {
+    'ce': {
+        'iol': True,
+        None: False,
+    },
+    'ceiol/': True,
     'f/u': True,
     'last': {
         'exam': True,
