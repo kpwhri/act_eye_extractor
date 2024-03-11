@@ -1,10 +1,17 @@
+"""
+
+Summary of Changes:
+* Removed pigmentary dispersion (implies glaucoma)
+* Removed atrophy ('atrophy' to nonspecific except for geographic atrophy)
+
+"""
 import re
 
 from eye_extractor.amd.utils import run_on_macula
 from eye_extractor.nlp.negate.negation import is_negated
 from eye_extractor.laterality import create_new_variable, laterality_pattern, lat_lookup
 
-change = r'(?:chang|disrupt|dispers|migrat|atrophy|abnormal|atrophy|clump|mottl|pigment)\w*'
+change = r'(?:chang|disrupt|dispers|migrat|abnormal|clump|mottl|pigment)\w*'
 pigment = r'(?:(?:hyper)?pigment\w*|\brpe\b)'
 
 PIGMENTARY_PAT = re.compile(
@@ -56,7 +63,7 @@ def _get_pigmentary_changes(text, lateralities, source):
                 'term': m.group(),
                 'label': 'no' if negword else 'yes',
                 'negated': negword,
-                'regex': 'PIGMENTARY_PAT',
+                'regex': 'ATROPHY_PAT',
                 'source': source,
             }, known_laterality=lat)
         )
