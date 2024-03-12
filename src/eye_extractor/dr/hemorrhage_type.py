@@ -77,9 +77,9 @@ def _get_hemorrhage_type(text: str, lateralities, source: str) -> dict:
     for pat, hem_type, hem_label, sev_var in [
         (INTRARETINAL_PAT, HemorrhageType.INTRARETINAL, 'intraretinal', 'intraretinal_hem'),
         (DOT_BLOT_PAT, HemorrhageType.DOT_BLOT, 'dot blot', 'dotblot_hem'),
-        (PRERETINAL_PAT, HemorrhageType.PRERETINAL, 'preretinal', None),
-        (VITREOUS_PAT, HemorrhageType.VITREOUS, 'vitreous', None),
-        (SUBRETINAL_PAT, HemorrhageType.SUBRETINAL, 'subretinal', None),
+        (PRERETINAL_PAT, HemorrhageType.PRERETINAL, 'preretinal', 'preretinal_hem'),
+        (VITREOUS_PAT, HemorrhageType.VITREOUS, 'vitreous', 'vitreous_hem'),
+        (SUBRETINAL_PAT, HemorrhageType.SUBRETINAL, 'subretinal', 'subretinal_hem_dr'),
         (HEME_NOS_PAT, HemorrhageType.YES_NOS, 'NOS', None),
     ]:
         for m in pat.finditer(text):
@@ -93,7 +93,7 @@ def _get_hemorrhage_type(text: str, lateralities, source: str) -> dict:
                           terms={'hx', 'h/o', 'resolved'},
                           boundary_chars='',
                           word_window=6):
-                break
+                continue
             if sev_var:
                 # Severity found & positive instance.
                 if severities:

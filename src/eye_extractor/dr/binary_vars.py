@@ -1,5 +1,6 @@
 import re
 
+from eye_extractor.dr.hemorrhage_type import HEME_NOS_PAT
 from eye_extractor.nlp.negate.negation import is_negated, is_post_negated
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
@@ -10,12 +11,7 @@ DIABETIC_RETINOPATHY_PATS = [
         r')\b',
         re.I
     )),
-    ('hemorrhage_dr', re.compile(
-        r'\b('
-        r'hemorrhage'
-        r')\b',
-        re.I
-    )),
+    ('hemorrhage_dr', HEME_NOS_PAT),
     ('dr_laser_scars', re.compile(
         r'\b('
         r'laser scars?'

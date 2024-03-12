@@ -477,6 +477,18 @@ OUTPUT_COLUMNS = {
     'dotblot_hem_re': [is_string_in_enum(Severity)],
     'dotblot_hem_le': [is_string_in_enum(Severity)],
     'dotblot_hem_unk': [is_string_in_enum(Severity)],
+    # Preretinal hemorrhage severity
+    'preretinal_hem_re': [is_string_in_enum(Severity)],
+    'preretinal_hem_le': [is_string_in_enum(Severity)],
+    'preretinal_hem_unk': [is_string_in_enum(Severity)],
+    # Vitreous hemorrhage severity
+    'vitreous_hem_re': [is_string_in_enum(Severity)],
+    'vitreous_hem_le': [is_string_in_enum(Severity)],
+    'vitreous_hem_unk': [is_string_in_enum(Severity)],
+    # Subretinal hemorrhage severity
+    'subretinal_hem_dr_re': [is_string_in_enum(Severity)],
+    'subretinal_hem_dr_le': [is_string_in_enum(Severity)],
+    'subretinal_hem_dr_unk': [is_string_in_enum(Severity)],
     # Venous beading severity
     'venbeading_re': [is_string_in_enum(Severity)],
     'venbeading_le': [is_string_in_enum(Severity)],
