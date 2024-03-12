@@ -7,6 +7,7 @@ from eye_extractor.laterality import build_laterality_table, create_new_variable
 DR_YESNO_PAT = re.compile(
     r'\b('
     r'diabetic\s+retinopathy'
+    r'|macular\s+edema\s+due\s+to\s+secondary\s+diabetes'
     r')\b',
     re.I
 )

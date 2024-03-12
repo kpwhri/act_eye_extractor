@@ -28,6 +28,7 @@ _pattern_cases = [
     (DR_YESNO_ABBR_PAT, 'DMR.', True),
     (DR_YESNO_ABBR_PAT, 'dmr.', True),
     (DR_YESNO_ABBR_PAT, "dr's", False),
+    (DR_YESNO_PAT, 'macular edema due to secondary diabetes', True),
 ]
 
 
@@ -158,6 +159,7 @@ _dr_yesno_extract_and_build_cases = [
     ('yes- Other: Background diabetic retinopathy', {}, -1, -1, 1),
     ('INJECT PER DR CRONKITE INSTRUCTIONS', {}, -1, -1, -1),
     ('(250.01) Type I diabetes mellitus (primary encounter diagnosis) - controlled without retinopathy', {}, -1, -1, 0),
+    ('249.50M Macular edema due to Secondary Diabetes (primary encounter diagnosis)', {}, -1, -1, 1),
 ]
 
 
