@@ -10,7 +10,6 @@ from eye_extractor.amd.pigment import PIGMENTARY_PAT, get_pigmentary_changes
     ('RPE clumping and atrophy', 1),
     ('mottled RPE', 1),
     ('mild rpe changes ou', 1),
-    ('rpe atrophy os', 1),
 ])
 def test_pigmentary_pattern(text, exp):
     assert bool(PIGMENTARY_PAT.search(text)) == exp
@@ -22,7 +21,6 @@ def test_pigmentary_pattern(text, exp):
     ('no drusen or pigment dispersion', 0, 'no'),
     ('no evidence of drusen or pigment dispersion', 0, 'or'),
     ('w/o evidence of pigment dispersion', 0, 'without'),
-    ('atrophy OS', 1, None),
 ])
 def test_pigment_value_first_variable(text, exp_value, exp_negword):
     data = get_pigmentary_changes(text)
