@@ -93,7 +93,7 @@ def _get_hemorrhage_type(text: str, lateralities, source: str) -> dict:
                           terms={'hx', 'h/o', 'resolved'},
                           boundary_chars='',
                           word_window=6):
-                break
+                continue
             if sev_var:
                 # Severity found & positive instance.
                 if severities:

@@ -27,7 +27,6 @@ DR_YESNO_NEG_PAT = re.compile(
     r')\b'
 )
 
-
 # Context FSAs.
 DR_YESNO_PRE_IGNORE = {
     'confirm': True,
@@ -89,6 +88,34 @@ DR_YESNO_ABBR_POST_IGNORE = {
 }
 
 
+def filter_dr_yesno_context(match: re.Match, text: str, pat_label: str = None):
+    if has_before(match if isinstance(match, int) else match.start(),
+                  text,
+                  terms=DR_YESNO_PRE_IGNORE,
+                  word_window=3,
+                  boundary_chars='¶'):
+        return True
+    elif has_after(match if isinstance(match, int) else match.start(),
+                   text,
+                   terms=DR_YESNO_POST_IGNORE,
+                   word_window=8):
+        return True
+    if pat_label is 'DR_YESNO_ABBR_PAT':
+        if has_before(match if isinstance(match, int) else match.start(),
+                      text,
+                      terms=DR_YESNO_ABBR_PRE_IGNORE,
+                      word_window=4,
+                      boundary_chars='¶'):
+            return True
+        if has_after(match if isinstance(match, int) else match.start(),
+                     text,
+                     terms=DR_YESNO_ABBR_POST_IGNORE,
+                     word_window=4,
+                     boundary_chars='¶'):
+            return True
+    return False
+
+
 def get_dr_yesno(text: str, *, headers=None, lateralities=None) -> list:
     data = []
     # Extract matches from sections / headers.
@@ -109,30 +136,8 @@ def _get_dr_yesno(text: str, lateralities, source: str) -> dict:
         ('DR_YESNO_ABBR_PAT', DR_YESNO_ABBR_PAT, 'diab_retinop_yesno'),
     ]:
         for m in pat.finditer(text):
-            if has_before(m if isinstance(m, int) else m.start(),
-                          text,
-                          terms=DR_YESNO_PRE_IGNORE,
-                          word_window=3,
-                          boundary_chars='¶'):
+            if filter_dr_yesno_context(m, text, pat_label=pat_label):
                 continue
-            elif has_after(m if isinstance(m, int) else m.start(),
-                           text,
-                           terms=DR_YESNO_POST_IGNORE,
-                           word_window=8):
-                continue
-            if pat_label is 'DR_YESNO_ABBR_PAT':
-                if has_before(m if isinstance(m, int) else m.start(),
-                              text,
-                              terms=DR_YESNO_ABBR_PRE_IGNORE,
-                              word_window=4,
-                              boundary_chars='¶'):
-                    continue
-                if has_after(m if isinstance(m, int) else m.start(),
-                             text,
-                             terms=DR_YESNO_ABBR_POST_IGNORE,
-                             word_window=4,
-                             boundary_chars='¶'):
-                    continue
             if pat_label is 'DR_YESNO_NEG_PAT':
                 yield create_new_variable(text, m, lateralities, variable, {
                     'value': 0,

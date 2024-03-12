@@ -1,7 +1,7 @@
 import enum
 import re
 
-from eye_extractor.dr.dr_yesno import DR_YESNO_PAT, DR_YESNO_ABBR_PAT, DR_YESNO_NEG_PAT
+from eye_extractor.dr.dr_yesno import DR_YESNO_PAT, DR_YESNO_ABBR_PAT, DR_YESNO_NEG_PAT, filter_dr_yesno_context
 from eye_extractor.nlp.negate.negation import has_before, has_after, is_negated, is_post_negated
 from eye_extractor.common.severity import extract_risk, extract_severity, Risk, Severity
 from eye_extractor.laterality import build_laterality_table, create_new_variable
@@ -52,7 +52,6 @@ def _get_dr_type(text: str, lateralities, source: str) -> dict:
         ('DR_YESNO_PAT', DR_YESNO_PAT, DrType.YES_NOS, 'diabetic retinopathy', None),
         ('DR_YESNO_ABBR_PAT', DR_YESNO_ABBR_PAT, DrType.YES_NOS, 'diabetic retinopathy', None),
     ]:
-
         for m in pat.finditer(text):
             if has_before(m if isinstance(m, int) else m.start(),
                           text,
@@ -70,6 +69,9 @@ def _get_dr_type(text: str, lateralities, source: str) -> dict:
                                text,
                                terms={'exam'},
                                word_window=6):
+                    continue
+            if dr_type is DrType.YES_NOS:
+                if filter_dr_yesno_context(m, text, pat_label=pat_label):
                     continue
             negated = (
                 is_negated(m, text, word_window=3)
