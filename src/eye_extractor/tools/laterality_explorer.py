@@ -106,6 +106,10 @@ def main(corpus_paths, docid=None, outpath=None, filelist=None):
     Get laterality for requested docid.
     :return:
     """
+    laterality_explorer(corpus_paths, docid=docid, outpath=outpath, filelist=filelist)
+
+
+def laterality_explorer(corpus_paths, docid=None, outpath=None, filelist=None):
     if not outpath:
         outpath = pathlib.Path('.') / '.laterality'
     outpath.mkdir(exist_ok=True)
