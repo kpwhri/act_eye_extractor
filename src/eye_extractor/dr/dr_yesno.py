@@ -57,6 +57,8 @@ DR_YESNO_ABBR_PRE_IGNORE = {
         None: False,
     },
     'ceiol/': True,
+    'confirm': True,
+    'exam': True,
     'f/u': True,
     'last': {
         'exam': True,
@@ -77,9 +79,12 @@ DR_YESNO_ABBR_PRE_IGNORE = {
     },
     'return': True,
     'sees': True,
+    'surgeon': True,
+    'tablet': True,
     None: False,
 }
 DR_YESNO_ABBR_POST_IGNORE = {
+    'exam': True,
     'redo': True,
     'to': {
         'review': True,

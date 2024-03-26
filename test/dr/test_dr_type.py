@@ -50,7 +50,7 @@ _dr_type_extract_and_build_cases = [
     ('Uncontrolled Proliferative Diabetic Retinopathy', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.PDR),
     ('no BDR at that time. Review shows no apparent BDR OD and inconclusive OS', {},
      DrType.NONE, DrType.UNKNOWN, DrType.UNKNOWN),
-    ('confirm no BDR', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.UNKNOWN),
+    ('confirm no BDR', {}, DrType.UNKNOWN, DrType.UNKNOWN, DrType.NONE),
     ('no bgdr ou', {}, DrType.NONE, DrType.NONE, DrType.UNKNOWN),
     ('no bdr ou', {}, DrType.NONE, DrType.NONE, DrType.UNKNOWN),
     ('¶(1) No diabetic retinopathy.', {},

@@ -53,30 +53,49 @@ def _get_dr_type(text: str, lateralities, source: str) -> dict:
         ('DR_YESNO_ABBR_PAT', DR_YESNO_ABBR_PAT, DrType.YES_NOS, 'diabetic retinopathy', None),
     ]:
         for m in pat.finditer(text):
-            if has_before(m if isinstance(m, int) else m.start(),
-                          text,
-                          terms={'confirm'},
-                          word_window=2):
-                continue
-            if dr_type is DrType.YES_NOS:
-                if has_before(m if isinstance(m, int) else m.start(),
-                              text,
-                              terms={'confirm', 'surgeon', 'tablet', 'exam'},
-                              word_window=2,
-                              boundary_chars='¶'):
-                    continue
-                elif has_after(m if isinstance(m, int) else m.start(),
-                               text,
-                               terms={'exam'},
-                               word_window=6):
-                    continue
+            # if has_before(m if isinstance(m, int) else m.start(),
+            #               text,
+            #               terms={'confirm'},
+            #               word_window=2):
+            #     continue
+            # if dr_type is DrType.YES_NOS:
+            #     if has_before(m if isinstance(m, int) else m.start(),
+            #                   text,
+            #                   terms={'confirm', 'surgeon', 'tablet', 'exam'},
+            #                   word_window=2,
+            #                   boundary_chars='¶'):
+            #         continue
+            #     elif has_after(m if isinstance(m, int) else m.start(),
+            #                    text,
+            #                    terms={'exam'},
+            #                    word_window=6):
+            #         continue
             if dr_type is DrType.YES_NOS:
                 if filter_dr_yesno_context(m, text, pat_label=pat_label):
                     continue
-            negated = (
-                is_negated(m, text, word_window=3)
-                or is_post_negated(m, text, terms={'no'}, word_window=3)
-            )
+                if pat_label is 'DR_YESNO_NEG_PAT':
+                    yield create_new_variable(text, m, lateralities, 'diabretinop_type', {
+                        'value': DrType.NONE,
+                        'term': m.group(),
+                        'label': 'No',
+                        'negated': None,
+                        'regex': pat_label,
+                        'source': source,
+                    })
+                else:
+                    negated = (
+                        is_negated(m, text, word_window=4, boundary_chars=':¶)')
+                        or is_post_negated(m, text,
+                                           terms={'no'},
+                                           word_window=1,
+                                           boundary_chars=';¶',
+                                           skip_n_boundary_chars=0)
+                    )
+            else:
+                negated = (
+                    is_negated(m, text, word_window=3)
+                    or is_post_negated(m, text, terms={'no'}, word_window=3)
+                )
             context = f'{text[max(0, m.start() - 100): m.start()]} {text[m.end():min(len(text), m.end() + 100)]}'
             severities = extract_severity(context)
             if sev_var:
@@ -111,26 +130,14 @@ def _get_dr_type(text: str, lateralities, source: str) -> dict:
                         'regex': pat_label,
                         'source': source,
                     })
-            # Severity not found and negative instance.
-            if negated:
-                yield create_new_variable(text, m, lateralities, 'diabretinop_type', {
-                    'value': DrType.NONE,
-                    'term': m.group(),
-                    'label': f'No {dr_label}' if negated else dr_label,
-                    'negated': negated,
-                    'regex': pat_label,
-                    'source': source,
-                })
-            # Severity not found, positive instance.
-            else:
-                yield create_new_variable(text, m, lateralities, 'diabretinop_type', {
-                    'value': dr_type,
-                    'term': m.group(),
-                    'label': dr_label,
-                    'negated': negated,
-                    'regex': pat_label,
-                    'source': source,
-                })
+            yield create_new_variable(text, m, lateralities, 'diabretinop_type', {
+                'value': DrType.NONE if negated else dr_type,
+                'term': m.group(),
+                'label': f'No {dr_label}' if negated else dr_label,
+                'negated': negated,
+                'regex': pat_label,
+                'source': source,
+            })
 
 
 def get_pdr(text: str, *, headers=None, lateralities=None) -> list:

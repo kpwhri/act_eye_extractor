@@ -1,7 +1,7 @@
 import re
 
 from eye_extractor.dr.hemorrhage_type import HEME_NOS_PAT
-from eye_extractor.nlp.negate.negation import is_negated, is_post_negated
+from eye_extractor.nlp.negate.negation import has_before, is_negated, is_post_negated, NEGWORD_UNKNOWN_PHRASES
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 DIABETIC_RETINOPATHY_PATS = [
@@ -51,15 +51,26 @@ def get_dr_binary(text, *, headers=None, lateralities=None):
     data = []
     for variable, PAT in DIABETIC_RETINOPATHY_PATS:
         for m in PAT.finditer(text):
-            negword = is_negated(m, text, word_window=4)
-            if not negword:
-                negword = is_post_negated(m, text, {'or'}, word_window=2)
+            if variable == 'hemorrhage_dr':
+                negated = is_negated(m, text, word_window=3, return_unknown=True)
+                if negated in NEGWORD_UNKNOWN_PHRASES:  # e.g., 'no new' -> UNKNOWN
+                    continue
+                if has_before(m if isinstance(m, int) else m.start(),
+                              text,
+                              terms={'hx', 'h/o', 'resolved'},
+                              boundary_chars='',
+                              word_window=6):
+                    continue
+            else:
+                negated = is_negated(m, text, word_window=4)
+                if not negated:
+                    negated = is_post_negated(m, text, {'or'}, word_window=2)
             data.append(
                 create_new_variable(text, m, lateralities, variable, {
-                    'value': 0 if negword else 1,
+                    'value': 0 if negated else 1,
                     'term': m.group(),
-                    'label': 'no' if negword else 'yes',
-                    'negated': negword,
+                    'label': 'no' if negated else 'yes',
+                    'negated': negated,
                     'regex': f'{variable}_PAT',
                     'source': 'ALL'
                 })
