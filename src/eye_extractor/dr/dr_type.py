@@ -53,23 +53,6 @@ def _get_dr_type(text: str, lateralities, source: str) -> dict:
         ('DR_YESNO_ABBR_PAT', DR_YESNO_ABBR_PAT, DrType.YES_NOS, 'diabetic retinopathy', None),
     ]:
         for m in pat.finditer(text):
-            # if has_before(m if isinstance(m, int) else m.start(),
-            #               text,
-            #               terms={'confirm'},
-            #               word_window=2):
-            #     continue
-            # if dr_type is DrType.YES_NOS:
-            #     if has_before(m if isinstance(m, int) else m.start(),
-            #                   text,
-            #                   terms={'confirm', 'surgeon', 'tablet', 'exam'},
-            #                   word_window=2,
-            #                   boundary_chars='¶'):
-            #         continue
-            #     elif has_after(m if isinstance(m, int) else m.start(),
-            #                    text,
-            #                    terms={'exam'},
-            #                    word_window=6):
-            #         continue
             if dr_type is DrType.YES_NOS:
                 if filter_dr_yesno_context(m, text, pat_label=pat_label):
                     continue

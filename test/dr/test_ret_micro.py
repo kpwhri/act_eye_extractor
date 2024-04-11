@@ -44,6 +44,32 @@ _ret_micro_extract_and_build_cases = [
     ('Tonometry: as per MA', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
     ('moderate retinal micro-aneurysm os', {}, 'UNKNOWN', 'MODERATE', 'UNKNOWN'),  # synthetic
     ('VERY SEVERE RETINAL MAS', {}, 'UNKNOWN', 'UNKNOWN', 'VERY SEVERE'),  # synthetic
+    ('362.14 Retinal microaneurysm of left eye', {}, 'UNKNOWN', 'YES NOS', 'UNKNOWN'),
+    ('Retinal microaneurysm of left eye', {}, 'UNKNOWN', 'YES NOS', 'UNKNOWN'),
+    ('Retinal microaneurysms, both eyes', {}, 'YES NOS', 'YES NOS', 'UNKNOWN'),
+    ('retinal microaneurysms both eyes', {}, 'YES NOS', 'YES NOS', 'UNKNOWN'),
+    ("scattered MA's in macula both eyes.", {}, 'YES NOS', 'YES NOS', 'UNKNOWN'),
+    ("RPE changes both eyes, CME left eye, scattered MA's in macula both eyes.", {}, 'YES NOS', 'YES NOS', 'UNKNOWN'),
+    ('Retinal micro-aneurysm of both eyes', {}, 'YES NOS', 'YES NOS', 'UNKNOWN'),
+    ('362.14G Retinal microaneurysm of both eyes', {}, 'YES NOS', 'YES NOS', 'UNKNOWN'),
+    ('MACULA: +moderate flat confluent drusen temp to macula OU without edema, '
+     'exudates+single MA on the edge of drusen and fovea in OD and OS', {}, 'YES NOS', 'YES NOS', 'UNKNOWN'),
+    ('+single MA on the edge of drusen and fovea in OD and OS', {}, 'YES NOS', 'YES NOS', 'UNKNOWN'),
+    ('MACULA: +moderate flat confluent drusen temp to macula OU without edema, '
+     'exudates+single TR MA inf nasal off macula in OD, +TR MA nasal to macula', {}, 'YES NOS', 'UNKNOWN', 'UNKNOWN'),
+    ('+single TR MA inf nasal off macula in OD', {}, 'YES NOS', 'UNKNOWN', 'UNKNOWN'),
+    ("multiple retinal MA's R>L", {}, 'YES NOS', 'YES NOS', 'UNKNOWN'),
+    ("multiple retinal MA's R>L\n\n-mild blepharitis, dry eye sx (no spk)", {}, 'YES NOS', 'YES NOS', 'UNKNOWN'),
+    ('3. (H35.043) Retinal microaneurysm, bilateral', {}, 'YES NOS', 'YES NOS', 'UNKNOWN'),
+    ('Retinal microaneurysm of right eye', {}, 'YES NOS', 'UNKNOWN', 'UNKNOWN'),
+    ('Retinal microaneurysms, right', {}, 'YES NOS', 'UNKNOWN', 'UNKNOWN'),
+    ('MACULA:  microaneurysms Od; within normal limits os  without edema, exudates, or hemorrhage, OU ',
+     {}, 'YES NOS', 'UNKNOWN', 'UNKNOWN'),
+    ('MACULA:  microaneurysms Od;', {}, 'YES NOS', 'UNKNOWN', 'UNKNOWN'),
+    ('OCT   Microaneurysms superior macula od without fluid;  within normal limits os',
+     {}, 'YES NOS', 'UNKNOWN', 'UNKNOWN'),
+    ('Microaneurysms superior macula od without fluid', {}, 'YES NOS', 'UNKNOWN', 'UNKNOWN'),
+    ('Microaneurysms superior macula od', {}, 'YES NOS', 'UNKNOWN', 'UNKNOWN'),
 ]
 
 
