@@ -48,6 +48,7 @@ LATERALITY = {
     'O.S. LESS THAN O.D.': Laterality.OU,
     'O.S. < O.D.': Laterality.OU,
     'O.S.<O.D.': Laterality.OU,
+    'OD AND OS': Laterality.OU,
     'OD': Laterality.OD,
     'O.D.': Laterality.OD,
     'RIGHT EYE': Laterality.OD,

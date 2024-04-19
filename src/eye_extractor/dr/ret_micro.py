@@ -7,7 +7,7 @@ from eye_extractor.laterality import create_new_variable
 
 RET_MICRO_PAT = re.compile(
     r'\b('
-    r'retinal mas?'
+    r'(retinal|scattered|single)\W+(tr\W+)?mas?'
     r'|retinal micro\W?aneurysms?'
     r')\b',
     re.I
@@ -20,8 +20,8 @@ def get_ret_micro(text: str, *, headers=None, lateralities=None) -> list:
 
 def _get_ret_micro(text: str, lateralities, source: str) -> dict:
     for m in RET_MICRO_PAT.finditer(text):
-        negated = is_negated(m, text, word_window=4)
-        context = f'{text[max(0, m.start() - 100): m.start()]} {text[m.end():min(len(text), m.end() + 100)]}'
+        negated = is_negated(m, text, word_window=4, boundary_chars=':¶+')
+        context = f'{text[max(0, m.start() - 40): m.start()]} {text[m.end():min(len(text), m.end() + 40)]}'
         severities = extract_severity(context)
         if severities:  # With severity quantifier.
             for sev in severities:

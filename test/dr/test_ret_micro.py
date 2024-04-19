@@ -12,6 +12,9 @@ _pattern_cases = [
     (RET_MICRO_PAT, 'ma', False),
     (RET_MICRO_PAT, 'retinal ma', True),
     (RET_MICRO_PAT, 'retinal microaneurysm', True),
+    (RET_MICRO_PAT, 'scattered MAs', True),
+    (RET_MICRO_PAT, '+single MA', True),
+    (RET_MICRO_PAT, '+single TR MA', True),
 ]
 
 
