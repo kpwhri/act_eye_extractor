@@ -66,7 +66,7 @@ def _extract_subret_fibrous(text, data, sect_label):
         (MACULAR_SCAR_PAT, 'MACULAR_SCAR_PAT', Scar.MACULAR),
         (SCAR_PAT, 'SCAR_PAT', Scar.YES),
     ]:
-        if sect_label == 'ALL' and value == Scar.YES:
+        if sect_label == 'ALL' and value == Scar.YES:  # Why is this included??
             continue  # only from MACULA section
         curr_text = text
         for m in pat.finditer(curr_text):
