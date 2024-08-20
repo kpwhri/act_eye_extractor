@@ -2,7 +2,7 @@ import enum
 import re
 
 from eye_extractor.common.get_variable import get_variable
-from eye_extractor.nlp.negate.negation import is_negated
+from eye_extractor.nlp.negate.negation import has_before, is_negated
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 
@@ -49,6 +49,11 @@ DISCIFORM_SCAR_PAT = re.compile(
     re.I
 )
 
+SCAR_PRE_IGNORE = {
+    'laser': True,
+    None: False
+}
+
 
 def extract_subret_fibrous(text, *, headers=None, lateralities=None):
     return get_variable(text, _extract_subret_fibrous,
@@ -65,6 +70,12 @@ def _extract_subret_fibrous(text: str, lateralities, source: str):
         (SCAR_PAT, 'SCAR_PAT', Scar.YES),
     ]:
         for m in pat.finditer(text):
+            if pat_label is 'SCAR_PAT':
+                if has_before(m if isinstance(m, int) else m.start(),
+                              text,
+                              terms=SCAR_PRE_IGNORE,
+                              word_window=3):
+                    continue
             negated = is_negated(m, text, word_window=3)
             yield create_new_variable(text, m, lateralities, 'subret_fibrous', {
                 'value': Scar.NO if negated else variable,

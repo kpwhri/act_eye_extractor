@@ -33,7 +33,7 @@ def test_scar_patterns(pat, text, exp):
     ('(H31.011) Macular scar of right eye', None, 'MACULAR', 'UNKNOWN', 'UNKNOWN'),
     ('OD: CMT: 258, large RPE scar vs. new CNVM nasal to fovea with possible mild SRF, diffuse drusen OD>OS',
      None, 'YES', 'UNKNOWN', 'UNKNOWN'),
-    ('MACULA: Laser scars Od; trace thickening OS', None, 'UKNOWN', 'UNKNOWN', 'UNKNOWN'),
+    ('MACULA: Laser scars Od; trace thickening OS', None, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
     ('Periphery - attached with peripheral scarring scarring, temporally subretinal hemorrhage/fibrosis',
      None, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
     ('Periphery - attached with peripheral scarring, temporal and superior subretinal hemorrhage/fibrosis',
