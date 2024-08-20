@@ -15,7 +15,7 @@ class Scar(enum.IntEnum):
     DISCIFORM = 4
 
 
-scar = r'(?:scars?|fibros[ie]s|fibrous)'
+scar = r'(?:scar(?:ring|s)?|fibros[ie]s|fibrous)'
 subret = r'(?:sub\s*ret\w*)'
 
 SCAR_PAT = re.compile(
@@ -51,6 +51,7 @@ DISCIFORM_SCAR_PAT = re.compile(
 
 SCAR_PRE_IGNORE = {
     'laser': True,
+    'peripheral': True,
     None: False
 }
 
@@ -70,7 +71,7 @@ def _extract_subret_fibrous(text: str, lateralities, source: str):
         (SCAR_PAT, 'SCAR_PAT', Scar.YES),
     ]:
         for m in pat.finditer(text):
-            if pat_label is 'SCAR_PAT':
+            if pat_label == 'SCAR_PAT':
                 if has_before(m if isinstance(m, int) else m.start(),
                               text,
                               terms=SCAR_PRE_IGNORE,
