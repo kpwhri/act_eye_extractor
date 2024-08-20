@@ -93,7 +93,7 @@ def extract_headers_and_text(text, *, search_missing_headers=False):
     :return: Header
     """
     result = {}
-    it = iter(x[::-1].strip() for x in HEADER_PAT.split(text[::-1])[:-1])
+    it = iter(x[::-1].strip() for x in HEADER_PAT.split(text[::-1])[:-1])  # why skip first / last element?
     for value, key in zip(it, it):
         result[key] = value.split('.')[0]
     headers = Headers(result)

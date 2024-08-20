@@ -271,6 +271,7 @@ class LateralityLocator:
     DEFAULT_COUNT_LETTERS = {
         ',': 1,
         '.': 2,
+        ';': 3,
     } | {x: 3 for x in LINE_START_CHARS}
 
     def __init__(self, lateralities: list[LatLocation] = None, *, default_laterality=Laterality.UNKNOWN):
