@@ -1,7 +1,8 @@
 import enum
 import re
 
-from eye_extractor.nlp.negate.negation import is_negated
+from eye_extractor.common.get_variable import get_variable
+from eye_extractor.nlp.negate.negation import has_before, is_negated
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 
@@ -14,7 +15,7 @@ class Scar(enum.IntEnum):
     DISCIFORM = 4
 
 
-scar = r'(?:scars?|fibros[ie]s|fibrous)'
+scar = r'(?:scar(?:ring|s)?|fibros[ie]s|fibrous)'
 subret = r'(?:sub\s*ret\w*)'
 
 SCAR_PAT = re.compile(
@@ -48,38 +49,40 @@ DISCIFORM_SCAR_PAT = re.compile(
     re.I
 )
 
+SCAR_PRE_IGNORE = {
+    'laser': True,
+    'peripheral': True,
+    None: False
+}
+
 
 def extract_subret_fibrous(text, *, headers=None, lateralities=None):
-    data = []
-    if headers:
-        for sect_label, sect_text in headers.iterate('MACULA'):
-            _extract_subret_fibrous(sect_text, data, sect_label)
-    if not data:
-        _extract_subret_fibrous(text, data, 'ALL')
-    return data
+    return get_variable(text, _extract_subret_fibrous,
+                        headers=headers,
+                        target_headers=['MACULA'],
+                        lateralities=lateralities)
 
 
-def _extract_subret_fibrous(text, data, sect_label):
-    for pat, label, value in [
+def _extract_subret_fibrous(text: str, lateralities, source: str):
+    for pat, pat_label, variable in [
         (DISCIFORM_SCAR_PAT, 'DISCIFORM_SCAR_PAT', Scar.DISCIFORM),
         (SUBRET_SCAR_PAT, 'SUBRET_SCAR_PAT', Scar.SUBRETINAL),
         (MACULAR_SCAR_PAT, 'MACULAR_SCAR_PAT', Scar.MACULAR),
         (SCAR_PAT, 'SCAR_PAT', Scar.YES),
     ]:
-        if sect_label == 'ALL' and value == Scar.YES:
-            continue  # only from MACULA section
-        curr_text = text
-        for m in pat.finditer(curr_text):
-            lateralities = build_laterality_table(curr_text)
-            negword = is_negated(m, curr_text, word_window=3)
-            data.append(
-                create_new_variable(curr_text, m, lateralities, 'subret_fibrous', {
-                    'value': Scar.NO if negword else value,
-                    'term': m.group(),
-                    'label': 'no' if negword else value.name.lower(),
-                    'negated': negword,
-                    'regex': label,
-                    'source': sect_label,
-                })
-            )
-            text = text[:m.start()] + text[m.end():]
+        for m in pat.finditer(text):
+            if pat_label == 'SCAR_PAT':
+                if has_before(m if isinstance(m, int) else m.start(),
+                              text,
+                              terms=SCAR_PRE_IGNORE,
+                              word_window=3):
+                    continue
+            negated = is_negated(m, text, word_window=3)
+            yield create_new_variable(text, m, lateralities, 'subret_fibrous', {
+                'value': Scar.NO if negated else variable,
+                'term': m.group(),
+                'label': 'no' if negated else variable.name.lower(),
+                'negated': negated,
+                'regex': pat_label,
+                'source': source,
+            })

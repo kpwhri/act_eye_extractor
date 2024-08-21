@@ -20,12 +20,73 @@ def test_scar_patterns(pat, text, exp):
     assert bool(m) is exp
 
 
+# TODO: Create section tests for non-macular sections in `text` field.
+# TODO: Ignore mentions of scar in 'Periphery' sections. Headers will not capture most mentions, use alternative.
+# TODO: Write end-end tests that include header extraction OR that run entire note on a specific variable.
 @pytest.mark.parametrize('text, headers, exp_subret_fibrous_re, exp_subret_fibrous_le, exp_subret_fibrous_unk', [
     ('', {'MACULA': 'scar'}, 'UNKNOWN', 'UNKNOWN', 'YES'),
     ('', {'MACULA': 'OD: macular scar'}, 'MACULAR', 'UNKNOWN', 'UNKNOWN'),
     ('', {'MACULA': 'sub ret scar os'}, 'UNKNOWN', 'SUBRETINAL', 'UNKNOWN'),
     ('disciform scar ou', None, 'DISCIFORM', 'DISCIFORM', 'UNKNOWN'),
     ('no disciform scar ou', None, 'NO', 'NO', 'UNKNOWN'),
+    ('Macula scar Drusen and RPE changes', None, 'UNKNOWN', 'UNKNOWN', 'MACULAR'),
+    ('', {'MACULA': 'scar Drusen and RPE changes'}, 'UNKNOWN', 'UNKNOWN', 'YES'),
+    ('(H31.011) Macular scar of right eye', None, 'MACULAR', 'UNKNOWN', 'UNKNOWN'),
+    ('OD: CMT: 258, large RPE scar vs. new CNVM nasal to fovea with possible mild SRF, diffuse drusen OD>OS',
+     None, 'YES', 'UNKNOWN', 'UNKNOWN'),
+    ('MACULA: Laser scars Od; trace thickening OS', None, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+    ('Periphery - attached with peripheral scarring scarring, temporally subretinal hemorrhage/fibrosis',
+     None, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+    ('Periphery - attached with peripheral scarring, temporal and superior subretinal hemorrhage/fibrosis',
+     None, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+    ('Macula - central mild subretinalhemorrhage noted; temporal scarring', None, 'UNKNOWN', 'UNKNOWN', 'YES'),
+    ('', {'MACULA': '- central mild subretinalhemorrhage noted; temporal scarring'}, 'UNKNOWN', 'UNKNOWN', 'YES'),
+    ('MACULA: RPE scar off ctr, no edema, exudates, or hemorrhage, OU', None, 'UNKNOWN', 'UNKNOWN', 'YES'),
+    ('', {'MACULA': ' RPE scar off ctr, no edema, exudates, or hemorrhage, OU'}, 'UNKNOWN', 'UNKNOWN', 'YES'),
+    ('AMD Vs old RPE scar OD', None, 'YES', 'UNKNOWN', 'UNKNOWN'),
+    ('Periphery: subretinal fibrosis and RPE change temporally', None, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+    ('', {'PERIPHERY': ' subretinal fibrosis and RPE change temporally'}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+    ('disciform scar os', None, 'UNKNOWN', 'DISCIFORM', 'UNKNOWN'),
+    ('SUBJECTIVE: The patient is here for followup evaluation of disciform scar os. has no new complaints.',
+     None, 'UNKNOWN', 'DISCIFORM', 'UNKNOWN'),
+    ('MACULA: Mottled od; shallow disciform scar os', None, 'UNKNOWN', 'DISCIFORM', 'UNKNOWN'),
+    ('', {'MACULA': ' Mottled od; shallow disciform scar os'}, 'UNKNOWN', 'DISCIFORM', 'UNKNOWN'),
+    ('MACULA:  Peripapillary scar with residual exudates only', None, 'UNKNOWN', 'UNKNOWN', 'YES'),
+    ('', {'MACULA': '  Peripapillary scar with residual exudates only'}, 'UNKNOWN', 'UNKNOWN', 'YES'),
+    ('OCT: no recurrent fluid od; Scar os', None, 'UNKNOWN', 'YES', 'UNKNOWN'),
+    ('Follow up in 8 weeks for OD with IV E, OCT and DILATION OU. ¶ ¶ ¶ ¶macular scar ¶',
+     None, 'UNKNOWN', 'UNKNOWN', 'MACULAR'),
+    ('A pigmented scar-like lesion', None, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+    ('MACULA: trace ERM OD and para-macular scar superior to fovea', None, 'MACULAR', 'UNKNOWN', 'UNKNOWN'),
+    ('', {'MACULA': ' trace ERM OD and para-macular scar superior to fovea'}, 'MACULAR', 'UNKNOWN', 'UNKNOWN'),
+    ('MACULA:  Mottled RPE OD; scar OS without edema, exudates, or hemorrhage, OU', None, 'UNKNOWN', 'YES', 'UNKNOWN'),
+    ('', {'MACULA': '  Mottled RPE OD; scar OS without edema, exudates, or hemorrhage, OU'},
+     'UNKNOWN', 'YES', 'UNKNOWN'),
+    ('ASSESSMENT : ARMD OU dry with disciform scar OS Stable', None, 'UNKNOWN', 'DISCIFORM', 'UNKNOWN'),
+    ('Periphery: superior chorioretinal scar', None, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+    ('Hx of avastin os with disciform scar.', None, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+    ('Macular scar OD', None, 'MACULAR', 'UNKNOWN', 'UNKNOWN'),
+    ('366.50 PCO (posterior capsular opacification), left\n363.32 Other macular scars of chorioretina',
+     None, 'UNKNOWN', 'UNKNOWN', 'MACULAR'),
+    ('IOL OS poor vision due to macular scar', None, 'UNKNOWN', 'MACULAR', 'UNKNOWN'),
+    ('PERIPHERAL RETINA: disciform scar OD', None, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+    ('SRNVM OD, evolving\ndisciform scar in evolution', None, 'UNKNOWN', 'UNKNOWN', 'DISCIFORM'),
+    ('Oct macula: 2/4/2017 CMT OD: 202, no intraretinal or subretinal fluid OS: 245, disciform scar - Eylea OD',
+     None, 'UNKNOWN', 'DISCIFORM', 'UNKNOWN'),  # synthetic
+    ('MACULA: clr OU\n\nNo hem, no exud, no CWS OU\n\nOS ~1.5dd, h oval white glial scar ~1dd temp of fov',
+     None, 'UNKNOWN', 'MACULAR', 'UNKNOWN'),
+    ('', {'MACULA': ' clr OU\n\nNo hem, no exud, no CWS OU\n\nOS ~1.5dd, h oval white glial scar ~1dd temp of fov'},
+     'UNKNOWN', 'MACULAR', 'UNKNOWN'),
+    ("possibly 2' macular scar", None, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+    ('Other macular scars of chorioretina', None, 'UNKNOWN', 'UNKNOWN', 'MACULAR'),
+    ('Plan.) her visual synmptoms might be due to her macular scar', None, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
+    ('MACULA: Two tiny spots of heme OD; Disciform scar os with trace heme without edema, exudates, or hemorrhage, OU',
+     None, 'UNKNOWN', 'DISCIFORM', 'UNKNOWN'),
+    ('', {'MACULA': ' Two tiny spots of heme OD; Disciform scar os with trace heme without edema, '
+                    'exudates, or hemorrhage, OU'}, 'UNKNOWN', 'DISCIFORM', 'UNKNOWN'),
+    ('MACULA:  Drusen od; disciform scar os', None, 'UNKNOWN', 'DISCIFORM', 'UNKNOWN'),
+    ('', {'MACULA': '  Drusen od; disciform scar os'}, 'UNKNOWN', 'DISCIFORM', 'UNKNOWN'),
+    # Test commit.
 ])
 def test_scar_extract_build(text, headers, exp_subret_fibrous_re, exp_subret_fibrous_le, exp_subret_fibrous_unk):
     pre_json = extract_subret_fibrous(text, headers=Headers(headers))

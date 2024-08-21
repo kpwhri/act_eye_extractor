@@ -8,7 +8,7 @@ from eye_extractor.laterality import LATERALITY_PATTERN, LATERALITY
 from eye_extractor.nlp.character_groups import LINE_START_CHARS_RX
 
 HEADER_PAT = re.compile(  # built in reverse, always looks for semicolon
-    r":(\s?[A-Z'/]+)+"
+    r":((?:\s?[A-Z'/]+)+)"
 )
 
 Section = str
@@ -93,6 +93,7 @@ def extract_headers_and_text(text, *, search_missing_headers=False):
     :return: Header
     """
     result = {}
+    # `[:-1]` possibly ignores initial boilerplate
     it = iter(x[::-1].strip() for x in HEADER_PAT.split(text[::-1])[:-1])
     for value, key in zip(it, it):
         result[key] = value.split('.')[0]

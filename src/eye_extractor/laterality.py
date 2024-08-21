@@ -271,6 +271,8 @@ class LateralityLocator:
     DEFAULT_COUNT_LETTERS = {
         ',': 1,
         '.': 2,
+        ';': 3,
+        '¶': 3,
     } | {x: 3 for x in LINE_START_CHARS}
 
     def __init__(self, lateralities: list[LatLocation] = None, *, default_laterality=Laterality.UNKNOWN):
@@ -391,6 +393,8 @@ class LateralityLocator:
             if next_commas == prev_commas:
                 return prev_lat.laterality if prev_dist < next_dist else next_lat.laterality
             return prev_lat.laterality if prev_commas < next_commas else next_lat.laterality
+        elif prev_commas > 6:
+            return Laterality.UNKNOWN
         return prev_lat.laterality
 
     def _get_by_index_default_helper_check_next_lat(self, match_start, text, prev_lat, next_lat, count_letters):
