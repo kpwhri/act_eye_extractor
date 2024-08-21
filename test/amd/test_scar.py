@@ -21,6 +21,7 @@ def test_scar_patterns(pat, text, exp):
 
 
 # TODO: Create section tests for non-macular sections in `text` field.
+# TODO: Ignore mentions of scar in 'Periphery' sections. Headers will not capture most mentions, use alternative.
 # TODO: Write end-end tests that include header extraction OR that run entire note on a specific variable.
 @pytest.mark.parametrize('text, headers, exp_subret_fibrous_re, exp_subret_fibrous_le, exp_subret_fibrous_unk', [
     ('', {'MACULA': 'scar'}, 'UNKNOWN', 'UNKNOWN', 'YES'),
@@ -53,7 +54,8 @@ def test_scar_patterns(pat, text, exp):
     ('MACULA:  Peripapillary scar with residual exudates only', None, 'UNKNOWN', 'UNKNOWN', 'YES'),
     ('', {'MACULA': '  Peripapillary scar with residual exudates only'}, 'UNKNOWN', 'UNKNOWN', 'YES'),
     ('OCT: no recurrent fluid od; Scar os', None, 'UNKNOWN', 'YES', 'UNKNOWN'),
-    ('Follow up in 8 weeks for OD with IVE, OCT and DILATION OU.\nmacular scar', None, 'UNKNOWN', 'UNKNOWN', 'YES'),
+    ('Follow up in 8 weeks for OD with IV E, OCT and DILATION OU. ¶ ¶ ¶ ¶macular scar ¶',
+     None, 'UNKNOWN', 'UNKNOWN', 'MACULAR'),
     ('A pigmented scar-like lesion', None, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
     ('MACULA: trace ERM OD and para-macular scar superior to fovea', None, 'MACULAR', 'UNKNOWN', 'UNKNOWN'),
     ('', {'MACULA': ' trace ERM OD and para-macular scar superior to fovea'}, 'MACULAR', 'UNKNOWN', 'UNKNOWN'),
