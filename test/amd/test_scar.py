@@ -86,6 +86,7 @@ def test_scar_patterns(pat, text, exp):
                     'exudates, or hemorrhage, OU'}, 'UNKNOWN', 'DISCIFORM', 'UNKNOWN'),
     ('MACULA:  Drusen od; disciform scar os', None, 'UNKNOWN', 'DISCIFORM', 'UNKNOWN'),
     ('', {'MACULA': '  Drusen od; disciform scar os'}, 'UNKNOWN', 'DISCIFORM', 'UNKNOWN'),
+    # Test commit.
 ])
 def test_scar_extract_build(text, headers, exp_subret_fibrous_re, exp_subret_fibrous_le, exp_subret_fibrous_unk):
     pre_json = extract_subret_fibrous(text, headers=Headers(headers))
