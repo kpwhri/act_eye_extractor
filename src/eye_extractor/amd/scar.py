@@ -15,7 +15,7 @@ class Scar(enum.IntEnum):
     DISCIFORM = 4
 
 
-scar = r'(?:scar(?:ring|s)?|fibros[ie]s|fibrous)'
+scar = r'(?:scar(?:ring|s)?|fibros[ie]s|fibrous)(?!-like)'
 subret = r'(?:sub\s*ret\w*)'
 
 SCAR_PAT = re.compile(
@@ -54,6 +54,7 @@ SCAR_PRE_IGNORE = {
     'peripheral': True,
     None: False
 }
+
 
 
 def extract_subret_fibrous(text, *, headers=None, lateralities=None):
