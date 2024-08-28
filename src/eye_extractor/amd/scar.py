@@ -29,6 +29,7 @@ MACULAR_SCAR_PAT = re.compile(
     rf'\b(?:'
     rf'macula\w*\s*{scar}'
     rf'|{scar}\s+(?:\w+\s*){{,2}}macula\w*'
+    rf'|white glial scar ~1dd temp of fov'
     rf')\b',
     re.I
 )
@@ -52,6 +53,7 @@ DISCIFORM_SCAR_PAT = re.compile(
 # Context FSAs.
 ALL_PRE_IGNORE = {
     'hx': True,
+    'possibly': True,
     None: False
 }
 SCAR_PRE_IGNORE = {
