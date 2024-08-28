@@ -70,7 +70,7 @@ def test_scar_patterns(pat, text, exp):
      None, 'UNKNOWN', 'UNKNOWN', 'MACULAR'),
     ('IOL OS poor vision due to macular scar', None, 'UNKNOWN', 'MACULAR', 'UNKNOWN'),
     ('PERIPHERAL RETINA: disciform scar OD', None, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
-    ('SRNVM OD, evolving\ndisciform scar in evolution', None, 'UNKNOWN', 'UNKNOWN', 'DISCIFORM'),
+    ('SRNVM OD, evolving\ndisciform scar in evolution', None, 'DISCIFORM', 'UNKNOWN', 'UNKNOWN'),
     ('Oct macula: 2/4/2017 CMT OD: 202, no intraretinal or subretinal fluid OS: 245, disciform scar - Eylea OD',
      None, 'UNKNOWN', 'DISCIFORM', 'UNKNOWN'),  # synthetic
     ('MACULA: clr OU\n\nNo hem, no exud, no CWS OU\n\nOS ~1.5dd, h oval white glial scar ~1dd temp of fov',
@@ -89,7 +89,7 @@ def test_scar_patterns(pat, text, exp):
 ])
 def test_scar_extract_build(text, headers, exp_subret_fibrous_re, exp_subret_fibrous_le, exp_subret_fibrous_unk):
     pre_json = extract_subret_fibrous(text, headers=Headers(headers))
-    post_json = json.loads(json.dumps(pre_json))
+    post_json = json.loads(json.dumps(pre_json, default=str))
     result = build_subret_fibrous(post_json)
     assert result['subret_fibrous_re'] == exp_subret_fibrous_re
     assert result['subret_fibrous_le'] == exp_subret_fibrous_le

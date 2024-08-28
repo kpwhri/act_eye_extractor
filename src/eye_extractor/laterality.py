@@ -271,6 +271,7 @@ class LateralityLocator:
     DEFAULT_COUNT_LETTERS = {
         ',': 1,
         '.': 2,
+        '-': 3,
         ';': 3,
         '¶': 3,
     } | {x: 3 for x in LINE_START_CHARS}
