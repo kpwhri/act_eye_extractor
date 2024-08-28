@@ -388,7 +388,7 @@ class LateralityLocator:
             if next_commas == prev_commas:
                 return prev_lat.laterality if prev_dist < next_dist else next_lat.laterality
             return prev_lat.laterality if prev_commas < next_commas else next_lat.laterality
-        elif prev_commas > 6:
+        elif prev_commas > 4:
             return Laterality.UNKNOWN
         return prev_lat.laterality
 

@@ -49,12 +49,16 @@ DISCIFORM_SCAR_PAT = re.compile(
     re.I
 )
 
+# Context FSAs.
+ALL_PRE_IGNORE = {
+    'hx': True,
+    None: False
+}
 SCAR_PRE_IGNORE = {
     'laser': True,
     'peripheral': True,
     None: False
 }
-
 
 
 def extract_subret_fibrous(text, *, headers=None, lateralities=None):
@@ -72,6 +76,11 @@ def _extract_subret_fibrous(text: str, lateralities, source: str):
         (SCAR_PAT, 'SCAR_PAT', Scar.YES),
     ]:
         for m in pat.finditer(text):
+            if has_before(m if isinstance(m, int) else m.start(),
+                          text,
+                          terms=ALL_PRE_IGNORE,
+                          word_window=6):
+                continue
             if pat_label == 'SCAR_PAT':
                 if has_before(m if isinstance(m, int) else m.start(),
                               text,

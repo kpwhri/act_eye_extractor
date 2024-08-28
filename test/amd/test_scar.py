@@ -66,7 +66,7 @@ def test_scar_patterns(pat, text, exp):
     ('Periphery: superior chorioretinal scar', None, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
     ('Hx of avastin os with disciform scar.', None, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
     ('Macular scar OD', None, 'MACULAR', 'UNKNOWN', 'UNKNOWN'),
-    ('366.50 PCO (posterior capsular opacification), left\n363.32 Other macular scars of chorioretina',
+    ('366.50 PCO (posterior capsular opacification), left ¶363.32 Other macular scars of chorioretina',
      None, 'UNKNOWN', 'UNKNOWN', 'MACULAR'),
     ('IOL OS poor vision due to macular scar', None, 'UNKNOWN', 'MACULAR', 'UNKNOWN'),
     ('PERIPHERAL RETINA: disciform scar OD', None, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
