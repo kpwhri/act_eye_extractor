@@ -3,7 +3,12 @@ import re
 from eye_extractor.nlp.character_groups import get_previous_text_to_newline
 
 
-PERIPHERY_PAT = re.compile(r'\b(?:periphery)\b', re.I)
+PERIPHERY_PAT = re.compile(
+    r'\b(?:'
+    r'peripher(y|al\s+retina)'
+    r')\b',
+    re.I
+)
 
 
 def is_inline_section(match_start: int, text: str, pattern: re.Pattern) -> bool:
@@ -20,8 +25,7 @@ def is_inline_section(match_start: int, text: str, pattern: re.Pattern) -> bool:
         in-line section.
     """
     line_text = get_previous_text_to_newline(match_start, text)
-    line_tokens = re.split(r'\s', line_text)
-    if re.search(pattern, line_tokens[0]):
+    if re.match(pattern, line_text):
         return True
     return False
 
