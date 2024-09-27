@@ -2,6 +2,8 @@ import enum
 import re
 
 from eye_extractor.common.get_variable import get_variable
+from eye_extractor.nlp.character_groups import get_previous_text_to_newline
+from eye_extractor.nlp.inline_section import is_periphery
 from eye_extractor.nlp.negate.negation import has_before, is_negated
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
@@ -89,6 +91,8 @@ def _extract_subret_fibrous(text: str, lateralities, source: str):
                               terms=SCAR_PRE_IGNORE,
                               word_window=3):
                     continue
+            if is_periphery(m.start(), text):
+                continue
             negated = is_negated(m, text, word_window=3)
             yield create_new_variable(text, m, lateralities, 'subret_fibrous', {
                 'value': Scar.NO if negated else variable,

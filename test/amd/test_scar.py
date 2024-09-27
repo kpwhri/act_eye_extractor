@@ -20,7 +20,6 @@ def test_scar_patterns(pat, text, exp):
     assert bool(m) is exp
 
 
-# TODO: Create section tests for non-macular sections in `text` field.
 # TODO: Ignore mentions of scar in 'Periphery' sections. Headers will not capture most mentions, use alternative.
 # TODO: Write end-end tests that include header extraction OR that run entire note on a specific variable.
 @pytest.mark.parametrize('text, headers, exp_subret_fibrous_re, exp_subret_fibrous_le, exp_subret_fibrous_unk', [
@@ -35,7 +34,7 @@ def test_scar_patterns(pat, text, exp):
     ('OD: CMT: 258, large RPE scar vs. new CNVM nasal to fovea with possible mild SRF, diffuse drusen OD>OS',
      None, 'YES', 'UNKNOWN', 'UNKNOWN'),
     ('MACULA: Laser scars Od; trace thickening OS', None, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
-    ('Periphery - attached with peripheral scarring scarring, temporally subretinal hemorrhage/fibrosis',
+    ('¶Periphery - attached with peripheral scarring scarring, temporally subretinal hemorrhage/fibrosis',
      None, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
     ('Periphery - attached with peripheral scarring, temporal and superior subretinal hemorrhage/fibrosis',
      None, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
