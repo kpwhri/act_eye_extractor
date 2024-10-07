@@ -70,6 +70,10 @@ def _get_dr_type(text: str, lateralities, source: str) -> dict:
             #                    terms={'exam'},
             #                    word_window=6):
             #         continue
+            negated = (
+                is_negated(m, text, word_window=3)
+                or is_post_negated(m, text, terms={'no'}, word_window=3)
+            )
             if dr_type is DrType.YES_NOS:
                 if filter_dr_yesno_context(m, text, pat_label=pat_label):
                     continue
@@ -91,11 +95,6 @@ def _get_dr_type(text: str, lateralities, source: str) -> dict:
                                            boundary_chars=';¶',
                                            skip_n_boundary_chars=0)
                     )
-            else:
-                negated = (
-                    is_negated(m, text, word_window=3)
-                    or is_post_negated(m, text, terms={'no'}, word_window=3)
-                )
             context = f'{text[max(0, m.start() - 100): m.start()]} {text[m.end():min(len(text), m.end() + 100)]}'
             severities = extract_severity(context)
             if sev_var:
