@@ -268,6 +268,7 @@ class LatLocation:
 
 
 class LateralityLocator:
+    # '-', ';', and '¶' cause tests to fail in DR (DME & hemorrhage type).
     DEFAULT_COUNT_LETTERS = {
         ',': 1,
         '.': 2,

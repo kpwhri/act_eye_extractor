@@ -52,9 +52,10 @@ def test_srh_value_first_variable(text, exp_value, exp_negword):
     ('OCT MACULA: 2/2/2022 OS: srh', {'MACULA': 'w/o srh ou'}, 0, 0, -1, datetime.date(2022, 2, 9)),
     ('OCT MACULA: 2/2/2022 OS: srh', {'MACULA': 'w/o srh ou'}, 0, 1, -1, datetime.date(2022, 2, 1)),
     ('MACULA: Mild rpe changes OS. Thin subretinal heme centrally with SRF OD.', {}, 1, -1, -1, None),
-    ('', {'MACULA: Mild rpe changes OS. Thin subretinal heme centrally with SRF OD.'}, 1, -1, -1, None),
+    ('', {'MACULA': 'Mild rpe changes OS. Thin subretinal heme centrally with SRF OD.'}, 1, -1, -1, None),
     ('OU ¶ ¶ASSESSMENT COMMENTS: Central subretinal heme', {}, -1, -1, 1, None),
-    ('', {'ASSESSMENT COMMENTS': 'Central subretinal heme'}, -1, -1, 1, None),
+    # TODO: Determine if we should extract from 'ASSESSMENT COMMENTS' section.
+    # ('', {'ASSESSMENT COMMENTS': 'Central subretinal heme'}, -1, -1, 1, None),
     ('decreased VA OD for 4 weeks sub retinal Hem', {}, 1, -1, -1, None),
     ("PERIPHERAL RETINA: pigmentation at 12 o'clock OD, large domed subretinal hemorrhage", {}, -1, -1, -1, None),
     ('Periphery - attached with peripheral scarring scarring, temporally subretinal hemorrhage/fibrosis',
