@@ -1,6 +1,7 @@
 import re
 
 from eye_extractor.common.get_variable import get_variable
+from eye_extractor.nlp.inline_section import is_periphery
 from eye_extractor.nlp.negate.negation import is_negated, is_any_negated
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 from eye_extractor.sections.oct_macula import find_oct_macula_sections, remove_macula_oct
@@ -53,6 +54,8 @@ def extract_subretinal_hemorrhage(text, *, headers=None, lateralities=None):
 
 def _extract_subret_heme(text: str, lateralities, source: str):
     for m in SRH_PAT.finditer(text):  # everywhere
+        if is_periphery(m.start(), text):
+            continue
         negated = is_negated(m, text)
         yield create_new_variable(text, m, lateralities, 'subretinal_hem', {
             'value': 0 if negated else 1,
