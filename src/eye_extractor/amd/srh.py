@@ -20,6 +20,10 @@ SRH_PAT = re.compile(
 
 # Context FSAs.
 ALL_PRE_IGNORE = {
+    'follow': {
+        'up': True,
+        None: False
+    },
     'no': {
         'new': True,
         None: False
@@ -73,7 +77,7 @@ def _extract_subret_heme(text: str, lateralities, source: str):
         if has_before(m if isinstance(m, int) else m.start(),
                       text,
                       terms=ALL_PRE_IGNORE,
-                      word_window=3):
+                      word_window=5):
             continue
         negated = is_negated(m, text, word_window=3)
         yield create_new_variable(text, m, lateralities, 'subretinal_hem', {

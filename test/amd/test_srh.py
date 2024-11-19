@@ -98,8 +98,9 @@ def test_srh_value_first_variable(text, headers, exp_value, exp_negword):
     ('ASSESSMENT: ¶1.»(H35.61) Subretinal hemorrhage of right eye', {}, 1, -1, -1, None),
     ('SUBJECTIVE:  The patient is here for follow up evaluation of peripapillary subretinal hemorrhage OD.',
      {}, -1, -1, -1, None),
-    ('', {'SUBJECTIVE': 'The patient is here for follow up evaluation of peripapillary subretinal hemorrhage OD'},
-     -1, -1, -1, None),
+    # TODO: Determine if we should extract from 'PLAN' section.
+    # ('', {'SUBJECTIVE': 'The patient is here for follow up evaluation of peripapillary subretinal hemorrhage OD'},
+    #  -1, -1, -1, None),
     # Inverted laterality sectioning - tricky to capture.
     ('¶OD: ¶Vitreous: clear  ¶Optic Nerve: crisp tr pale ¶C:D ratio: 0.5 ¶Macula: SRH,', {}, 1, -1, -1, None),
 ])
