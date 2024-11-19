@@ -41,7 +41,7 @@ def write_laterality_html(outfh, text, strategy=LateralityLocatorStrategy.DEFAUL
     curr_idx = 0
     outfh.write('<p>')
     for i, letter in enumerate(text):
-        new_lat = latloc.get_by_index(i, text, strategy=strategy)
+        new_lat = latloc.get_by_index([i, i+1], text, strategy=strategy)
         if letter in LINE_START_CHARS:
             if curr_lat is None:
                 continue
