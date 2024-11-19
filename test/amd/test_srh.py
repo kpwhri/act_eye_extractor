@@ -57,7 +57,7 @@ def test_srh_value_first_variable(text, headers, exp_value, exp_negword):
     ('OU ¶ ¶ASSESSMENT COMMENTS: Central subretinal heme', {}, -1, -1, 1, None),
     # TODO: Determine if we should extract from 'ASSESSMENT COMMENTS' section.
     # ('', {'ASSESSMENT COMMENTS': 'Central subretinal heme'}, -1, -1, 1, None),
-    ('decreased VA OD for 4 weeks sub retinal Hem', {}, 1, -1, -1, None),
+    ('decreased VA OD for 4 weeks sub retinal Hem', {}, 1, -1, -1, None),  # synthetic
     ("PERIPHERAL RETINA: pigmentation at 12 o'clock OD, large domed subretinal hemorrhage", {}, -1, -1, -1, None),
     ('Periphery - attached with peripheral scarring scarring, temporally subretinal hemorrhage/fibrosis',
      {}, -1, -1, -1, None),
@@ -65,7 +65,7 @@ def test_srh_value_first_variable(text, headers, exp_value, exp_negword):
     # Laterality sub-section preventing periphery exclusion.
     # ('Periphery -  ¶OD:  attached with peripheral scarring, temporal and superior subretinal hemorrhage/fibrosis',
     #  {}, -1, -1, -1, None),
-    ('SF6 OD 10/23/77 ¶            -patient also with subretinal hemorrhaging', {}, -1, -1, 1, None),
+    ('SF6 OD 10/23/77 ¶            -patient also with subretinal hemorrhaging', {}, -1, -1, 1, None),  # synthetic
     # Laterality sub-section preventing periphery exclusion.
     # ('¶Peripheral fundus:  ¶»OD: fake, text ¶»OS: new N cystic lesion with adjacent ?subretinal hemorrhage',
     #  {}, -1, -1, -1, None),  # text shortened
@@ -83,7 +83,7 @@ def test_srh_value_first_variable(text, headers, exp_value, exp_negword):
     # Inverted laterality sectioning - tricky to capture.
     # ('¶OS: ¶Vitreous: clear  ¶Optic Nerve: crisp  ¶C:D ratio: 0.3 ¶Macula: ped temporal srh', {}, -1, 1, -1, None),
     ('Oct macula: 3/10/2017  ¶OD: CMT 248 , new subretinal hemorrhage and drusen  ¶OS: CMT 231 , drusen, no new SRH',
-     {}, 1, -1, -1, datetime.date(2017, 3, 10)),
+     {}, 1, -1, -1, datetime.date(2017, 3, 10)),  # synthetic
     ('Macula - fresh hemorrhage inferiorly, drusen, mild inferior fluid OD. Quiet, few drusen, no new SRH/SRF OS.',
      {}, -1, -1, -1, None),
     ('OCT: Disrupted RPE OD>OS with new PED and subretinal heme and fluid OD ¶', {}, 1, -1, -1, None),
@@ -92,13 +92,13 @@ def test_srh_value_first_variable(text, headers, exp_value, exp_negword):
     ('MACULA: drusen OD; large 8-10 dd subretinal hemorrhage encompassing previously identified RPE detachment OS  ¶',
      {}, -1, 1, -1, None),
     ('(H35.62) Subretinal hemorrhage of left eye-', {}, -1, 1, -1, None),
-    ('4/2/2019  Subretinal hemorrhage left eye', {}, -1, 1, -1, datetime.date(2019, 4, 2)),
+    ('4/2/2019  Subretinal hemorrhage left eye', {}, -1, 1, -1, datetime.date(2019, 4, 2)),  # synthetic
     ('Macula:subretinal hemorrhage temporal to optic nerve with trc elevation OD, single pigmented area fovea OS ¶',
      {}, 1, -1, -1, None),
     ('ASSESSMENT: ¶1.»(H35.61) Subretinal hemorrhage of right eye', {}, 1, -1, -1, None),
     ('SUBJECTIVE:  The patient is here for follow up evaluation of peripapillary subretinal hemorrhage OD.',
      {}, -1, -1, -1, None),
-    # TODO: Determine if we should extract from 'PLAN' section.
+    # TODO: Determine if we should extract from 'SUBJECTIVE' section.
     # ('', {'SUBJECTIVE': 'The patient is here for follow up evaluation of peripapillary subretinal hemorrhage OD'},
     #  -1, -1, -1, None),
     # Inverted laterality sectioning - tricky to capture.
