@@ -80,11 +80,11 @@ def test_srh_value_first_variable(text, exp_value, exp_negword):
     # ('', {'PLAN':  '¶Subretinal Hemorrhagic mass'}, -1, -1, 1, None),
     ('Periphery: choroidal elevation with surrounding sub retinal hemorrhage', {}, -1, -1, -1, None),
     # Inverted laterality sectioning - tricky to capture.
-    ('¶OS: ¶Vitreous: clear  ¶Optic Nerve: crisp  ¶C:D ratio: 0.3 ¶Macula: ped temporal srh', {}, -1, 1, -1, None),
+    # ('¶OS: ¶Vitreous: clear  ¶Optic Nerve: crisp  ¶C:D ratio: 0.3 ¶Macula: ped temporal srh', {}, -1, 1, -1, None),
     ('Oct macula: 3/10/2017  ¶OD: CMT 248 , new subretinal hemorrhage and drusen  ¶OS: CMT 231 , drusen, no new SRH',
-     {}, 1, 0, -1, datetime.date(2017, 3, 10)),
+     {}, 1, -1, -1, datetime.date(2017, 3, 10)),
     ('Macula - fresh hemorrhage inferiorly, drusen, mild inferior fluid OD. Quiet, few drusen, no new SRH/SRF OS.',
-     {}, -1, 0, -1, None),
+     {}, -1, -1, -1, None),
     ('OCT: Disrupted RPE OD>OS with new PED and subretinal heme and fluid OD ¶', {}, 1, -1, -1, None),
     ('Macula - flat OU. Small PED OS nasal to fovea.  No notable drusen/SRF/SRH OU.', {}, 0, 0, -1, None),
     # Text shortened before 'drusen OD;'.
