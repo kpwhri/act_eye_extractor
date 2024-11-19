@@ -5,7 +5,7 @@ from eye_extractor.nlp.character_groups import get_previous_text_to_newline
 
 PERIPHERY_PAT = re.compile(
     r'\b(?:'
-    r'peripher(y|al\s+retina)'
+    r'peripher(y|al\s+(retina|fundus))'
     r')\b',
     re.I
 )

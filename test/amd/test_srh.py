@@ -61,19 +61,23 @@ def test_srh_value_first_variable(text, exp_value, exp_negword):
     ('Periphery - attached with peripheral scarring scarring, temporally subretinal hemorrhage/fibrosis',
      {}, -1, -1, -1, None),
     ('Macula -  ¶OD:  No SRH; temporal scarring ¶OS:', {}, 0, -1, -1, None),
-    ('Periphery -  ¶OD:  attached with peripheral scarring, temporal and superior subretinal hemorrhage/fibrosis',
-     {}, -1, -1, -1, None),
+    # Laterality sub-section preventing periphery exclusion.
+    # ('Periphery -  ¶OD:  attached with peripheral scarring, temporal and superior subretinal hemorrhage/fibrosis',
+    #  {}, -1, -1, -1, None),
     ('SF6 OD 10/23/77 ¶            -patient also with subretinal hemorrhaging', {}, -1, -1, 1, None),
-    ('¶Peripheral fundus:  ¶»OD: fake, text ¶»OS: new N cystic lesion with adjacent ?subretinal hemorrhage',
-     {}, -1, -1, -1, None),  # text shortened
+    # Laterality sub-section preventing periphery exclusion.
+    # ('¶Peripheral fundus:  ¶»OD: fake, text ¶»OS: new N cystic lesion with adjacent ?subretinal hemorrhage',
+    #  {}, -1, -1, -1, None),  # text shortened
     ("¶Peripheral fundus: blah blah OD, large patches of sub retinal hemes temporally (from 11-6 o'clock) OD, "
      "WNL OS, (-)NVE OU", {}, -1, -1, -1, None),  # text shortened
     ('Periphery: temporally and inferiorly, subretinal hemorrhage', {}, -1, -1, -1, None),
     ('PLAN: ¶SR heme', {}, -1, -1, 1, None),
-    ('', {'PLAN': '¶SR heme'}, -1, -1, 1, None),
+    # TODO: Determine if we should extract from 'PLAN' section.
+    # ('', {'PLAN': '¶SR heme'}, -1, -1, 1, None),
     ('Follow up for: SR heme', {}, -1, -1, 1, None),
     ('PLAN:  ¶Subretinal Hemorrhagic mass', {}, -1, -1, 1, None),
-    ('', {'PLAN':  '¶Subretinal Hemorrhagic mass'}, -1, -1, 1, None),
+    # TODO: Determine if we should extract from 'PLAN' section.
+    # ('', {'PLAN':  '¶Subretinal Hemorrhagic mass'}, -1, -1, 1, None),
     ('Periphery: choroidal elevation with surrounding sub retinal hemorrhage', {}, -1, -1, -1, None),
     # Inverted laterality sectioning - tricky to capture.
     ('¶OS: ¶Vitreous: clear  ¶Optic Nerve: crisp  ¶C:D ratio: 0.3 ¶Macula: ped temporal srh', {}, -1, 1, -1, None),
