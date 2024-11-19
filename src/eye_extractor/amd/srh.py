@@ -75,7 +75,7 @@ def _extract_subret_heme(text: str, lateralities, source: str):
                       terms=ALL_PRE_IGNORE,
                       word_window=3):
             continue
-        negated = is_negated(m, text)
+        negated = is_negated(m, text, word_window=3)
         yield create_new_variable(text, m, lateralities, 'subretinal_hem', {
             'value': 0 if negated else 1,
             'term': m.group(),
