@@ -76,7 +76,7 @@ def test_srh_value_first_variable(text, headers, exp_value, exp_negword):
     ('PLAN: ¶SR heme', {}, -1, -1, 1, None),
     # TODO: Determine if we should extract from 'PLAN' section.
     # ('', {'PLAN': '¶SR heme'}, -1, -1, 1, None),
-    ('Follow up for: SR heme', {}, -1, -1, 1, None),
+    ('Follow up for: SR heme', {}, -1, -1, -1, None),
     ('PLAN:  ¶Subretinal Hemorrhagic mass', {}, -1, -1, 1, None),
     # TODO: Determine if we should extract from 'PLAN' section.
     # ('', {'PLAN':  '¶Subretinal Hemorrhagic mass'}, -1, -1, 1, None),
@@ -100,11 +100,20 @@ def test_srh_value_first_variable(text, headers, exp_value, exp_negword):
     ('ASSESSMENT: ¶1.»(H35.61) Subretinal hemorrhage of right eye', {}, 1, -1, -1, None),
     ('SUBJECTIVE:  The patient is here for follow up evaluation of peripapillary subretinal hemorrhage OD.',
      {}, -1, -1, -1, None),
-    # TODO: Determine if we should extract from 'SUBJECTIVE' section.
-    # ('', {'SUBJECTIVE': 'The patient is here for follow up evaluation of peripapillary subretinal hemorrhage OD'},
-    #  -1, -1, -1, None),
+    ('', {'SUBJECTIVE': 'The patient is here for follow up evaluation of peripapillary subretinal hemorrhage OD'},
+     -1, -1, -1, None),
     # Inverted laterality sectioning - tricky to capture.
     # ('¶OD: ¶Vitreous: clear  ¶Optic Nerve: crisp tr pale ¶C:D ratio: 0.5 ¶Macula: SRH,', {}, 1, -1, -1, None),
+    ('2. Deep retinal hemorrhage of right eye ¶Subretinal heme/chorodial heme', {}, 1, -1, -1, None),
+    # 'Previous "assessment"' many lines before SRH mention - tricky to capture.
+    # ('Previous "assessment" by Dr Bowers: ¶1. CNVM (choroidal neovascular membrane), right ¶Eccentric disciform '
+    #  'disease ¶  ¶2. Deep retinal hemorrhage of right eye ¶Subretinal heme/chorodial heme',
+    #  {}, -1, -1, -1, None),  # synthetic
+    ('Follow up for: observation of subretinal Hemorrhagic mass', {}, -1, -1, -1, None),
+    ('MACULA: 3-4DA dense subretinal heme od macula; os drusen without edema, exudates, or hemorrhage, OU',
+     {}, 1, -1, -1, None),
+    ('', {'MACULA': '3-4DA dense subretinal heme od macula; os drusen without edema, exudates, or hemorrhage, OU'},
+     1, -1, -1, None),
 ])
 def test_srh_extract_build(text, headers, subretinal_hem_re, subretinal_hem_le, subretinal_hem_unk, note_date):
     pre_json = extract_subretinal_hemorrhage(text, headers=Headers(headers))

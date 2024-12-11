@@ -24,6 +24,7 @@ def _split_and_get_variable(text: str, get_helper: Callable, split_char: str, se
     return data
 
 
+# TODO: Add way to ignore extraction from specified headers.
 def get_variable(text: str, get_helper: Callable, *,
                  headers=None, target_headers: list[str] = None, lateralities=None, search_negated_list=False,
                  split_char: str = None) -> list:
