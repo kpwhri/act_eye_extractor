@@ -31,6 +31,24 @@ from eye_extractor.output.amd import build_subretfluid_amd
     ('Macula: flat RPE change, drusen, no hemorrhage no edema', None, -1, -1, 0, None),
     ('¶ASSESSMENT:  ¶(362.51) ARMD (primary encounter diagnosis) ¶(362.52) Exudative age related macular degeneration'
      ' small fluid OD', None, -1, -1, -1, None),
+    ('MACULA:  ¶OD: patchy atrophy with flecks of heme and SRF ¶OS: frank edema with flecks of heme',
+     None, 1, -1, -1, None),
+    ('ASSESSMENT: AMD/SRF/SRN: Worsening acuity both eyes, patient now has '
+     'SRF and heme in the RIGHT EYE as well as OS.', None, 1, 1, -1, None),
+    ('OCT os with ERM/VMT and SRF.', None, -1, 1, -1, None),
+    # Historical mention, should be ignored.
+    ("¶OCT-Mac: from Cronkite's note ¶Disrupted RPE OU with trace subretinal fluid OD and "
+     "marked macular and subretinal fluid OS ¶", None, -1, -1, -1, None),  # synthetic
+    ('MACULA: + srf OD-just off axis; OS-drusen, rpe changes OS', None, 1, -1, -1, None),
+    ('OCT mac-+SRF CT 498 OD ; OS 328 drusen with no fluid', None, 1, 0, -1, None),  # synthetic
+    ('p-m bundle just temporal to the disc. Appears to have some subretinal fluid associated.', None, -1, -1, 1, None),
+    ('¶Macula OCT ¶OD: CMT of 240, appears stable to prior/dry '
+     '¶OS: CMT of 413, several new areas of sub retinal fluid  ¶ ¶', None, -1, 1, -1, None),
+    ('OCT: slight subretinal fluid od, persistent.', None, 1, -1, -1, None),
+    # Below snippet contains likely misspelling - 'so' instead of 'os'.
+    ('¶OCT:   Persistent subretinal fluid so ¶', None, -1, 1, -1, None),
+    ('OU ¶PERIPHERAL RETINA: Normal appearance/flat ¶ ¶OCT:  Incomplete image OD;  Subretinal fluid OS ¶ ¶',
+     None, -1, 1, -1, None),
     # Following tests require date parsing to determine if mention is historical.
     ('Oct macula (Dr. Bowers) : 3/7/2019 CMT OD:504 subfoveal SRF OS:348 small SRF in temporal macula',
      None, -1, -1, -1, date(2019, 6, 4)),  # synthetic
@@ -46,6 +64,18 @@ from eye_extractor.output.amd import build_subretfluid_amd
      None, -1, 1, -1, date(2017, 9, 8)),  # synthetic
     ('¶Oct macula: 1/28/2016  ¶OD: trace subretinal fluid,  ¶OS: RPE atrophy ¶',
      None, -1, -1, -1, date(2016, 4, 19)),  # synthetic
+    # Mention appears in 'Personal Ocular History Includes' section - should be ignored.
+    ('AMD - SRF vs CME noted on exam OS 3/08', None, -1, -1, -1, date(2008, 6, 15)),  # synthetic
+    ('¶sOCT 3-4-2018 Macula ¶OD»341»Temporal thinning and irreg ¶OS»307»Erm, VMT with SRF',
+     None, -1, 1, -1, date(2018, 3, 4)),  # synthetic
+    ('Oct macula: 3/19/2018 CMT OD: 2018, no intraretinal and subretinal fluid OS: 306, disciform scar',
+     None, 0, -1, -1, date(2018, 3, 19)),  # synthetic
+    ('Oct macula: 7/27/2016 OD: New PED, SRF, CMT 503; OS: WNL, CMT 296 Avastin OD # 1',
+     None, 1, -1, -1, date(2016, 7, 27)),  # synthetic
+    ('¶Oct macula: 11/20/2018 CMT OD:327 with stable medium size PED and '
+     'small amount of subretinal fluid  inferior to fovea', None, 1, -1, -1, date(2018, 11, 20)),  # synthetic
+    ('¶11/14/2021  CMT  OD:322  OS:293 ¶OD: SRF temporal to ONH, (-) IRF, (-) drusen '
+     '¶OS: central ?drusenoid PED  ¶ ¶ ¶ ¶', None, 1, -1, -1, date(2021, 11, 14)),  # synthetic
 ])
 def test_srf_extract_build(text, headers, srf_re, srf_le, srf_unk, note_date):
     pre_json = extract_fluid(text, headers=Headers(headers))
