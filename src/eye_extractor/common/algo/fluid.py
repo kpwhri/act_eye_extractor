@@ -163,6 +163,7 @@ def _extract_fluid_from_oct(text):
     return result
 
 
+# TODO: Add documentation for this function.
 def _get_fluid(text, lateralities, source, *, known_laterality=None, known_date=None, priority=0):
     data = []
     for label, pat, positive_value, negative_value, positive_word in [
@@ -182,7 +183,7 @@ def _get_fluid(text, lateralities, source, *, known_laterality=None, known_date=
                 continue
             negword = (
                     is_negated(m, text, word_window=4)
-                    or is_post_negated(m, text, {'not'}, word_window=3)
+                    or is_post_negated(m, text, {'not', 'resolved'}, word_window=4)
             )
             data.append(
                 create_new_variable(text, m, lateralities, 'fluid', {
@@ -208,7 +209,7 @@ def _get_fluid_in_macula(text, lateralities, source, *,
             continue
         negword = (
                 is_negated(m, text, word_window=4)
-                or is_post_negated(m, text, {'not'}, word_window=3)
+                or is_post_negated(m, text, {'not', 'resolved'}, word_window=4)
         )
         if is_negated(m, text, {'subretinal', 'sr', 'sub'}):  # is sub retinal
             value = Fluid.NO_SUBRETINAL_FLUID if negword else Fluid.SUBRETINAL_FLUID
@@ -226,6 +227,8 @@ def _get_fluid_in_macula(text, lateralities, source, *,
                 'date': known_date,
             }, known_laterality=known_laterality)
         )
+    # What is the point of calling `_get_fluid`? It introduces redundancy / duplicated code.
+    # TODO: Remove `_get_fluid`, a general fluid search, out of function that searches the macula specifically.
     data += _get_fluid(text, lateralities, source, priority=priority,
                        known_date=known_date, known_laterality=known_laterality)
     return data
