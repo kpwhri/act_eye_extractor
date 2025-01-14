@@ -169,7 +169,7 @@ def has_before(end_idx: int, text: str, terms: set[str] | dict,
                *, word_window: int = 2, char_window: int = 0,
                skip_regex: Pattern = None, boundary_regex: Pattern = None,
                boundary_chars=':¶', skip_n_boundary_chars=0, lowercase_text=True,
-               hack_punctuation=False, return_unknown=False):
+               hack_punctuation=False, replace_punc=True, return_unknown=False):
     if not char_window:
         char_window = word_window * 10
     context = text[max(0, end_idx - char_window): end_idx]
@@ -185,8 +185,9 @@ def has_before(end_idx: int, text: str, terms: set[str] | dict,
         context = context.lower()
     if hack_punctuation:
         context = _handle_negation_with_punctuation(context)
-    no_punct = replace_punctuation(context)
-    words = no_punct.split()
+    if replace_punc:
+        context = replace_punctuation(context)
+    words = context.split()
     return _prep_negation_tree(words[-word_window:], terms, return_unknown=return_unknown)
 
 

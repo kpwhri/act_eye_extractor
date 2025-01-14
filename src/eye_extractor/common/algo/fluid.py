@@ -2,7 +2,7 @@ import enum
 import re
 
 from eye_extractor.amd.utils import run_on_macula
-from eye_extractor.nlp.negate.negation import is_negated, is_post_negated
+from eye_extractor.nlp.negate.negation import is_negated, is_post_negated, has_before
 from eye_extractor.laterality import create_new_variable
 from eye_extractor.sections.oct_macula import find_oct_macula_sections, remove_macula_oct
 
@@ -135,6 +135,11 @@ SUB_AND_INTRARETINAL_FLUID_PAT = re.compile(
     re.IGNORECASE
 )
 
+# Context FSAs.
+ALL_PRE_IGNORE = {
+    '?trace': True,
+    None: False
+}
 
 def extract_fluid(text, *, headers=None, lateralities=None):
     data = []
@@ -179,6 +184,12 @@ def _get_fluid(text, lateralities, source, *, known_laterality=None, known_date=
          ),
     ]:
         for m in pat.finditer(text):
+            if has_before(m if isinstance(m, int) else m.start(),
+                          text,
+                          terms=ALL_PRE_IGNORE,
+                          word_window=3,
+                          replace_punc=False):
+                continue
             if is_negated(m, text, non_macular):  # non-macular
                 continue
             negword = (
@@ -205,6 +216,12 @@ def _get_fluid_in_macula(text, lateralities, source, *,
                          known_laterality=None, priority=1, known_date=None):
     data = []
     for m in FLUID_NOS_PAT.finditer(text):  # in MACULA section, this is IRF
+        if has_before(m if isinstance(m, int) else m.start(),
+                      text,
+                      terms=ALL_PRE_IGNORE,
+                      word_window=3,
+                      replace_punc=False):
+            continue
         if is_negated(m, text, non_macular):
             continue
         negword = (
