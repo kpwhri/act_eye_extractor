@@ -32,6 +32,7 @@ intermediate = r'(?:intermediate|moderate)'
 large = r'(?:large|heavy|big|confluent)'
 words_lt3 = r'(\s+\w+){,3}'
 drusen = 'drusen?'
+soft = r'(?:soft|confluent)'
 
 SMALL_DRUSEN_PAT = re.compile(
     rf'(?:'
@@ -57,8 +58,8 @@ LARGE_DRUSEN_PAT = re.compile(
 
 DRUSEN_PAT = re.compile(r'drusen', re.I)
 HARD_DRUSEN_PAT = re.compile(r'(hard drusen)', re.I)
-SOFT_DRUSEN_PAT = re.compile(r'(soft drusen)', re.I)
-BOTH_DRUSEN_PAT = re.compile(r'(soft(\s*(and|,|/)\s*hard)?|hard(\s*(and|,|/)\s*soft)?) drusen', re.I)
+SOFT_DRUSEN_PAT = re.compile(rf'({soft} drusen)', re.I)
+BOTH_DRUSEN_PAT = re.compile(rf'({soft}(\s*(and|,|/)\s*hard)?|hard(\s*(and|,|/)\s*{soft})?) drusen', re.I)
 NO_DRUSEN_PAT = re.compile(rf'(?:(?:{"|".join(NEGWORD_SET)}) drusen)', re.I)
 
 
