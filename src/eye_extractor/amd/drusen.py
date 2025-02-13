@@ -1,11 +1,35 @@
+import enum
 import re
 
-from eye_extractor.nlp.negate.negation import NEGWORD_SET
+from eye_extractor.nlp.negate.negation import NEGWORD_SET, is_negated
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
-small = r'(?:(very\W*)?fine|scattered|occasional|rare|few|mild|small(er)?|trace|light)'
+
+class Drusen(enum.IntEnum):
+    UNKNOWN = -1
+    NO = 0
+    YES = 4
+
+class DrusenSize(enum.IntEnum):
+    UNKNOWN = Drusen.UNKNOWN
+    NO = Drusen.NO
+    YES = Drusen.YES
+    SMALL = 1
+    INTERMEDIATE = 2
+    LARGE = 3
+
+class DrusenType(enum.IntEnum):
+    UNKNOWN = Drusen.UNKNOWN
+    NO = Drusen.NO
+    YES = Drusen.YES
+    HARD = 1
+    SOFT = 2
+    BOTH = 3
+
+
+small = r'(?:fine|very\W?fine|pin\W?point|tiny|small)'
 intermediate = r'(?:intermediate|moderate)'
-large = r'(?:dense|extensive|large|heavy|big|many|lots)'
+large = r'(?:large|heavy|big|confluent)'
 words_lt3 = r'(\s+\w+){,3}'
 drusen = 'drusen?'
 
@@ -62,22 +86,24 @@ def find_drusen(text, lateralities=None):
     lateralities = lateralities or build_laterality_table(text)
     data = []
     for pattern, label, value, priority, targets in [
-        (DRUSEN_PAT, 'yes', 4, 0, ('drusen_size', 'drusen_type')),
-        (NO_DRUSEN_PAT, 'no', 0, 1, ('drusen_size', 'drusen_type')),
-        (BOTH_DRUSEN_PAT, 'both', 3, 2, ('drusen_type',)),
-        (HARD_DRUSEN_PAT, 'hard', 1, 3, ('drusen_type',)),
-        (SOFT_DRUSEN_PAT, 'soft', 2, 4, ('drusen_type',)),
-        (SMALL_DRUSEN_PAT, 'small', 1, 2, ('drusen_size',)),
-        (INTERMEDIATE_DRUSEN_PAT, 'intermediate', 2, 3, ('drusen_size',)),
-        (LARGE_DRUSEN_PAT, 'large', 3, 2, ('drusen_size',)),
+        (DRUSEN_PAT, 'yes', Drusen.YES, 0, ('drusen_size', 'drusen_type')),
+        (NO_DRUSEN_PAT, 'no', Drusen.NO, 1, ('drusen_size', 'drusen_type')),
+        (BOTH_DRUSEN_PAT, 'both', DrusenType.BOTH, 2, ('drusen_type',)),
+        (HARD_DRUSEN_PAT, 'hard', DrusenType.HARD, 3, ('drusen_type',)),
+        (SOFT_DRUSEN_PAT, 'soft', DrusenType.SOFT, 4, ('drusen_type',)),
+        (SMALL_DRUSEN_PAT, 'small', DrusenSize.SMALL, 2, ('drusen_size',)),
+        (INTERMEDIATE_DRUSEN_PAT, 'intermediate', DrusenSize.INTERMEDIATE, 3, ('drusen_size',)),
+        (LARGE_DRUSEN_PAT, 'large', DrusenSize.LARGE, 2, ('drusen_size',)),
     ]:
         for m in pattern.finditer(text):
+            negword = is_negated(m, text, word_window=1)
             for target in targets:
                 data.append(
                     create_new_variable(text, m, lateralities, target, {
-                        'value': value,
+                        'value': Drusen.NO if negword else value,
                         'term': m.group(),
-                        'label': label,
+                        'label': f'negated {label}' if negword else label,
+                        'negated': negword,
                         'source': 'MACULA',
                         'priority': priority,
                     })
