@@ -17,45 +17,54 @@ class HemorrhageType(enum.IntEnum):
     SUBRETINAL = 6
 
 
+heme = r'hem(?:orr?hage|e)?s?'
+retinal = r'[-\s]?ret(?:inal)?'
+vitreous = r'vit(reous)?'
+
 INTRARETINAL_PAT = re.compile(
     r'\b('
-    r'intraretinal\s*hem(orrhage|e)s?'
-    r'|hem(orrhage|e)\s*intraretinal'
+    rf'intra{retinal}\s*{heme}'
+    rf'|{heme}\s*intra{retinal}'
+    rf'|irh'
     r')\b',
     re.IGNORECASE
 )
 DOT_BLOT_PAT = re.compile(
-    r'\b('
-    r'd(ot)?(\W+|\s+and\s+)b(lot)?\s*hem(orrhage|e)s?'
-    r'|dot\s*hem(orrhage|e)?s?'
-    r'|blot\s*hem(orrhage|e)?'
-    r')\b',
+    rf'\b('
+    rf'd(ot)?(\W+|\s+and\s+)b(lot)?\s*{heme}'
+    rf'|dot\s*{heme}'
+    rf'|blot\s*{heme}'
+    rf'|dbh'
+    rf')\b',
     re.IGNORECASE
 )
 PRERETINAL_PAT = re.compile(
-    r'\b('
-    r'preretinal\s*hem(orrhage|e)s?'
-    r'|hem(orrhage|e)\s*preretinal'
-    r')\b',
+    rf'\b('
+    rf'pre{retinal}\s*{heme}'
+    rf'|{heme}\s*pre{retinal}'
+    rf'|prh'
+    rf')\b',
     re.IGNORECASE
 )
 VITREOUS_PAT = re.compile(
-    r'\b('
-    r'vitreous\s*hem(orrhage|e)s?'
-    r'|hem(orrhage|e)\s*vitreous'
-    r')\b',
+    rf'\b('
+    rf'{vitreous}\s*{heme}'
+    rf'|{heme}\s*{vitreous}'
+    rf'|vh'
+    rf')\b',
     re.IGNORECASE
 )
 SUBRETINAL_PAT = re.compile(
-    r'\b('
-    r'subretinal\s*hem(orrhage|e)s?'
-    r'|hem(orrhage|e)\s*subretinal'
-    r')\b',
+    rf'\b('
+    rf'sub{retinal}\s*{heme}'
+    rf'|{heme}\s*sub{retinal}'
+    rf'|srh'
+    rf')\b',
     re.IGNORECASE
 )
 HEME_NOS_PAT = re.compile(
     r'\b('
-    r'hem(orrhage|e)'
+    rf'{heme}'
     r')\b',
     re.I
 )

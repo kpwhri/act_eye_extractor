@@ -143,6 +143,9 @@ def test_hemorrhage_type_extract_and_build(text, headers, hemorrhage_type_dr_re,
 # Test severity
 _intraretinal_severity_extract_and_build_cases = [
     ('mild intraretinal hemorrhage OU', {}, 'MILD', 'MILD', 'UNKNOWN'),
+    ('mild intra-retinal hemorrhage OU', {}, 'MILD', 'MILD', 'UNKNOWN'),
+    ('mild intraretheme OU', {}, 'MILD', 'MILD', 'UNKNOWN'),
+    ('mild irh OU', {}, 'MILD', 'MILD', 'UNKNOWN'),
     ('Mild - moderate intraretinal heme OD', {}, 'MODERATE', 'UNKNOWN', 'UNKNOWN'),
     ('no intraretinal hemorrhage ou', {}, 'NONE', 'NONE', 'UNKNOWN'),
     ('moderate intraretinal heme OS', {}, 'UNKNOWN', 'MODERATE', 'UNKNOWN'),
