@@ -1,13 +1,15 @@
 import re
 
-from eye_extractor.nlp.negate.negation import is_negated
+from eye_extractor.common.shared_patterns import retinal, abnormality, microvascular
+from eye_extractor.nlp.negate.negation import is_negated, is_post_negated
 from eye_extractor.common.severity import extract_severity, Severity
 from eye_extractor.laterality import build_laterality_table, create_new_variable
 
 IRMA_PAT = re.compile(
-    r'\b('
-    r'irma(?!\s+\w+\s+csn:)|intraretinal\s+microvascular\s+abnormality'
-    r')\b',
+    rf'\b('
+    rf'irma'
+    rf'|intra{retinal}\s+{microvascular}\s+{abnormality}'
+    rf')\b',
     re.I
 )
 
@@ -31,9 +33,11 @@ def get_irma(text: str, *, headers=None, lateralities=None) -> list:
 
 def _get_irma(text: str, lateralities, source: str) -> dict:
     for m in IRMA_PAT.finditer(text):
+        if is_post_negated(m, text, terms={'csn'}):
+            continue  # consumer number
         negated = (
-            is_negated(m, text, word_window=4)
-            or is_negated(m, text, terms={'no'}, word_window=6)
+                is_negated(m, text, word_window=4)
+                or is_negated(m, text, terms={'no'}, word_window=6)
         )
         context = f'{text[max(0, m.start() - 100): m.start()]} {text[m.end():min(len(text), m.end() + 100)]}'
         severities = extract_severity(context)

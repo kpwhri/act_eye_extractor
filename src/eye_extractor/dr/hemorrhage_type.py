@@ -1,6 +1,7 @@
 import enum
 import re
 
+from eye_extractor.common.shared_patterns import retinal
 from eye_extractor.nlp.negate.negation import is_negated, has_before, NEGWORD_UNKNOWN_PHRASES
 from eye_extractor.common.severity import extract_severity, Severity
 from eye_extractor.laterality import build_laterality_table, create_new_variable
@@ -18,7 +19,6 @@ class HemorrhageType(enum.IntEnum):
 
 
 heme = r'hem(?:orr?hage|e)?s?'
-retinal = r'[-\s]?ret(?:inal)?'
 vitreous = r'vit(reous)?'
 
 INTRARETINAL_PAT = re.compile(
