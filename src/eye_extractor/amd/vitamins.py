@@ -34,6 +34,7 @@ def extract_amd_vitamin(text, *, headers=None, lateralities=None):
     :param lateralities: not required as this is an oral vitamin
     :return:
     """
+    # TODO: handle 'smart phrase' fluff (e.g., provider says yes, but tech no)
     data = []
     if headers:
         for sect_name, sect_text in headers.iterate(

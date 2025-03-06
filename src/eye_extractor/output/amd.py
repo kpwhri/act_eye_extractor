@@ -231,6 +231,7 @@ def augment_wetamd_severity(result, *, cnv_result=None, srh_result=None,
 
 def build_amd_vitamin(data, *, note_date=None):
     """Build amd vitamin"""
+    # TODO: handle 'smart phrase' fluff (e.g., provider says yes, but tech no; prefer tech? or prefer negated?)
     return column_from_variable(
         {'amd_vitamin': Vitamin.UNKNOWN}, data,
         restrict_date=note_date,

@@ -63,6 +63,7 @@ _dme_yesno_extract_and_build_cases = [
     ('Hx of DME OU', {}, 0, 0, -1),
     ('', {'SUBJECTIVE': 'The patient notes vision is stable. Hx of DME OU.'}, 0, 0, -1),
     ('Diabetic macular edema', {}, -1, -1, 1),
+    ('Clinically significant macular edema', {}, -1, -1, 1),
     ('Diabetic macular edema OS', {}, -1, 1, -1),
     ('1. DM with Hx DME OU', {}, 0, 0, -1),
     ('»H/o NPDR with DME OU', {}, 0, 0, -1),

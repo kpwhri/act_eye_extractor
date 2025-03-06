@@ -17,6 +17,8 @@ class WetSeverity(enum.IntEnum):
 amd = r'(?:ar?md|macul\w+\W*degen\w*)'
 wet = r'(?:wet|(?:exudat|neovascul)\w+)'
 
+# TODO: concerns: possible to have cnv before AMD is wet
+#                 diabetic with nv of angle and disc, but no AMD
 WET_AMD_PAT = re.compile(
     rf'\b(?:'
     rf'(?:{wet}|nv)\W*{amd}'

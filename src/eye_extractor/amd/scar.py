@@ -31,7 +31,7 @@ MACULAR_SCAR_PAT = re.compile(
     rf'\b(?:'
     rf'macula\w*\s*{scar}'
     rf'|{scar}\s+(?:\w+\s*){{,2}}macula\w*'
-    rf'|white glial scar ~1dd temp of fov'
+    rf'|glial\s*{scar}'
     rf')\b',
     re.I
 )

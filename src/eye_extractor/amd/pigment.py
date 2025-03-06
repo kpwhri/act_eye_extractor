@@ -8,7 +8,7 @@ Summary of Changes:
 import re
 
 from eye_extractor.amd.utils import run_on_macula
-from eye_extractor.nlp.negate.negation import is_negated
+from eye_extractor.nlp.negate.negation import is_negated, is_post_negated
 from eye_extractor.laterality import create_new_variable, laterality_pattern, lat_lookup
 
 change = r'(?:chang|disrupt|dispers|migrat|abnormal|clump|mottl|pigment)\w*'
@@ -43,6 +43,9 @@ def get_pigmentary_changes(text, *, headers=None, lateralities=None):
 def _get_pigmentary_changes(text, lateralities, source):
     data = []
     for m in PIGMENTARY_PAT.finditer(text):
+        # TODO: cannot appear in assessment section -- specifically exclude?
+        if is_post_negated(m, text, terms={'syndrome', 'syndromes'}):
+            continue  # pigment dispersion syndrome is a glaucoma
         negword = is_negated(m, text, word_window=3)
         data.append(
             create_new_variable(text, m, lateralities, 'pigmentchanges', {

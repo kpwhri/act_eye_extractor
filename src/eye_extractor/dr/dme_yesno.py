@@ -4,11 +4,14 @@ from eye_extractor.common.get_variable import get_variable
 from eye_extractor.nlp.negate.negation import has_before, is_negated, NEGWORD_UNKNOWN_PHRASES
 from eye_extractor.laterality import create_new_variable
 
+macular_edema = fr'(?:macula\w*\s+edema)'
+
 DME_YESNO_PAT = re.compile(
     r'\b('
     r'(cs|d)me'
-    r'|diabetic\s+macular\s+edema'
-    r'|diabetic\s+retinopathy\s+(?:\w*\s+)+macular\s+edema'
+    rf'|diabetic\s+{macular_edema}'
+    rf'|diabetic\s+retinopathy\s+(?:\w*\s+)+{macular_edema}'
+    rf'|clinical\w*\s+signific\w*\s{macular_edema}'
     r')\b',
     re.I
 )
