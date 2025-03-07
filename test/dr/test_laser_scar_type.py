@@ -14,11 +14,15 @@ _pattern_cases = [
     (lst.FOCAL_PAT, 'focal laser scars', True),
     (lst.FOCAL_PAT, 'focal tx scars', True),
     (lst.FOCAL_PAT, 'Focal scars', True),
-    (lst.FOCAL_PAT, 'focal OU', True),
+    (lst.FOCAL_PAT, 'focal OU', False),
+    (lst.MAC_FOCAL_PAT, 'focal OU', True),
     (lst.GRID_PAT, 'focal (grid) scars', True),
     (lst.GRID_PAT, 'grid laser scars', True),
+    (lst.MAC_GRID_PAT, 'grid OU', True),
     (lst.MACULAR_PAT, 'macular scars', True),
     (lst.MACULAR_PAT, 'macula flat, peripheral laser scars', True),
+    (lst.MAC_PANRETINAL_PAT, 'previous prp', True),
+    (lst.PANRETINAL_PAT, 'prp scarring', True),
 ]
 
 
@@ -40,7 +44,7 @@ _focal_extract_and_build_cases = [
     ('focal scars no new nvd', {}, -1, -1, 1),
     ('old focal tx scars OD', {}, 1, -1, -1),
     ('¶Macula: choroidal scar OD with focal laser scars', {}, 1, -1, -1),
-    ('Macula: focal OU; no CS ME; ERM OS', {}, 1, 1, -1),
+    ('', {'MACULA': 'focal OU; no CS ME; ERM OS'}, 1, 1, -1),
     ('Central macular thickness: 123 um, No SRF, few focal scars', {}, -1, -1, 1),
     ('L: classification: macula thin, but normal contour Central macular thickness: 123 um, No SRF, few focal scars',
      {}, -1, 1, -1),
