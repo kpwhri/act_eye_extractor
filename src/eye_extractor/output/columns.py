@@ -433,6 +433,10 @@ OUTPUT_COLUMNS = {
     'grid_dr_laser_scar_type_re': [is_in_range(-1, 1)],
     'grid_dr_laser_scar_type_le': [is_in_range(-1, 1)],
     'grid_dr_laser_scar_type_unk': [is_in_range(-1, 1)],
+    # prp laser scar type.
+    'prp_dr_laser_scar_type_re': [is_in_range(-1, 1)],
+    'prp_dr_laser_scar_type_le': [is_in_range(-1, 1)],
+    'prp_dr_laser_scar_type_unk': [is_in_range(-1, 1)],
     # Macular laser scar type.
     'macular_dr_laser_scar_type_re': [is_in_range(-1, 1)],
     'macular_dr_laser_scar_type_le': [is_in_range(-1, 1)],

@@ -146,6 +146,10 @@ def build_grid_laser_scar_type(data, *, note_date=None):
     return column_from_variable_binary(data, 'grid_dr_laser_scar_type', restrict_date=note_date)
 
 
+def build_prp_laser_scar_type(data, *, note_date=None):
+    return column_from_variable_binary(data, 'prp_dr_laser_scar_type', restrict_date=note_date)
+
+
 def build_macular_laser_scar_type(data, *, note_date=None):
     return column_from_variable_binary(data, 'macular_dr_laser_scar_type', restrict_date=note_date)
 
@@ -312,6 +316,7 @@ def build_dr_variables(data):
     results.update(build_laser_panrentinal(curr['binary_vars'], note_date=note['date']))
     results.update(build_focal_laser_scar_type(curr['laser_scar_type'], note_date=note['date']))
     results.update(build_grid_laser_scar_type(curr['laser_scar_type'], note_date=note['date']))
+    results.update(build_prp_laser_scar_type(curr['laser_scar_type'], note_date=note['date']))
     results.update(build_macular_laser_scar_type(curr['laser_scar_type'], note_date=note['date']))
     results.update(build_neovasc(curr['nv_types'], note_date=note['date']))
     results.update(build_nva(curr['nv_types'], note_date=note['date']))
