@@ -1,9 +1,8 @@
 import re
-import sys
 
 from eye_extractor.common.get_variable import get_variable
 from eye_extractor.nlp.negate.negation import has_after, has_before, is_negated, is_post_negated
-from eye_extractor.laterality import build_laterality_table, create_new_variable
+from eye_extractor.laterality import create_new_variable
 
 # Patterns.
 NV_PAT = re.compile(
