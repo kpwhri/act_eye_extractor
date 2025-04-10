@@ -43,6 +43,8 @@ def run_function_on_file(files: tuple[Path], outdir: Path, functions: tuple[str]
     """
     if outdir is None:
         outdir = Path('.')
+    else:
+        outdir.mkdir(exist_ok=True)
     for file in files:
         _, text, metadata, sections = read_file(file, file.parent)
         for function in functions:

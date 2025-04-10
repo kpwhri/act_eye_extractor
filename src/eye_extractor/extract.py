@@ -76,6 +76,11 @@ def extract_all(text: str, *, data: dict = None, sections: dict = None):
 @click.option('--filelist', type=click.Path(dir_okay=False, path_type=pathlib.Path), default=None)
 @click.option('--search-missing-headers', is_flag=True, default=False,
               help='If a requested header is not found, attempt to find it in the text.')
+def _extract_variables(directories: tuple[pathlib.Path], outdir: pathlib.Path = None, filelist: pathlib.Path = None,
+                       *, search_missing_headers=False):
+    extract_variables(directories, outdir, filelist, search_missing_headers=search_missing_headers)
+
+
 def extract_variables(directories: tuple[pathlib.Path], outdir: pathlib.Path = None, filelist: pathlib.Path = None,
                       *, search_missing_headers=False):
     """
@@ -106,4 +111,4 @@ def extract_variable_from_text(text, data, sections):
 
 
 if __name__ == '__main__':
-    extract_variables()
+    _extract_variables()

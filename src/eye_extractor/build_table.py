@@ -60,6 +60,10 @@ def process_data(data, *, add_columns=None, date_column='note_date'):
 @click.command()
 @click.argument('jsonl_file', type=click.Path(exists=True, path_type=pathlib.Path))
 @table_output_opts(True)
+def _build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path, date_column='note_date', add_columns=None):
+    build_table(jsonl_file, outdir, date_column, add_columns)
+
+
 def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path, date_column='note_date', add_columns=None):
     """
 
@@ -95,4 +99,4 @@ def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path, date_column='not
 
 
 if __name__ == '__main__':
-    build_table()
+    _build_table()

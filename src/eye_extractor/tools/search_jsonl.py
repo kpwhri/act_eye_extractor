@@ -116,7 +116,7 @@ class JsonlSearcher:
                         with open(f'{docid}.json', 'w', encoding='utf8') as out:
                             out.write(data)
                     return data
-        print(f'Processed {i + 1} records with note id: {docid}.')
+        print(f'Processed {i + 1:,} records with note id: {docid}.')
 
 
 @click.command()

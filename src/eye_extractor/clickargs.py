@@ -2,7 +2,7 @@ from pathlib import Path
 
 import click
 
-outdir_opt = click.option('--outdir', type=click.Path(exists=True, file_okay=False, path_type=Path), default=None,
+outdir_opt = click.option('--outdir', type=click.Path(file_okay=False, path_type=Path), default=None,
                           help='Output directory; defaults to current directory.')
 date_column_opt = click.option('--date-column', default='note_date')
 add_column_opt = click.option('--add-column', 'add_columns', multiple=True,

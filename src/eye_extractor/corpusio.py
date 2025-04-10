@@ -34,7 +34,7 @@ def read_directories(*directories: pathlib.Path, search_missing_headers=False):
         for i, file in enumerate(directory.glob('*.txt'), start=1):
             yield read_file(file, directory, search_missing_headers=search_missing_headers)
             if i % 10000 == 0:
-                logger.info(f'Processed {i} records.')
+                logger.info(f'Processed {i:,} records.')
 
 
 def read_filelist(filelist, search_missing_headers=False):
@@ -43,7 +43,7 @@ def read_filelist(filelist, search_missing_headers=False):
             file = pathlib.Path(line.strip())
             yield read_file(file, file.parent, search_missing_headers=search_missing_headers)
             if i % 10000 == 0:
-                logger.info(f'Processed {i} records.')
+                logger.info(f'Processed {i:,} records.')
 
 
 def read_from_params(*directories, filelist=None, search_missing_headers=False):
