@@ -1,6 +1,7 @@
 import pytest
 
 from eye_extractor.amd.pigment import PIGMENTARY_PAT, get_pigmentary_changes
+from eye_extractor.sections.document import create_doc_and_sections
 
 
 @pytest.mark.parametrize('text, exp', [
@@ -23,7 +24,8 @@ def test_pigmentary_pattern(text, exp):
     ('w/o evidence of pigment dispersion', 0, 'without'),
 ])
 def test_pigment_value_first_variable(text, exp_value, exp_negword):
-    data = get_pigmentary_changes(text)
+    doc = create_doc_and_sections(text)
+    data = get_pigmentary_changes(doc)
     assert len(data) > 0
     first_variable = list(data[0].values())[0]
     assert first_variable['value'] == exp_value

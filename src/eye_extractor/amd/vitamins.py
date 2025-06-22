@@ -2,6 +2,7 @@ import enum
 import re
 
 from eye_extractor.nlp.negate.negation import is_negated
+from eye_extractor.sections.document import Document
 
 
 class Vitamin(enum.IntEnum):
@@ -26,7 +27,7 @@ VITAMIN_PAT = re.compile(
 )
 
 
-def extract_amd_vitamin(text, *, headers=None, lateralities=None):
+def extract_amd_vitamin(doc: Document):
     """
 
     :param text:
@@ -36,12 +37,10 @@ def extract_amd_vitamin(text, *, headers=None, lateralities=None):
     """
     # TODO: handle 'smart phrase' fluff (e.g., provider says yes, but tech no)
     data = []
-    if headers:
-        for sect_name, sect_text in headers.iterate(
-                'CURRENT_EYE_MEDICATIONS', 'EYE_MEDICATIONS', 'MEDICATIONS', 'PLAN',
-        ):  # TODO: other sections?
-            for m in VITAMIN_PAT.finditer(sect_text):
-                negword = is_negated(m, sect_text)
+    if doc.sections:
+        for section in doc.iter_sections('eye_meds', 'meds', 'plan'):  # TODO: other sections?
+            for m in VITAMIN_PAT.finditer(section.text):
+                negword = is_negated(m, section.text)
                 data.append(
                     {'amd_vitamin': {
                         'value': Vitamin.NO if negword else Vitamin.YES,
@@ -49,11 +48,11 @@ def extract_amd_vitamin(text, *, headers=None, lateralities=None):
                         'label': 'no' if negword else 'yes',
                         'negated': negword,
                         'regex': 'VITAMIN_PAT',
-                        'source': sect_name,
+                        'source': section.name,
                     }}
                 )
-    for m in CONTINUE_VITAMIN_PAT.finditer(text):
-        negword = is_negated(m, text)
+    for m in CONTINUE_VITAMIN_PAT.finditer(doc.text):
+        negword = is_negated(m, doc.text)
         data.append(
             {'amd_vitamin': {
                 'value': Vitamin.NO if negword else Vitamin.YES,

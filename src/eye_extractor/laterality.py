@@ -193,12 +193,12 @@ def create_variable(data, text, match, lateralities, variable, value, *, known_l
         value['date'] = parse_nearest_date_to_line_start(match.start(), text)
     # laterality
     lat = known_laterality
-    if not known_laterality or known_laterality == Laterality.UNKNOWN:
+    if lateralities and (not known_laterality or known_laterality == Laterality.UNKNOWN):
         lat = get_laterality_for_term(
-            lateralities or build_laterality_table(text),
+            lateralities,
             match,
             text,
-            strategy=strategy
+            strategy=strategy,
         )
     add_laterality_to_variable(data, lat, variable, value)
 
@@ -260,6 +260,9 @@ class LatLocation:
     def __str__(self):
         return repr(self)
 
+    def __eq__(self, other):
+        return str(self) == str(other)
+
     def __iter__(self):
         yield self.laterality
         yield self.start
@@ -270,12 +273,12 @@ class LatLocation:
 class LateralityLocator:
     # '-', ';', and '¶' cause tests to fail in DR (DME & hemorrhage type).
     DEFAULT_COUNT_LETTERS = {
-        ',': 1,
-        '.': 2,
-        # '-': 3,
-        # ';': 3,
-        # '¶': 3,
-    } | {x: 3 for x in LINE_START_CHARS}
+                                ',': 1,
+                                '.': 2,
+                                # '-': 3,
+                                # ';': 3,
+                                # '¶': 3,
+                            } | {x: 3 for x in LINE_START_CHARS}
 
     def __init__(self, lateralities: list[LatLocation] = None, *, default_laterality=Laterality.UNKNOWN):
         if lateralities:
@@ -354,7 +357,7 @@ class LateralityLocator:
             if text[i] in value:
                 min_count -= 1
             i -= 1
-        return match_start - i - 1, text[i+1:]
+        return match_start - i - 1, text[i + 1:]
 
     def narrow_search_window_post(self, match_start, text, min_count=2, value=LINE_START_CHARS):
         i = match_start + 1
@@ -381,7 +384,8 @@ class LateralityLocator:
                 match_start, text = self.narrow_search_window(match_span[0], text, min_count=1, value='.')
                 return self._get_by_index_default(match_span, text, next_max=next_max, prev_max=prev_max)
 
-    def _get_by_index_default_helper_check_prev_lat(self, match_span: tuple[int, int], text, prev_lat, next_lat, count_letters,
+    def _get_by_index_default_helper_check_prev_lat(self, match_span: tuple[int, int], text, prev_lat, next_lat,
+                                                    count_letters,
                                                     prev_dist, next_max):
         """Refactored repeatedly-called method."""
         prev_commas = self.count_before(match_span[0], text, prev_lat, count_letters)
@@ -394,7 +398,8 @@ class LateralityLocator:
             return Laterality.UNKNOWN
         return prev_lat.laterality
 
-    def _get_by_index_default_helper_check_next_lat(self, match_span: tuple[int, int], text, prev_lat, next_lat, count_letters):
+    def _get_by_index_default_helper_check_next_lat(self, match_span: tuple[int, int], text, prev_lat, next_lat,
+                                                    count_letters):
         """Refactored repeatedly-called method."""
         if not prev_lat:
             next_commas = self.count_after(match_span[1], text, next_lat, count_letters)
@@ -433,6 +438,12 @@ class LateralityLocator:
 
     def __iter__(self):
         return iter(self.lateralities)
+
+    def __eq__(self, other):
+        return self.lateralities == other.lateralities and self.default_laterality == other.default_laterality
+
+    def __len__(self):
+        return len(self.lateralities)
 
 
 def get_laterality_by_index(lateralities, match_start, text):

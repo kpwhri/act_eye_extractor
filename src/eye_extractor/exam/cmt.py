@@ -1,7 +1,7 @@
 import re
 
 from eye_extractor.common.date import parse_date_before
-from eye_extractor.headers import Headers
+from eye_extractor.sections.headers import Headers
 
 CMT_PAT = re.compile(
     rf'\b(?:'

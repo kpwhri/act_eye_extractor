@@ -2,7 +2,7 @@ import re
 
 from eye_extractor.common.date import parse_date
 from eye_extractor.nlp.negate.negation import is_post_negated
-from eye_extractor.laterality import LATERALITY_PLUS_COLON_PATTERN, lat_lookup, Laterality
+from eye_extractor.laterality import LATERALITY_PLUS_COLON_PATTERN, lat_lookup, Laterality, build_laterality_table
 from eye_extractor.nlp.character_groups import get_next_text_to_newline, LINE_START_CHARS_RX
 from eye_extractor.output.variable import has_valid_date
 from eye_extractor.sections.utils import get_index_of_next_section_start
@@ -42,7 +42,7 @@ def _find_oct_macula_section_laterality(text, *, restrict_date=None):
     if prev_start:
         data[prev_lat] = {'text': get_next_text_to_newline(prev_start, text), 'date': date}
     if not data and text:  # didn't find lateralities
-        data[Laterality.UNKNOWN] = {'text': text, 'date': date}
+        data[Laterality.UNKNOWN] = {'text': text, 'date': date, 'lateralities': build_laterality_table(text)}
     return data
 
 

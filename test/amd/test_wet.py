@@ -2,10 +2,10 @@ import json
 
 import pytest
 
-from eye_extractor.amd.wet import WET_PAT, WET_AMD_PAT, extract_wetamd_severity, WetSeverity
-from eye_extractor.headers import Headers
+from eye_extractor.amd.wet import WET_PAT, WET_AMD_PAT, extract_wetamd_severity
+from eye_extractor.sections.document import create_doc_and_sections
+from eye_extractor.sections.headers import Headers
 from eye_extractor.output.amd import build_wetamd_severity, augment_wetamd_severity
-from eye_extractor.output.variable import update_column
 
 
 @pytest.mark.parametrize('pat, text, exp', [
@@ -19,7 +19,7 @@ def test_wet_patterns(pat, text, exp):
     assert bool(m) is exp
 
 
-@pytest.mark.parametrize('text, headers, exp_wetamd_severity_re, exp_wetamd_severity_le, exp_wetamd_severity_unk', [
+@pytest.mark.parametrize('text, sections, exp_wetamd_severity_re, exp_wetamd_severity_le, exp_wetamd_severity_unk', [
     ('', {'MACULA': 'wet'}, 'UNKNOWN', 'UNKNOWN', 'YES'),
     ('', {'MACULA': 'not wet'}, 'UNKNOWN', 'UNKNOWN', 'NO'),
     ('', {'MACULA': 'non wet amd od'}, 'NO', 'UNKNOWN', 'UNKNOWN'),
@@ -29,8 +29,9 @@ def test_wet_patterns(pat, text, exp):
     ('non-neovascular armd', None, 'UNKNOWN', 'UNKNOWN', 'NO'),
     ('non-exudative macular degeneration od', None, 'NO', 'UNKNOWN', 'UNKNOWN'),
 ])
-def test_wet_extract_build(text, headers, exp_wetamd_severity_re, exp_wetamd_severity_le, exp_wetamd_severity_unk):
-    pre_json = extract_wetamd_severity(text, headers=Headers(headers))
+def test_wet_extract_build(text, sections, exp_wetamd_severity_re, exp_wetamd_severity_le, exp_wetamd_severity_unk):
+    doc = create_doc_and_sections(text, sections)
+    pre_json = extract_wetamd_severity(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_wetamd_severity(post_json)
     assert result['wetamd_severity_re'] == exp_wetamd_severity_re

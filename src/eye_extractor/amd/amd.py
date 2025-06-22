@@ -5,6 +5,8 @@ from eye_extractor.nlp.negate.historical import is_historical
 from eye_extractor.nlp.negate.negation import is_negated
 from eye_extractor.laterality import create_new_variable
 from eye_extractor.nlp.negate.other_subject import is_other_subject
+from eye_extractor.sections.document import Document
+from eye_extractor.sections.patterns import PatternGroup
 
 AMD_RX = re.compile(
     r'\b(?:'
@@ -22,7 +24,7 @@ class AMD(enum.IntEnum):
     YES = 1
 
 
-def _extract_amd(section_name, section_text, priority=0):
+def _extract_amd(section_name, section_text, section_lateralities, priority=0):
     data = []
     for m in AMD_RX.finditer(section_text):
         if priority == 0 and ':' in section_text[m.end():m.end() + 2]:
@@ -32,7 +34,7 @@ def _extract_amd(section_name, section_text, priority=0):
         histword = is_historical(m, section_text)
         osubjword = is_other_subject(m, section_text)
         data.append(
-            create_new_variable(section_text, m, None, 'amd', {
+            create_new_variable(section_text, m, section_lateralities, 'amd', {
                 'label': 'no' if negword else 'amd',
                 'value': 0 if negword else -1 if histword or osubjword else 1,
                 'negated': negword,
@@ -46,9 +48,9 @@ def _extract_amd(section_name, section_text, priority=0):
     return data
 
 
-def extract_amd(text, *, headers=None, lateralities=None):
+def extract_amd(doc: Document):
     data = []
-    for section_name, section_text in headers.iterate('ASSESSMENT', 'PLAN', 'COMMENTS', 'MACULA'):
-        data += _extract_amd(section_name, section_text, priority=2)
-    data += _extract_amd('ALL', text)
+    for section in doc.iter_sections(*PatternGroup.MACULA_ASSESSMENT_PLAN):
+        data += _extract_amd(section.name, section.text, section.lateralities, priority=2)
+    data += _extract_amd('ALL', doc.text_no_hx, doc.lateralities_no_hx)
     return data

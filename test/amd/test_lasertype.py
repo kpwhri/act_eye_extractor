@@ -4,7 +4,7 @@ import pytest
 
 import eye_extractor.amd.lasertype as lt
 import eye_extractor.common.algo.treatment as tx
-from eye_extractor.headers import Headers
+from eye_extractor.sections.document import create_doc_and_sections
 from eye_extractor.output.amd import build_lasertype, build_lasertype_new
 
 _pattern_cases = [
@@ -32,10 +32,11 @@ def test_treatment_patterns_for_lasertype(pat, text, exp):
     assert bool(m) == exp
 
 
-@pytest.mark.parametrize('text, headers, exp_amd_lasertype_re, exp_amd_lasertype_le, exp_amd_lasertype_unk',
+@pytest.mark.parametrize('text, sections, exp_amd_lasertype_re, exp_amd_lasertype_le, exp_amd_lasertype_unk',
                          _extract_and_build_cases)
-def test_tx_extract_and_build_for_lasertype(text, headers, exp_amd_lasertype_re, exp_amd_lasertype_le, exp_amd_lasertype_unk):
-    pre_json = tx.extract_treatment(text, headers=Headers(headers), lateralities=None)
+def test_tx_extract_and_build_for_lasertype(text, sections, exp_amd_lasertype_re, exp_amd_lasertype_le, exp_amd_lasertype_unk):
+    doc = create_doc_and_sections(text, sections)
+    pre_json = tx.extract_treatment(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_lasertype_new(post_json)
     assert result['amd_lasertype_re'] == exp_amd_lasertype_re
@@ -50,10 +51,11 @@ def test_lasertype_pattern(pat, text, exp):
     assert bool(m) == exp
 
 
-@pytest.mark.parametrize('text, headers, exp_amd_lasertype_re, exp_amd_lasertype_le, exp_amd_lasertype_unk',
+@pytest.mark.parametrize('text, sections, exp_amd_lasertype_re, exp_amd_lasertype_le, exp_amd_lasertype_unk',
                          _extract_and_build_cases)
-def test_lasertype_extract_and_build(text, headers, exp_amd_lasertype_re, exp_amd_lasertype_le, exp_amd_lasertype_unk):
-    pre_json = lt.extract_lasertype(text, headers=Headers(headers), lateralities=None)
+def test_lasertype_extract_and_build(text, sections, exp_amd_lasertype_re, exp_amd_lasertype_le, exp_amd_lasertype_unk):
+    doc = create_doc_and_sections(text, sections)
+    pre_json = lt.extract_lasertype(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_lasertype(post_json)
     assert result['amd_lasertype_re'] == exp_amd_lasertype_re

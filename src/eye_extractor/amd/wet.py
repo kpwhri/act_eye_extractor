@@ -4,6 +4,7 @@ import re
 from eye_extractor.amd.utils import run_on_macula
 from eye_extractor.nlp.negate.negation import is_negated
 from eye_extractor.laterality import create_new_variable
+from eye_extractor.sections.document import Document
 
 
 class WetSeverity(enum.IntEnum):
@@ -33,13 +34,11 @@ WET_PAT = re.compile(
 )
 
 
-def extract_wetamd_severity(text, *, headers=None, lateralities=None):
+def extract_wetamd_severity(doc: Document):
     return run_on_macula(
         macula_func=_extract_wetamd_severity,
         default_func=_extract_wetamd_severity,  # for testing
-        text=text,
-        headers=headers,
-        lateralities=lateralities,
+        doc=doc,
         all_func=_extract_wetamd_severity_all,
     )
 

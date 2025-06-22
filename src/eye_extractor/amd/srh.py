@@ -3,8 +3,8 @@ import re
 from eye_extractor.common.get_variable import get_variable
 from eye_extractor.nlp.inline_section import is_periphery
 from eye_extractor.nlp.negate.negation import is_negated, is_any_negated, has_before
-from eye_extractor.laterality import build_laterality_table, create_new_variable
-from eye_extractor.sections.oct_macula import find_oct_macula_sections, remove_macula_oct
+from eye_extractor.laterality import create_new_variable
+from eye_extractor.sections.document import Document
 
 subretinal = r'(?:sub\W*ret(?:inal)?|sr)'
 heme = r'(?:hem\w*|hg)'
@@ -32,11 +32,10 @@ ALL_PRE_IGNORE = {
 }
 
 
-def extract_subretinal_hemorrhage(text, *, headers=None, lateralities=None):
-    lateralities = lateralities or build_laterality_table(text)
+def extract_subretinal_hemorrhage(doc: Document):
     data = []
     # prioritizing oct results
-    for section_dict in find_oct_macula_sections(text):
+    for section_dict in doc.oct_macula_sections:
         for lat, values in section_dict.items():
             for m in SRH_PAT.finditer(values['text']):
                 if has_before(m if isinstance(m, int) else m.start(),
@@ -49,7 +48,7 @@ def extract_subretinal_hemorrhage(text, *, headers=None, lateralities=None):
                     continue
                 negword = is_any_negated(m, values['text'])
                 data.append(
-                    create_new_variable(values['text'], m, lateralities, 'subretinal_hem', {
+                    create_new_variable(values['text'], m, doc.lateralities, 'subretinal_hem', {
                         'value': 0 if negword else 1,
                         'term': m.group(),
                         'label': 'no' if negword else 'yes',
@@ -60,12 +59,11 @@ def extract_subretinal_hemorrhage(text, *, headers=None, lateralities=None):
                         'date': values['date']
                     }, known_laterality=lat)
                 )
-    text = remove_macula_oct(text)
 
-    data += get_variable(text, _extract_subret_heme,
-                         headers=headers,
-                         target_headers=['MACULA'],
-                         lateralities=lateralities)
+    data += get_variable(doc, _extract_subret_heme,
+                         text=doc.text_no_oct_macula,
+                         lateralities=doc.lateralities_no_oct_macula,
+                         target_headers=['macula'])
 
     return data
 

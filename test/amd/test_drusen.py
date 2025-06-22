@@ -5,6 +5,7 @@ import pytest
 from eye_extractor.amd.drusen import find_drusen, DrusenSize, DrusenType, SMALL_DRUSEN_PAT
 from eye_extractor.common.json import dumps_and_loads_json
 from eye_extractor.output.amd import get_drusen_size, get_drusen_type
+from eye_extractor.sections.document import create_doc_and_sections
 
 
 @pytest.mark.parametrize('text, exp_size_re, exp_size_le, exp_type_re, exp_type_le, note_date', [
@@ -33,7 +34,8 @@ from eye_extractor.output.amd import get_drusen_size, get_drusen_type
      DrusenSize.SMALL, DrusenSize.NO, DrusenType.YES, DrusenType.NO, None),
 ])
 def test_drusen(text, exp_size_re, exp_size_le, exp_type_re, exp_type_le, note_date):
-    pre_json = find_drusen(text)
+    doc = create_doc_and_sections(text)
+    pre_json = find_drusen(doc.text, doc.lateralities)
     post_json = dumps_and_loads_json(pre_json)
     size_result = get_drusen_size(post_json, note_date=note_date)
     type_result = get_drusen_type(post_json, note_date=note_date)

@@ -3,7 +3,7 @@ import json
 import pytest
 
 from eye_extractor.glaucoma.disc_pallor import DISC_PALLOR_PAT, extract_disc_pallor, DISC_ATROPHY_PAT
-from eye_extractor.headers import Headers
+from eye_extractor.sections.headers import Headers
 from eye_extractor.output.glaucoma import build_disc_pallor
 
 

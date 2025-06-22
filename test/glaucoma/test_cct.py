@@ -4,7 +4,7 @@ import pytest
 
 from eye_extractor.glaucoma.cct import CCT_OD_OS_PAT, CCT_OD_PAT, CCT_OS_PAT, CCT_OU_PAT, extract_cct, CCT_OS_OD_PAT, \
     CCT_OD_OS_GEN_PAT
-from eye_extractor.headers import Headers
+from eye_extractor.sections.headers import Headers
 from eye_extractor.output.glaucoma import build_cct
 
 

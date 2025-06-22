@@ -1,4 +1,4 @@
-from eye_extractor.headers import Headers
+from eye_extractor.sections.headers import Headers
 from eye_extractor.nlp.negate.boilerplate import remove_boilerplate
 
 

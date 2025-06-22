@@ -4,6 +4,7 @@ import re
 from eye_extractor.common.date import parse_date_after
 from eye_extractor.nlp.negate.negation import is_negated
 from eye_extractor.laterality import create_new_variable
+from eye_extractor.sections.document import Document
 
 
 class Laser(enum.IntEnum):
@@ -38,37 +39,33 @@ THERMAL_PAT = re.compile(  # verb + med
 )
 
 
-def extract_lasertype(text, *, headers=None, lateralities=None):
+def extract_lasertype(doc: Document):
     """
     Only look within particular headers. Often discussed as an 'option' in a PLAN-like section.
 
-    :param text:
-    :param headers:
-    :param lateralities:
+    :param doc:
     :return:
     """
     data = []
-    if headers:
-        for sect_name, sect_text in headers.iterate(
-                'ASSESSMENT', 'IMPRESSION', 'IMP', 'HX', 'PAST', 'ASSESSMENT_COMMENTS', 'COMMENTS'
-        ):
+    if doc.sections:
+        for section in doc.iter_sections('assessment', 'impression', 'comments'):
             for pat_label, pat, value in [
                 ('LASER_PAT', LASER_PAT, Laser.LASER),
                 ('PHOTODYNAMIC_PAT', PHOTODYNAMIC_PAT, Laser.PHOTODYNAMIC),
                 ('THERMAL_PAT', THERMAL_PAT, Laser.THERMAL),
             ]:
-                for m in pat.finditer(sect_text):
-                    negword = is_negated(m, sect_text)
-                    date = parse_date_after(m, sect_text)
+                for m in pat.finditer(section.text):
+                    negword = is_negated(m, section.text)
+                    date = parse_date_after(m, section.text)
                     data.append(
                         create_new_variable(
-                            sect_text, m, lateralities, 'amd_lasertype', {
+                            section.text, m, section.lateralities, 'amd_lasertype', {
                                 'value': Laser.NONE if negword else value,
                                 'term': m.group(),
                                 'label': 'no' if negword else value.name,
                                 'negated': negword,
                                 'regex': pat_label,
-                                'source': sect_name,
+                                'source': section.name,
                                 'date': date,
                             }
                         )

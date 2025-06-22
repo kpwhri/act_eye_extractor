@@ -2,7 +2,7 @@ import re
 
 from eye_extractor.nlp.negate.negation import is_negated
 from eye_extractor.laterality import create_new_variable
-from eye_extractor.sections.oct_macula import find_oct_macula_sections
+from eye_extractor.sections.document import Document
 
 MACULAR_CYST = re.compile(
     rf'\b(?:'
@@ -30,12 +30,12 @@ def _extract_macular_cyst(text, lateralities, source, *, known_laterality=None, 
     return data
 
 
-def extract_macular_cyst(text, *, headers=None, lateralities=None):
+def extract_macular_cyst(doc: Document):
     data = []
-    for section_dict in find_oct_macula_sections(text):
+    for section_dict in doc.oct_macula_sections:
         for lat, values in section_dict.items():
             data += _extract_macular_cyst(values['text'], None, 'OCT MACULA',
                                           known_laterality=lat, known_date=values['date'], priority=2)
-    for section_name, section_text in headers.iterate('MACULA', 'MAC'):
-        data += _extract_macular_cyst(section_text, None, section_name, priority=1)
+    for section in doc.iter_sections('macula'):
+        data += _extract_macular_cyst(section.text, section.lateralities, section.name, priority=1)
     return data

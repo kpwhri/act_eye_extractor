@@ -1,7 +1,7 @@
 import pytest
 
 from eye_extractor.common.noteinfo import extract_note_level_info
-from eye_extractor.headers import Headers
+from eye_extractor.sections.headers import Headers
 from eye_extractor.laterality import Laterality
 
 

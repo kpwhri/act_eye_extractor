@@ -1,11 +1,9 @@
-import json
-
 import pytest
 
 from eye_extractor.common.algo.treatment import extract_treatment
 from eye_extractor.common.drug.antivegf import ANTIVEGF_RX
 from eye_extractor.common.json import dumps_and_loads_json
-from eye_extractor.headers import Headers
+from eye_extractor.sections.headers import Headers
 from eye_extractor.output.amd import build_amd_antivegf
 from eye_extractor.output.dr import build_dmacedema_antivegf
 from eye_extractor.output.shared import build_antivegf

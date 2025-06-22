@@ -7,7 +7,7 @@ from eye_extractor.dr.exudates import (
     HARD_EXUDATES_ABBR_PAT,
     HARD_EXUDATES_PAT
 )
-from eye_extractor.headers import Headers
+from eye_extractor.sections.headers import Headers
 from eye_extractor.output.dr import build_exudates, build_hard_exudates
 
 # Test pattern.

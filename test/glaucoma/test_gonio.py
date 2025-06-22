@@ -3,7 +3,7 @@ import json
 import pytest
 
 from eye_extractor.exam.gonio import OPEN_PAT, CLOSED_PAT, extract_gonio
-from eye_extractor.headers import Headers
+from eye_extractor.sections.headers import Headers
 from eye_extractor.output.glaucoma import build_gonio
 
 

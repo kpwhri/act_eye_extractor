@@ -4,7 +4,7 @@ import pytest
 
 import eye_extractor.glaucoma.tx as gl
 import eye_extractor.common.algo.treatment as tx
-from eye_extractor.headers import Headers
+from eye_extractor.sections.headers import Headers
 from eye_extractor.output.glaucoma import build_tx, build_tx_new
 
 # test data

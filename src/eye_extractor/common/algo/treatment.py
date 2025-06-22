@@ -6,6 +6,7 @@ from eye_extractor.common.drug.antivegf import ANTIVEGF_RX, ANTIVEGF_TO_ENUM, AN
 from eye_extractor.common.drug.shared import get_standardized_name
 from eye_extractor.nlp.negate.negation import is_negated, is_post_negated, has_before
 from eye_extractor.laterality import build_laterality_table, Laterality, create_new_variable
+from eye_extractor.sections.document import Document
 
 
 class Treatment(enum.IntEnum):
@@ -45,11 +46,11 @@ class Treatment(enum.IntEnum):
 
 
 # headers
-PLAN_HEADERS = ('PLAN', 'PLAN_COMMENTS', 'COMMENTS')
-GLAUCOMA_HEADERS = ('PLAN', 'PLAN_COMMENTS', 'COMMENTS')
-AMD_HEADERS = ('ASSESSMENT', 'IMPRESSION', 'IMP', 'HX', 'PAST', 'ASSESSMENT_COMMENTS', 'PLAN')
-ANTIVEGF_HEADERS = ('SUBJECTIVE', 'CHIEF_COMPLAINT', 'HISTORY_PRESENT_ILLNESS')
-DR_HEADERS = ['MACULA']
+PLAN_HEADERS = ('plan', 'comments')
+GLAUCOMA_HEADERS = ('plan', 'comments')
+AMD_HEADERS = ('assessment', 'impression', 'hx', 'plan')
+ANTIVEGF_HEADERS = ('subjective', 'cc', 'hpi')
+DR_HEADERS = ['macula']
 
 # regular expressions
 medrx = rf'(?:med(?:ication?)?s?|rx|{ALL_DRUG_PAT})'
@@ -212,12 +213,12 @@ def get_contextual_laterality(m, section_text):
     return curr_laterality
 
 
-def extract_treatment(text, *, headers=None, lateralities=None, target_headers=None):
+def extract_treatment(doc: Document):
     data = []
-    if headers:
+    if doc.sections:
         # default values to 'continue', etc.
         for result in _extract_treatment_section(
-                headers,
+                doc,
                 PLAN_HEADERS,
                 'ALL',
                 ('OBSERVE_PAT', OBSERVE_PAT, Treatment.OBSERVE),
@@ -227,7 +228,7 @@ def extract_treatment(text, *, headers=None, lateralities=None, target_headers=N
             data.append(result)
         # laser targets
         for result in _extract_treatment_section(
-                headers,
+                doc,
                 PLAN_HEADERS,
                 'LASER',
                 ('LASER_PAT', LASER_PAT, Treatment.LASER),
@@ -242,7 +243,7 @@ def extract_treatment(text, *, headers=None, lateralities=None, target_headers=N
             data.append(result)
         # glaucoma targets
         for result in _extract_treatment_section(
-                headers,
+                doc,
                 GLAUCOMA_HEADERS,
                 'GLAUCOMA',
                 ('ALT_PAT', ALT_PAT, Treatment.ALT),
@@ -253,7 +254,7 @@ def extract_treatment(text, *, headers=None, lateralities=None, target_headers=N
             data.append(result)
         # amd targets
         for result in _extract_treatment_section(
-                headers,
+                doc,
                 AMD_HEADERS,
                 'AMD',
                 ('LASER_PAT', LASER_PAT, Treatment.LASER),
@@ -262,14 +263,14 @@ def extract_treatment(text, *, headers=None, lateralities=None, target_headers=N
         ):
             data.append(result)
         for result in _extract_treatment_section(
-                headers,
+                doc,
                 AMD_HEADERS,
                 'ANTIVEGF',
                 ('ANTIVEGF_RX', ANTIVEGF_RX, lambda m: ANTIVEGF_TO_ENUM[get_standardized_name(m.group())]),
         ):
             data.append(result)
         for result in _extract_treatment_section(
-                headers,
+                doc,
                 PLAN_HEADERS,
                 'RVO',
                 ('STEROID_PAT', STEROID_PAT, Treatment.STEROID),
@@ -280,7 +281,7 @@ def extract_treatment(text, *, headers=None, lateralities=None, target_headers=N
             data.append(result)
         # dr targets
         for result in _extract_treatment_section(
-                headers,
+                doc,
                 PLAN_HEADERS,
                 'DR',
                 ('PRP_PAT', PRP_PAT, Treatment.PRP),
@@ -291,7 +292,7 @@ def extract_treatment(text, *, headers=None, lateralities=None, target_headers=N
         ):
             data.append(result)
         for result in _extract_treatment_section(
-                headers,
+                doc,
                 DR_HEADERS,
                 'DR',
                 ('MACULAR_HEADER_PAT', MACULAR_HEADER_PAT, Treatment.MACULAR),
@@ -300,8 +301,8 @@ def extract_treatment(text, *, headers=None, lateralities=None, target_headers=N
     # all text
     for result in _extract_treatment(
             'ALL',
-            text,
-            lateralities,
+            doc.get_text(),
+            doc.get_lateralities(),
             'ANTIVEGF',
             ('ANTIVEGF_RX',
              re.compile(fr'(s/p)?\W*(?P<term>{ANTIVEGF_PAT})', re.I),
@@ -311,8 +312,8 @@ def extract_treatment(text, *, headers=None, lateralities=None, target_headers=N
         data.append(result)
     for result in _extract_treatment(
             'ALL',
-            text,
-            lateralities,
+            doc.get_text(),
+            doc.get_lateralities(),
             'DR',
             ('GRID_PAT', GRID_PAT, Treatment.GRID),
             ('MACULAR_PAT', MACULAR_PAT, Treatment.MACULAR),
@@ -322,13 +323,12 @@ def extract_treatment(text, *, headers=None, lateralities=None, target_headers=N
     return data
 
 
-def _extract_treatment_section(headers, target_headers, category, *patterns):
-    for section, section_text in headers.iterate(*target_headers):
-        section_lateralities = build_laterality_table(section_text)
-        yield from _extract_treatment(section, section_text, section_lateralities, category, *patterns)
+def _extract_treatment_section(doc: Document, target_headers, category, *patterns):
+    for section in doc.iter_sections(*target_headers):
+        yield from _extract_treatment(section.name, section.text, section.lateralities, category, *patterns)
 
 
-def _extract_treatment(section, section_text, section_lateralities, category, *patterns):
+def _extract_treatment(section_name, section_text, section_lateralities, category, *patterns):
     for pat_label, pat, value in patterns:
         for m in pat.finditer(section_text):
             if is_treatment_uncertain(m, section_text):
@@ -345,5 +345,5 @@ def _extract_treatment(section, section_text, section_lateralities, category, *p
                 'negated': negword,
                 'regex': pat_label,
                 'category': category,
-                'source': section,
+                'source': section_name,
             }, known_laterality=curr_laterality)

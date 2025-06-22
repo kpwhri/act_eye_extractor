@@ -2,7 +2,8 @@ import enum
 import re
 
 from eye_extractor.nlp.negate.negation import is_negated
-from eye_extractor.laterality import build_laterality_table, create_new_variable
+from eye_extractor.laterality import create_new_variable
+from eye_extractor.sections.document import Document
 
 
 class ChoroidalNeoVasc(enum.IntEnum):
@@ -20,18 +21,17 @@ CNV_PAT = re.compile(
 )
 
 
-def extract_choroidalneovasc(text, *, headers=None, lateralities=None):
-    lateralities = lateralities or build_laterality_table(text)
+def extract_choroidalneovasc(doc: Document):
     data = []
-    if headers:
-        for sect_label, sect_text in headers.iterate('ASSESSMENT'):
-            sect_lats = build_laterality_table(sect_text)
-            _extract_cnv(sect_text, data, sect_lats, sect_label)
-    _extract_cnv(text, data, lateralities, 'ALL')
+    if doc.sections:
+        for section in doc.iter_sections('assessment'):
+            data += _extract_cnv(section.text, section.lateralities, section.name)
+    data += _extract_cnv(doc.text_no_hx, doc.lateralities, 'ALL')
     return data
 
 
-def _extract_cnv(text, data, lateralities, sect_label):
+def _extract_cnv(text, lateralities, sect_label):
+    data = []
     for m in CNV_PAT.finditer(text):
         negword = is_negated(m, text, word_window=3)
         data.append(
@@ -44,3 +44,4 @@ def _extract_cnv(text, data, lateralities, sect_label):
                 'source': sect_label,
             })
         )
+    return data

@@ -2,7 +2,7 @@ import json
 import pytest
 
 from eye_extractor.dr.dr_yesno import DR_YESNO_PAT, DR_YESNO_ABBR_PAT, get_dr_yesno
-from eye_extractor.headers import Headers
+from eye_extractor.sections.headers import Headers
 from eye_extractor.output.dr import build_dr_yesno
 
 # Test pattern.

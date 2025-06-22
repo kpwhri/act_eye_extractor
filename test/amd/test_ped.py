@@ -3,7 +3,7 @@ import json
 import pytest
 
 from eye_extractor.amd.ped import PED_PAT, extract_ped
-from eye_extractor.headers import Headers
+from eye_extractor.sections.document import create_doc_and_sections
 from eye_extractor.output.amd import build_ped
 
 
@@ -19,14 +19,15 @@ def test_ped_patterns(pat, text, exp):
     assert bool(m) is exp
 
 
-@pytest.mark.parametrize('text, headers, exp_ped_re, exp_ped_le, exp_ped_unk', [
+@pytest.mark.parametrize('text, sections, exp_ped_re, exp_ped_le, exp_ped_unk', [
         ('', {'MACULA': 'retinal pigment epithelial detachment and drusen'}, -1, -1, 1),
         ('', {'MACULA': 'no PED OD'}, 0, -1, -1),
         ('', {'MACULA': 'OU: PEDs'}, 1, 1, -1),
         ('', {'MACULA': '-PED'}, -1, -1, 0),
     ])
-def test_ped_extract_build(text, headers, exp_ped_re, exp_ped_le, exp_ped_unk, ):
-    pre_json = extract_ped(text, headers=Headers(headers))
+def test_ped_extract_build(text, sections, exp_ped_re, exp_ped_le, exp_ped_unk, ):
+    doc = create_doc_and_sections(text, sections)
+    pre_json = extract_ped(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_ped(post_json)
     assert result['ped_re'] == exp_ped_re

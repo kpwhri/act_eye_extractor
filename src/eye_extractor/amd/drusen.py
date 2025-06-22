@@ -2,7 +2,9 @@ import enum
 import re
 
 from eye_extractor.nlp.negate.negation import NEGWORD_SET, is_negated
-from eye_extractor.laterality import build_laterality_table, create_new_variable
+from eye_extractor.laterality import create_new_variable
+from eye_extractor.sections.document import Document
+from eye_extractor.sections.patterns import PatternGroup
 
 
 class Drusen(enum.IntEnum):
@@ -63,20 +65,17 @@ BOTH_DRUSEN_PAT = re.compile(rf'({soft}(\s*(and|,|/)\s*hard)?|hard(\s*(and|,|/)\
 NO_DRUSEN_PAT = re.compile(rf'(?:(?:{"|".join(NEGWORD_SET)}) drusen)', re.I)
 
 
-def extract_drusen(text, *, headers=None, lateralities=None):
+def extract_drusen(doc: Document):
     data = []
-    if headers:
-        for macula_header, macula_text in headers.iterate('MACULA', 'COMMENTS', 'ASSESSMENT_COMMENTS'):
-            lateralities = build_laterality_table(macula_text)
-            data += find_drusen(macula_text, lateralities)
+    if doc.sections:
+        for section in doc.iter_sections(*PatternGroup.MACULA_ASSESSMENT_PLAN):
+            data += find_drusen(section.text, section.lateralities)
     else:
-        if not lateralities:
-            lateralities = build_laterality_table(text)
-        data += find_drusen(text, lateralities)
+        data += find_drusen(doc.text_no_hx, doc.lateralities_no_hx)
     return data
 
 
-def find_drusen(text, lateralities=None):
+def find_drusen(text, lateralities):
     """
     Designed so that subsequent variables can overwrite earlier ones.
     In the build step, only the final element will be retained, so starting with the most general.
@@ -84,7 +83,6 @@ def find_drusen(text, lateralities=None):
     :param lateralities:
     :return:
     """
-    lateralities = lateralities or build_laterality_table(text)
     data = []
     for pattern, label, value, priority, targets in [
         (DRUSEN_PAT, 'yes', Drusen.YES, 0, ('drusen_size', 'drusen_type')),

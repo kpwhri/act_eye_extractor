@@ -5,7 +5,7 @@ import pytest
 from eye_extractor.amd.dry import DRY_PAT, DRY_AMD_PAT, extract_dryamd_severity
 from eye_extractor.amd.ga import GeoAtrophy
 from eye_extractor.common.json import dumps_and_loads_json
-from eye_extractor.headers import Headers
+from eye_extractor.sections.document import create_doc_and_sections
 from eye_extractor.output.amd import build_dryamd_severity, augment_dryamd_severity
 
 
@@ -20,7 +20,7 @@ def test_dry_patterns(pat, text, exp):
 
 
 @pytest.mark.parametrize(
-    'text, headers, exp_dryamd_severity_re, exp_dryamd_severity_le, exp_dryamd_severity_unk, note_date', [
+    'text, sections, exp_dryamd_severity_re, exp_dryamd_severity_le, exp_dryamd_severity_unk, note_date', [
         ('', {'MACULA': 'dry'}, 'UNKNOWN', 'UNKNOWN', 'YES', None),
         ('', {'MACULA': 'not dry'}, 'UNKNOWN', 'UNKNOWN', 'NO', None),
         # test historical
@@ -32,9 +32,10 @@ def test_dry_patterns(pat, text, exp):
         ('dry eyes', None, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN', None),
         ('your eyes are really dry', None, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN', None),
     ])
-def test_dry_extract_build(text, headers, exp_dryamd_severity_re, exp_dryamd_severity_le,
+def test_dry_extract_build(text, sections, exp_dryamd_severity_re, exp_dryamd_severity_le,
                            exp_dryamd_severity_unk, note_date):
-    pre_json = extract_dryamd_severity(text, headers=Headers(headers))
+    doc = create_doc_and_sections(text, sections)
+    pre_json = extract_dryamd_severity(doc)
     post_json = dumps_and_loads_json(pre_json)
     result = build_dryamd_severity(post_json, note_date=note_date)
     assert result['dryamd_severity_re'] == exp_dryamd_severity_re

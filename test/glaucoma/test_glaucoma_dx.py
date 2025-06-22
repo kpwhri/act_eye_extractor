@@ -5,7 +5,7 @@ import pytest
 from eye_extractor.glaucoma.dx import POAG_PAT, NTG_PAT, LTG_PAT, PXG_PAT, PG_PAT, CONGENITAL_PAT, ICE_PAT, NV_PAT, \
     UVEI_PAT, ACG_PAT, STEROID_PAT, TRAUMATIC_PAT, extract_glaucoma_dx, SUSPECT_PAT, OCULAR_HYPERTENSIVE_PAT, \
     CUPPING_PAT
-from eye_extractor.headers import Headers
+from eye_extractor.sections.headers import Headers
 from eye_extractor.output.glaucoma import build_glaucoma_dx
 
 

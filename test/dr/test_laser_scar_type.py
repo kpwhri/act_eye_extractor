@@ -2,7 +2,7 @@ import json
 import pytest
 
 from eye_extractor.dr import laser_scar_type as lst
-from eye_extractor.headers import Headers
+from eye_extractor.sections.headers import Headers
 from eye_extractor.output.dr import (
     build_focal_laser_scar_type,
     build_grid_laser_scar_type,

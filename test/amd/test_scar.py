@@ -4,7 +4,8 @@ import pytest
 
 from eye_extractor.amd.scar import extract_subret_fibrous, SCAR_PAT, MACULAR_SCAR_PAT, SUBRET_SCAR_PAT, \
     DISCIFORM_SCAR_PAT
-from eye_extractor.headers import Headers
+from eye_extractor.sections.document import create_doc_and_sections
+from eye_extractor.sections.headers import Headers
 from eye_extractor.output.amd import build_subret_fibrous
 
 
@@ -22,7 +23,7 @@ def test_scar_patterns(pat, text, exp):
 
 # TODO: Ignore mentions of scar in 'Periphery' sections. Headers will not capture most mentions, use alternative.
 # TODO: Write end-end tests that include header extraction OR that run entire note on a specific variable.
-@pytest.mark.parametrize('text, headers, exp_subret_fibrous_re, exp_subret_fibrous_le, exp_subret_fibrous_unk', [
+@pytest.mark.parametrize('text, sections, exp_subret_fibrous_re, exp_subret_fibrous_le, exp_subret_fibrous_unk', [
     ('', {'MACULA': 'scar'}, 'UNKNOWN', 'UNKNOWN', 'YES'),
     ('', {'MACULA': 'OD: macular scar'}, 'MACULAR', 'UNKNOWN', 'UNKNOWN'),
     ('', {'MACULA': 'sub ret scar os'}, 'UNKNOWN', 'SUBRETINAL', 'UNKNOWN'),
@@ -86,8 +87,9 @@ def test_scar_patterns(pat, text, exp):
     ('MACULA:  Drusen od; disciform scar os', None, 'UNKNOWN', 'DISCIFORM', 'UNKNOWN'),
     ('', {'MACULA': '  Drusen od; disciform scar os'}, 'UNKNOWN', 'DISCIFORM', 'UNKNOWN'),
 ])
-def test_scar_extract_build(text, headers, exp_subret_fibrous_re, exp_subret_fibrous_le, exp_subret_fibrous_unk):
-    pre_json = extract_subret_fibrous(text, headers=Headers(headers))
+def test_scar_extract_build(text, sections, exp_subret_fibrous_re, exp_subret_fibrous_le, exp_subret_fibrous_unk):
+    doc = create_doc_and_sections(text, sections)
+    pre_json = extract_subret_fibrous(doc)
     post_json = json.loads(json.dumps(pre_json, default=str))
     result = build_subret_fibrous(post_json)
     assert result['subret_fibrous_re'] == exp_subret_fibrous_re

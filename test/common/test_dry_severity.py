@@ -2,7 +2,7 @@ import pytest
 
 from eye_extractor.amd.dry import extract_dryamd_severity
 from eye_extractor.common.json import dumps_and_loads_json
-from eye_extractor.headers import Headers
+from eye_extractor.sections.headers import Headers
 from eye_extractor.output.shared import build_dry_severity
 
 

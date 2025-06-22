@@ -1,6 +1,7 @@
 from typing import Callable
 
 from eye_extractor.laterality import build_laterality_table
+from eye_extractor.sections.document import Document
 
 
 def _split_and_get_variable(text: str, get_helper: Callable, split_char: str, search_negated_list: bool = False):
@@ -24,17 +25,17 @@ def _split_and_get_variable(text: str, get_helper: Callable, split_char: str, se
     return data
 
 
-def get_variable(text: str, get_helper: Callable, *,
-                 headers=None, target_headers: list[str] = None, lateralities=None, search_negated_list=False,
+def get_variable(doc: Document, get_helper: Callable, *,
+                 text: str = None, target_headers: list[str] = None, lateralities=None, search_negated_list=False,
                  split_char: str = None) -> list:
     """General function for extracting variables from text.
 
     General template for extracting variables from a given text. Requires a helper function to perform the extraction.
 
-    :param text: Text to search for unspecified negated list items.
+    :param doc:
     :param get_helper: Helper function used to specify extraction behavior.
     :param target_headers: Section headers to search for variable.
-    :param headers:
+    :param text: if not default text, specify text and lateralities here
     :param lateralities:
     :param search_negated_list: If True, search for negated lists in text.
     :param split_char: If not None, split `text` on character and process chunks independently.
@@ -43,16 +44,29 @@ def get_variable(text: str, get_helper: Callable, *,
     data = []
     # Extract matches from sections / headers.
     if target_headers:
-        for section_header, section_text in headers.iterate(*target_headers):
-            section_lateralities = build_laterality_table(section_text, search_negated_list=search_negated_list)
-            for new_var in get_helper(section_text, section_lateralities, section_header):
+        for section in doc.iter_sections(*target_headers):
+            if search_negated_list:
+                section_lateralities = build_laterality_table(section.text, search_negated_list=search_negated_list)
+            else:
+                section_lateralities = section.lateralities
+            for new_var in get_helper(section.text, section_lateralities, section.name):
                 data.append(new_var)
     # Extract matches from full text.
     if split_char:
-        data = data + _split_and_get_variable(text, get_helper, split_char, search_negated_list=search_negated_list)
+        data += _split_and_get_variable(text or doc.text, get_helper, split_char, search_negated_list=search_negated_list)
     else:
-        if not lateralities:
+        # get text and lateralities
+        if text and lateralities:
+            pass
+        elif text:  # not lateralities
             lateralities = build_laterality_table(text, search_negated_list=search_negated_list)
+        else:
+            text = doc.text
+            if search_negated_list:
+                lateralities = build_laterality_table(text, search_negated_list=search_negated_list)
+            else:
+                lateralities = doc.lateralities
+
         for new_var in get_helper(text, lateralities, 'ALL'):
             data.append(new_var)
 

@@ -6,18 +6,18 @@ from eye_extractor.sections.utils import get_index_of_next_section_start
 
 history = r'(?:hist(?:ory)?|hx)'
 medical = r'(?:ocular|eye|optical|med(?:ical)?|eye\W*health)'
-past = r'(?:past|personal)'
+past = r'(?:last|prev(?:ious)?|past)'
 
 HISTORY_SECTION_PAT = re.compile(
     rf'\b(?:'
     rf'review\s*of\s*symptoms'
     rf'|review\s*of\s*systems'
     rf'|systems\s*review'
-    rf'|social\s*{history}'
+    rf'|social\s*{history}|shx'
     rf'|(?:{past}\s*)?{medical}\s*{history}(?:\s*(?:of|includes))?'
     rf'|pm\s*{history}(?:\s*of)?'
     rf'|fam(?:ily)?\s*(?:{medical}\s*)?{history}(?:\s*of)?'
-    rf'|past\s*(?:\w+\W*){{,6}}'
+    rf'|{past}\s*(?:\w+\W*){{,6}}'
     rf'|family\s*{history}\s*of\s*any\s*eye\s*or\s*medical\s*diseases'
     rf')[:-]',
     re.I

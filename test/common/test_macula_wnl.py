@@ -4,7 +4,7 @@ import pytest
 
 from eye_extractor.common.algo.macula_wnl import extract_macula_wnl
 from eye_extractor.common.json import dumps_and_loads_json
-from eye_extractor.headers import Headers
+from eye_extractor.sections.headers import Headers
 from eye_extractor.laterality import Laterality
 from eye_extractor.output.amd import build_amd
 from eye_extractor.output.common import macula_is_wnl

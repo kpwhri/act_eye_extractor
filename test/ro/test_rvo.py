@@ -4,7 +4,7 @@ import pytest
 
 from eye_extractor.common.algo.treatment import STEROID_PAT, TRIAMCINOLONE_PAT, DEXAMETHASONE_PAT, extract_treatment, \
     OTHER_STEROID_PAT
-from eye_extractor.headers import Headers
+from eye_extractor.sections.headers import Headers
 from eye_extractor.output.ro import build_rvo, build_rvo_type, build_rvo_treatment
 from eye_extractor.ro.rvo import RVO_PAT, extract_rvo, RvoType, get_rvo_kind
 

@@ -4,6 +4,7 @@ import re
 from eye_extractor.amd.utils import run_on_macula
 from eye_extractor.nlp.negate.negation import is_negated, is_post_negated
 from eye_extractor.laterality import create_new_variable
+from eye_extractor.sections.document import Document
 
 
 class DrySeverity(enum.IntEnum):
@@ -34,13 +35,11 @@ DRY_PAT = re.compile(
 )
 
 
-def extract_dryamd_severity(text, *, headers=None, lateralities=None):
+def extract_dryamd_severity(doc: Document):
     return run_on_macula(
         macula_func=_extract_dryamd_severity,
         default_func=_extract_dryamd_severity,  # for testing
-        text=text,
-        headers=headers,
-        lateralities=lateralities,
+        doc=doc,
         all_func=_extract_dryamd_severity_all,
     )
 

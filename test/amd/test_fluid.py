@@ -1,5 +1,4 @@
 import datetime
-import json
 
 import pytest
 
@@ -7,7 +6,7 @@ from eye_extractor.common.algo.fluid import FLUID_NOS_PAT, SUBRETINAL_FLUID_PAT,
     SUB_AND_INTRARETINAL_FLUID_PAT, MACULAR_EDEMA_PAT, Fluid
 from eye_extractor.common.json import dumps_and_loads_json
 from eye_extractor.common.noteinfo import extract_note_level_info
-from eye_extractor.headers import Headers
+from eye_extractor.sections.document import create_doc_and_sections
 from eye_extractor.output.amd import build_fluid_amd
 
 
@@ -80,7 +79,8 @@ def test_intraretinal_fluid_pattern(text, exp):
     ('srf not noted', 10, 'not'),
 ])
 def test_fluid_value_first_variable(text, exp_value, exp_negword):
-    data = extract_fluid(text)
+    doc = create_doc_and_sections(text)
+    data = extract_fluid(doc)
     assert len(data) > 0
     first_variable = list(data[0].values())[0]
     assert first_variable['value'] == exp_value
@@ -96,7 +96,7 @@ def test_fluid_to_column(data, exp_fluid_amd_re, exp_fluid_amd_le):
     assert result['fluid_amd_le'] == exp_fluid_amd_le
 
 
-@pytest.mark.parametrize('text, headers, exp_fluid_re, exp_fluid_le, exp_fluid_unk, note_date', [
+@pytest.mark.parametrize('text, sections, exp_fluid_re, exp_fluid_le, exp_fluid_unk, note_date', [
     ('', {'MACULA': 'subretinal fluid od'}, 'SUBRETINAL FLUID', 'UNKNOWN', 'UNKNOWN', None),
     ('', {'MACULA': 'with fluid and exudates'}, 'UNKNOWN', 'UNKNOWN', 'INTRARETINAL FLUID', None),
     ('', {'MACULA': 'large area of edema OD'}, 'INTRARETINAL FLUID', 'UNKNOWN', 'UNKNOWN', None),
@@ -116,8 +116,9 @@ def test_fluid_to_column(data, exp_fluid_amd_re, exp_fluid_amd_le):
      'NO INTRARETINAL FLUID', 'UNKNOWN', 'UNKNOWN', datetime.date(2022, 2, 2)),
     ('OCT: No fluid od, no recurrent fluid os', {}, 'NO INTRARETINAL FLUID', 'NO INTRARETINAL FLUID', 'UNKNOWN', None),
 ])
-def test_fluid_extract_build(text, headers, exp_fluid_re, exp_fluid_le, exp_fluid_unk, note_date):
-    pre_json = extract_fluid(text, headers=Headers(headers))
+def test_fluid_extract_build(text, sections, exp_fluid_re, exp_fluid_le, exp_fluid_unk, note_date):
+    doc = create_doc_and_sections(text, sections)
+    pre_json = extract_fluid(doc)
     post_json = dumps_and_loads_json(pre_json)
     result = build_fluid_amd(post_json, skip_rename_variable=True, note_date=note_date)
     assert result['fluid_amd_re'] == exp_fluid_re
@@ -128,8 +129,9 @@ def test_fluid_extract_build(text, headers, exp_fluid_re, exp_fluid_le, exp_flui
 def test_fluid_extract_build_no_amd():
     """Test fluid when no AMD"""
     text = 'macular edema os'
-    fluid_pre_json = extract_fluid(text)
-    amd_pre_json = extract_note_level_info(text)
+    doc = create_doc_and_sections(text)
+    fluid_pre_json = extract_fluid(doc)
+    amd_pre_json = extract_note_level_info(doc)
     fluid_post_json = dumps_and_loads_json(fluid_pre_json)
     amd_post_json = dumps_and_loads_json(amd_pre_json)
     result = build_fluid_amd(fluid_post_json, is_amd=amd_post_json['is_amd'])

@@ -10,6 +10,7 @@ import re
 from eye_extractor.amd.utils import run_on_macula
 from eye_extractor.nlp.negate.negation import is_negated, is_post_negated
 from eye_extractor.laterality import create_new_variable, laterality_pattern, lat_lookup
+from eye_extractor.sections.document import Document
 
 change = r'(?:chang|disrupt|dispers|migrat|abnormal|clump|mottl|pigment)\w*'
 pigment = r'(?:(?:hyper)?pigment\w*|\brpe\b)'
@@ -30,13 +31,11 @@ ATROPHY_PAT = re.compile(
 )
 
 
-def get_pigmentary_changes(text, *, headers=None, lateralities=None):
+def get_pigmentary_changes(doc: Document):
     return run_on_macula(
         macula_func=_get_pigmentary_changes,
         default_func=_get_pigmentary_changes,
-        text=text,
-        headers=headers,
-        lateralities=lateralities,
+        doc=doc,
     )
 
 

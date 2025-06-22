@@ -4,7 +4,7 @@ import re
 from eye_extractor.amd.utils import run_on_macula
 from eye_extractor.nlp.negate.negation import is_negated, is_post_negated
 from eye_extractor.laterality import create_new_variable
-from eye_extractor.sections.oct_macula import find_oct_macula_sections, remove_macula_oct
+from eye_extractor.sections.document import Document, TextView
 
 
 class Fluid(enum.IntEnum):
@@ -136,17 +136,16 @@ SUB_AND_INTRARETINAL_FLUID_PAT = re.compile(
 )
 
 
-def extract_fluid(text, *, headers=None, lateralities=None):
+def extract_fluid(doc: Document):
     data = []
     # prioritize OCT results
-    data += _extract_fluid_from_oct(text)
+    data += _extract_fluid_from_oct(doc.oct_macula_sections)  # TODO: OCT macula text
     data += run_on_macula(
         macula_func=_get_fluid_in_macula,
         default_func=_get_fluid_in_macula,  # for testing
-        text=remove_macula_oct(text),
-        headers=headers,
-        lateralities=lateralities,
+        doc=doc,
         all_func=_get_fluid,
+        textview=TextView.NO_OCT_MACULA,
     )
     return data
 
@@ -154,11 +153,11 @@ def extract_fluid(text, *, headers=None, lateralities=None):
 non_macular = {'corneal', 'stromal'}
 
 
-def _extract_fluid_from_oct(text):
+def _extract_fluid_from_oct(oct_macula_sections):
     result = []
-    for section_dict in find_oct_macula_sections(text):
+    for section_dict in oct_macula_sections:
         for lat, values in section_dict.items():
-            result += _get_fluid_in_macula(values['text'], None, 'OCT MACULA',
+            result += _get_fluid_in_macula(values['text'], values.get('lateralities', None), 'OCT MACULA',
                                            known_laterality=lat, known_date=values['date'], priority=2)
     return result
 
@@ -202,6 +201,9 @@ def _get_fluid(text, lateralities, source, *, known_laterality=None, known_date=
 
 def _get_fluid_in_macula(text, lateralities, source, *,
                          known_laterality=None, priority=1, known_date=None):
+    """
+    Lateralities: always None; using `known_lateraltiy`
+    """
     data = []
     for m in FLUID_NOS_PAT.finditer(text):  # in MACULA section, this is IRF
         if is_negated(m, text, non_macular):

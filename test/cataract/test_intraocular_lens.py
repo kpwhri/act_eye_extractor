@@ -4,7 +4,7 @@ import pytest
 
 from eye_extractor.cataract.intraocular_lens import PCIOL_PAT, ACIOL_PAT, SIOL_PAT, PSEUDO_PAT, APHAKIA_PAT, IOL_PAT, \
     extract_iol_lens
-from eye_extractor.headers import Headers
+from eye_extractor.sections.headers import Headers
 from eye_extractor.output.cataract import build_intraocular_lens
 
 

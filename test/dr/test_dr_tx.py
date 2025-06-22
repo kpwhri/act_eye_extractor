@@ -2,7 +2,7 @@ import json
 import pytest
 
 from eye_extractor.common.algo.treatment import extract_treatment, FOCAL_PAT, PRP_PAT
-from eye_extractor.headers import Headers
+from eye_extractor.sections.headers import Headers
 from eye_extractor.output.dr import build_dr_tx
 
 # Test pattern.

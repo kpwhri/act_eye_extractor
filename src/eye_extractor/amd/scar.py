@@ -2,10 +2,10 @@ import enum
 import re
 
 from eye_extractor.common.get_variable import get_variable
-from eye_extractor.nlp.character_groups import get_previous_text_to_newline
 from eye_extractor.nlp.inline_section import is_periphery
 from eye_extractor.nlp.negate.negation import has_before, is_negated
-from eye_extractor.laterality import build_laterality_table, create_new_variable
+from eye_extractor.laterality import create_new_variable
+from eye_extractor.sections.document import Document
 
 
 class Scar(enum.IntEnum):
@@ -65,11 +65,8 @@ SCAR_PRE_IGNORE = {
 }
 
 
-def extract_subret_fibrous(text, *, headers=None, lateralities=None):
-    return get_variable(text, _extract_subret_fibrous,
-                        headers=headers,
-                        target_headers=['MACULA'],
-                        lateralities=lateralities)
+def extract_subret_fibrous(doc: Document):
+    return get_variable(doc, _extract_subret_fibrous, target_headers=['macula'])
 
 
 def _extract_subret_fibrous(text: str, lateralities, source: str):

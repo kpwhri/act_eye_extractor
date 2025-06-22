@@ -65,7 +65,7 @@ def parse_sections(text):
                 'PATIENT HISTORY', 'SOCIAL HISTORY',
                 'PATIENT HAS A HISTORY OF', 'PATIENT HX',
                 'PERSONAL EYE HISTORY', 'ASSESSMENT', 'ASSESSMENT COMMENTS',
-                'HISTORY OF PRESENT ILLNESS', 'PEHX', 'IMPRESSION',
+                'HISTORY OF PRESENT ILLNESS', 'PEHX', 'PERHX', 'IMPRESSION',
             }:
                 curr = 'PERSONAL'
             elif section_label.upper() in {

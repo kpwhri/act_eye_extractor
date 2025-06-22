@@ -3,7 +3,7 @@ import pathlib
 
 from loguru import logger
 
-from eye_extractor.headers import Headers, extract_headers_and_text
+from eye_extractor.sections.headers import Headers, extract_headers_and_text
 
 
 def _read_json_file(path, *, encoding='utf8'):

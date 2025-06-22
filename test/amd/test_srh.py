@@ -4,7 +4,8 @@ import pytest
 
 from eye_extractor.amd.srh import SRH_PAT, extract_subretinal_hemorrhage
 from eye_extractor.common.json import dumps_and_loads_json
-from eye_extractor.headers import Headers
+from eye_extractor.sections.document import create_doc_and_sections
+from eye_extractor.sections.headers import Headers
 from eye_extractor.output.amd import build_subretinal_hemorrhage
 
 
@@ -21,22 +22,23 @@ def test_srh_pattern(text, exp):
     assert bool(SRH_PAT.search(text)) == exp
 
 
-@pytest.mark.parametrize('text, headers, exp_value, exp_negword', [
+@pytest.mark.parametrize('text, sections, exp_value, exp_negword', [
     ('subretinal hemorrhage', {}, 1, None),
     ('no subretinal hemorrhage', {}, 0, 'no'),
     ('no srh', {}, 0, 'no'),
     # Negation `word_window` > 2 captures 'no' as negword, otherwise 'or'.
     ('no srf or srh', {}, 0, 'no'),
 ])
-def test_srh_value_first_variable(text, headers, exp_value, exp_negword):
-    data = extract_subretinal_hemorrhage(text, headers=Headers(headers))
+def test_srh_value_first_variable(text, sections, exp_value, exp_negword):
+    doc = create_doc_and_sections(text, sections)
+    data = extract_subretinal_hemorrhage(doc)
     assert len(data) > 0
     first_variable = list(data[0].values())[0]
     assert first_variable['value'] == exp_value
     assert first_variable['negated'] == exp_negword
 
 
-@pytest.mark.parametrize('text, headers, subretinal_hem_re, subretinal_hem_le, subretinal_hem_unk, note_date', [
+@pytest.mark.parametrize('text, sections, subretinal_hem_re, subretinal_hem_le, subretinal_hem_unk, note_date', [
     ('subretinal hemorrhage', {}, -1, -1, 1, None),
     ('macular sr heme', {}, -1, -1, 1, None),
     ('no subretinal hemorrhage', {}, -1, -1, 0, None),
@@ -106,8 +108,9 @@ def test_srh_value_first_variable(text, headers, exp_value, exp_negword):
     # Inverted laterality sectioning - tricky to capture.
     # ('¶OD: ¶Vitreous: clear  ¶Optic Nerve: crisp tr pale ¶C:D ratio: 0.5 ¶Macula: SRH,', {}, 1, -1, -1, None),
 ])
-def test_srh_extract_build(text, headers, subretinal_hem_re, subretinal_hem_le, subretinal_hem_unk, note_date):
-    pre_json = extract_subretinal_hemorrhage(text, headers=Headers(headers))
+def test_srh_extract_build(text, sections, subretinal_hem_re, subretinal_hem_le, subretinal_hem_unk, note_date):
+    doc = create_doc_and_sections(text, sections)
+    pre_json = extract_subretinal_hemorrhage(doc)
     post_json = dumps_and_loads_json(pre_json)
     result = build_subretinal_hemorrhage(post_json, note_date=note_date)
     assert result['subretinal_hem_re'] == subretinal_hem_re

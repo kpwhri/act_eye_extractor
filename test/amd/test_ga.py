@@ -3,7 +3,7 @@ import json
 import pytest
 
 from eye_extractor.amd.ga import GA_PAT, extract_geoatrophy
-from eye_extractor.headers import Headers
+from eye_extractor.sections.document import create_doc_and_sections
 from eye_extractor.output.amd import build_geoatrophy
 
 
@@ -17,13 +17,14 @@ def test_ga_patterns(pat, text, exp):
     assert bool(m) is exp
 
 
-@pytest.mark.parametrize('text, headers, exp_geoatrophy_re, exp_geoatrophy_le, exp_geoatrophy_unk', [
+@pytest.mark.parametrize('text, sections, exp_geoatrophy_re, exp_geoatrophy_le, exp_geoatrophy_unk', [
     ('', {'MACULA': 'ga'}, -1, -1, 1),
     ('', {'MACULA': 'no ga'}, -1, -1, 0),
     ('', {'MACULA': 'w/o ga'}, -1, -1, 0),
 ])
-def test_ga_extract_build(text, headers, exp_geoatrophy_re, exp_geoatrophy_le, exp_geoatrophy_unk):
-    pre_json = extract_geoatrophy(text, headers=Headers(headers))
+def test_ga_extract_build(text, sections, exp_geoatrophy_re, exp_geoatrophy_le, exp_geoatrophy_unk):
+    doc = create_doc_and_sections(text, sections)
+    pre_json = extract_geoatrophy(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_geoatrophy(post_json)
     assert result['geoatrophy_re'] == exp_geoatrophy_re

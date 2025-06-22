@@ -2,7 +2,7 @@ import json
 import pytest
 
 from eye_extractor.dr.venous_beading import get_ven_beading, VEN_BEADING_PAT
-from eye_extractor.headers import Headers
+from eye_extractor.sections.headers import Headers
 from eye_extractor.output.dr import build_ven_beading
 
 # Test pattern.

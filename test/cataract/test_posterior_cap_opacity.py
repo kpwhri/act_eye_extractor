@@ -3,7 +3,7 @@ import json
 import pytest
 
 from eye_extractor.cataract.posterior_cap_opacity import build_from_number_pco, extract_posterior_capsular_opacity
-from eye_extractor.headers import Headers
+from eye_extractor.sections.headers import Headers
 from eye_extractor.output.cataract import build_posterior_cap_opacity
 
 
