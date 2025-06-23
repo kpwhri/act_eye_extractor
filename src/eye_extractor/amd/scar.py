@@ -66,7 +66,8 @@ SCAR_PRE_IGNORE = {
 
 
 def extract_subret_fibrous(doc: Document):
-    return get_variable(doc, _extract_subret_fibrous, target_headers=['macula'])
+    return get_variable(doc, _extract_subret_fibrous, target_headers=['macula', 'assessment', 'plan'],
+                        search_full_text=False)
 
 
 def _extract_subret_fibrous(text: str, lateralities, source: str):

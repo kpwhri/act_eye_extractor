@@ -27,7 +27,7 @@ def _split_and_get_variable(text: str, get_helper: Callable, split_char: str, se
 
 def get_variable(doc: Document, get_helper: Callable, *,
                  text: str = None, target_headers: list[str] = None, lateralities=None, search_negated_list=False,
-                 split_char: str = None) -> list:
+                 split_char: str = None, search_full_text=True) -> list:
     """General function for extracting variables from text.
 
     General template for extracting variables from a given text. Requires a helper function to perform the extraction.
@@ -52,22 +52,23 @@ def get_variable(doc: Document, get_helper: Callable, *,
             for new_var in get_helper(section.text, section_lateralities, section.name):
                 data.append(new_var)
     # Extract matches from full text.
-    if split_char:
-        data += _split_and_get_variable(text or doc.text, get_helper, split_char, search_negated_list=search_negated_list)
-    else:
-        # get text and lateralities
-        if text and lateralities:
-            pass
-        elif text:  # not lateralities
-            lateralities = build_laterality_table(text, search_negated_list=search_negated_list)
+    if search_full_text:
+        if split_char:
+            data += _split_and_get_variable(text or doc.text, get_helper, split_char, search_negated_list=search_negated_list)
         else:
-            text = doc.get_text()
-            if search_negated_list:
+            # get text and lateralities
+            if text and lateralities:
+                pass
+            elif text:  # not lateralities
                 lateralities = build_laterality_table(text, search_negated_list=search_negated_list)
             else:
-                lateralities = doc.get_lateralities()
+                text = doc.get_text()
+                if search_negated_list:
+                    lateralities = build_laterality_table(text, search_negated_list=search_negated_list)
+                else:
+                    lateralities = doc.get_lateralities()
 
-        for new_var in get_helper(text, lateralities, 'ALL'):
-            data.append(new_var)
+            for new_var in get_helper(text, lateralities, 'ALL'):
+                data.append(new_var)
 
     return data
