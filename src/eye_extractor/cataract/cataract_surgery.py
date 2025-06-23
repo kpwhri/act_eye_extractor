@@ -7,6 +7,7 @@ from loguru import logger
 from eye_extractor.laterality import build_laterality_table, LATERALITY, \
     get_immediate_next_or_prev_laterality_from_table, Laterality, laterality_finder, simplify_lateralities
 from eye_extractor.notes.operative import OperativeReport
+from eye_extractor.sections.document import Document
 
 iol_models = '|'.join([
     'sn60wf', 'ma60ac', r'sn6at\d', r'mta\W*400\W*ac',
@@ -174,13 +175,13 @@ def get_cataractsurg_complications(doc: OperativeReport, text):
         return {'text': complications[:20], 'value': 1, 'complication': complications[:30]}
 
 
-def get_cataract_surgery(text):
-    if not IS_CATSURG_PAT.search(text):
+def get_cataract_surgery(doc: Document):
+    if not doc.is_cataract_surgery:
         return {}
-    doc = OperativeReport.build_operative_report(text)
+    op_doc = OperativeReport.build_operative_report(doc.text)
     return {
-        'cataractsurg_lat': get_cataractsurg_laterality(doc),
-        'cataractsurg_ioltype': list(cataractsurg_ioltype(text)),
-        'cataractsurg_dt': get_surgery_date(doc.get_opdate()),
-        'catsurg_comp': get_cataractsurg_complications(doc, text)
+        'cataractsurg_lat': get_cataractsurg_laterality(op_doc),
+        'cataractsurg_ioltype': list(cataractsurg_ioltype(doc.text)),
+        'cataractsurg_dt': get_surgery_date(op_doc.get_opdate()),
+        'catsurg_comp': get_cataractsurg_complications(op_doc, doc.text)
     }

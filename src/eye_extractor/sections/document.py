@@ -4,6 +4,7 @@ Model a document text and sections.
 * Get different views of text (e.g., full text vs text without history)
 """
 import enum
+import re
 
 from eye_extractor.laterality import build_laterality_table
 from eye_extractor.sections.oct_macula import find_oct_macula_sections, remove_macula_oct
@@ -39,6 +40,19 @@ class Document:
         self._lat_table_no_hx = None
         self._text_no_oct_macula = None
         self._lat_no_oct_macula = None
+
+        self._is_cataract_surgery = None
+
+    @property
+    def is_cataract_surgery(self):
+        if self._is_cataract_surgery is None:
+            for section in self.sections.iter_names('preop_dx'):
+                if section.search('cataract', flags=re.I):
+                    self._is_cataract_surgery = True
+                    break
+            else:
+                self._is_cataract_surgery = False
+        return self._is_cataract_surgery
 
     @property
     def text_no_oct_macula(self):

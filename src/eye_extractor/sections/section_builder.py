@@ -46,6 +46,18 @@ class Section:
     def oneline(self):
         return ' '.join(self.lines)
 
+    def iter_search(self, *pats, flags=0):
+        for pat in pats:
+            if isinstance(pat, str):
+                pat = re.compile(pat, flags=flags)
+            for m in pat.search(self.text):
+                yield m
+
+    def search(self, pat, *, flags=0):
+        if isinstance(pat, str):
+            pat = re.compile(pat, flags=flags)
+        return pat.search(self.text)
+
     def iter_subsections(self):
         if isinstance(self.name, tuple):  # has multiple
             for name in self.name:
