@@ -35,10 +35,10 @@ class Diagnosis(enum.IntEnum):
     UVEITIS = 8
 
 
-def additional_sections(text):
+def additional_sections(text, level=2):
     for pat in (TREATED_FOR_PAT,):
         if m := pat.search(text):
-            yield Section('treated_for', m.group('condition'), m.start('name'), m.end('name'),
+            yield Section('treated_for', level, m.group('condition'), m.start('name'), m.end('name'),
                           m.start('condition'), m.end('condition'))
 
 

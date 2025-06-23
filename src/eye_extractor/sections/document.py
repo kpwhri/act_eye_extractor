@@ -8,7 +8,7 @@ import enum
 from eye_extractor.laterality import build_laterality_table
 from eye_extractor.sections.oct_macula import find_oct_macula_sections, remove_macula_oct
 from eye_extractor.sections.patterns import PATTERNS
-from eye_extractor.sections.section_builder import SectionsBuilder, Sections, get_sections_from_dict
+from eye_extractor.sections.section_builder import SectionsBuilder, get_sections_from_dict
 
 
 class TextView(enum.IntEnum):
@@ -97,9 +97,11 @@ class Document:
 
     def _get_sections(self, text, patterns):
         builder = SectionsBuilder(self._build_laterality_table)
-        for cat, pat in patterns:
+        for cat, level, pat in patterns:
             for m in pat.finditer(text):
-                builder.add_section(cat, m.group('content'),
+                if builder.is_major_section(m, text):
+                    level = 1
+                builder.add_section(cat, level, m.group('content'),
                                     m.start('name'), m.end('name'),
                                     m.start('content'), m.end('content'))
         sections = builder.build(text)

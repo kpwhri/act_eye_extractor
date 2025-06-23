@@ -1,3 +1,4 @@
+import re
 from typing import Iterator
 
 from sortedcontainers import SortedList
@@ -8,8 +9,9 @@ from eye_extractor.laterality import Laterality, build_laterality_table
 
 class Section:
 
-    def __init__(self, name, text, name_start_idx, name_end_idx, text_start_idx, text_end_idx):
+    def __init__(self, name, level, text, name_start_idx, name_end_idx, text_start_idx, text_end_idx):
         self.name = name
+        self.level = level
         self.name_start_idx = name_start_idx
         self.name_end_idx = name_end_idx
         self.lines = [text] if isinstance(text, str) else text
@@ -47,8 +49,8 @@ class Section:
     def iter_subsections(self):
         if isinstance(self.name, tuple):  # has multiple
             for name in self.name:
-                yield Section(name, self.lines, self.name_start_idx, self.name_end_idx, self.text_start_idx,
-                              self.text_end_idx)
+                yield Section(name, self.level, self.lines, self.name_start_idx, self.name_end_idx,
+                              self.text_start_idx, self.text_end_idx)
         else:
             yield self
 
@@ -197,8 +199,8 @@ class SectionsBuilder:
                 section.build_laterality_table(self.laterality_func)
         return lst
 
-    def add_section(self, name, text, name_start_idx, name_end_idx, text_start_idx, text_end_idx):
-        section = Section(name, text, name_start_idx, name_end_idx, text_start_idx, text_end_idx)
+    def add_section(self, name, level, text, name_start_idx, name_end_idx, text_start_idx, text_end_idx):
+        section = Section(name, level, text, name_start_idx, name_end_idx, text_start_idx, text_end_idx)
         self.add(section)
 
     def build(self, text):
@@ -235,19 +237,31 @@ class SectionsBuilder:
                 for line in text[: curr.name_start_idx].split('\n'):
                     if line.strip():
                         self._extra_content.append(line)
+            # find the max index which this section can have (e.g., the start of next
             if i == len(lst) - 1:  # is last element
-                next_start_idx = len(text)
+                next_start_idx = len(text)  # section ends at end of text
+            elif curr.level == 1:
+                # for top-level sections, find next top level section (if exists)
+                for j in range(i + 1, len(lst)):  # start looking at next section for top-level section
+                    if lst[j].level == 1:
+                        next_start_idx = lst[j].name_start_idx
+                        break
+                else:  # if there is no subsequent top-level section
+                    next_start_idx = len(text)  # set to end of text
+
             else:
                 next_start_idx = lst[i + 1].name_start_idx
             mid_text_lines = text[curr.text_end_idx: next_start_idx].split('\n')
             # heuristics
             empty_line_cnt = 0
             skip_chars = 0
-            for line in mid_text_lines:
+            for line_num, line in enumerate(mid_text_lines):
+                if line_num == 0 and line == '':
+                    continue  # skip first line
                 if not line.strip():
-                    empty_line_cnt += 1
+                    empty_line_cnt += 1  # every line has implicit \n, so cutoff should be one ''
                     skip_chars += len(line) + 1
-                elif empty_line_cnt >= 2:
+                elif empty_line_cnt >= 1:
                     # only allow two empty newlines, otherwise not part of section
                     self._extra_content.append(line)
                     continue
@@ -259,6 +273,14 @@ class SectionsBuilder:
             curr.history = history
             history.append(curr.name)
         return lst
+
+    def is_major_section(self, m, text):
+        if m.group('content').strip():
+            return False  # content, so header not on own line
+        if m2 := re.search(r'\w', text[m.end('content'):]):
+            if text[m.end('content'): m2.start()].count('\n') >= 2:
+                return False  # may be major, but has two empty newlines so lacks content
+        return True
 
     def _divide_sections(self, lst):
         res = []
@@ -273,9 +295,11 @@ def get_sections(text, patterns, newline_chars=None):
         for newline_char in newline_chars:
             text = text.replace(newline_char, '\n')
     builder = SectionsBuilder()
-    for cat, pat in patterns:
+    for cat, level, pat in patterns:
         for m in pat.finditer(text):
-            builder.add_section(cat, m.group('content'), m.start('name'), m.end('name'), m.start('content'),
+            if builder.is_major_section(m, text):
+                level = 1
+            builder.add_section(cat, level, m.group('content'), m.start('name'), m.end('name'), m.start('content'),
                                 m.end('content'))
     sections = builder.build(text)
     return sections
@@ -293,12 +317,14 @@ def get_sections_from_dict(section_dict: dict | None) -> Sections:
     section_dict = section_dict or dict()
     section_list = []
     last_idx = 0
+    default_level = 2
     for sect_name, sect_text in section_dict.items():
         name_start_idx = last_idx
         name_end_idx = name_start_idx + len(sect_name)
         text_start_idx = name_end_idx + 3
         text_end_idx = text_start_idx + len(sect_text)
-        section = Section(sect_name.lower(), sect_text, name_start_idx, name_end_idx, text_start_idx, text_end_idx)
+        section = Section(sect_name.lower(), default_level, sect_text, name_start_idx, name_end_idx,
+                          text_start_idx, text_end_idx)
         section.build_laterality_table(build_laterality_table)
         section_list.append(section)
         last_idx = text_end_idx + 3

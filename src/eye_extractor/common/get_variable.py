@@ -61,11 +61,11 @@ def get_variable(doc: Document, get_helper: Callable, *,
         elif text:  # not lateralities
             lateralities = build_laterality_table(text, search_negated_list=search_negated_list)
         else:
-            text = doc.text
+            text = doc.get_text()
             if search_negated_list:
                 lateralities = build_laterality_table(text, search_negated_list=search_negated_list)
             else:
-                lateralities = doc.lateralities
+                lateralities = doc.get_lateralities()
 
         for new_var in get_helper(text, lateralities, 'ALL'):
             data.append(new_var)

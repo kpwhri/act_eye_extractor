@@ -1,3 +1,8 @@
+"""
+patterns.py
+
+This file contains the regular expression patterns for identifying section in optometry and ophthalmology notes.
+"""
 import re
 
 nonw = r'[^\w\n\-:]'
@@ -41,6 +46,7 @@ section_post_pat = rf'{nonw_s}[:-](?P<content>.*)$'
 targets = [
     ('macula', r'mac(?:ula)?'),
     ('impression', r'imp(?:ression)?'),
+    ('narrative', r'narrative'),
     ('dilation', fr'(?:pupil(?:l?ary)?{nonw_s})?dilat(?:ed|ion)(?:with{nonw_s}m&n|eye{nonw_s}health{nonw_s}exam\w*)?'),
     ('tonometry', fr'(?:(?:{applanation}|{iop}|{tonometry}|by){nonw_s})+'),
     ('past_iop', fr'{previous}{nonw_s}{iop}'),
@@ -197,8 +203,9 @@ targets = [
 ]
 
 PATTERNS = [
-    (cat,
-     re.compile(f'{section_pre_pat}(?P<name>{pat}){section_post_pat}', re.I | re.MULTILINE)
+    (cat,  # category
+     2,  # default level
+     re.compile(f'{section_pre_pat}(?P<name>{pat}){section_post_pat}', re.I | re.MULTILINE),
      ) for cat, pat in targets
 ]
 
