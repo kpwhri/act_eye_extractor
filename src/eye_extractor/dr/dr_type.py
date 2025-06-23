@@ -4,7 +4,8 @@ import re
 from eye_extractor.dr.dr_yesno import DR_YESNO_PAT, DR_YESNO_ABBR_PAT, DR_YESNO_NEG_PAT, filter_dr_yesno_context
 from eye_extractor.nlp.negate.negation import has_before, has_after, is_negated, is_post_negated
 from eye_extractor.common.severity import extract_risk, extract_severity, Risk, Severity
-from eye_extractor.laterality import build_laterality_table, create_new_variable
+from eye_extractor.laterality import create_new_variable
+from eye_extractor.sections.document import Document
 
 
 class DrType(enum.IntEnum):
@@ -31,14 +32,10 @@ PDR_PAT = re.compile(
 )
 
 
-def get_dr_type(text: str, *, headers=None, lateralities=None) -> list:
-    if not lateralities:
-        lateralities = build_laterality_table(text)
+def get_dr_type(doc: Document) -> list:
     data = []
-    for new_var in _get_dr_type(text, lateralities, 'ALL'):
+    for new_var in _get_dr_type(doc.get_text(), doc.get_lateralities(), 'ALL'):
         data.append(new_var)
-    if headers:
-        pass
 
     return data
 
@@ -139,14 +136,10 @@ def _get_dr_type(text: str, lateralities, source: str) -> dict:
             })
 
 
-def get_pdr(text: str, *, headers=None, lateralities=None) -> list:
-    if not lateralities:
-        lateralities = build_laterality_table(text)
+def get_pdr(doc: Document) -> list:
     data = []
-    for new_var in _get_pdr(text, lateralities, 'ALL'):
+    for new_var in _get_pdr(doc.get_text(), doc.get_lateralities(), 'ALL'):
         data.append(new_var)
-    if headers:
-        pass
 
     return data
 

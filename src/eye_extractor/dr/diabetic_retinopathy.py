@@ -11,22 +11,23 @@ from eye_extractor.dr.laser_scar_type import get_laser_scar_type
 from eye_extractor.dr.nv_types import get_nv_types
 from eye_extractor.dr.ret_micro import get_ret_micro
 from eye_extractor.dr.venous_beading import get_ven_beading
+from eye_extractor.sections.document import Document
 
 
-def extract_dr_variables(text: str, *, headers=None, lateralities=None) -> dict:
+def extract_dr_variables(doc: Document) -> dict:
     return {
-        'binary_vars': get_dr_binary(text, headers=headers, lateralities=lateralities),
-        'cmt_value': get_cmt_value(text, headers=headers, lateralities=lateralities),
-        'cottonwspot': get_cottonwspot(text, headers=headers, lateralities=lateralities),
-        'dme_yesno': get_dme_yesno(text, headers=headers, lateralities=lateralities),
-        'dr_type': get_dr_type(text, headers=headers, lateralities=lateralities),
-        'dr_yesno': get_dr_yesno(text, headers=headers, lateralities=lateralities),
-        'exudates': get_exudates(text, headers=headers, lateralities=lateralities),
-        'hemorrhage_type': get_hemorrhage_type(text, headers=headers, lateralities=lateralities),
-        'irma': get_irma(text, headers=headers, lateralities=lateralities),
-        'laser_scar_type': get_laser_scar_type(text, headers=headers, lateralities=lateralities),
-        'nv_types': get_nv_types(text, headers=headers, lateralities=lateralities),
-        'pdr': get_pdr(text, headers=headers, lateralities=lateralities),
-        'ret_micro': get_ret_micro(text, headers=headers, lateralities=lateralities),
-        'venous_beading': get_ven_beading(text, headers=headers, lateralities=lateralities),
+        'binary_vars': get_dr_binary(doc),
+        'cmt_value': get_cmt_value(doc),
+        'cottonwspot': get_cottonwspot(doc),
+        'dme_yesno': get_dme_yesno(doc),
+        'dr_type': get_dr_type(doc),
+        'dr_yesno': get_dr_yesno(doc),
+        'exudates': get_exudates(doc),
+        'hemorrhage_type': get_hemorrhage_type(doc),
+        'irma': get_irma(doc),
+        'laser_scar_type': get_laser_scar_type(doc),
+        'nv_types': get_nv_types(doc),
+        'pdr': get_pdr(doc),
+        'ret_micro': get_ret_micro(doc),
+        'venous_beading': get_ven_beading(doc),
     }

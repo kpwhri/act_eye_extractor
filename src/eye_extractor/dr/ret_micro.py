@@ -4,6 +4,7 @@ from eye_extractor.common.get_variable import get_variable
 from eye_extractor.common.severity import extract_severity, Severity
 from eye_extractor.nlp.negate.negation import is_negated
 from eye_extractor.laterality import create_new_variable
+from eye_extractor.sections.document import Document
 
 RET_MICRO_PAT = re.compile(
     r'\b('
@@ -14,8 +15,8 @@ RET_MICRO_PAT = re.compile(
 )
 
 
-def get_ret_micro(text: str, *, headers=None, lateralities=None) -> list:
-    return get_variable(text, _get_ret_micro, headers=headers, lateralities=lateralities)
+def get_ret_micro(doc: Document) -> list:
+    return get_variable(doc, _get_ret_micro)
 
 
 def _get_ret_micro(text: str, lateralities, source: str) -> dict:
@@ -42,4 +43,3 @@ def _get_ret_micro(text: str, lateralities, source: str) -> dict:
                 'regex': 'RET_MICRO_PAT',
                 'source': source,
             })
-

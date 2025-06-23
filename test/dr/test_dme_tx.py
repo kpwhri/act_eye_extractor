@@ -2,8 +2,9 @@ import json
 import pytest
 
 from eye_extractor.common.algo.treatment import extract_treatment, GRID_PAT, MACULAR_PAT
-from eye_extractor.sections.headers import Headers
+from eye_extractor.sections.document import create_doc_and_sections
 from eye_extractor.output.dr import build_dme_tx
+from eye_extractor.sections.patterns import SectionName
 
 # Test pattern.
 _pattern_cases = [
@@ -25,24 +26,25 @@ def test_dme_tx_patterns(pat, text, exp):
 
 # Test extract and build.
 _dme_tx_extract_and_build_cases = [
-    ('', {'PLAN': 'observe'}, -1, -1, 1),
+    ('', {SectionName.PLAN: 'observe'}, -1, -1, 1),
     ('grid laser for DME os', {}, -1, 2, -1),
     ('Eye surgery: yes - laser grid OD', {}, 2, -1, -1),
-    ('', {'PLAN': 'repeat grid laser os'}, -1, 2, -1),
-    ('', {'MACULA': 'laser OU'}, 2, 2, -1),
+    ('', {SectionName.PLAN: 'repeat grid laser os'}, -1, 2, -1),
+    ('', {SectionName.MACULA: 'laser OU'}, 2, 2, -1),
     ('macular laser OS.', {}, -1, 2, -1),
-    ('', {'PLAN': 'macular laser'}, -1, -1, 2),
+    ('', {SectionName.PLAN: 'macular laser'}, -1, -1, 2),
     ('injection of Avastin (Bevacizumab)', {}, -1, -1, 4),
-    ('', {'PLAN': 'anti-VEGF intravitreal injections'}, -1, -1, 4),
+    ('', {SectionName.PLAN: 'anti-VEGF intravitreal injections'}, -1, -1, 4),
     ('INJ AFLIBERCEPT (EYELEA)', {}, -1, -1, 4),
-    ('', {'PLAN': 'continue meds'}, -1, -1, 5)
+    ('', {SectionName.PLAN: 'continue meds'}, -1, -1, 5)
 ]
 
 
-@pytest.mark.parametrize('text, headers, exp_dmacedema_tx_re, exp_dmacedema_tx_le, exp_dmacedema_tx_unk',
+@pytest.mark.parametrize('text, sections, exp_dmacedema_tx_re, exp_dmacedema_tx_le, exp_dmacedema_tx_unk',
                          _dme_tx_extract_and_build_cases)
-def test_dme_tx_extract_and_build(text, headers, exp_dmacedema_tx_re, exp_dmacedema_tx_le, exp_dmacedema_tx_unk):
-    pre_json = extract_treatment(text, headers=Headers(headers), lateralities=None)
+def test_dme_tx_extract_and_build(text, sections, exp_dmacedema_tx_re, exp_dmacedema_tx_le, exp_dmacedema_tx_unk):
+    doc = create_doc_and_sections(text, sections)
+    pre_json = extract_treatment(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_dme_tx(post_json)
     assert result['dmacedema_tx_re'] == exp_dmacedema_tx_re

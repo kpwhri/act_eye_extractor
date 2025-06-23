@@ -5,6 +5,8 @@ from eye_extractor.common.regex import expand_pattern
 from eye_extractor.common.shared_patterns import retinal
 from eye_extractor.nlp.negate.negation import is_negated, has_before
 from eye_extractor.laterality import build_laterality_table, create_new_variable
+from eye_extractor.sections.document import Document
+from eye_extractor.sections.patterns import SectionName
 
 laser = r'(?:tx|laser)'
 scar = r'(?:scar(?:r?ing|s)?)'
@@ -60,23 +62,17 @@ MAC_PANRETINAL_PAT = expand_pattern(
 )
 
 
-def get_laser_scar_type(text: str, *, headers=None, lateralities=None) -> list:
+def get_laser_scar_type(doc: Document) -> list:
     data = []
-    if headers:
-        if macula_text := headers.get('MACULA', None):
-            lateralities = build_laterality_table(macula_text)
-            for new_var in _get_lsr_macular_header(macula_text, lateralities):
-                data.append(new_var)
-        if periphery_text := headers.get('PERIPHERY', None):
-            lateralities = build_laterality_table(periphery_text)
-            # TODO: should I look for just PRP here?
-            for new_var in _get_lsr_macular_header(periphery_text, lateralities):
-                data.append(new_var)
+    for section in doc.iter_sections(SectionName.MACULA):
+        for new_var in _get_lsr_macular_header(section.text, section.lateralities):
+            data.append(new_var)
+    for section in doc.iter_sections(SectionName.PERIPHERY):  # TODO: Also look in Peripheral Retina?
+        # TODO: should I look for just PRP here?
+        for new_var in _get_lsr_macular_header(section.text, section.lateralities):
+            data.append(new_var)
 
-
-    if not lateralities:
-        lateralities = build_laterality_table(text)
-    for new_var in _get_laser_scar_type(text, lateralities, 'ALL'):
+    for new_var in _get_laser_scar_type(doc.get_text(), doc.get_lateralities(), 'ALL'):
         data.append(new_var)
     return data
 

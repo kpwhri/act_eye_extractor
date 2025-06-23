@@ -4,7 +4,8 @@ from typing import Iterator
 from sortedcontainers import SortedList
 from collections import UserList
 
-from eye_extractor.laterality import Laterality, build_laterality_table
+from eye_extractor.laterality import Laterality, build_laterality_table, OtherLateralityFunc, \
+    get_other_laterality_function, OtherLateralityName
 
 
 class Section:
@@ -19,6 +20,7 @@ class Section:
         self.text_end_idx = text_end_idx
         self.history = None
         self.lateralities = None
+        self._other_lateralities = {}
         self._names = None
 
     @property
@@ -45,6 +47,12 @@ class Section:
     @property
     def oneline(self):
         return ' '.join(self.lines)
+
+    def get_other_lateralities(self, lat_name: OtherLateralityName):
+        if lat_name not in self._other_lateralities:
+            lat_func = get_other_laterality_function(lat_name)
+            self._other_lateralities[lat_name] = lat_func(self.text)
+        return self._other_lateralities[lat_name]
 
     def iter_search(self, *pats, flags=0):
         for pat in pats:

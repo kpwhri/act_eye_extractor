@@ -1,7 +1,8 @@
 import re
 
 from eye_extractor.nlp.negate.negation import is_negated, is_post_negated, has_after
-from eye_extractor.laterality import build_laterality_table, create_new_variable
+from eye_extractor.laterality import build_laterality_table, create_new_variable, OtherLateralityName
+from eye_extractor.sections.document import Document
 
 EXUDATES_PAT = re.compile(
     r'(?<!(hard|soft)\s)exud(ate)?s?',
@@ -21,15 +22,11 @@ HARD_EXUDATES_ABBR_PAT = re.compile(
 )
 
 
-def get_exudates(text: str, *, headers=None, lateralities=None) -> list:
+def get_exudates(doc: Document) -> list:
     data = []
-    # Extract matches from sections / headers.
-    if headers:
-        pass
     # Extract matches from full text.
-    if not lateralities:
-        lateralities = build_laterality_table(text, search_negated_list=True)
-    for new_var in _get_exudates(text, lateralities, 'ALL'):
+    lateralities = doc.get_other_lateralities(OtherLateralityName.SEARCH_NEGATED_LIST)
+    for new_var in _get_exudates(doc.get_text(), lateralities, 'ALL'):
         data.append(new_var)
     return data
 

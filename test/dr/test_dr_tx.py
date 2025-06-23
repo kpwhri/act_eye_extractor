@@ -2,8 +2,9 @@ import json
 import pytest
 
 from eye_extractor.common.algo.treatment import extract_treatment, FOCAL_PAT, PRP_PAT
-from eye_extractor.sections.headers import Headers
 from eye_extractor.output.dr import build_dr_tx
+from eye_extractor.sections.document import create_doc_and_sections
+from eye_extractor.sections.patterns import SectionName
 
 # Test pattern.
 _pattern_cases = [
@@ -25,16 +26,17 @@ def test_dr_tx_patterns(pat, text, exp):
 
 
 # Test extract and build.
-@pytest.mark.parametrize('text, headers, exp_drtreatment_re, exp_drtreatment_le, exp_drtreatment_unk', [
-    ('', {'PLAN': 'observe'}, -1, -1, 1),
-    ('', {'PLAN': 'PRP Laser OU'}, 2, 2, -1),
+@pytest.mark.parametrize('text, sections, exp_drtreatment_re, exp_drtreatment_le, exp_drtreatment_unk', [
+    ('', {SectionName.PLAN: 'observe'}, -1, -1, 1),
+    ('', {SectionName.PLAN: 'PRP Laser OU'}, 2, 2, -1),
     ('injection of Avastin (Bevacizumab)', {}, -1, -1, 3),
-    ('', {'PLAN': 'surgery'}, -1, -1, 4),
-    ('', {'PLAN': 'focal laser'}, -1, -1, 6),
-    ('', {'PLAN': 'laser'}, -1, -1, 5),
+    ('', {SectionName.PLAN: 'surgery'}, -1, -1, 4),
+    ('', {SectionName.PLAN: 'focal laser'}, -1, -1, 6),
+    ('', {SectionName.PLAN: 'laser'}, -1, -1, 5),
 ])
-def test_dr_treatment_extract_and_build(text, headers, exp_drtreatment_re, exp_drtreatment_le, exp_drtreatment_unk):
-    pre_json = extract_treatment(text, headers=Headers(headers), lateralities=None)
+def test_dr_treatment_extract_and_build(text, sections, exp_drtreatment_re, exp_drtreatment_le, exp_drtreatment_unk):
+    doc = create_doc_and_sections(text, sections)
+    pre_json = extract_treatment(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_dr_tx(post_json)
     assert result['drtreatment_re'] == exp_drtreatment_re

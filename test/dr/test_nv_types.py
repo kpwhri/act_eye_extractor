@@ -4,7 +4,7 @@ import pytest
 
 from eye_extractor.dr.nv_types import get_nv_types, NVA_PAT, NVI_HEADER_PAT
 from eye_extractor.output.dr import build_neovasc, build_nva, build_nvd, build_nve, build_nvi
-
+from eye_extractor.sections.document import create_doc_and_sections
 
 # Test pattern.
 _pattern_cases = [
@@ -97,14 +97,15 @@ _neovasc_extract_and_build_cases = [
 ]
 
 
-@pytest.mark.parametrize('text, headers, exp_neovasc_yesno_re, exp_neovasc_yesno_le, exp_neovasc_yesno_unk',
+@pytest.mark.parametrize('text, sections, exp_neovasc_yesno_re, exp_neovasc_yesno_le, exp_neovasc_yesno_unk',
                          _neovasc_extract_and_build_cases)
 def test_neovasc_extract_and_build(text,
-                                   headers,
+                                   sections,
                                    exp_neovasc_yesno_re,
                                    exp_neovasc_yesno_le,
                                    exp_neovasc_yesno_unk):
-    pre_json = get_nv_types(text)
+    doc = create_doc_and_sections(text, sections)
+    pre_json = get_nv_types(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_neovasc(post_json)
     assert result['neovasc_yesno_re'] == exp_neovasc_yesno_re
@@ -169,14 +170,15 @@ _nva_extract_and_build_cases = [
 ]
 
 
-@pytest.mark.parametrize('text, headers, exp_nva_yesno_re, exp_nva_yesno_le, exp_nva_yesno_unk',
+@pytest.mark.parametrize('text, sections, exp_nva_yesno_re, exp_nva_yesno_le, exp_nva_yesno_unk',
                          _nva_extract_and_build_cases)
 def test_nva_extract_and_build(text,
-                               headers,
+                               sections,
                                exp_nva_yesno_re,
                                exp_nva_yesno_le,
                                exp_nva_yesno_unk):
-    pre_json = get_nv_types(text)
+    doc = create_doc_and_sections(text, sections)
+    pre_json = get_nv_types(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_nva(post_json)
     assert result['nva_yesno_re'] == exp_nva_yesno_re
@@ -237,14 +239,15 @@ _nvi_extract_and_build_cases = [
 ]
 
 
-@pytest.mark.parametrize('text, headers, exp_nvi_yesno_re, exp_nvi_yesno_le, exp_nvi_yesno_unk',
+@pytest.mark.parametrize('text, sections, exp_nvi_yesno_re, exp_nvi_yesno_le, exp_nvi_yesno_unk',
                          _nvi_extract_and_build_cases)
 def test_nvi_extract_and_build(text,
-                               headers,
+                               sections,
                                exp_nvi_yesno_re,
                                exp_nvi_yesno_le,
                                exp_nvi_yesno_unk):
-    pre_json = get_nv_types(text)
+    doc = create_doc_and_sections(text, sections)
+    pre_json = get_nv_types(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_nvi(post_json)
     assert result['nvi_yesno_re'] == exp_nvi_yesno_re
@@ -259,14 +262,15 @@ _nvd_extract_and_build_cases = [
 ]
 
 
-@pytest.mark.parametrize('text, headers, exp_nvd_yesno_re, exp_nvd_yesno_le, exp_nvd_yesno_unk',
+@pytest.mark.parametrize('text, sections, exp_nvd_yesno_re, exp_nvd_yesno_le, exp_nvd_yesno_unk',
                          _nvd_extract_and_build_cases)
 def test_nvd_extract_and_build(text,
-                               headers,
+                               sections,
                                exp_nvd_yesno_re,
                                exp_nvd_yesno_le,
                                exp_nvd_yesno_unk):
-    pre_json = get_nv_types(text)
+    doc = create_doc_and_sections(text, sections)
+    pre_json = get_nv_types(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_nvd(post_json)
     assert result['nvd_yesno_re'] == exp_nvd_yesno_re
@@ -280,14 +284,15 @@ _nve_extract_and_build_cases = [
 ]
 
 
-@pytest.mark.parametrize('text, headers, exp_nve_yesno_re, exp_nve_yesno_le, exp_nve_yesno_unk',
+@pytest.mark.parametrize('text, sections, exp_nve_yesno_re, exp_nve_yesno_le, exp_nve_yesno_unk',
                          _nve_extract_and_build_cases)
 def test_nve_extract_and_build(text,
-                               headers,
+                               sections,
                                exp_nve_yesno_re,
                                exp_nve_yesno_le,
                                exp_nve_yesno_unk):
-    pre_json = get_nv_types(text)
+    doc = create_doc_and_sections(text, sections)
+    pre_json = get_nv_types(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_nve(post_json)
     assert result['nve_yesno_re'] == exp_nve_yesno_re

@@ -2,8 +2,9 @@ import json
 import pytest
 
 from eye_extractor.dr.venous_beading import get_ven_beading, VEN_BEADING_PAT
-from eye_extractor.sections.headers import Headers
 from eye_extractor.output.dr import build_ven_beading
+from eye_extractor.sections.document import create_doc_and_sections
+from eye_extractor.sections.patterns import SectionName
 
 # Test pattern.
 _pattern_cases = [
@@ -44,14 +45,14 @@ _ven_beading_extract_and_build_cases = [
     ('Vessels: Normal', {}, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
     ('Macula: focal OU; no CSME; ERM OS Vessels: good caliber and crossings; no venous beading; no plaques or emboli',
      {
-         'Macula': 'focal OU; no CSME; ERM OS',
-         'Vessels': 'good caliber and crossings; no venous beading; no plaques or emboli'
+         SectionName.MACULA: 'focal OU; no CSME; ERM OS',
+         SectionName.VESSELS: 'good caliber and crossings; no venous beading; no plaques or emboli'
      },
      'UNKNOWN', 'UNKNOWN', 'NONE'),
     ('¶Macula: no CSME mild ERM OD ¶Vessels: good caliber and crossings; no venous beading; no plaques or emboli',
      {
-         'Macula': 'no CSME mild ERM OD',
-         'Vessels': 'good caliber and crossings; no venous beading; no plaques or emboli'
+         SectionName.MACULA: 'no CSME mild ERM OD',
+         SectionName.VESSELS: 'good caliber and crossings; no venous beading; no plaques or emboli'
      },
      'UNKNOWN', 'UNKNOWN', 'NONE'),
     # Unless specified, all conditions in negated list are OU.
@@ -63,26 +64,27 @@ _ven_beading_extract_and_build_cases = [
     ('Macula: flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS', {}, 'NONE', 'NONE', 'UNKNOWN'),
     ('Macula: flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS',
      {
-         'MACULA': 'flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS'
+         SectionName.VESSELS: 'flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS'
      },
      'NONE', 'NONE', 'UNKNOWN'),
     ('',
      {
-         'MACULA': 'flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS'
+         SectionName.MACULA: 'flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS'
      },
      'NONE', 'NONE', 'UNKNOWN'),
 
 ]
 
 
-@pytest.mark.parametrize('text, headers, exp_venbeading_re, exp_venbeading_le, exp_venbeading_unk',
+@pytest.mark.parametrize('text, sections, exp_venbeading_re, exp_venbeading_le, exp_venbeading_unk',
                          _ven_beading_extract_and_build_cases)
 def test_ven_beading_extract_and_build(text,
-                                       headers,
+                                       sections,
                                        exp_venbeading_re,
                                        exp_venbeading_le,
                                        exp_venbeading_unk):
-    pre_json = get_ven_beading(text, headers=Headers(headers))
+    doc = create_doc_and_sections(text, sections)
+    pre_json = get_ven_beading(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_ven_beading(post_json)
     assert result['venbeading_re'] == exp_venbeading_re

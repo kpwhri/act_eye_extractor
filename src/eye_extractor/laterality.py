@@ -472,3 +472,30 @@ def add_laterality_to_variable(data, laterality, variable, value):
         data[f'{variable}_re'] = value
     if laterality not in {Laterality.OU, Laterality.OD, Laterality.OS}:
         data[f'{variable}_unk'] = value
+
+
+class OtherLateralityName(enum.Enum):
+    SEARCH_NEGATED_LIST = 1
+    SEMICOLON_SEP_NEG_LIST = 2  # search_negated_list=True after splitting text on semicolons
+
+
+class OtherLateralityFunc:
+
+    def __init__(self, label, func):
+        self.label = label
+        self.func = func
+
+    def __call__(self, text):
+        return self.func(text)
+
+
+OTHER_LATERALITIES = {
+    OtherLateralityName.SEARCH_NEGATED_LIST: OtherLateralityFunc(
+        OtherLateralityName.SEARCH_NEGATED_LIST,
+        lambda x: build_laterality_table(x, search_negated_list=True)
+    ),
+}
+
+
+def get_other_laterality_function(label: OtherLateralityName):
+    return OTHER_LATERALITIES[label]

@@ -3,9 +3,8 @@ import json
 import pytest
 
 from eye_extractor.dr.ret_micro import get_ret_micro, RET_MICRO_PAT
-from eye_extractor.sections.headers import Headers
 from eye_extractor.output.dr import build_ret_micro
-
+from eye_extractor.sections.document import create_doc_and_sections
 
 # Test pattern.
 _pattern_cases = [
@@ -47,18 +46,18 @@ _ret_micro_extract_and_build_cases = [
 ]
 
 
-@pytest.mark.parametrize('text, headers,'
+@pytest.mark.parametrize('text, sections,'
                          'exp_ret_micro_re, exp_ret_micro_le, exp_ret_micro_unk',
                          _ret_micro_extract_and_build_cases)
 def test_ret_micro_extract_and_build(text,
-                                     headers,
+                                     sections,
                                      exp_ret_micro_re,
                                      exp_ret_micro_le,
                                      exp_ret_micro_unk):
-    pre_json = get_ret_micro(text, headers=Headers(headers))
+    doc = create_doc_and_sections(text, sections)
+    pre_json = get_ret_micro(doc)
     post_json = json.loads(json.dumps(pre_json, default=str))
     result = build_ret_micro(post_json)
     assert result['ret_microaneurysm_re'] == exp_ret_micro_re
     assert result['ret_microaneurysm_le'] == exp_ret_micro_le
     assert result['ret_microaneurysm_unk'] == exp_ret_micro_unk
-

@@ -3,6 +3,8 @@ import re
 from eye_extractor.common.get_variable import get_variable
 from eye_extractor.nlp.negate.negation import has_before, is_negated, NEGWORD_UNKNOWN_PHRASES
 from eye_extractor.laterality import create_new_variable
+from eye_extractor.sections.document import Document
+from eye_extractor.sections.patterns import SectionName
 
 macular_edema = fr'(?:macula\w*\s+edema)'
 
@@ -17,9 +19,14 @@ DME_YESNO_PAT = re.compile(
 )
 
 
-def get_dme_yesno(text: str, *, headers=None, lateralities=None) -> list:
-    return get_variable(text, _get_dme_yesno, headers=headers,
-                        target_headers=['ASSESSMENT', 'MACULA', 'PLAN', 'SUBJECTIVE'], lateralities=lateralities,
+def get_dme_yesno(doc: Document) -> list:
+    return get_variable(doc, _get_dme_yesno,
+                        target_headers=[
+                            SectionName.ASSESSMENT,
+                            SectionName.MACULA,
+                            SectionName.PLAN,
+                            SectionName.SUBJECTIVE
+                        ],
                         split_char='.')
 
 

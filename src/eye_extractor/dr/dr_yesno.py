@@ -1,7 +1,9 @@
 import re
 
 from eye_extractor.nlp.negate.negation import has_after, has_before, is_negated, is_post_negated
-from eye_extractor.laterality import build_laterality_table, create_new_variable
+from eye_extractor.laterality import create_new_variable, get_other_laterality_function, \
+    OtherLateralityName
+from eye_extractor.sections.document import Document
 
 # Patterns.
 DR_YESNO_PAT = re.compile(
@@ -122,15 +124,11 @@ def filter_dr_yesno_context(match: re.Match, text: str, pat_label: str = None):
     return False
 
 
-def get_dr_yesno(text: str, *, headers=None, lateralities=None) -> list:
+def get_dr_yesno(doc: Document) -> list:
     data = []
-    # Extract matches from sections / headers.
-    if headers:
-        pass
     # Extract matches from full text.
-    if not lateralities:
-        lateralities = build_laterality_table(text, search_negated_list=True)
-    for new_var in _get_dr_yesno(text, lateralities, 'ALL'):
+    lateralities = doc.get_other_lateralities(OtherLateralityName.SEARCH_NEGATED_LIST)
+    for new_var in _get_dr_yesno(doc.get_text(), lateralities, 'ALL'):
         data.append(new_var)
     return data
 
@@ -155,12 +153,12 @@ def _get_dr_yesno(text: str, lateralities, source: str) -> dict:
                 })
             else:
                 negated = (
-                    is_negated(m, text, word_window=4, boundary_chars=':¶)')
-                    or is_post_negated(m, text,
-                                       terms={'no'},
-                                       word_window=1,
-                                       boundary_chars=';¶',
-                                       skip_n_boundary_chars=0)
+                        is_negated(m, text, word_window=4, boundary_chars=':¶)')
+                        or is_post_negated(m, text,
+                                           terms={'no'},
+                                           word_window=1,
+                                           boundary_chars=';¶',
+                                           skip_n_boundary_chars=0)
                 )
                 yield create_new_variable(text, m, lateralities, variable, {
                     'value': 0 if negated else 1,

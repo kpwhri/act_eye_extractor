@@ -3,6 +3,7 @@ import re
 from eye_extractor.common.get_variable import get_variable
 from eye_extractor.nlp.negate.negation import has_after, has_before, is_negated, is_post_negated
 from eye_extractor.laterality import create_new_variable
+from eye_extractor.sections.document import Document
 
 # Patterns.
 NV_PAT = re.compile(
@@ -134,8 +135,8 @@ NVI_POST_IGNORE = {
 }
 
 
-def get_nv_types(text: str, *, headers=None, lateralities=None) -> list:
-    return get_variable(text, _get_nv_types, headers=headers, lateralities=lateralities)
+def get_nv_types(doc: Document) -> list:
+    return get_variable(doc, _get_nv_types)
 
 
 def _get_nv_types(text: str, lateralities, source: str):

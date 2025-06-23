@@ -2,8 +2,10 @@ import json
 import pytest
 
 from eye_extractor.dr.irma import get_irma, IRMA_PAT
+from eye_extractor.sections.document import create_doc_and_sections
 from eye_extractor.sections.headers import Headers
 from eye_extractor.output.dr import build_irma
+from eye_extractor.sections.patterns import SectionName
 
 # Test pattern.
 _pattern_cases = [
@@ -48,25 +50,26 @@ _irma_extract_and_build_cases = [
     ('Macula: flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS', {}, 'NONE', 'NONE', 'UNKNOWN'),
     ('Macula: flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS',
      {
-         'MACULA': 'flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS'
+         SectionName.MACULA: 'flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS'
      },
      'NONE', 'NONE', 'UNKNOWN'),
     ('',
      {
-         'MACULA': 'flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS'
+         SectionName.MACULA: 'flat, dry (-)heme, MA, HE, CWS, VB, IRMA, NVE OD, ERM OS'
      },
      'NONE', 'NONE', 'UNKNOWN'),
 ]
 
 
-@pytest.mark.parametrize('text, headers, exp_irma_re, exp_irma_le, exp_irma_unk',
+@pytest.mark.parametrize('text, sections, exp_irma_re, exp_irma_le, exp_irma_unk',
                          _irma_extract_and_build_cases)
 def test_irma_extract_and_build(text,
-                                headers,
+                                sections,
                                 exp_irma_re,
                                 exp_irma_le,
                                 exp_irma_unk):
-    pre_json = get_irma(text, headers=Headers(headers))
+    doc = create_doc_and_sections(text, sections)
+    pre_json = get_irma(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_irma(post_json)
     assert result['irma_re'] == exp_irma_re

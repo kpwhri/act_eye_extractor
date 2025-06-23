@@ -10,6 +10,11 @@ import re
 class SectionName(enum.StrEnum):
     LENS = 'lens'
     MACULA = 'macula'
+    ASSESSMENT = 'assessment'
+    PLAN = 'plan'
+    PERIPHERY = 'periphery'
+    VESSELS = 'vessels'
+    SUBJECTIVE = 'subjective'
 
 
 nonw = r'[^\w\n\-:]'
@@ -99,12 +104,12 @@ targets = [
     ('vitreous', f'{vitreous}'),
     (('conjunctiva', 'sclera'), f'{conjunctiva}{sep}{sclera}'),
     (('conjunctiva', 'sclera'), f'{sclera}{sep}{conjunctiva}'),
-    ('assessment', f'assessment(?:{nonw_s}comments?)?'),
-    ('plan', f'plan(?:{nonw_s}(?:and{nonw_s}follow{nonw_s}up|comments?))?'),
-    (('assessment', 'plan'), fr'assessment{nonw_s}plan'),
+    (SectionName.ASSESSMENT, f'assessment(?:{nonw_s}comments?)?'),
+    (SectionName.PLAN, f'plan(?:{nonw_s}(?:and{nonw_s}follow{nonw_s}up|comments?))?'),
+    ((SectionName.ASSESSMENT, SectionName.PLAN), fr'assessment{nonw_s}plan'),
     ('presents', f'{patient}{nonw_s}presents{nonw_s}with'),
     ('optic_nerve', f'optic{nonw_s}nerves?'),
-    ('vessels', f'vessels?'),
+    (SectionName.VESSELS, f'vessels?'),
     ('angle', f'angles?(?:{nonw_s}v[oa]n{nonw_s}herr?ick)?'),
     ('iris', f'iris'),
     ('disc', f'discs?'),
@@ -137,7 +142,7 @@ targets = [
     ('med_allergies', fr'{meds}{nonw_s}allerg(?:y|ies)'),
     ('meds', fr'(?:active|current){nonw_s}{meds}(?:{nonw_s}as{nonw_s}of{nonw_s}{date})?'),
     ('peripheral_retina', f'periph(?:eral)?{nonw_s}retinal?'),
-    ('periphery', fr'periphery'),
+    (SectionName.PERIPHERY, fr'periphery'),
     ('problem_list', f'(?:{patient}{nonw_s})?(?:(?:active|current){nonw_s})?problem{nonw_s}list'),
     ('hpi',
      fr'(?:(?:ccs?|chief{nonw_s}complaints?|hpi|history{nonw_s}of{nonw_s}present{nonw_s}illness|reason{nonw_s}for{nonw_s}exam\w*){nonw_s})+'),
@@ -218,4 +223,4 @@ PATTERNS = [
 
 
 class PatternGroup:
-    MACULA_ASSESSMENT_PLAN = ('macula', 'assessment', 'plan')
+    MACULA_ASSESSMENT_PLAN = (SectionName.MACULA, SectionName.ASSESSMENT, SectionName.PLAN)

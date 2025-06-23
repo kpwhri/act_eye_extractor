@@ -5,6 +5,7 @@ from eye_extractor.common.shared_patterns import retinal
 from eye_extractor.nlp.negate.negation import is_negated, has_before, NEGWORD_UNKNOWN_PHRASES
 from eye_extractor.common.severity import extract_severity, Severity
 from eye_extractor.laterality import build_laterality_table, create_new_variable
+from eye_extractor.sections.document import Document
 
 
 class HemorrhageType(enum.IntEnum):
@@ -70,14 +71,10 @@ HEME_NOS_PAT = re.compile(
 )
 
 
-def get_hemorrhage_type(text: str, *, headers=None, lateralities=None) -> list:
-    if not lateralities:
-        lateralities = build_laterality_table(text)
+def get_hemorrhage_type(doc: Document) -> list:
     data = []
-    for new_var in _get_hemorrhage_type(text, lateralities, 'ALL'):
+    for new_var in _get_hemorrhage_type(doc.get_text(), doc.get_lateralities(), 'ALL'):
         data.append(new_var)
-    if headers:
-        pass
 
     return data
 

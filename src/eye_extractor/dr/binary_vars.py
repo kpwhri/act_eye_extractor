@@ -3,6 +3,7 @@ import re
 from eye_extractor.dr.hemorrhage_type import HEME_NOS_PAT
 from eye_extractor.nlp.negate.negation import has_before, is_negated, is_post_negated, NEGWORD_UNKNOWN_PHRASES
 from eye_extractor.laterality import build_laterality_table, create_new_variable
+from eye_extractor.sections.document import Document
 
 DIABETIC_RETINOPATHY_PATS = [
     ('disc_edema_DR', re.compile(
@@ -45,28 +46,26 @@ DIABETIC_RETINOPATHY_PATS = [
 ]
 
 
-def get_dr_binary(text, *, headers=None, lateralities=None):
-    if not lateralities:
-        lateralities = build_laterality_table(text)
+def get_dr_binary(doc: Document):
     data = []
     for variable, PAT in DIABETIC_RETINOPATHY_PATS:
-        for m in PAT.finditer(text):
+        for m in PAT.finditer(doc.get_text()):
             if variable == 'hemorrhage_dr':
-                negated = is_negated(m, text, word_window=3, return_unknown=True)
+                negated = is_negated(m, doc.get_text(), word_window=3, return_unknown=True)
                 if negated in NEGWORD_UNKNOWN_PHRASES:  # e.g., 'no new' -> UNKNOWN
                     continue
                 if has_before(m if isinstance(m, int) else m.start(),
-                              text,
+                              doc.get_text(),
                               terms={'hx', 'h/o', 'resolved'},
                               boundary_chars='',
                               word_window=6):
                     continue
             else:
-                negated = is_negated(m, text, word_window=4)
+                negated = is_negated(m, doc.get_text(), word_window=4)
                 if not negated:
-                    negated = is_post_negated(m, text, {'or'}, word_window=2)
+                    negated = is_post_negated(m, doc.get_text(), {'or'}, word_window=2)
             data.append(
-                create_new_variable(text, m, lateralities, variable, {
+                create_new_variable(doc.get_text(), m, doc.get_lateralities(), variable, {
                     'value': 0 if negated else 1,
                     'term': m.group(),
                     'label': 'no' if negated else 'yes',
@@ -75,6 +74,4 @@ def get_dr_binary(text, *, headers=None, lateralities=None):
                     'source': 'ALL'
                 })
             )
-    if headers:
-        pass
     return data

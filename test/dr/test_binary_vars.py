@@ -19,6 +19,7 @@ from eye_extractor.output.dr import (
     build_ret_micro,
     build_sig_edema
 )
+from eye_extractor.sections.document import create_doc_and_sections
 
 
 @pytest.mark.parametrize('text, exp_value, exp_negword', [
@@ -35,7 +36,8 @@ from eye_extractor.output.dr import (
     ('OD: erm, CMT 291; OS: erm, CMT 280 No change', 1, None),
 ])
 def test_get_dr_binary(text, exp_value, exp_negword):
-    data = get_dr_binary(text)
+    doc = create_doc_and_sections(text)
+    data = get_dr_binary(doc)
     variable = list(data[0].values())[0]
 
     assert len(data) > 0

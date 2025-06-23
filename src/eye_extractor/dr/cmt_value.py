@@ -1,7 +1,8 @@
 import re
 
 from eye_extractor.nlp.negate.negation import is_negated
-from eye_extractor.laterality import build_laterality_table, create_new_variable, Laterality, LateralityLocator
+from eye_extractor.laterality import create_new_variable, Laterality, LateralityLocator
+from eye_extractor.sections.document import Document
 
 CMT_VALUE_OD_OS_UNK_PAT = re.compile(
     r'\b('
@@ -28,14 +29,10 @@ CMT_VALUE_PATS = [
 ]
 
 
-def get_cmt_value(text: str, *, headers=None, lateralities=None) -> list:
-    if not lateralities:
-        lateralities = build_laterality_table(text)
+def get_cmt_value(doc: Document) -> list:
     data = []
-    for new_var in _get_cmt_value(text, lateralities, 'ALL'):
+    for new_var in _get_cmt_value(doc.get_text(), doc.get_lateralities(), 'ALL'):
         data.append(new_var)
-    if headers:
-        pass
 
     return data
 

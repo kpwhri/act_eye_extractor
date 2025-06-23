@@ -2,8 +2,9 @@ import json
 import pytest
 
 from eye_extractor.dr.cws import CWS_PAT, get_cottonwspot
-from eye_extractor.sections.headers import Headers
+from eye_extractor.sections.document import create_doc_and_sections
 from eye_extractor.output.dr import build_cottonwspot
+from eye_extractor.sections.patterns import SectionName
 
 # Test pattern.
 _pattern_cases = [
@@ -32,9 +33,9 @@ _cws_extract_and_build_cases = [
     ('PERIPHERAL RETINA: flat; no holes or breaks, R/L, with BIO view; no NVZE noted; isolated CWS, LE', {}, -1, 1, -1),
     ('MACULA: clr OU\nno hem, no exud, no CWS OU', {}, 0, 0, -1),
     ('MACULA: clr OU\nno hem, no exud, no\nCWS OU', {}, 0, 0, -1),
-    ('', {'MACULA': 'clr OU\nno hem, no exud, no CWS OU'}, 0, 0, -1),
+    ('', {SectionName.MACULA: 'clr OU\nno hem, no exud, no CWS OU'}, 0, 0, -1),
     ('MACULA: RT: there was one soft exudate superior to the macula, LT: normal appearance.', {}, 1, -1, -1),
-    ('VESSELS: […] Soft exudates Inf arcade OS', {}, -1, 1, -1),
+    ('VESSELS: Soft exudates Inf arcade OS', {}, -1, 1, -1),
     ('PERIPHERAL RETINA: […] there is a small, quarter disc diameter area of what looks like 3 small soft exudates',
      {}, -1, -1, 1),
     # Unless specified, all conditions in negated list are OU.
@@ -50,14 +51,15 @@ _cws_extract_and_build_cases = [
 ]
 
 
-@pytest.mark.parametrize('text, headers, exp_cottonwspot_re, exp_cottonwspot_le, exp_cottonwspot_unk',
+@pytest.mark.parametrize('text, sections, exp_cottonwspot_re, exp_cottonwspot_le, exp_cottonwspot_unk',
                          _cws_extract_and_build_cases)
 def test_cws_extract_and_build(text,
-                               headers,
+                               sections,
                                exp_cottonwspot_re,
                                exp_cottonwspot_le,
                                exp_cottonwspot_unk):
-    pre_json = get_cottonwspot(text, headers=Headers(headers))
+    doc = create_doc_and_sections(text, sections)
+    pre_json = get_cottonwspot(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_cottonwspot(post_json)
     assert result['cottonwspot_re'] == exp_cottonwspot_re

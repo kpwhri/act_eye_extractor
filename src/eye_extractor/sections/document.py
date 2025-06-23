@@ -6,7 +6,8 @@ Model a document text and sections.
 import enum
 import re
 
-from eye_extractor.laterality import build_laterality_table
+from eye_extractor.laterality import build_laterality_table, OtherLateralityFunc, get_other_laterality_function, \
+    OtherLateralityName
 from eye_extractor.sections.oct_macula import find_oct_macula_sections, remove_macula_oct
 from eye_extractor.sections.patterns import PATTERNS
 from eye_extractor.sections.section_builder import SectionsBuilder, get_sections_from_dict
@@ -40,6 +41,8 @@ class Document:
         self._lat_table_no_hx = None
         self._text_no_oct_macula = None
         self._lat_no_oct_macula = None
+
+        self._other_lateralities = {}
 
         self._is_cataract_surgery = None
 
@@ -87,6 +90,12 @@ class Document:
                 return self.lateralities
             case _:
                 raise ValueError(f'Unrecognized TextView: {view}.')
+
+    def get_other_lateralities(self, lat_name: OtherLateralityName, view: TextView = TextView.NO_HX):
+        if (lat_name, view) not in self._other_lateralities:
+            lat_func = get_other_laterality_function(lat_name)
+            self._other_lateralities[(lat_name, view)] = lat_func(self.get_text(view=view))
+        return self._other_lateralities[(lat_name, view)]
 
     @property
     def text_no_hx(self):

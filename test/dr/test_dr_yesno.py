@@ -2,6 +2,7 @@ import json
 import pytest
 
 from eye_extractor.dr.dr_yesno import DR_YESNO_PAT, DR_YESNO_ABBR_PAT, get_dr_yesno
+from eye_extractor.sections.document import create_doc_and_sections
 from eye_extractor.sections.headers import Headers
 from eye_extractor.output.dr import build_dr_yesno
 
@@ -163,15 +164,16 @@ _dr_yesno_extract_and_build_cases = [
 ]
 
 
-@pytest.mark.parametrize('text, headers, '
+@pytest.mark.parametrize('text, sections, '
                          'exp_diab_retinop_yesno_re, exp_diab_retinop_yesno_le, exp_diab_retinop_yesno_unk',
                          _dr_yesno_extract_and_build_cases)
 def test_dr_yesno_extract_and_build(text,
-                                    headers,
+                                    sections,
                                     exp_diab_retinop_yesno_re,
                                     exp_diab_retinop_yesno_le,
                                     exp_diab_retinop_yesno_unk):
-    pre_json = get_dr_yesno(text, headers=Headers(headers))
+    doc = create_doc_and_sections(text, sections)
+    pre_json = get_dr_yesno(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_dr_yesno(post_json)
     assert result['diab_retinop_yesno_re'] == exp_diab_retinop_yesno_re

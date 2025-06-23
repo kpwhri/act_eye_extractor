@@ -7,8 +7,8 @@ from eye_extractor.dr.exudates import (
     HARD_EXUDATES_ABBR_PAT,
     HARD_EXUDATES_PAT
 )
-from eye_extractor.sections.headers import Headers
 from eye_extractor.output.dr import build_exudates, build_hard_exudates
+from eye_extractor.sections.document import create_doc_and_sections
 
 # Test pattern.
 _pattern_cases = [
@@ -58,14 +58,15 @@ _hard_exudates_extract_and_build_cases = [
 ]
 
 
-@pytest.mark.parametrize('text, headers, exp_exudates_re, exp_exudates_le, exp_exudates_unk',
+@pytest.mark.parametrize('text, sections, exp_exudates_re, exp_exudates_le, exp_exudates_unk',
                          _exudates_extract_and_build_cases)
 def test_exudates_extract_and_build(text,
-                                    headers,
+                                    sections,
                                     exp_exudates_re,
                                     exp_exudates_le,
                                     exp_exudates_unk):
-    pre_json = get_exudates(text, headers=Headers(headers))
+    doc = create_doc_and_sections(text, sections)
+    pre_json = get_exudates(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_exudates(post_json)
     assert result['exudates_re'] == exp_exudates_re
@@ -73,14 +74,15 @@ def test_exudates_extract_and_build(text,
     assert result['exudates_unk'] == exp_exudates_unk
 
 
-@pytest.mark.parametrize('text, headers, exp_hardexudates_re, exp_hardexudates_le, exp_hardexudates_unk',
+@pytest.mark.parametrize('text, sections, exp_hardexudates_re, exp_hardexudates_le, exp_hardexudates_unk',
                          _hard_exudates_extract_and_build_cases)
 def test_hard_exudates_extract_and_build(text,
-                                         headers,
+                                         sections,
                                          exp_hardexudates_re,
                                          exp_hardexudates_le,
                                          exp_hardexudates_unk):
-    pre_json = get_exudates(text, headers=Headers(headers))
+    doc = create_doc_and_sections(text, sections)
+    pre_json = get_exudates(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_hard_exudates(post_json)
     assert result['hardexudates_re'] == exp_hardexudates_re

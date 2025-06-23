@@ -7,6 +7,7 @@ from eye_extractor.dr.cmt_value import (
     get_cmt_value,
 )
 from eye_extractor.output.dr import build_cmt_value
+from eye_extractor.sections.document import create_doc_and_sections
 
 # Test pattern.
 _pattern_cases = [
@@ -78,14 +79,15 @@ _cmt_value_extract_and_build_cases = [
 ]
 
 
-@pytest.mark.parametrize('text, headers, exp_dmacedema_cmt_re, exp_dmacedema_cmt_le, exp_dmacedema_cmt_unk',
+@pytest.mark.parametrize('text, sections, exp_dmacedema_cmt_re, exp_dmacedema_cmt_le, exp_dmacedema_cmt_unk',
                          _cmt_value_extract_and_build_cases)
 def test_cmt_value_extract_and_build(text,
-                                     headers,
+                                     sections,
                                      exp_dmacedema_cmt_re,
                                      exp_dmacedema_cmt_le,
                                      exp_dmacedema_cmt_unk):
-    pre_json = get_cmt_value(text)
+    doc = create_doc_and_sections(text, sections)
+    pre_json = get_cmt_value(doc)
     post_json = json.loads(json.dumps(pre_json, default=str))
     result = build_cmt_value(post_json)
     assert result['dmacedema_cmt_re'] == exp_dmacedema_cmt_re

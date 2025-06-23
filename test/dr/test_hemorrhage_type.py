@@ -11,6 +11,7 @@ from eye_extractor.output.dr import (
     build_subretinal_severity,
     build_vitreous_severity,
 )
+from eye_extractor.sections.document import create_doc_and_sections
 
 
 @pytest.mark.parametrize('text, exp_value, exp_negword', [
@@ -21,7 +22,8 @@ from eye_extractor.output.dr import (
     ('dot blot hemorrhage near inferior margin of GA', HemorrhageType.DOT_BLOT, None)
 ])
 def test_get_hemorrhage_type(text, exp_value, exp_negword):
-    data = get_hemorrhage_type(text)
+    doc = create_doc_and_sections(text)
+    data = get_hemorrhage_type(doc)
     variable = list(data[-2].values())[0]  # 'hemorrhage_typ_dr' will be last variable added to `data`.
 
     assert len(data) > 0
@@ -55,7 +57,7 @@ def test_build_hemorrhage_type(data, exp_hemorrhage_typ_dr_re, exp_hemorrhage_ty
     assert result['hemorrhage_typ_dr_le'] == exp_hemorrhage_typ_dr_le
 
 
-@pytest.mark.parametrize('text, headers, hemorrhage_type_dr_re, hemorrhage_type_dr_le, hemorrhage_type_dr_unk', [
+@pytest.mark.parametrize('text, sections, hemorrhage_type_dr_re, hemorrhage_type_dr_le, hemorrhage_type_dr_unk', [
     ('Acute left retinal tear with small vitreous hemorrhage',
      {}, HemorrhageType.UNKNOWN, HemorrhageType.VITREOUS, HemorrhageType.UNKNOWN),
     ('OD: preretinal hemorrhage extending from temporal periphery',
@@ -129,9 +131,10 @@ def test_build_hemorrhage_type(data, exp_hemorrhage_typ_dr_re, exp_hemorrhage_ty
     ('Acute left retinal tear with small hemorrhage',
      {}, HemorrhageType.UNKNOWN, HemorrhageType.YES_NOS, HemorrhageType.UNKNOWN)  # synthetic
 ])
-def test_hemorrhage_type_extract_and_build(text, headers, hemorrhage_type_dr_re, hemorrhage_type_dr_le,
+def test_hemorrhage_type_extract_and_build(text, sections, hemorrhage_type_dr_re, hemorrhage_type_dr_le,
                                            hemorrhage_type_dr_unk):
-    data = get_hemorrhage_type(text)
+    doc = create_doc_and_sections(text, sections)
+    data = get_hemorrhage_type(doc)
     data = json.loads(json.dumps(data))  # simulate write to/reading from file
     result = build_hemorrhage_type(data)
 
@@ -158,15 +161,16 @@ _intraretinal_severity_extract_and_build_cases = [
 ]
 
 
-@pytest.mark.parametrize('text, headers, exp_intraretinal_hem_re, exp_intraretinal_hem_le, '
+@pytest.mark.parametrize('text, sections, exp_intraretinal_hem_re, exp_intraretinal_hem_le, '
                          'exp_intraretinal_hem_unk',
                          _intraretinal_severity_extract_and_build_cases)
 def test_intraretinal_severity_extract_and_build(text,
-                                                 headers,
+                                                 sections,
                                                  exp_intraretinal_hem_re,
                                                  exp_intraretinal_hem_le,
                                                  exp_intraretinal_hem_unk):
-    pre_json = get_hemorrhage_type(text)
+    doc = create_doc_and_sections(text, sections)
+    pre_json = get_hemorrhage_type(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_intraretinal_severity(post_json)
     assert result['intraretinal_hem_re'] == exp_intraretinal_hem_re
@@ -188,15 +192,16 @@ _dot_blot_severity_extract_and_build_cases = [
 ]
 
 
-@pytest.mark.parametrize('text, headers, exp_dotblot_hem_re, exp_dotblot_hem_le, '
+@pytest.mark.parametrize('text, sections, exp_dotblot_hem_re, exp_dotblot_hem_le, '
                          'exp_dotblot_hem_unk',
                          _dot_blot_severity_extract_and_build_cases)
 def test_dot_blot_severity_extract_and_build(text,
-                                             headers,
+                                             sections,
                                              exp_dotblot_hem_re,
                                              exp_dotblot_hem_le,
                                              exp_dotblot_hem_unk):
-    pre_json = get_hemorrhage_type(text)
+    doc = create_doc_and_sections(text, sections)
+    pre_json = get_hemorrhage_type(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_dot_blot_severity(post_json)
     assert result['dotblot_hem_re'] == exp_dotblot_hem_re
@@ -218,15 +223,16 @@ _preretinal_severity_extract_and_build_cases = [
 ]
 
 
-@pytest.mark.parametrize('text, headers, exp_preretinal_hem_re, exp_preretinal_hem_le, '
+@pytest.mark.parametrize('text, sections, exp_preretinal_hem_re, exp_preretinal_hem_le, '
                          'exp_preretinal_hem_unk',
                          _preretinal_severity_extract_and_build_cases)
 def test_preretinal_severity_extract_and_build(text,
-                                               headers,
+                                               sections,
                                                exp_preretinal_hem_re,
                                                exp_preretinal_hem_le,
                                                exp_preretinal_hem_unk):
-    pre_json = get_hemorrhage_type(text)
+    doc = create_doc_and_sections(text, sections)
+    pre_json = get_hemorrhage_type(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_preretinal_severity(post_json)
     assert result['preretinal_hem_re'] == exp_preretinal_hem_re
@@ -248,15 +254,16 @@ _vitreous_severity_extract_and_build_cases = [
 ]
 
 
-@pytest.mark.parametrize('text, headers, exp_vitreous_hem_re, exp_vitreous_hem_le, '
+@pytest.mark.parametrize('text, sections, exp_vitreous_hem_re, exp_vitreous_hem_le, '
                          'exp_vitreous_hem_unk',
                          _vitreous_severity_extract_and_build_cases)
 def test_vitreous_severity_extract_and_build(text,
-                                             headers,
+                                             sections,
                                              exp_vitreous_hem_re,
                                              exp_vitreous_hem_le,
                                              exp_vitreous_hem_unk):
-    pre_json = get_hemorrhage_type(text)
+    doc = create_doc_and_sections(text, sections)
+    pre_json = get_hemorrhage_type(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_vitreous_severity(post_json)
     assert result['vitreous_hem_re'] == exp_vitreous_hem_re
@@ -278,15 +285,16 @@ _subretinal_severity_extract_and_build_cases = [
 ]
 
 
-@pytest.mark.parametrize('text, headers, exp_subretinal_hem_dr_re, exp_subretinal_hem_dr_le, '
+@pytest.mark.parametrize('text, sections, exp_subretinal_hem_dr_re, exp_subretinal_hem_dr_le, '
                          'exp_subretinal_hem_dr_unk',
                          _subretinal_severity_extract_and_build_cases)
 def test_subretinal_severity_extract_and_build(text,
-                                               headers,
+                                               sections,
                                                exp_subretinal_hem_dr_re,
                                                exp_subretinal_hem_dr_le,
                                                exp_subretinal_hem_dr_unk):
-    pre_json = get_hemorrhage_type(text)
+    doc = create_doc_and_sections(text, sections)
+    pre_json = get_hemorrhage_type(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_subretinal_severity(post_json)
     assert result['subretinal_hem_dr_re'] == exp_subretinal_hem_dr_re

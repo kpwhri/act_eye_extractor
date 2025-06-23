@@ -1,7 +1,6 @@
 import json
 import pytest
 
-from eye_extractor.common.severity import Severity
 from eye_extractor.dr.dr_type import (
     DrType,
     get_dr_type,
@@ -10,6 +9,7 @@ from eye_extractor.dr.dr_type import (
     PDR_PAT,
 )
 from eye_extractor.output.dr import build_dr_type, build_npdr_severity, build_pdr_severity
+from eye_extractor.sections.document import create_doc_and_sections
 
 # Test pattern.
 _dr_type_pattern_cases = [
@@ -70,15 +70,16 @@ _dr_type_extract_and_build_cases = [
 ]
 
 
-@pytest.mark.parametrize('text, headers, exp_diabretinop_type_re, exp_diabretinop_type_le, '
+@pytest.mark.parametrize('text, sections, exp_diabretinop_type_re, exp_diabretinop_type_le, '
                          'exp_diabretinop_type_unk',
                          _dr_type_extract_and_build_cases)
 def test_dr_type_extract_and_build(text,
-                                   headers,
+                                   sections,
                                    exp_diabretinop_type_re,
                                    exp_diabretinop_type_le,
                                    exp_diabretinop_type_unk):
-    pre_json = get_dr_type(text)
+    doc = create_doc_and_sections(text, sections)
+    pre_json = get_dr_type(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_dr_type(post_json)
     assert result['diabretinop_type_re'] == exp_diabretinop_type_re
@@ -98,15 +99,16 @@ _npdr_severity_extract_and_build_cases = [
 ]
 
 
-@pytest.mark.parametrize('text, headers, exp_nonprolifdr_re, exp_nonprolifdr_le, '
+@pytest.mark.parametrize('text, sections, exp_nonprolifdr_re, exp_nonprolifdr_le, '
                          'exp_nonprolifdr_unk',
                          _npdr_severity_extract_and_build_cases)
 def test_npdr_severity_extract_and_build(text,
-                                         headers,
+                                         sections,
                                          exp_nonprolifdr_re,
                                          exp_nonprolifdr_le,
                                          exp_nonprolifdr_unk):
-    pre_json = get_dr_type(text)
+    doc = create_doc_and_sections(text, sections)
+    pre_json = get_dr_type(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_npdr_severity(post_json)
     assert result['nonprolifdr_re'] == exp_nonprolifdr_re
@@ -129,15 +131,16 @@ _pdr_severity_extract_and_build_cases = [
 ]
 
 
-@pytest.mark.parametrize('text, headers, exp_prolifdr_re, exp_prolifdr_le, '
+@pytest.mark.parametrize('text, sections, exp_prolifdr_re, exp_prolifdr_le, '
                          'exp_prolifdr_unk',
                          _pdr_severity_extract_and_build_cases)
 def test_pdr_severity_extract_and_build(text,
-                                        headers,
+                                        sections,
                                         exp_prolifdr_re,
                                         exp_prolifdr_le,
                                         exp_prolifdr_unk):
-    pre_json = get_pdr(text)
+    doc = create_doc_and_sections(text, sections)
+    pre_json = get_pdr(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_pdr_severity(post_json)
     assert result['prolifdr_re'] == exp_prolifdr_re
