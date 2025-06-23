@@ -4,8 +4,9 @@ import pytest
 
 from eye_extractor.cataract.intraocular_lens import PCIOL_PAT, ACIOL_PAT, SIOL_PAT, PSEUDO_PAT, APHAKIA_PAT, IOL_PAT, \
     extract_iol_lens
-from eye_extractor.sections.headers import Headers
+from eye_extractor.sections.document import create_doc_and_sections
 from eye_extractor.output.cataract import build_intraocular_lens
+from eye_extractor.sections.patterns import SectionName
 
 
 @pytest.mark.parametrize('pat, text, exp_match', [
@@ -29,7 +30,8 @@ def test_iol_patterns(pat, text, exp_match):
 ])
 def test_extract_and_build_iol_lens(lens_text, exp_intraocular_lens_re,
                                     exp_intraocular_lens_le, exp_intraocular_lens_unk):
-    res = extract_iol_lens(None, headers=Headers({'LENS': lens_text}))
+    doc = create_doc_and_sections('', section_dict={SectionName.LENS: lens_text})
+    res = extract_iol_lens(doc)
     from_json = json.loads(json.dumps(res, default=str))
     variables = build_intraocular_lens(from_json)
     assert variables['intraocular_lens_re'] == exp_intraocular_lens_re

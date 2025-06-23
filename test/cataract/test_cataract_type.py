@@ -3,6 +3,7 @@ import pytest
 from eye_extractor.cataract.cataract_type import NS_PAT, CS_PAT, PSC_PAT, ACS_PAT, get_cataract_type, CataractType
 from eye_extractor.output.cataract import build_cataract_type, build_nscataract_severity, build_pscataract_severity, \
     build_cortcataract_severity
+from eye_extractor.sections.document import create_doc_and_sections
 
 
 @pytest.mark.parametrize('text', [
@@ -49,7 +50,8 @@ def test_cs_cataract_pattern(text):
     ('cortical cataract', CataractType.CS, None, -1),
 ])
 def test_cataract_value_first_variable(text, exp_value, exp_negword, exp_severity):
-    data = get_cataract_type(text)
+    doc = create_doc_and_sections(text)
+    data = get_cataract_type(doc)
     assert len(data) > 0
     first_variable = list(data[0].values())[0]
     assert first_variable['value'] == exp_value

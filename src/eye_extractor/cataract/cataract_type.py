@@ -3,6 +3,7 @@ import re
 
 from eye_extractor.nlp.negate.negation import is_negated
 from eye_extractor.laterality import build_laterality_table, create_new_variable
+from eye_extractor.sections.document import Document
 
 
 class CataractType(enum.IntEnum):
@@ -49,9 +50,8 @@ ACS_PAT = re.compile(
     re.I)
 
 
-def get_cataract_type(text, *, headers=None, lateralities=None):
-    if not lateralities:
-        lateralities = build_laterality_table(text)
+def get_cataract_type(doc: Document):
+    # TODO: what sections?
     data = []
     for pat, cattype, catlabel in [
         (NS_PAT, CataractType.NS, 'NS'),
@@ -59,15 +59,15 @@ def get_cataract_type(text, *, headers=None, lateralities=None):
         (ACS_PAT, CataractType.ACS, 'ACS'),
         (PSC_PAT, CataractType.PSC, 'PSC'),
     ]:
-        for m in pat.finditer(text):
-            negword = is_negated(m, text)
+        for m in pat.finditer(doc.get_text()):
+            negword = is_negated(m, doc.get_text())
             gd = m.groupdict()
             if severity := gd.get('severity1', '') or gd.get('severity2', '') or None:
                 severity = max(float(s.strip('+ ')) for s in severity.split('-'))
             else:
                 severity = -1
             data.append(
-                create_new_variable(text, m, lateralities, 'cataract_type', {
+                create_new_variable(doc.get_text(), m, doc.get_lateralities(), 'cataract_type', {
                     'value': CataractType.NONE if negword else cattype,
                     'term': m.group(),
                     'label': f'NO {catlabel}' if negword else catlabel,
@@ -76,6 +76,4 @@ def get_cataract_type(text, *, headers=None, lateralities=None):
                     'severity': severity,
                 })
             )
-    if headers:
-        pass
     return data

@@ -3,7 +3,14 @@ patterns.py
 
 This file contains the regular expression patterns for identifying section in optometry and ophthalmology notes.
 """
+import enum
 import re
+
+
+class SectionName(enum.StrEnum):
+    LENS = 'lens'
+    MACULA = 'macula'
+
 
 nonw = r'[^\w\n\-:]'
 nonw_s = fr'{nonw}*'
@@ -44,7 +51,7 @@ dx = r'(?:diagnosis|dx)'
 section_pre_pat = rf'^{nonw_s}'
 section_post_pat = rf'{nonw_s}[:-](?P<content>.*)$'
 targets = [
-    ('macula', r'mac(?:ula)?'),
+    (SectionName.MACULA, r'mac(?:ula)?'),
     ('impression', r'imp(?:ression)?'),
     ('narrative', r'narrative'),
     ('dilation', fr'(?:pupil(?:l?ary)?{nonw_s})?dilat(?:ed|ion)(?:with{nonw_s}m&n|eye{nonw_s}health{nonw_s}exam\w*)?'),
@@ -69,7 +76,7 @@ targets = [
     (('lashes', 'tears'), rf'{lashes}{sep}{tears}'),
     (('lashes', 'conjunctiva'), rf'{lashes}{sep}{conjunctiva}'),
     ('lids', f'{lids}'),
-    ('lens', f'lens(?:es)?'),
+    (SectionName.LENS, f'lens(?:es)?'),
     ('iol', f'iol'),
     ('adnexa', f'{adnexa}'),
     ('retina', f'retina'),
@@ -209,6 +216,6 @@ PATTERNS = [
      ) for cat, pat in targets
 ]
 
-class PatternGroup:
 
+class PatternGroup:
     MACULA_ASSESSMENT_PLAN = ('macula', 'assessment', 'plan')

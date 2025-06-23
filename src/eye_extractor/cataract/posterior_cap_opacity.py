@@ -1,7 +1,9 @@
 import enum
 import re
 
-from eye_extractor.laterality import build_laterality_table, create_new_variable
+from eye_extractor.laterality import create_new_variable
+from eye_extractor.sections.document import Document
+from eye_extractor.sections.patterns import SectionName
 
 pco = r'(?:pco|(?:post\w*\s*)?capsular\s*opacity)'
 trace = r'tr(?:ace)?'
@@ -66,45 +68,46 @@ class PosteriorCapsuleOpacity(enum.IntEnum):
     NO_INDICATION = -1
 
 
-def extract_posterior_capsular_opacity(text, *, headers=None, lateralities=None):
+def extract_posterior_capsular_opacity(doc: Document):
     data = []
-    if headers:
-        for lens_header, lens_text in headers.iterate('LENS'):
-            lens_lateralities = build_laterality_table(lens_text)
-            # known patterns
+    for section in doc.iter_sections(SectionName.LENS):
+        lens_header = section.name
+        lens_text = section.text
+        lens_lateralities = section.lateralities
+        # known patterns
+        for label, pat, value in [
+            ('NO_PCO_PAT', NO_PCO_PAT, PosteriorCapsuleOpacity.NONE),
+            ('TRACE_PCO_PAT', TRACE_PCO_PAT, PosteriorCapsuleOpacity.TRACE),
+            ('1_PCO_PAT', build_from_number_pco(1), PosteriorCapsuleOpacity.P1),
+            ('2_PCO_PAT', build_from_number_pco(2), PosteriorCapsuleOpacity.P2),
+            ('3_PCO_PAT', build_from_number_pco(3), PosteriorCapsuleOpacity.P3),
+            ('4_PCO_PAT', build_from_number_pco(4), PosteriorCapsuleOpacity.P4),
+        ]:
+            _finditer(data, label, lens_lateralities, lens_header, lens_text, pat, value)
+        if not data:
+            # just numbers
             for label, pat, value in [
-                ('NO_PCO_PAT', NO_PCO_PAT, PosteriorCapsuleOpacity.NONE),
-                ('TRACE_PCO_PAT', TRACE_PCO_PAT, PosteriorCapsuleOpacity.TRACE),
-                ('1_PCO_PAT', build_from_number_pco(1), PosteriorCapsuleOpacity.P1),
-                ('2_PCO_PAT', build_from_number_pco(2), PosteriorCapsuleOpacity.P2),
-                ('3_PCO_PAT', build_from_number_pco(3), PosteriorCapsuleOpacity.P3),
-                ('4_PCO_PAT', build_from_number_pco(4), PosteriorCapsuleOpacity.P4),
+                ('TRACE_PAT', TRACE_PCO_PAT, PosteriorCapsuleOpacity.TRACE),
+                ('1_PAT', build_from_number(1), PosteriorCapsuleOpacity.P1),
+                ('2_PAT', build_from_number(2), PosteriorCapsuleOpacity.P2),
+                ('3_PAT', build_from_number(3), PosteriorCapsuleOpacity.P3),
+                ('4_PAT', build_from_number(4), PosteriorCapsuleOpacity.P4),
             ]:
                 _finditer(data, label, lens_lateralities, lens_header, lens_text, pat, value)
-            if not data:
-                # just numbers
-                for label, pat, value in [
-                    ('TRACE_PAT', TRACE_PCO_PAT, PosteriorCapsuleOpacity.TRACE),
-                    ('1_PAT', build_from_number(1), PosteriorCapsuleOpacity.P1),
-                    ('2_PAT', build_from_number(2), PosteriorCapsuleOpacity.P2),
-                    ('3_PAT', build_from_number(3), PosteriorCapsuleOpacity.P3),
-                    ('4_PAT', build_from_number(4), PosteriorCapsuleOpacity.P4),
-                ]:
-                    _finditer(data, label, lens_lateralities, lens_header, lens_text, pat, value)
 
-            # heuristics
-            if not data:
-                for label, pat in [
-                    ('PCO_PAT', PCO_PAT),
-                ]:
-                    for m in pat.finditer(lens_text):
-                        data.append(
-                            create_new_variable(lens_text, m, lens_lateralities, 'posterior_cap_opacity', {
-                                'value': value,
-                                'term': m.group(),
-                                'source': lens_header,
-                            })
-                        )
+        # heuristics
+        if not data:
+            for label, pat in [
+                ('PCO_PAT', PCO_PAT),
+            ]:
+                for m in pat.finditer(lens_text):
+                    data.append(
+                        create_new_variable(lens_text, m, lens_lateralities, 'posterior_cap_opacity', {
+                            'value': value,
+                            'term': m.group(),
+                            'source': lens_header,
+                        })
+                    )
     return data
 
 

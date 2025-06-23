@@ -3,8 +3,9 @@ import json
 import pytest
 
 from eye_extractor.cataract.posterior_cap_opacity import build_from_number_pco, extract_posterior_capsular_opacity
-from eye_extractor.sections.headers import Headers
+from eye_extractor.sections.document import create_doc_and_sections
 from eye_extractor.output.cataract import build_posterior_cap_opacity
+from eye_extractor.sections.patterns import SectionName
 
 
 @pytest.mark.parametrize('pat, text, exp_match', [
@@ -22,7 +23,8 @@ def test_iol_patterns(pat, text, exp_match):
     ('IOL OD: 1+ PCO IOL OS: tr pco', '1+', 'tr'),
 ])
 def test_extract_and_build_iol_lens(lens_text, exp_posterior_cap_opacity_re, exp_posterior_cap_opacity_le):
-    res = extract_posterior_capsular_opacity(None, headers=Headers({'LENS': lens_text}))
+    doc = create_doc_and_sections('', section_dict={SectionName.LENS: lens_text})
+    res = extract_posterior_capsular_opacity(doc)
     from_json = json.loads(json.dumps(res, default=str))
     variables = build_posterior_cap_opacity(from_json)
     assert variables['posterior_cap_opacity_re'] == exp_posterior_cap_opacity_re
