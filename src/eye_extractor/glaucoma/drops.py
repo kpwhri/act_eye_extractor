@@ -3,6 +3,7 @@ import re
 from eye_extractor.common.drug.drops import GenericDrop, DROP_TO_ENUM, DROPS_RX
 from eye_extractor.common.drug.shared import get_standardized_name
 from eye_extractor.nlp.negate.negation import is_negated
+from eye_extractor.sections.document import Document
 
 eye_meds_rx = r'(?:opt\w*|ophth\w*|eye)\W*med\w*'
 NO_OPT_MED_RX = re.compile(
@@ -14,10 +15,10 @@ NO_OPT_MED_RX = re.compile(
 )
 
 
-def extract_glaucoma_drops(text, *, headers=None, lateralities=None):
+def extract_glaucoma_drops(doc: Document):
     varname = 'glaucoma_rx_{}'
     data = []
-    if m := NO_OPT_MED_RX.search(text):
+    if m := NO_OPT_MED_RX.search(doc.get_text()):
         data.append({
             varname.format(GenericDrop.NONE.name.lower()): {
                 'value': 1,
@@ -27,9 +28,9 @@ def extract_glaucoma_drops(text, *, headers=None, lateralities=None):
             }
         })
         return data
-    for m in DROPS_RX.finditer(text):
+    for m in DROPS_RX.finditer(doc.get_text()):
         # TODO: confirm presence of 'current medications'
-        negword = is_negated(m, text)
+        negword = is_negated(m, doc.get_text())
         term = m.group()
         standardized_name = get_standardized_name(term)
         for gd in DROP_TO_ENUM[standardized_name]:

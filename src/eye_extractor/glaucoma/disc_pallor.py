@@ -3,6 +3,8 @@ import re
 
 from eye_extractor.nlp.negate.negation import is_negated
 from eye_extractor.laterality import create_new_variable
+from eye_extractor.sections.document import Document
+from eye_extractor.sections.patterns import SectionName
 
 
 class DiscPallor(enum.IntEnum):
@@ -22,7 +24,7 @@ DISC_ATROPHY_PAT = re.compile(
 )
 
 
-def extract_disc_pallor(text, *, headers=None, lateralities=None):
+def extract_disc_pallor(doc: Document):
     """
     Building disc pallor variable for glaucoma.
 
@@ -32,25 +34,25 @@ def extract_disc_pallor(text, *, headers=None, lateralities=None):
     :return:
     """
     data = []
-    if headers:
-        for sect_name, sect_text in headers.iterate(
-                'OPTIC_NERVE', 'C/D'
-        ):
-            for pat_label, pat, value in [
-                ('DISC_PALLOR_PAT', DISC_PALLOR_PAT, DiscPallor.YES),
-                ('DISC_ATROPHY_PAT', DISC_ATROPHY_PAT, DiscPallor.YES),
-            ]:
-                for result in _extract_disc_pallor(pat_label, pat, value, sect_text, sect_name):
-                    data.append(result)
+    for section in doc.iter_sections(
+            SectionName.OPTIC_NERVE, SectionName.CUP_DISC, SectionName.CUP_DISC_OS, SectionName.CUP_DISC_OD,
+    ):
+        for pat_label, pat, value in [
+            ('DISC_PALLOR_PAT', DISC_PALLOR_PAT, DiscPallor.YES),
+            ('DISC_ATROPHY_PAT', DISC_ATROPHY_PAT, DiscPallor.YES),
+        ]:
+            for result in _extract_disc_pallor(pat_label, pat, value, section.text, section.name,
+                                               section.lateralities, section.known_laterality):
+                data.append(result)
     for result in _extract_disc_pallor(
-            'DISC_ATROPHY_PAT', DISC_ATROPHY_PAT, DiscPallor.YES, text, 'ALL',
-            lateralities=lateralities
+            'DISC_ATROPHY_PAT', DISC_ATROPHY_PAT, DiscPallor.YES, doc.get_text(), 'ALL',
+            lateralities=doc.get_lateralities(),
     ):
         data.append(result)
     return data
 
 
-def _extract_disc_pallor(pat_label, pat, value, sect_text, sect_name, lateralities=None):
+def _extract_disc_pallor(pat_label, pat, value, sect_text, sect_name, lateralities, known_lat=None):
     for m in pat.finditer(sect_text):
         negword = is_negated(m, sect_text)
         yield create_new_variable(
@@ -61,5 +63,6 @@ def _extract_disc_pallor(pat_label, pat, value, sect_text, sect_name, lateraliti
                 'negated': negword,
                 'regex': pat_label,
                 'source': sect_name,
-            }
+            },
+            known_laterality=None,  # C/D often has OS or OD in title
         )

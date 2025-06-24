@@ -5,7 +5,8 @@ import enum
 import re
 
 from eye_extractor.nlp.negate.negation import has_before, has_after, is_negated
-from eye_extractor.laterality import build_laterality_table, create_new_variable
+from eye_extractor.laterality import create_new_variable
+from eye_extractor.sections.document import Document
 
 
 class Exfoliation(enum.IntEnum):
@@ -26,9 +27,9 @@ EXFOLIATION_PAT = re.compile(
 )
 
 
-def extract_exfoliation(text, *, headers=None, lateralities=None):
-    lateralities = lateralities or build_laterality_table(text)
+def extract_exfoliation(doc: Document):
     data = []
+    text = doc.get_text()
     for m in EXFOLIATION_PAT.finditer(text):
         matchedtext = m.group()
         # cannot include glaucoma
@@ -40,7 +41,7 @@ def extract_exfoliation(text, *, headers=None, lateralities=None):
             continue
         negword = is_negated(m, text)
         data.append(
-            create_new_variable(text, m, lateralities, 'exfoliation', {
+            create_new_variable(text, m, doc.get_lateralities(), 'exfoliation', {
                 'value': Exfoliation.NO if negword else Exfoliation.YES,
                 'term': matchedtext,
                 'label': 'no' if negword else 'yes',

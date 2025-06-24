@@ -1,7 +1,8 @@
 import re
 
 from eye_extractor.nlp.negate.negation import is_negated
-from eye_extractor.laterality import build_laterality_table, create_new_variable
+from eye_extractor.laterality import create_new_variable
+from eye_extractor.sections.document import Document
 
 NOTCH_PAT = re.compile(
     fr'\b(?:notch\w*)\b',
@@ -9,21 +10,18 @@ NOTCH_PAT = re.compile(
 )
 
 
-def extract_disc_notch(text, headers=None, lateralities=None):
+def extract_disc_notch(doc: Document):
     """
 
-    :param text:
-    :param headers:
-    :param lateralities:
+    :param doc:
     :return:
     """
-    lateralities = lateralities or build_laterality_table(text)
     data = []
 
-    for m in NOTCH_PAT.finditer(text):
-        negword = is_negated(m, text)
+    for m in NOTCH_PAT.finditer(doc.get_text()):
+        negword = is_negated(m, doc.get_text())
         data.append(
-            create_new_variable(text, m, lateralities, 'disc_notch', {
+            create_new_variable(doc.get_text(), m, doc.get_lateralities(), 'disc_notch', {
                 'value': 0 if negword else 1,
                 'term': m.group(),
                 'label': 'no' if negword else 'yes',

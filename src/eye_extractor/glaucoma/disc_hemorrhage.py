@@ -1,7 +1,8 @@
 import re
 
 from eye_extractor.nlp.negate.negation import is_negated
-from eye_extractor.laterality import build_laterality_table, create_new_variable
+from eye_extractor.laterality import create_new_variable
+from eye_extractor.sections.document import Document
 
 DH_PAT = re.compile(
     fr'\b(?:'
@@ -11,21 +12,18 @@ DH_PAT = re.compile(
 )
 
 
-def extract_disc_hem(text, *, headers=None, lateralities=None):
+def extract_disc_hem(doc: Document):
     """
     Extract disc hemorrhage into binary variable: 1=yes, 0=no, -1=unknown (default in builder)
-    :param text:
-    :param headers:
-    :param lateralities:
+    :param doc:
     :return:
     """
-    lateralities = lateralities or build_laterality_table(text)
     data = []
 
-    for m in DH_PAT.finditer(text):
-        negword = is_negated(m, text)
+    for m in DH_PAT.finditer(doc.get_text()):
+        negword = is_negated(m, doc.get_text())
         data.append(
-            create_new_variable(text, m, lateralities, 'disc_hem', {
+            create_new_variable(doc.get_text(), m, doc.get_lateralities(), 'disc_hem', {
                 'value': 0 if negword else 1,
                 'term': m.group(),
                 'label': 'no' if negword else 'yes',

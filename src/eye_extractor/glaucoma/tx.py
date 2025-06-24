@@ -7,6 +7,8 @@ import re
 from eye_extractor.common.drug.drops import DROPS_PAT
 from eye_extractor.nlp.negate.negation import is_negated, is_post_negated, has_before
 from eye_extractor.laterality import build_laterality_table, create_new_variable, Laterality
+from eye_extractor.sections.document import Document
+from eye_extractor.sections.patterns import SectionName
 
 
 class GlaucomaTreatment(enum.IntEnum):
@@ -69,38 +71,36 @@ TRABECULOPLASTY_PAT = re.compile(
 )
 
 
-def extract_tx(text, *, headers=None, lateralities=None):
+def extract_tx(doc: Document):
     data = []
-    if headers:
-        for section, section_text in headers.iterate('PLAN', 'PLAN_COMMENTS', 'COMMENTS'):
-            section_lateralities = build_laterality_table(section_text)
-            for pat_label, pat, value in [
-                ('OBSERVE_PAT', OBSERVE_PAT, GlaucomaTreatment.OBSERVE),
-                ('CONTINUE_RX_PAT', CONTINUE_RX_PAT, GlaucomaTreatment.CONTINUE_RX),
-                ('NEW_MEDICATION_PAT', NEW_MEDICATION_PAT, GlaucomaTreatment.NEW_MEDICATION),
-                ('ALT_PAT', ALT_PAT, GlaucomaTreatment.ALT),
-                ('SLT_PAT', SLT_PAT, GlaucomaTreatment.SLT),
-                ('SURGERY_PAT', SURGERY_PAT, GlaucomaTreatment.SURGERY),
-                ('TRABECULOPLASTY_PAT', TRABECULOPLASTY_PAT, GlaucomaTreatment.TRABECULOPLASTY),
-            ]:
-                for m in pat.finditer(section_text):
-                    if (is_negated(m, section_text, {'vs'})
-                            or is_post_negated(m, section_text, {'vs'})):
-                        continue
-                    curr_laterality = None
-                    negword = is_negated(m, section_text)
-                    if has_before(m.start(), section_text, {'r'}, char_window=4):
-                        curr_laterality = Laterality.OD
-                    elif has_before(m.start(), section_text, {'l'}, char_window=4):
-                        curr_laterality = Laterality.OS
-                    data.append(
-                        create_new_variable(text, m, section_lateralities, 'glaucoma_tx', {
-                            'value': GlaucomaTreatment.NONE if negword else value,
-                            'term': m.group(),
-                            'label': 'no' if negword else value.name,
-                            'negated': negword,
-                            'regex': pat_label,
-                            'source': section,
-                        }, known_laterality=curr_laterality)
-                    )
+    for section in doc.iter_sections(SectionName.PLAN, SectionName.COMMENT):
+        for pat_label, pat, value in [
+            ('OBSERVE_PAT', OBSERVE_PAT, GlaucomaTreatment.OBSERVE),
+            ('CONTINUE_RX_PAT', CONTINUE_RX_PAT, GlaucomaTreatment.CONTINUE_RX),
+            ('NEW_MEDICATION_PAT', NEW_MEDICATION_PAT, GlaucomaTreatment.NEW_MEDICATION),
+            ('ALT_PAT', ALT_PAT, GlaucomaTreatment.ALT),
+            ('SLT_PAT', SLT_PAT, GlaucomaTreatment.SLT),
+            ('SURGERY_PAT', SURGERY_PAT, GlaucomaTreatment.SURGERY),
+            ('TRABECULOPLASTY_PAT', TRABECULOPLASTY_PAT, GlaucomaTreatment.TRABECULOPLASTY),
+        ]:
+            for m in pat.finditer(section.text):
+                if (is_negated(m, section.text, {'vs'})
+                        or is_post_negated(m, section.text, {'vs'})):
+                    continue
+                curr_laterality = None
+                negword = is_negated(m, section.text)
+                if has_before(m.start(), section.text, {'r'}, char_window=4):
+                    curr_laterality = Laterality.OD
+                elif has_before(m.start(), section.text, {'l'}, char_window=4):
+                    curr_laterality = Laterality.OS
+                data.append(
+                    create_new_variable(section.text, m, section.lateralities, 'glaucoma_tx', {
+                        'value': GlaucomaTreatment.NONE if negword else value,
+                        'term': m.group(),
+                        'label': 'no' if negword else value.name,
+                        'negated': negword,
+                        'regex': pat_label,
+                        'source': section.name,
+                    }, known_laterality=curr_laterality)
+                )
     return data

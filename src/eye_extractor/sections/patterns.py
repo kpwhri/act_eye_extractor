@@ -8,6 +8,7 @@ import re
 
 
 class SectionName(enum.StrEnum):
+    ANGLE = 'angle'
     LENS = 'lens'
     MACULA = 'macula'
     ASSESSMENT = 'assessment'
@@ -15,6 +16,18 @@ class SectionName(enum.StrEnum):
     PERIPHERY = 'periphery'
     VESSELS = 'vessels'
     SUBJECTIVE = 'subjective'
+    GLAUCOMA_TYPE = 'glaucoma_type'
+    GLAUCOMA = 'glaucoma'
+    GLAUCOMA_FLOWSHEET = 'glaucoma_flowsheet'
+    GONIOSCOPY = 'gonio'
+    LAST_GONIOSCOPY = 'last_gonio'
+    PACHYMETRY = 'pachymetry'
+    CCT = 'cct'
+    OPTIC_NERVE = 'optic_nerve'
+    CUP_DISC = 'cup_disc'
+    CUP_DISC_OD = 'cup_disc_od'
+    CUP_DISC_OS = 'cup_disc_os'
+    COMMENT = 'comment'
 
 
 nonw = r'[^\w\n\-:]'
@@ -56,6 +69,7 @@ dx = r'(?:diagnosis|dx)'
 section_pre_pat = rf'^{nonw_s}'
 section_post_pat = rf'{nonw_s}[:-](?P<content>.*)$'
 targets = [
+    (SectionName.CCT, r'ccts?'),
     (SectionName.MACULA, r'mac(?:ula)?'),
     ('impression', r'imp(?:ression)?'),
     ('narrative', r'narrative'),
@@ -108,9 +122,9 @@ targets = [
     (SectionName.PLAN, f'plan(?:{nonw_s}(?:and{nonw_s}follow{nonw_s}up|comments?))?'),
     ((SectionName.ASSESSMENT, SectionName.PLAN), fr'assessment{nonw_s}plan'),
     ('presents', f'{patient}{nonw_s}presents{nonw_s}with'),
-    ('optic_nerve', f'optic{nonw_s}nerves?'),
+    (SectionName.OPTIC_NERVE, f'optic{nonw_s}nerves?'),
     (SectionName.VESSELS, f'vessels?'),
-    ('angle', f'angles?(?:{nonw_s}v[oa]n{nonw_s}herr?ick)?'),
+    (SectionName.ANGLE, f'angles?(?:{nonw_s}v[oa]n{nonw_s}herr?ick)?'),
     ('iris', f'iris'),
     ('disc', f'discs?'),
     ('drawings', f'drawings?'),
@@ -146,12 +160,12 @@ targets = [
     ('problem_list', f'(?:{patient}{nonw_s})?(?:(?:active|current){nonw_s})?problem{nonw_s}list'),
     ('hpi',
      fr'(?:(?:ccs?|chief{nonw_s}complaints?|hpi|history{nonw_s}of{nonw_s}present{nonw_s}illness|reason{nonw_s}for{nonw_s}exam\w*){nonw_s})+'),
-    ('last_gonio', fr'{previous}{nonw_s}gonio\w*'),
-    ('gonio', fr'gonio\w*'),
-    ('pachymetry', fr'pachymetry'),
-    ('cup_disc', fr'{cup_disc}'),
-    ('cup_disc_od', fr'(?:{od}{nonw_s}{cup_disc}|{cup_disc}{nonw_s}{od})'),
-    ('cup_disc_os', fr'(?:{os}{nonw_s}{cup_disc}|{cup_disc}{nonw_s}{os})'),
+    (SectionName.LAST_GONIOSCOPY, fr'{previous}{nonw_s}gonio\w*'),
+    (SectionName.GONIOSCOPY, fr'gonio\w*'),
+    (SectionName.PACHYMETRY, fr'pachymetry'),
+    (SectionName.CUP_DISC, fr'{cup_disc}'),
+    (SectionName.CUP_DISC_OD, fr'(?:{od}{nonw_s}{cup_disc}|{cup_disc}{nonw_s}{od})'),
+    (SectionName.CUP_DISC_OS, fr'(?:{os}{nonw_s}{cup_disc}|{cup_disc}{nonw_s}{os})'),
     ('od', fr'{od}'),
     ('os', fr'{os}'),
     ('oct', fr'(?:(?:mac\w*)?{nonw_s}oct(?:{nonw_s}mac\w*)?)'),
@@ -178,8 +192,9 @@ targets = [
     ('surgery', fr'surgery'),
     ('current_glasses', fr'(?:current{nonw_s}glasses|glasses{nonw_s}rx)'),
     ('review_of_systems', fr'review{nonw_s}of{nonw_s}systems'),
-    ('glaucoma', fr'glaucoma'),
-    ('glaucoma_type', fr'type{nonw_s}of{nonw_s}glaucoma'),
+    (SectionName.GLAUCOMA, fr'glaucoma'),
+    (SectionName.GLAUCOMA_FLOWSHEET, fr'glaucoma{nonw_s}flowsheet'),
+    (SectionName.GLAUCOMA_TYPE, fr'type{nonw_s}of{nonw_s}glaucoma'),
     ('cataracts', fr'cataracts?'),
     ('diabetes', fr'diabetes'),
     ('diabetic_issues', fr'diabetic{nonw_s}{eye}{nonw_s}issues'),
@@ -204,7 +219,7 @@ targets = [
     ('alcohol_use', fr'alcohol{nonw_s}use'),
     ('tobacco_use', fr'tobacco{nonw_s}use'),
     ('smoking', fr'smoking'),
-    ('comment', fr'comments?'),
+    (SectionName.COMMENT, fr'comments?'),
     # surgery
     ('preop_dx', f'pre{nonw_s}operative{nonw_s}{dx}'),
     ('postop_dx', f'post{nonw_s}operative{nonw_s}{dx}'),

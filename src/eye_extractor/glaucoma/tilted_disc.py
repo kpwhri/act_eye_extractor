@@ -1,7 +1,8 @@
 import re
 
 from eye_extractor.nlp.negate.negation import is_negated, has_before, has_after
-from eye_extractor.laterality import build_laterality_table, create_new_variable
+from eye_extractor.laterality import create_new_variable
+from eye_extractor.sections.document import Document
 
 tilt = r'(?:tilt\w*)'
 
@@ -19,7 +20,7 @@ TILTED_PAT = re.compile(
 )
 
 
-def extract_tilted_disc(text, headers=None, lateralities=None):
+def extract_tilted_disc(doc: Document):
     """
 
     :param text:
@@ -27,13 +28,14 @@ def extract_tilted_disc(text, headers=None, lateralities=None):
     :param lateralities:
     :return:
     """
-    lateralities = lateralities or build_laterality_table(text)
     data = []
 
+    text = doc.get_text()
+    lateralities = doc.get_lateralities()
     for m in TILTED_PLUS_PAT.finditer(text):
         negword = is_negated(m, text)
         data.append(
-            create_new_variable(text, m, lateralities, 'tilted_disc', {
+            create_new_variable(text, m, doc.get_lateralities(), 'tilted_disc', {
                 'value': 0 if negword else 1,
                 'term': m.group(),
                 'label': 'no' if negword else 'yes',

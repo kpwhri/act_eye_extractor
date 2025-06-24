@@ -5,7 +5,9 @@ Central corneal thickness (CCT)
 """
 import re
 
-from eye_extractor.laterality import build_laterality_table, od_pattern, os_pattern, ou_pattern
+from eye_extractor.laterality import od_pattern, os_pattern, ou_pattern
+from eye_extractor.sections.document import Document
+from eye_extractor.sections.patterns import SectionName
 
 cct = r'\d{3}'
 microns = r'(?:microns?)?'
@@ -157,22 +159,18 @@ def search_cct(text, sect_name):
         return {'centralcornealthickness_re': entry, 'centralcornealthickness_le': entry}
 
 
-def extract_cct(text, *, headers=None, lateralities=None):
+def extract_cct(doc: Document):
     """
     Extract open/closed result of gonioscopy
-    :param text:
-    :param headers:
-    :param lateralities:
+    :param doc:
     :return:
     """
-    lateralities = lateralities or build_laterality_table(text)
     data = []
 
-    if headers:
-        for sect_name, section_text in headers.iterate('PACHYMETRY', 'CCT', 'CCTS'):
-            if res := search_cct(section_text, sect_name):
-                data.append(res)
-    for m in CCT_SECTION_PAT.finditer(text):
-        if res := search_cct(text[m.end(): m.end() + 20], 'ALL'):
+    for section in doc.iter_sections(SectionName.PACHYMETRY, SectionName.CCT):
+        if res := search_cct(section.text, section.name):
+            data.append(res)
+    for m in CCT_SECTION_PAT.finditer(doc.get_text()):
+        if res := search_cct(doc.get_text()[m.end(): m.end() + 20], 'ALL'):
             data.append(res)
     return data

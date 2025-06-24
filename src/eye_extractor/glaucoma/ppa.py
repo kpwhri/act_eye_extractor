@@ -8,7 +8,8 @@ Peripapillary atrophy (PPA)
 import re
 
 from eye_extractor.nlp.negate.negation import is_negated
-from eye_extractor.laterality import build_laterality_table, create_new_variable
+from eye_extractor.laterality import create_new_variable
+from eye_extractor.sections.document import Document
 
 PPA_PAT = re.compile(
     rf'\b(?:'
@@ -18,7 +19,7 @@ PPA_PAT = re.compile(
 )
 
 
-def extract_ppa(text, *, headers=None, lateralities=None):
+def extract_ppa(doc: Document):
     """
     Extract disc hemorrhage into binary variable: 1=yes, 0=no, -1=unknown (default in builder)
     :param text:
@@ -26,7 +27,8 @@ def extract_ppa(text, *, headers=None, lateralities=None):
     :param lateralities:
     :return:
     """
-    lateralities = lateralities or build_laterality_table(text)
+    text = doc.get_text()
+    lateralities = doc.get_lateralities()
     data = []
 
     for m in PPA_PAT.finditer(text):

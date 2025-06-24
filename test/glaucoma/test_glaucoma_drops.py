@@ -6,6 +6,7 @@ from eye_extractor.glaucoma.drops import NO_OPT_MED_RX, extract_glaucoma_drops
 from eye_extractor.common.drug.drops import DROP_TO_ENUM, DROPS_RX
 from eye_extractor.common.drug.shared import get_standardized_name
 from eye_extractor.output.glaucoma import build_glaucoma_drops
+from eye_extractor.sections.document import create_doc_and_sections
 
 
 @pytest.mark.parametrize('pat, text, exp_count, exp_neg', [
@@ -29,7 +30,8 @@ def test_patterns(pat, text, exp_count, exp_neg):
     ('No Active Ophthalmic Medications', {'glaucoma_rx_none': 1}),
 ])
 def test_drops_extract_and_build(text, exp_dict):
-    pre_json = extract_glaucoma_drops(text)
+    doc = create_doc_and_sections(text)
+    pre_json = extract_glaucoma_drops(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_glaucoma_drops(post_json)
     for key, val in result.items():

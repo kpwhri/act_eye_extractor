@@ -18,6 +18,7 @@ class Section:
         self.lines = [text] if isinstance(text, str) else text
         self.text_start_idx = text_start_idx
         self.text_end_idx = text_end_idx
+        self.known_laterality = None
         self.history = None
         self.lateralities = None
         self._other_lateralities = {}
@@ -102,12 +103,18 @@ class Section:
 
     def build_laterality_table(self, laterality_func, **kwargs):
         self.lateralities = laterality_func(self.text, **kwargs)
-        if 'od' in self.names:
-            self.lateralities.default_laterality = Laterality.OD
+        if 'os' in self.names and 'od' in self.names:
+            self.set_default_laterality(Laterality.OU)
+        elif 'od' in self.names:
+            self.set_default_laterality(Laterality.OD)
         elif 'os' in self.names:
-            self.lateralities.default_laterality = Laterality.OS
+            self.set_default_laterality(Laterality.OS)
         elif 'ou' in self.names:
-            self.lateralities.default_laterality = Laterality.OU
+            self.set_default_laterality(Laterality.OU)
+
+    def set_default_laterality(self, lat: Laterality):
+        self.lateralities.default_laterality = lat
+        self.known_laterality = lat
 
     def __repr__(self):
         return f'Section[{self.name}=({self.text_start_idx},{self.text_end_idx})="{self.oneline.strip()[:20]}..."]'

@@ -4,8 +4,9 @@ import pytest
 
 from eye_extractor.glaucoma.cct import CCT_OD_OS_PAT, CCT_OD_PAT, CCT_OS_PAT, CCT_OU_PAT, extract_cct, CCT_OS_OD_PAT, \
     CCT_OD_OS_GEN_PAT
-from eye_extractor.sections.headers import Headers
+from eye_extractor.sections.document import create_doc_and_sections
 from eye_extractor.output.glaucoma import build_cct
+from eye_extractor.sections.patterns import SectionName
 
 
 @pytest.mark.parametrize('pat, text, exp', [
@@ -28,17 +29,18 @@ def test_cct_patterns(pat, text, exp):
     assert bool(m) == exp
 
 
-@pytest.mark.parametrize('text, headers, exp_cct_re, exp_cct_le, exp_cct_unk', [
+@pytest.mark.parametrize('text, sections, exp_cct_re, exp_cct_le, exp_cct_unk', [
     ('Pachymetry: 494 OD; 488 OS', None, 494, 488, -1),
     ('Pachymetry: 494 OU', None, 494, 494, -1),
-    ('', {'PACHYMETRY': '494 OD; 488 OS'}, 494, 488, -1),
-    ('', {'PACHYMETRY': 'CCT 494 OS; 488 OD'}, 488, 494, -1),
-    ('', {'CCT': '494'}, 494, 494, -1),
+    ('', {SectionName.PACHYMETRY: '494 OD; 488 OS'}, 494, 488, -1),
+    ('', {SectionName.PACHYMETRY: 'CCT 494 OS; 488 OD'}, 488, 494, -1),
+    ('', {SectionName.CCT: '494'}, 494, 494, -1),
     ('Pachymetry  540/585 ', None, 540, 585, -1),
     ('Pachymetry: CCT  540, 585 ', None, 540, 585, -1),
 ])
-def test_cct_extract_and_build(text, headers, exp_cct_re, exp_cct_le, exp_cct_unk):
-    pre_json = extract_cct(text, headers=Headers(headers), lateralities=None)
+def test_cct_extract_and_build(text, sections, exp_cct_re, exp_cct_le, exp_cct_unk):
+    doc = create_doc_and_sections(text, sections)
+    pre_json = extract_cct(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_cct(post_json)
     assert result['centralcornealthickness_re'] == exp_cct_re

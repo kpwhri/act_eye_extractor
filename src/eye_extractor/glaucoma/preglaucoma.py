@@ -4,7 +4,8 @@ import re
 from eye_extractor.nlp.negate.negation import is_negated
 from eye_extractor.exam.cup_disk_ratio import cd
 from eye_extractor.glaucoma.dx import OCULAR_HYPERTENSIVE_PAT
-from eye_extractor.laterality import build_laterality_table, create_new_variable
+from eye_extractor.laterality import create_new_variable
+from eye_extractor.sections.document import Document
 
 
 class Preglaucoma(enum.IntEnum):
@@ -43,9 +44,11 @@ HIGH_CD_PAT = re.compile(
 )
 
 
-def extract_preglaucoma_dx(text, *, headers=None, lateralities=None):
-    lateralities = lateralities or build_laterality_table(text)
+def extract_preglaucoma_dx(doc: Document):
     data = []
+
+    text = doc.get_text()
+    lateralities = doc.get_lateralities()
 
     for pat, pat_label, value in [
         (SUSPECT_PAT, 'SUSPECT_PAT', Preglaucoma.SUSPECT),
