@@ -1,7 +1,7 @@
 import re
 
 from eye_extractor.nlp.negate.negation import is_negated
-from ..laterality import build_laterality_table, create_new_variable
+from ..laterality import create_new_variable
 from ..sections.document import Document
 
 # RAO, retinal artery occlusion, RvasO (retinal vascular occlusion - can be vein or artery),
