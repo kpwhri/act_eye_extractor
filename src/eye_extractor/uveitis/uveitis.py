@@ -3,6 +3,7 @@ import re
 from eye_extractor.nlp.negate.negation import is_negated, is_post_negated
 from eye_extractor.nlp.negate.historical import HISTORY_WORDS
 from eye_extractor.laterality import create_new_variable
+from eye_extractor.sections.document import Document
 
 ALL_UVEITIS_PAT = re.compile(
     r'(?:'
@@ -33,8 +34,10 @@ UVEITIS_PAT = re.compile(
 )
 
 
-def get_uveitis(text, *, headers=None, lateralities=None):
+def get_uveitis(doc: Document):
     data = []
+    text = doc.get_text()
+    lateralities = doc.get_lateralities()
     for pat, label in [
         (UVEITIS_PAT, 'UVEITIS_PAT'),
         (ALL_UVEITIS_PAT, 'ALL_UVEITIS_PAT'),

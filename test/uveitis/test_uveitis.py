@@ -4,6 +4,7 @@ import pytest
 
 from eye_extractor.common.json import dumps_and_loads_json
 from eye_extractor.output.uveitis import build_uveitis
+from eye_extractor.sections.document import create_doc_and_sections
 from eye_extractor.uveitis.uveitis import UVEITIS_PAT, ALL_UVEITIS_PAT, get_uveitis
 
 
@@ -36,7 +37,8 @@ def test_all_uveitis_pattern(text, exp):
     ]
 )
 def test_extract_and_build_uveitis(text, exp_uveitis_yesno_re, exp_uveitis_yesno_le, exp_uveitis_yesno_unk, note_date):
-    pre_json = get_uveitis(text)
+    doc = create_doc_and_sections(text)
+    pre_json = get_uveitis(doc)
     post_json = dumps_and_loads_json(pre_json)
     result = build_uveitis(post_json, note_date=note_date)
     assert result['uveitis_yesno_re'] == exp_uveitis_yesno_re
