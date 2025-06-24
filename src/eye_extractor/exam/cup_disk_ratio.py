@@ -14,6 +14,7 @@ import re
 
 from eye_extractor.common.regex import coalesce_match
 from eye_extractor.laterality import od_pattern, os_pattern, ou_pattern
+from eye_extractor.sections.document import Document
 
 cd = r'c(?:up)?\W*(?:to\W*)?d(?:is[kc])?'
 cd_ratio = (rf'{cd}\W*?'
@@ -87,8 +88,10 @@ def followed_by_date(m, text):
         return f'{year}-{month}-{day}'
 
 
-def extract_cup_disk_ratio(text, *, headers=None, lateralities=None):
+def extract_cup_disk_ratio(doc: Document):
+    # TODO: check c/d sections first
     data = []
+    text = doc.get_text()
     if (mod := OD_CUP_DISC.search(text)) and (mos := OS_CUP_DISC.search(text)):
         data.append(
             {
@@ -130,6 +133,4 @@ def extract_cup_disk_ratio(text, *, headers=None, lateralities=None):
                 data[-1]['cupdiscratio_lev'] = m.group('ratio')
                 data[-1]['cupdiscratio_leh'] = m.group('ratio')
 
-    if headers:
-        pass
     return data

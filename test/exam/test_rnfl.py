@@ -5,6 +5,7 @@ import pytest
 
 from eye_extractor.exam.rnfl import TABLE_HEADER_PAT, TABLE_ROW_PAT, extract_rnfl_values
 from eye_extractor.output.exam import build_rnfl
+from eye_extractor.sections.document import create_doc_and_sections
 
 
 @pytest.mark.parametrize('pat, text, exp', [
@@ -18,7 +19,7 @@ def test_rnfl_patterns(pat, text, exp):
 
 
 @pytest.mark.parametrize(
-    'text, headers, rnfloct_globalscore_re, rnfloct_globalscore_le, '
+    'text, sections, rnfloct_globalscore_re, rnfloct_globalscore_le, '
     'rnfloct_temporal_sup_re, rnfloct_temporal_sup_le, '
     'rnfloct_temporal_re, rnfloct_temporal_le, '
     'rnfloct_temporal_inf_re, rnfloct_temporal_inf_le, '
@@ -33,12 +34,13 @@ def test_rnfl_patterns(pat, text, exp):
         ('RNFL no thinning', {},
          -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0),
 ])
-def test_rnfl_extract_build(text, headers, rnfloct_globalscore_re, rnfloct_globalscore_le, rnfloct_temporal_sup_re,
+def test_rnfl_extract_build(text, sections, rnfloct_globalscore_re, rnfloct_globalscore_le, rnfloct_temporal_sup_re,
                             rnfloct_temporal_sup_le, rnfloct_temporal_re, rnfloct_temporal_le, rnfloct_temporal_inf_re,
                             rnfloct_temporal_inf_le, rnfloct_nasal_inf_re, rnfloct_nasal_inf_le, rnfloct_nasal_re,
                             rnfloct_nasal_le, rnfloct_nasal_sup_re, rnfloct_nasal_sup_le, rnfloct_thinning_re,
                             rnfloct_thinning_le, rnfloct_thinning_unk):
-    pre_json = extract_rnfl_values(text, headers=headers)
+    doc = create_doc_and_sections(text, sections)
+    pre_json = extract_rnfl_values(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_rnfl(post_json, note_date=datetime.datetime(2020, 1, 1))
     assert result.get('rnfloct_globalscore_re', -1) == rnfloct_globalscore_re

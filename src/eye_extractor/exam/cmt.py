@@ -1,7 +1,8 @@
 import re
 
 from eye_extractor.common.date import parse_date_before
-from eye_extractor.sections.headers import Headers
+from eye_extractor.sections.document import Document
+from eye_extractor.sections.patterns import SectionName
 
 CMT_PAT = re.compile(
     rf'\b(?:'
@@ -27,43 +28,42 @@ CMT_PAT_LE = re.compile(
 )
 
 
-def extract_cmt(text, *, headers: Headers = None, lateralities=None):
+def extract_cmt(doc: Document):
     data = []
-    if headers:
-        for section_name, section_text in headers.iterate('OCT_MAC', 'OCT_MACULA', 'MACULA'):
-            for m in CMT_PAT.finditer(section_text):
-                date = parse_date_before(m, section_text, as_string=True)
+    for section in doc.iter_sections(SectionName.OCT, SectionName.MACULA):
+        for m in CMT_PAT.finditer(section.text):
+            date = parse_date_before(m, section.text, as_string=True)
+            data.append({'macularoct_thickness_re': {
+                'value': int(m.group('od_value')),
+                'date': date,
+                'term': m.group(),
+                'source': section.name,
+                'regex': 'CMT_PAT',
+            }})
+            data.append({'macularoct_thickness_le': {
+                'value': int(m.group('os_value')),
+                'date': date,
+                'term': m.group(),
+                'source': section.name,
+                'regex': 'CMT_PAT',
+            }})
+        if not data:
+            for m in CMT_PAT_RE.finditer(section.text):
+                date = parse_date_before(m, section.text, as_string=True)
                 data.append({'macularoct_thickness_re': {
                     'value': int(m.group('od_value')),
                     'date': date,
                     'term': m.group(),
-                    'source': section_name,
-                    'regex': 'CMT_PAT',
+                    'source': section.name,
+                    'regex': 'CMT_PAT_RE',
                 }})
+            for m in CMT_PAT_LE.finditer(section.text):
+                date = parse_date_before(m, section.text, as_string=True)
                 data.append({'macularoct_thickness_le': {
                     'value': int(m.group('os_value')),
                     'date': date,
                     'term': m.group(),
-                    'source': section_name,
-                    'regex': 'CMT_PAT',
+                    'source': section.name,
+                    'regex': 'CMT_PAT_LE',
                 }})
-            if not data:
-                for m in CMT_PAT_RE.finditer(section_text):
-                    date = parse_date_before(m, section_text, as_string=True)
-                    data.append({'macularoct_thickness_re': {
-                        'value': int(m.group('od_value')),
-                        'date': date,
-                        'term': m.group(),
-                        'source': section_name,
-                        'regex': 'CMT_PAT_RE',
-                    }})
-                for m in CMT_PAT_LE.finditer(section_text):
-                    date = parse_date_before(m, section_text, as_string=True)
-                    data.append({'macularoct_thickness_le': {
-                        'value': int(m.group('os_value')),
-                        'date': date,
-                        'term': m.group(),
-                        'source': section_name,
-                        'regex': 'CMT_PAT_LE',
-                    }})
     return data

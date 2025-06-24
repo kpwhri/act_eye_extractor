@@ -33,6 +33,7 @@ class SectionName(enum.StrEnum):
     MED_HX = 'med_hx'
     FAMILY_HX = 'family_hx'
     PROBLEM_LIST = 'problem_list'
+    OCT = 'oct'
 
 
 nonw = r'[^\w\n\-:]'
@@ -173,7 +174,10 @@ targets = [
     (SectionName.CUP_DISC_OS, fr'(?:{os}{nonw_s}{cup_disc}|{cup_disc}{nonw_s}{os})'),
     ('od', fr'{od}'),
     ('os', fr'{os}'),
-    ('oct', fr'(?:(?:mac\w*)?{nonw_s}oct(?:{nonw_s}mac\w*)?)'),
+    (SectionName.OCT, fr'(?:'
+                      rf'(?:mac\w*)?{nonw_s}oct(?:{nonw_s}mac\w*)?'
+                      rf'|oct{nonw_s}mac\w*'
+                      rf')'),
     ('hx', fr'(?:{history}|{previous})'),
     (SectionName.EYE_HX,
      fr'(?:{previous}{nonw_s})?(?:personal{nonw_s})?(?:medical{nonw_s})?{eye}{nonw_s}{history}(?:{nonw_s}of)?'),

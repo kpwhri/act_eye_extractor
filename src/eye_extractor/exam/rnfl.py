@@ -3,6 +3,7 @@ import re
 from eye_extractor.common.date import parse_date_before
 from eye_extractor.nlp.negate.negation import has_before, has_after, is_post_negated, is_negated
 from eye_extractor.laterality import laterality_pattern, lat_lookup, Laterality, create_variable
+from eye_extractor.sections.document import Document
 
 TABLE_HEADER_PAT = re.compile(
     rf'(?:'
@@ -44,7 +45,9 @@ def is_thinning(m, text):
         return -1
 
 
-def extract_rnfl_values(text, *, headers=None, lateralities=None):
+def extract_rnfl_values(doc: Document):
+    text = doc.get_text()
+    lateralities = doc.get_lateralities()
     data = []
     for header_match in TABLE_HEADER_PAT.finditer(text):
         result = {}

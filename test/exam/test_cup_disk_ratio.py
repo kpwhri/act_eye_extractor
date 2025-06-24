@@ -3,6 +3,7 @@ import pytest
 from eye_extractor.common.regex import coalesce_match
 from eye_extractor.exam.cup_disk_ratio import CUP_DISK_PAT, CUP_DISC_NO_LAT_LABEL_PAT, CUP_DISC_UNILAT_PAT, OD_CUP_DISC, \
     OS_CUP_DISC
+from eye_extractor.sections.document import create_doc_and_sections
 
 
 @pytest.mark.parametrize('pat, text, exp_od, exp_os', [
@@ -41,3 +42,4 @@ def test_disc_unilat_pat(text, exp_lat, exp_ratio):
 # TODO: OD CUP/DISC: V 0.55/ H 0.55 sl pale
 #   OS CUP/DISC: V 0.55/ H 0.55 s
 # large c/d
+# TEST SECTIONS: doc = create_doc_and_sections(text, sections)
