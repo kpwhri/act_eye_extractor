@@ -8,6 +8,9 @@ import re
 import string
 
 from eye_extractor.nlp.negate.other_subject import FAMILY_RELATION_PAT
+from eye_extractor.sections.document import Document
+from eye_extractor.sections.patterns import SectionName
+from eye_extractor.sections.section_builder import Section
 
 history_pat = r'(?:hx|history)'
 
@@ -113,6 +116,37 @@ def update_hx_data(data, key, value=None, exclusive_search=True):
         found |= found_
         if found_ and exclusive_search:
             return
+
+
+def create_history_from_doc(doc: Document, *section_names: SectionName, is_personal_hx=False):
+    """
+    Extract specific historical information and conditions from a history section.
+
+    :param doc: document with history text to look in
+    :param section_names: list of sections to search for
+    :param is_personal_hx: personal history section if true, else family history
+    :return:
+    """
+
+    data = {}
+    for section in doc.iter_sections(*section_names):
+        curr_text = section.text
+        yes_no_list = [x.strip() for x in re.split(r'\b(yes|no(?:ne)?)\b', curr_text.strip()) if x.strip()]
+        if len(yes_no_list) > 1:
+            it = iter(yes_no_list)
+            for key, val in zip(it, it):
+                if key in {'yes', 'no', 'none'}:
+                    key, val = val, key
+                if is_personal_hx and FAMILY_RELATION_PAT.search(key):
+                    continue
+                update_hx_data(data, key, 1 if val == 'yes' else 0)
+        else:
+            # update with all keywords
+            update_hx_data(data, curr_text, value=1, exclusive_search=False)
+            # then negate those which have a negation keyword preceding them
+            for m2 in NEGATIVE_FOR_PAT.finditer(curr_text):
+                update_hx_data(data, m2.group('target'), 0, exclusive_search=False)
+    return data
 
 
 def create_history(text, start_pats, is_personal_hx=False):

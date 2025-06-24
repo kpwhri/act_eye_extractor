@@ -28,6 +28,11 @@ class SectionName(enum.StrEnum):
     CUP_DISC_OD = 'cup_disc_od'
     CUP_DISC_OS = 'cup_disc_os'
     COMMENT = 'comment'
+    EYE_HX = 'eye_hx'
+    FAMILY_EYE_HX = 'family_eye_hx'
+    MED_HX = 'med_hx'
+    FAMILY_HX = 'family_hx'
+    PROBLEM_LIST = 'problem_list'
 
 
 nonw = r'[^\w\n\-:]'
@@ -157,7 +162,7 @@ targets = [
     ('meds', fr'(?:active|current){nonw_s}{meds}(?:{nonw_s}as{nonw_s}of{nonw_s}{date})?'),
     ('peripheral_retina', f'periph(?:eral)?{nonw_s}retinal?'),
     (SectionName.PERIPHERY, fr'periphery'),
-    ('problem_list', f'(?:{patient}{nonw_s})?(?:(?:active|current){nonw_s})?problem{nonw_s}list'),
+    (SectionName.PROBLEM_LIST, f'(?:{patient}{nonw_s})?(?:(?:active|current){nonw_s})?problem{nonw_s}list'),
     ('hpi',
      fr'(?:(?:ccs?|chief{nonw_s}complaints?|hpi|history{nonw_s}of{nonw_s}present{nonw_s}illness|reason{nonw_s}for{nonw_s}exam\w*){nonw_s})+'),
     (SectionName.LAST_GONIOSCOPY, fr'{previous}{nonw_s}gonio\w*'),
@@ -170,12 +175,17 @@ targets = [
     ('os', fr'{os}'),
     ('oct', fr'(?:(?:mac\w*)?{nonw_s}oct(?:{nonw_s}mac\w*)?)'),
     ('hx', fr'(?:{history}|{previous})'),
-    ('eye_hx',
+    (SectionName.EYE_HX,
      fr'(?:{previous}{nonw_s})?(?:personal{nonw_s})?(?:medical{nonw_s})?{eye}{nonw_s}{history}(?:{nonw_s}of)?'),
-    ('family_eye_hx', fr'(?:family{nonw_s}{eye}{nonw_s}(?:health{nonw_s})?{history}(?:{nonw_s}of)?|fohx)'),
-    ('med_hx',
-     fr'(?:(?:pertinent{nonw_s})?(?:{previous}{nonw_s})?(?:medical|{patient}){nonw_s}{history}(?:{nonw_s}of)?|pmhx)'),
-    ('family_hx', fr'(?:family{nonw_s}{history}(?:{nonw_s}of)?|fhx)'),
+    (SectionName.FAMILY_EYE_HX, fr'(?:family{nonw_s}{eye}{nonw_s}(?:health{nonw_s})?{history}(?:{nonw_s}of)?|fohx)'),
+    (SectionName.MED_HX,
+     fr'(?:'
+     fr'(?:pertinent{nonw_s})?(?:{previous}{nonw_s})?(?:personal{nonw_s})?'
+     fr'(?:medical|{patient}){nonw_s}{history}(?:{nonw_s}of)?'
+     fr'|pmhx'
+     fr'|past\W*history\W*or\W*currently\W*being\W*treated\W*for'
+     fr')'),
+    (SectionName.FAMILY_HX, fr'(?:family{nonw_s}{history}(?:{nonw_s}of)?|fhx|famhx)'),
     ('manifest_rx', fr'{manifest_rx}'),
     ('last_manifest_rx', fr'(?:{previous}{nonw_s}glasses{nonw_s}rx{nonw_s})?{previous}{nonw_s}{manifest_rx}s?'),
     ('bcva', fr'{bcva}'),

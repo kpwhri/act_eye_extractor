@@ -1,6 +1,7 @@
 import pytest
 
 from eye_extractor.history.perhx import create_personal_history
+from eye_extractor.sections.document import create_doc_and_sections
 
 
 @pytest.mark.parametrize('text, exp', [
@@ -14,5 +15,6 @@ from eye_extractor.history.perhx import create_personal_history
      {}),
 ])
 def test_personal_history_section(text, exp):
-    res = create_personal_history(text)
+    doc = create_doc_and_sections(text)
+    res = create_personal_history(doc)
     assert res == exp

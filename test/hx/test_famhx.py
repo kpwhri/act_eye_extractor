@@ -1,6 +1,7 @@
 import pytest
 
 from eye_extractor.history.famhx import create_family_history
+from eye_extractor.sections.document import create_doc_and_sections
 
 
 @pytest.mark.parametrize('text, exp', [
@@ -12,5 +13,6 @@ from eye_extractor.history.famhx import create_family_history
      {'diabetes': 0, 'migraine': 1}),
 ])
 def test_family_history_section(text, exp):
-    res = create_family_history(text)
+    doc = create_doc_and_sections(text)
+    res = create_family_history(doc)
     assert res == exp

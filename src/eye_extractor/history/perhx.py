@@ -1,6 +1,8 @@
 import re
 
-from eye_extractor.history.common import create_history, history_pat
+from eye_extractor.history.common import history_pat, create_history_from_doc
+from eye_extractor.sections.document import Document
+from eye_extractor.sections.patterns import SectionName
 
 START_PER_HX_PAT = re.compile(
     rf'(?:'
@@ -14,5 +16,6 @@ START_PER_HX_PAT = re.compile(
 )
 
 
-def create_personal_history(text, headers=None, lateralities=None):
-    return create_history(text, [START_PER_HX_PAT], is_personal_hx=True)
+def create_personal_history(doc: Document):
+    return create_history_from_doc(doc, SectionName.EYE_HX, SectionName.MED_HX, SectionName.PROBLEM_LIST,
+                                   is_personal_hx=True)

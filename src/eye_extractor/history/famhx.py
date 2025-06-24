@@ -1,6 +1,8 @@
 import re
 
-from eye_extractor.history.common import create_history
+from eye_extractor.history.common import create_history, create_history_from_doc
+from eye_extractor.sections.document import Document
+from eye_extractor.sections.patterns import SectionName
 
 START_FAM_HX_PAT = re.compile(
     rf'\b(?:'
@@ -12,5 +14,5 @@ START_FAM_HX_PAT = re.compile(
 )
 
 
-def create_family_history(text, headers=None, lateralities=None):
-    return create_history(text, [START_FAM_HX_PAT])
+def create_family_history(doc: Document):
+    return create_history_from_doc(doc, SectionName.FAMILY_EYE_HX, SectionName.FAMILY_HX)
