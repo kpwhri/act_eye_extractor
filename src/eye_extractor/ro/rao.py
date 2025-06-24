@@ -2,6 +2,7 @@ import re
 
 from eye_extractor.nlp.negate.negation import is_negated
 from ..laterality import build_laterality_table, create_new_variable
+from ..sections.document import Document
 
 # RAO, retinal artery occlusion, RvasO (retinal vascular occlusion - can be vein or artery),
 # BRAO, Branch retinal artery occlusion, CRAO, Central retinal artery occlusion
@@ -16,9 +17,9 @@ RAO_PAT = re.compile(
 )
 
 
-def get_rao(text, *, headers=None, lateralities=None):
-    if not lateralities:
-        lateralities = build_laterality_table(text)
+def get_rao(doc: Document):
+    lateralities = doc.get_lateralities()
+    text = doc.get_text()
     data = []
     for m in RAO_PAT.finditer(text):
         negword = is_negated(m, text)
@@ -31,6 +32,4 @@ def get_rao(text, *, headers=None, lateralities=None):
                 'regex': 'RAO_PAT', 'source': 'ALL',
             })
         )
-    if headers:
-        pass
     return data

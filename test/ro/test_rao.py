@@ -2,6 +2,7 @@ import pytest
 
 from eye_extractor.output.ro import build_rao
 from eye_extractor.ro.rao import RAO_PAT, get_rao
+from eye_extractor.sections.document import create_doc_and_sections
 
 
 @pytest.mark.parametrize('text', [
@@ -19,7 +20,8 @@ def test_rao_pattern(text):
     ('362.32B Branch retinal artery occlusion', 1, None),
 ])
 def test_rao_value(text, exp_value, exp_negword):
-    data = get_rao(text)
+    doc = create_doc_and_sections(text)
+    data = get_rao(doc)
     assert len(data) > 0
     first_variable = list(data[0].values())[0]
     assert first_variable['value'] == exp_value

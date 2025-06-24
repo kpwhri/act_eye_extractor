@@ -4,6 +4,7 @@ from typing import Match
 
 from eye_extractor.nlp.negate.negation import is_negated
 from eye_extractor.laterality import build_laterality_table, create_new_variable
+from eye_extractor.sections.document import Document
 
 
 class RvoType(enum.IntEnum):
@@ -38,9 +39,9 @@ def get_rvo_kind(m: Match):
     return kind
 
 
-def extract_rvo(text, *, headers=None, lateralities=None):
-    if not lateralities:
-        lateralities = build_laterality_table(text)
+def extract_rvo(doc: Document):
+    lateralities = doc.get_lateralities()
+    text = doc.get_text()
     data = []
     for m in RVO_PAT.finditer(text):
         negword = is_negated(m, text)
@@ -54,6 +55,4 @@ def extract_rvo(text, *, headers=None, lateralities=None):
                 'kind': get_rvo_kind(m),
             })
         )
-    if headers:
-        pass
     return data

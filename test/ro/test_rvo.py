@@ -4,6 +4,7 @@ import pytest
 
 from eye_extractor.common.algo.treatment import STEROID_PAT, TRIAMCINOLONE_PAT, DEXAMETHASONE_PAT, extract_treatment, \
     OTHER_STEROID_PAT
+from eye_extractor.sections.document import create_doc_and_sections
 from eye_extractor.sections.headers import Headers
 from eye_extractor.output.ro import build_rvo, build_rvo_type, build_rvo_treatment
 from eye_extractor.ro.rvo import RVO_PAT, extract_rvo, RvoType, get_rvo_kind
@@ -28,7 +29,8 @@ def test_rvo_pattern(text):
     ('rvo', 1, None, RvoType.RVO),
 ])
 def test_rvo_value(text, exp_value, exp_negword, exp_kind):
-    data = extract_rvo(text)
+    doc = create_doc_and_sections(text)
+    data = extract_rvo(doc)
     assert len(data) > 0
     first_variable = list(data[0].values())[0]
     assert first_variable['value'] == exp_value
@@ -63,15 +65,16 @@ def test_rvo_type(text, exp):
     assert kind == exp
 
 
-@pytest.mark.parametrize('text, headers, exp_rvo_type_re, exp_rvo_type_le, exp_rvo_type_unk', [
+@pytest.mark.parametrize('text, sections, exp_rvo_type_re, exp_rvo_type_le, exp_rvo_type_unk', [
     ('Branch retinal vein occlusion RE', {}, RvoType.BRVO, RvoType.UNKNOWN, RvoType.UNKNOWN),
     ('ASSESSMENT: central retinal vein occlusion', {}, RvoType.UNKNOWN, RvoType.UNKNOWN, RvoType.CRVO),
     ('no brvo', {}, RvoType.UNKNOWN, RvoType.UNKNOWN, RvoType.BRVO),
     (' rvo', {}, RvoType.UNKNOWN, RvoType.UNKNOWN, RvoType.RVO),
     ('has crvo', {}, RvoType.UNKNOWN, RvoType.UNKNOWN, RvoType.CRVO),
 ])
-def test_rvo_type_extract_and_build(text, headers, exp_rvo_type_re, exp_rvo_type_le, exp_rvo_type_unk):
-    pre_json = extract_rvo(text, headers=Headers(headers), lateralities=None)
+def test_rvo_type_extract_and_build(text, sections, exp_rvo_type_re, exp_rvo_type_le, exp_rvo_type_unk):
+    doc = create_doc_and_sections(text, sections)
+    pre_json = extract_rvo(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_rvo_type(post_json, skip_output_mappings=True)  # skip mappings to redcap output
     assert result['rvo_type_re'] == exp_rvo_type_re
@@ -90,18 +93,18 @@ def test_rvo_treatment_patterns(pattern, text, exp):
     assert bool(pattern.search(text)) == exp
 
 
-@pytest.mark.parametrize('text, headers, exp_rvo_treatment_re, exp_rvo_treatment_le, exp_rvo_treatment_unk', [
+@pytest.mark.parametrize('text, sections, exp_rvo_treatment_re, exp_rvo_treatment_le, exp_rvo_treatment_unk', [
     ('', {'PLAN': 'dexamethasone'}, -1, -1, 4),
     ('', {'PLAN': 'observe'}, -1, -1, 1),
     ('', {'PLAN': 'laser'}, -1, -1, 2),
     ('', {'PLAN': 'aflibercept'}, -1, -1, 3),
 ])
-def test_rvo_treatment_extract_and_build(text, headers, exp_rvo_treatment_re, exp_rvo_treatment_le, 
+def test_rvo_treatment_extract_and_build(text, sections, exp_rvo_treatment_re, exp_rvo_treatment_le,
                                          exp_rvo_treatment_unk):
-    pre_json = extract_treatment(text, headers=Headers(headers), lateralities=None)
+    doc = create_doc_and_sections(text, sections)
+    pre_json = extract_treatment(doc)
     post_json = json.loads(json.dumps(pre_json))
     result = build_rvo_treatment(post_json)
     assert result['rvo_treatment_re'] == exp_rvo_treatment_re
     assert result['rvo_treatment_le'] == exp_rvo_treatment_le
     assert result['rvo_treatment_unk'] == exp_rvo_treatment_unk
-
