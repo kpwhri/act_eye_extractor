@@ -116,6 +116,23 @@ def _has_lower_priority(priorities, row, target_varname):
         return False
     return priorities[target_varname] > row[target_varname].get('priority', 0)
 
+def _has_greater_re_or_le_priority(priorities, row, target_varname):
+    """
+    Check if there is a result in the LE/RE. Unless the unknown priority is greater, skip unknowns.
+    Args:
+        priorities:
+        target_varname:
+
+    Returns:
+
+    """
+    unk_priority = row[target_varname].get('priority', 0)
+    target_varname_re = target_varname[:-3] + 're'
+    target_varname_le = target_varname[:-3] + 'le'
+    if target_varname_re not in priorities or target_varname_le not in priorities:
+        return False
+    return priorities[target_varname_re] >= unk_priority or priorities[target_varname_le] >= unk_priority
+
 
 def _get_updated_priority(row, target_varname):
     """Get updated prioritization value when updating value"""
@@ -204,7 +221,7 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
             rename_func = lambda n: n.value if isinstance(n, Enum) else n
     if renamevar_func is None:  # final renaming of variable name after processing
         renamevar_func = lambda n: n
-    priorities = {convert_func(varname): 0 for varname in results}  # target_varname -> value
+    priorities = {convert_func(varname): -1 for varname in results}  # target_varname -> value
     for row in data or []:  # for each element in list read from json file
         for varname, curr_value in list(results.items()):  # for each outcome of interest
             target_varname = convert_func(varname)  # change the column/variable name
@@ -216,6 +233,11 @@ def column_from_variable(results, data, *, compare_func=None, transformer_func=N
                 continue
             if _has_lower_priority(priorities, row, target_varname):
                 continue
+            # special case for _unk: only include if NOS
+            #   this assumes that the results are ordered by section priority
+            if target_varname.endswith('_unk') and _has_greater_re_or_le_priority(priorities, row, target_varname):
+                continue
+            # determine what new value should be (might require some transformation)
             new_value = transformer_func(row[target_varname])  # what should the new value be?
             # should new_value be used to update old_value?
             if _has_higher_priority(priorities, row, target_varname) or compare_func(new_value, curr_value):

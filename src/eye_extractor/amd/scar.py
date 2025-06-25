@@ -6,6 +6,7 @@ from eye_extractor.nlp.inline_section import is_periphery
 from eye_extractor.nlp.negate.negation import has_before, is_negated
 from eye_extractor.laterality import create_new_variable
 from eye_extractor.sections.document import Document
+from eye_extractor.sections.patterns import SectionName
 
 
 class Scar(enum.IntEnum):
@@ -66,7 +67,8 @@ SCAR_PRE_IGNORE = {
 
 
 def extract_subret_fibrous(doc: Document):
-    return get_variable(doc, _extract_subret_fibrous, target_headers=['macula', 'assessment', 'plan'],
+    return get_variable(doc, _extract_subret_fibrous, target_headers=[
+        SectionName.OCT, SectionName.MACULA, SectionName.ASSESSMENT, SectionName.PLAN],
                         search_full_text=False)
 
 

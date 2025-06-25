@@ -134,5 +134,10 @@ class Document:
         yield from self.sections.iter_names(*names)
 
 
-def create_doc_and_sections(text, section_dict: dict | None = None) -> Document:
-    return Document(text, sections=get_sections_from_dict(section_dict), newline_chars='¶')
+def create_doc_and_sections(text, section_dict: dict | None = None, default_section=None) -> Document:
+    doc = Document(text, sections=get_sections_from_dict(section_dict), newline_chars='¶')
+    if not doc.sections and default_section:
+        # fix cases where we are no longer looking in 'ALL' when testing
+        sect = doc.sections.add_simple(default_section, text)
+        sect.build_laterality_table(build_laterality_table)
+    return doc

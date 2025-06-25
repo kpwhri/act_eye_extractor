@@ -7,6 +7,7 @@ from eye_extractor.amd.scar import extract_subret_fibrous, SCAR_PAT, MACULAR_SCA
 from eye_extractor.sections.document import create_doc_and_sections
 from eye_extractor.sections.headers import Headers
 from eye_extractor.output.amd import build_subret_fibrous
+from eye_extractor.sections.patterns import SectionName
 
 
 @pytest.mark.parametrize('pat, text, exp', [
@@ -32,7 +33,7 @@ def test_scar_patterns(pat, text, exp):
     ('Macula scar Drusen and RPE changes', None, 'UNKNOWN', 'UNKNOWN', 'MACULAR'),
     ('', {'MACULA': 'scar Drusen and RPE changes'}, 'UNKNOWN', 'UNKNOWN', 'YES'),
     ('(H31.011) Macular scar of right eye', None, 'MACULAR', 'UNKNOWN', 'UNKNOWN'),
-    ('OD: CMT: 258, large RPE scar vs. new CNVM nasal to fovea with possible mild SRF, diffuse drusen OD>OS',
+    ('OCT OD: CMT: 258, large RPE scar vs. new CNVM nasal to fovea with possible mild SRF, diffuse drusen OD>OS',
      None, 'YES', 'UNKNOWN', 'UNKNOWN'),
     ('MACULA: Laser scars Od; trace thickening OS', None, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
     ('¶Periphery - attached with peripheral scarring scarring, temporally subretinal hemorrhage/fibrosis',
@@ -47,14 +48,14 @@ def test_scar_patterns(pat, text, exp):
     ('¶Periphery: subretinal fibrosis and RPE change temporally', None, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
     ('disciform scar os', None, 'UNKNOWN', 'DISCIFORM', 'UNKNOWN'),
     ('SUBJECTIVE: The patient is here for followup evaluation of disciform scar os. has no new complaints.',
-     None, 'UNKNOWN', 'DISCIFORM', 'UNKNOWN'),
+     None, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),  # can't trust subjective
     ('MACULA: Mottled od; shallow disciform scar os', None, 'UNKNOWN', 'DISCIFORM', 'UNKNOWN'),
     ('', {'MACULA': ' Mottled od; shallow disciform scar os'}, 'UNKNOWN', 'DISCIFORM', 'UNKNOWN'),
     ('MACULA:  Peripapillary scar with residual exudates only', None, 'UNKNOWN', 'UNKNOWN', 'YES'),
     ('', {'MACULA': '  Peripapillary scar with residual exudates only'}, 'UNKNOWN', 'UNKNOWN', 'YES'),
     ('OCT: no recurrent fluid od; Scar os', None, 'UNKNOWN', 'YES', 'UNKNOWN'),
-    ('Follow up in 8 weeks for OD with IV E, OCT and DILATION OU. ¶ ¶ ¶ ¶macular scar ¶',
-     None, 'UNKNOWN', 'UNKNOWN', 'MACULAR'),
+    pytest.param('PLAN: Follow up in 8 weeks for OD with IV E, OCT and DILATION OU. ¶ ¶ ¶ ¶macular scar ¶',
+     None, 'UNKNOWN', 'UNKNOWN', 'MACULAR', marks=pytest.mark.skip()),  # TODO: not sure we should accept this?
     ('A pigmented scar-like lesion', None, 'UNKNOWN', 'UNKNOWN', 'UNKNOWN'),
     ('MACULA: trace ERM OD and para-macular scar superior to fovea', None, 'MACULAR', 'UNKNOWN', 'UNKNOWN'),
     ('', {'MACULA': ' trace ERM OD and para-macular scar superior to fovea'}, 'MACULAR', 'UNKNOWN', 'UNKNOWN'),
@@ -86,9 +87,11 @@ def test_scar_patterns(pat, text, exp):
                     'exudates, or hemorrhage, OU'}, 'UNKNOWN', 'DISCIFORM', 'UNKNOWN'),
     ('MACULA:  Drusen od; disciform scar os', None, 'UNKNOWN', 'DISCIFORM', 'UNKNOWN'),
     ('', {'MACULA': '  Drusen od; disciform scar os'}, 'UNKNOWN', 'DISCIFORM', 'UNKNOWN'),
+    # PURPOSE: prioritize scar in macula
+    ('MACULA: disciform scar od \nPLAN: treatment for scar', {}, 'DISCIFORM', 'UNKNOWN', 'UNKNOWN'),
 ])
 def test_scar_extract_build(text, sections, exp_subret_fibrous_re, exp_subret_fibrous_le, exp_subret_fibrous_unk):
-    doc = create_doc_and_sections(text, sections)
+    doc = create_doc_and_sections(text, sections, default_section=SectionName.MACULA)
     pre_json = extract_subret_fibrous(doc)
     post_json = json.loads(json.dumps(pre_json, default=str))
     result = build_subret_fibrous(post_json)

@@ -174,6 +174,13 @@ class Sections(UserList):
     def add(self, section: Section):
         self.data.append(section)
 
+    def add_simple(self, section_name, section_text):
+        section = Section(section_name, 2, section_text,
+                          0, len(section_name),
+                          len(section_name), len(section_name) + len(section_text))
+        self.add(section)
+        return section
+
     def add_all(self, sections):
         self.data += sections.data
 
