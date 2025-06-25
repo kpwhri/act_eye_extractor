@@ -42,16 +42,16 @@ def process_data(data, *, add_columns=None, date_column='note_date'):
         result[col] = data[col]
 
     result.update(build_shared_variables(data))
-    result.update(build_va(data['va']))
-    result.update(build_iop(data['iop']))
-    result.update(get_manifest(data['manifestrx']))
+    result.update(build_va(data.get('va', [])))
+    result.update(build_iop(data.get('iop', [])))
+    result.update(get_manifest(data.get('manifestrx', [])))
     result.update(build_amd_variables(data))
     result.update(build_glaucoma(data))
     result.update(build_uveitis_variables(data))
     result.update(build_ro_variables(data))
     result.update(build_cataract_variables(data))
     result.update(build_cataract_surgery_variables(data))
-    result.update(build_history(data['history']))
+    result.update(build_history(data))
     result.update(build_exam(data))
     result.update(build_dr_variables(data))
     return result

@@ -135,9 +135,12 @@ def build_subretfluid(data, *, note_date=None):
 
 
 def build_ro_variables(data):
+    results = {}
+    if not data.get('ro', None):
+        return results
+
     curr = data['ro']
     note = data['note']
-    results = {}
     # RAO
     results.update(build_rao(curr['rao'], macula_wnl=data['common']['macula_wnl'], note_date=note['date']))
     # RVO

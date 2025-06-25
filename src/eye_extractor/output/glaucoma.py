@@ -10,6 +10,8 @@ from eye_extractor.output.variable import column_from_variable, has_valid_date, 
 
 def build_glaucoma(data):
     results = {}
+    if not data.get('glaucoma', None):
+        return results
     curr = data['glaucoma']
     note = data['note']
     results.update(build_glaucoma_drops(curr['drops'], note_date=note['date']))

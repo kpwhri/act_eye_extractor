@@ -5,9 +5,11 @@ from eye_extractor.output.variable import column_from_variable_binary, column_fr
 
 
 def build_cataract_variables(data):
+    results = {}
+    if not data.get('cataract', None):
+        return results
     curr = data['cataract']
     note = data['note']
-    results = {}
     results.update(build_cataract(curr['cataract'], note_date=note['date']))
     results.update(build_cataract_type(curr['cataract_type'], note_date=note['date']))
     results.update(build_nscataract_severity(curr['cataract_type'], note_date=note['date']))

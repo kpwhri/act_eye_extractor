@@ -6,18 +6,19 @@ from eye_extractor.amd.wet import WetSeverity
 from eye_extractor.common.algo.fluid import Fluid, rename_intraretfluid, fluid_prioritization, rename_subretfluid, \
     rename_fluid
 from eye_extractor.common.drug.antivegf import AntiVegf, rename_antivegf
+from eye_extractor.common.safeget import safeget
 from eye_extractor.output.variable import column_from_variable_abbr, rename_variable_func
 
 
 def build_shared_variables(data):
     note = data['note']
     results = {}
-    results.update(build_fluid(data['common']['fluid'], note_date=note['date']))
-    results.update(build_subretfluid(data['common']['fluid'], note_date=note['date']))
-    results.update(build_intraretfluid(data['common']['fluid'], note_date=note['date']))
-    results.update(build_dry_severity(data['amd']['dry'], note_date=note['date']))
-    results.update(build_wet_severity(data['amd']['wet'], note_date=note['date']))
-    results.update(build_antivegf(data['common']['treatment'], note_date=note['date']))
+    results.update(build_fluid(safeget(data, 'common', 'fluid'), note_date=note['date']))
+    results.update(build_subretfluid(safeget(data, 'common', 'fluid'), note_date=note['date']))
+    results.update(build_intraretfluid(safeget(data, 'common', 'fluid'), note_date=note['date']))
+    results.update(build_dry_severity(safeget(data, 'amd', 'dry'), note_date=note['date']))
+    results.update(build_wet_severity(safeget(data, 'amd', 'wet'), note_date=note['date']))
+    results.update(build_antivegf(safeget(data, 'common', 'treatment'), note_date=note['date']))
     return results
 
 

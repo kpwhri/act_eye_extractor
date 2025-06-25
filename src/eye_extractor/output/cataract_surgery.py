@@ -2,8 +2,10 @@ from eye_extractor.laterality import Laterality
 
 
 def build_cataract_surgery_variables(data):
-    curr = data['cataractsurg']
     results = {}
+    if not data.get('cataractsurg', None):
+        return results
+    curr = data['cataractsurg']
     if not curr:
         return results
     lat = curr['cataractsurg_lat']

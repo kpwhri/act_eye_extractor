@@ -293,9 +293,11 @@ def build_cmt_value(data, *, note_date=None):
 
 
 def build_dr_variables(data):
+    results = {}
+    if not data.get('dr', None):
+        return results
     curr = data['dr']
     note = data['note']
-    results = {}
     results.update(build_dr_yesno(curr['dr_yesno'], macula_wnl=data['common']['macula_wnl'], note_date=note['date']))
     results.update(build_ret_micro(curr['ret_micro'], note_date=note['date']))
     results.update(build_cottonwspot(curr['cottonwspot'], note_date=note['date']))

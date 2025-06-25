@@ -12,6 +12,7 @@ from eye_extractor.amd.wet import WetSeverity
 from eye_extractor.common.algo.fluid import Fluid
 from eye_extractor.common.algo.treatment import Treatment
 from eye_extractor.common.drug.antivegf import rename_antivegf, AntiVegf
+from eye_extractor.common.safeget import safeget
 from eye_extractor.laterality import Laterality
 from eye_extractor.output.common import macula_is_wnl
 from eye_extractor.output.shared import build_subretfluid, build_intraretfluid, build_fluid
@@ -24,14 +25,16 @@ def build_macular_cyst(data, *, note_date=None):
 
 
 def build_amd_variables(data):
+    results = {}
+    if not data.get('amd', None):
+        return results
     curr = data['amd']
     note = data['note']
-    results = {}
     results.update(build_amd(
         curr['amd'],
         is_amd=note['is_amd'],
         lat=note['default_lat'],
-        macula_wnl=data['common']['macula_wnl'],
+        macula_wnl=safeget(data, 'common', 'macula_wnl'),
         note_date=note['date'])
     )
     results.update(get_drusen_size(curr['drusen'], note_date=note['date']))
@@ -39,10 +42,10 @@ def build_amd_variables(data):
     srh = build_subretinal_hemorrhage(curr['srh'], note_date=note['date'])
     results.update(srh)
     results.update(get_pigmentary_changes(curr['pigment'], note_date=note['date']))
-    fluid = build_fluid_amd(data['common']['fluid'], is_amd=note['is_amd'], note_date=note['date'])
+    fluid = build_fluid_amd(safeget(data, 'common', 'fluid'), is_amd=note['is_amd'], note_date=note['date'])
     results.update(fluid)
-    results.update(build_subretfluid_amd(data['common']['fluid'], is_amd=note['is_amd'], note_date=note['date']))
-    results.update(build_intraretfluid_amd(data['common']['fluid'], is_amd=note['is_amd'], note_date=note['date']))
+    results.update(build_subretfluid_amd(safeget(data, 'common', 'fluid'), is_amd=note['is_amd'], note_date=note['date']))
+    results.update(build_intraretfluid_amd(safeget(data, 'common', 'fluid'), is_amd=note['is_amd'], note_date=note['date']))
     results.update(build_ped(curr['ped'], note_date=note['date']))
     cnv = build_choroidalneovasc(curr['cnv'], note_date=note['date'])
     results.update(cnv)
@@ -61,8 +64,10 @@ def build_amd_variables(data):
     ))
     results.update(build_amd_vitamin(curr['vitamin'], note_date=note['date']))
     # results.update(build_lasertype(curr['lasertype']))
-    results.update(build_lasertype_new(data['common']['treatment'], is_amd=note['is_amd'], note_date=note['date']))
-    results.update(build_amd_antivegf(data['common']['treatment'], is_amd=note['is_amd'], note_date=note['date']))
+    results.update(build_lasertype_new(safeget(data, 'common', 'treatment'), is_amd=note['is_amd'],
+                                       note_date=note['date']))
+    results.update(build_amd_antivegf(safeget(data, 'common', 'treatment'), is_amd=note['is_amd'],
+                                      note_date=note['date']))
     results.update(build_macular_cyst(curr['cyst']))
     return results
 

@@ -4,6 +4,8 @@ from eye_extractor.output.variable import column_from_variable
 
 def build_exam(data):
     results = {}
+    if not data.get('exam', None):
+        return results
     curr = data['exam']
     note = data['note']
     results.update(build_cup_disc_ratio(curr['cd_ratio']))

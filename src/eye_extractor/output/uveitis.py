@@ -2,9 +2,11 @@ from eye_extractor.output.variable import column_from_variable_abbr
 
 
 def build_uveitis_variables(data):
+    results = {}
+    if not data.get('uveitis', None):
+        return results
     curr = data['uveitis']
     note = data['note']
-    results = {}
     results.update(build_uveitis(curr['uveitis'], note_date=note['date']))
     return results
 
