@@ -96,6 +96,7 @@ def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path, date_column='not
                     writer.writerow(result)
     duration = datetime.datetime.now() - start_time
     logger.info(f'Total run time: {duration}')
+    return outpath
 
 
 if __name__ == '__main__':
