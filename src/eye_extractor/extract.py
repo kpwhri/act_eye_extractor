@@ -36,8 +36,21 @@ from eye_extractor.uveitis.algorithm import extract_uveitis
 from eye_extractor.va.extractor2 import extract_va
 from eye_extractor.va.rx import get_manifest_rx
 
+ALGORITHMS = [
+    'va',
+    'iop',
+    'amd',
+    'cataractsurg',
+    'cataract',
+    'glaucoma',
+    'ro',
+    'uveitis',
+    'history',
+    'exam',
+    'dr',
+]
 
-def extract_all(text: str, *, data: dict = None, sections: dict = None):
+def extract_all(text: str, *, data: dict = None, sections: dict = None, targets=None):
     if not sections:
         sections = extract_headers_and_text(text)
     lateralities = build_laterality_table(text)
@@ -48,24 +61,40 @@ def extract_all(text: str, *, data: dict = None, sections: dict = None):
     sections.remove(remove_boilerplate)
     if data is None:
         data = {}
+
+    # run main algorithms
+    if not targets:
+        targets = ALGORITHMS
     data['note'] = extract_note_level_info(text, headers=sections, lateralities=lateralities)
     lateralities.default_laterality = data['note']['default_lat']
-    data['va'] = list(extract_va(text))
-    data['iop'] = list(get_iop(text))
-    data['amd'] = extract_amd_variables(text, headers=sections, lateralities=lateralities)
-    data['cataractsurg'] = get_cataract_surgery(text)
-    data['cataract'] = extract_cataract_variables(text, headers=sections, lateralities=lateralities)
-    data['glaucoma'] = extract_glaucoma(text, headers=sections, lateralities=lateralities)
-    data['manifestrx'] = list(get_manifest_rx(text))
-    data['ro'] = extract_ro_variables(text, headers=sections, lateralities=lateralities)
-    data['uveitis'] = extract_uveitis(text, headers=sections, lateralities=lateralities)
-    data['history'] = {
-        'family': create_family_history(orig_text, headers=sections, lateralities=lateralities),
-        'personal': create_personal_history(orig_text, headers=sections, lateralities=lateralities),
-    }
-    data['exam'] = get_exam(text, headers=sections, lateralities=lateralities)
-    data['dr'] = extract_dr_variables(text, headers=sections, lateralities=lateralities)
+
     data['common'] = extract_common_algorithms(text, headers=sections, lateralities=lateralities)
+    if 'va' in targets:
+        data['va'] = list(extract_va(text))
+        data['manifestrx'] = list(get_manifest_rx(text))
+    if 'iop' in targets:
+        data['iop'] = list(get_iop(text))
+    if 'amd' in targets:
+        data['amd'] = extract_amd_variables(text, headers=sections, lateralities=lateralities)
+    if 'cataractsrug' in targets:
+        data['cataractsurg'] = get_cataract_surgery(text)
+    if 'cataract' in targets:
+        data['cataract'] = extract_cataract_variables(text, headers=sections, lateralities=lateralities)
+    if 'glaucoma' in targets:
+        data['glaucoma'] = extract_glaucoma(text, headers=sections, lateralities=lateralities)
+    if 'ro' in targets:
+        data['ro'] = extract_ro_variables(text, headers=sections, lateralities=lateralities)
+    if 'uveitis' in targets:
+        data['uveitis'] = extract_uveitis(text, headers=sections, lateralities=lateralities)
+    if 'history' in targets:
+        data['history'] = {
+            'family': create_family_history(orig_text, headers=sections, lateralities=lateralities),
+            'personal': create_personal_history(orig_text, headers=sections, lateralities=lateralities),
+        }
+    if 'exam' in targets:
+        data['exam'] = get_exam(text, headers=sections, lateralities=lateralities)
+    if 'dr' in targets:
+        data['dr'] = extract_dr_variables(text, headers=sections, lateralities=lateralities)
 
     return data
 
@@ -76,13 +105,15 @@ def extract_all(text: str, *, data: dict = None, sections: dict = None):
 @click.option('--filelist', type=click.Path(dir_okay=False, path_type=pathlib.Path), default=None)
 @click.option('--search-missing-headers', is_flag=True, default=False,
               help='If a requested header is not found, attempt to find it in the text.')
+@click.option('--targets', multiple=True, default=None,
+              help='Target algorithms to run')
 def _extract_variables(directories: tuple[pathlib.Path], outdir: pathlib.Path = None, filelist: pathlib.Path = None,
-                       *, search_missing_headers=False):
-    extract_variables(directories, outdir, filelist, search_missing_headers=search_missing_headers)
+                       *, search_missing_headers=False, targets=None):
+    extract_variables(directories, outdir, filelist, search_missing_headers=search_missing_headers, targets=targets)
 
 
-def extract_variables(directories: tuple[pathlib.Path], outdir: pathlib.Path = None, filelist: pathlib.Path = None,
-                      *, search_missing_headers=False):
+def extract_variables(directories: tuple[pathlib.Path] = None, outdir: pathlib.Path = None, filelist: pathlib.Path = None,
+                      *, search_missing_headers=False, targets=None):
     """
     Iterate through all '*.txt' files in directory for processing by eye extractor.
         Optionally, will include relevant metadata from associated *.meta json files
@@ -96,17 +127,17 @@ def extract_variables(directories: tuple[pathlib.Path], outdir: pathlib.Path = N
     logger.add(outdir / f'eye_extractor_{start_time:%Y%m%d_%H%M%S}.log', level='DEBUG')
     logger.add(sys.stderr, level='INFO')
     with open(outdir / f'eye_extractor_{start_time:%Y%m%d_%H%M%S}.jsonl', 'w', encoding='utf8') as out:
-        for file, text, data, sections in read_from_params(*directories, filelist=filelist,
+        for file, text, data, sections in read_from_params(*directories or tuple(), filelist=filelist,
                                                            search_missing_headers=search_missing_headers):
-            line = extract_variable_from_text(text, data, sections)
+            line = extract_variable_from_text(text, data, sections, targets=targets)
             out.write(json.dumps(line, default=str) + '\n')
     duration = datetime.datetime.now() - start_time
     logger.info(f'Total run time: {duration}')
 
 
-def extract_variable_from_text(text, data, sections):
+def extract_variable_from_text(text, data, sections, targets=None):
     """extract eye info from text, data, and section info"""
-    data = extract_all(text, data=data, sections=sections)
+    data = extract_all(text, data=data, sections=sections, targets=targets)
     return data
 
 

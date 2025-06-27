@@ -42,18 +42,29 @@ def process_data(data, *, add_columns=None, date_column='note_date'):
         result[col] = data[col]
 
     result.update(build_shared_variables(data))
-    result.update(build_va(data['va']))
-    result.update(build_iop(data['iop']))
-    result.update(get_manifest(data['manifestrx']))
-    result.update(build_amd_variables(data))
-    result.update(build_glaucoma(data))
-    result.update(build_uveitis_variables(data))
-    result.update(build_ro_variables(data))
-    result.update(build_cataract_variables(data))
-    result.update(build_cataract_surgery_variables(data))
-    result.update(build_history(data['history']))
-    result.update(build_exam(data))
-    result.update(build_dr_variables(data))
+    if 'va' in data:
+        result.update(build_va(data['va']))
+        result.update(get_manifest(data['manifestrx']))
+    if 'iop' in data:
+        result.update(build_iop(data['iop']))
+    if 'amd' in data:
+        result.update(build_amd_variables(data))
+    if 'glaucoma' in data:
+        result.update(build_glaucoma(data))
+    if 'uveitis' in data:
+        result.update(build_uveitis_variables(data))
+    if 'ro' in data:
+        result.update(build_ro_variables(data))
+    if 'cataract' in data:
+        result.update(build_cataract_variables(data))
+    if 'cataractsurg' in data:
+        result.update(build_cataract_surgery_variables(data))
+    if 'history' in data:
+        result.update(build_history(data['history']))
+    if 'exam' in data:
+        result.update(build_exam(data))
+    if 'dr' in data:
+        result.update(build_dr_variables(data))
     return result
 
 
@@ -96,6 +107,7 @@ def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path, date_column='not
                     writer.writerow(result)
     duration = datetime.datetime.now() - start_time
     logger.info(f'Total run time: {duration}')
+    return outpath
 
 
 if __name__ == '__main__':
