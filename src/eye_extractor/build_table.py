@@ -76,7 +76,7 @@ def build_table(jsonl_file: pathlib.Path, outdir: pathlib.Path, date_column='not
     start_time = datetime.datetime.now()
     outdir.mkdir(parents=True, exist_ok=True)
     logger.add(outdir / f'build_table_{start_time:%Y%m%d_%H%M%S}.log', level='INFO')
-    outpath = outdir / f'variables_{start_time:%Y%m%d_%H%M%S}.csv'
+    outpath = outdir / f'variables_{jsonl_file.stem}_{start_time:%Y%m%d_%H%M%S}.csv'
     for col in add_columns or []:
         OUTPUT_COLUMNS[col] = []
     if jsonl_file.is_dir():
