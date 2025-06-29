@@ -85,6 +85,9 @@ def test_scar_patterns(pat, text, exp):
                     'exudates, or hemorrhage, OU'}, 'UNKNOWN', 'DISCIFORM', 'UNKNOWN'),
     ('MACULA:  Drusen od; disciform scar os', None, 'UNKNOWN', 'DISCIFORM', 'UNKNOWN'),
     ('', {'MACULA': '  Drusen od; disciform scar os'}, 'UNKNOWN', 'DISCIFORM', 'UNKNOWN'),
+    ('MACULA: old laser scars without edema, exudates, or hemorrhage, OU', {}, 'SCAR', 'SCAR', 'UNKNOWN'),  # Fix
+    ('ASSESSMENT: ... Not assessed: Macular scar OS and optic atrophy', {}, 'UNKNOWN', 'MACULAR', 'UNKNOWN'),  # FIX
+    ('MACULA: ¶OD EVOLVING DISCIFORM SCAR ¶OS Dry APPEARING AMD', {}, 'DISCIFORM', 'UNKNOWN', 'UNKNOWN'),  # FIX
 ])
 def test_scar_extract_build(text, headers, exp_subret_fibrous_re, exp_subret_fibrous_le, exp_subret_fibrous_unk):
     pre_json = extract_subret_fibrous(text, headers=Headers(headers))

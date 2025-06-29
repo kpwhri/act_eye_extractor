@@ -1,4 +1,5 @@
 import re
+from itertools import chain
 
 from eye_extractor.history.common import find_end
 from eye_extractor.nlp.character_groups import LINE_START_CHARS_RX
@@ -19,6 +20,7 @@ HISTORY_SECTION_PAT = re.compile(
     rf'|fam(?:ily)?\s*(?:{medical}\s*)?{history}(?:\s*of)?'
     rf'|past\s*(?:\w+\W*){{,6}}'
     rf'|family\s*{history}\s*of\s*any\s*eye\s*or\s*medical\s*diseases'
+    rf'|hpi|{history}\s*of\s*present\s*illness'
     rf')[:-]',
     re.I
 )
@@ -96,8 +98,7 @@ def remove_problem_list(text):
     return '\n'.join(sect for sect, *_, is_problist in get_problem_list(text) if not is_problist)
 
 
-
-def _find_history_sections(text, include_problem_list=True):
+def _find_history_sections(text):
     """
     Retrieve offsets for history sections of note.
     Uses two methods to find the widest window.
@@ -110,10 +111,14 @@ def _find_history_sections(text, include_problem_list=True):
         )
         end_index2 = find_end(text, m.end())
         yield m.group().strip().strip(':'), m.start(), m.end(), max(end_index, end_index2)
-    if include_problem_list:
-        for *other, is_problist in get_problem_list(text):
-            if is_problist:
-                yield other
+
+
+def _find_problem_list_sections(text, return_problist=True):
+    for *other, is_problist in get_problem_list(text):
+        if is_problist and return_problist:
+            yield other
+        elif not is_problist and not return_problist:
+            yield other  # is not problem list, and we want the not- problem list
 
 
 def retrieve_history_sections(text):
@@ -123,6 +128,11 @@ def retrieve_history_sections(text):
     :return: yields {name: section name, text: text in section (not including header value)}
     """
     for section_name, _, start_index, end_index in _find_history_sections(text):
+        yield {
+            'name': section_name,
+            'text': text[start_index: end_index]
+        }
+    for section_name, _, start_index, end_index in _find_problem_list_sections(text):
         yield {
             'name': section_name,
             'text': text[start_index: end_index]
@@ -138,11 +148,21 @@ def remove_history_sections(text, include_problem_list=True):
     """
     results = []
     prev_end = 0
-    for _1, start_index, _, end_index in _find_history_sections(text, include_problem_list=include_problem_list):
+    for _1, start_index, _, end_index in _find_history_sections(text):
         results.append(text[prev_end: start_index])
         prev_end = end_index
     results.append(text[prev_end:])
-    return ''.join(results)
+    text = ''.join(results)
+    if include_problem_list:
+        results = []
+        for _1, start_index, _, end_index in _find_problem_list_sections(text, False):
+            results.append(text[start_index:end_index])
+        text = ''.join(results)
+    return text
+
+
+def get_history_and_prob_list(text):
+    yield from sorted(list(_find_problem_list_sections(text)) + list(_find_history_sections(text)), key=lambda x: x[1])
 
 
 def get_history_sections_to_be_removed(text):
@@ -155,7 +175,7 @@ def get_history_sections_to_be_removed(text):
     hx_sections = []
     prev_end = 0
     prev_start = None
-    for _1, start_index, _, end_index in _find_history_sections(text):
+    for _1, start_index, _, end_index in get_history_and_prob_list(text):
         if prev_end > 0:
             hx_sections.append(text[prev_start: prev_end])
         results.append(text[prev_end: start_index])
